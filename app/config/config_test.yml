@@ -1,0 +1,14 @@
+imports:
+    - { resource: config_dev.yml }
+
+framework:
+    error_handler: false
+    test: ~
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false
+
+zend:
+    logger:
+        priority: debug

@@ -1,0 +1,48 @@
+imports:
+    - { resource: parameters.ini }
+
+framework:
+    charset:       UTF-8
+    error_handler: null
+    csrf_protection:
+        enabled: true
+        secret: %csrf_secret%
+    router:        { resource: "%kernel.root_dir%/config/routing.yml" }
+    validation:    { enabled: true, annotations: true }
+    templating:    { engines: ['twig'] } #assets_version: SomeVersionScheme
+    session:
+        default_locale: %locale%
+        lifetime:       3600
+        auto_start:     true
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+
+# Assetic Configuration
+assetic:
+    debug:          %kernel.debug%
+    use_controller: false
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   %database_driver%
+        host:     %database_host%
+        dbname:   %database_name%
+        user:     %database_user%
+        password: %database_password%
+        logging:  %kernel.debug%
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        mappings:
+            AcmeDemoBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport:  %mailer_transport%
+    host:       %mailer_host%
+    username:   %mailer_user%
+    password:   %mailer_password%

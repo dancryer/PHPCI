@@ -1,0 +1,15 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block title %}Symfony - Demos{% endblock %}
+
+{% block content %}
+    <h1>Available demos</h1>
+    <ul>
+        <li><a href="{{ url('_demo_hello', {'name': 'World'}) }}">Hello World</a></li>
+        {#
+        <li><a href="{{ url('_demo_contact') }}">Send a Message</a></li>
+        #}
+    </ul>
+
+    <p>Symfony is under development, more demos will soon be available...</p>
+{% endblock %}

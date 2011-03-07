@@ -1,0 +1,11 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block content %}
+    {{ parent() }}
+
+    <p>
+        Hello {{ name }}!
+    </p>
+{% endblock %}
+
+{% set code = code(_self) %}

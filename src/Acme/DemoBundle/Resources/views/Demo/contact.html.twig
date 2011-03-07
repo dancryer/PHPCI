@@ -1,0 +1,10 @@
+{% extends "AcmeDemoBundle::layout.html.twig" %}
+
+{% block title %}Symfony - Contact form{% endblock %}
+
+{% block content %}
+    <form action="" method="POST">
+        {{ form_field(form) }}
+        <input type="submit" value="Send" />
+    </form>
+{% endblock %}

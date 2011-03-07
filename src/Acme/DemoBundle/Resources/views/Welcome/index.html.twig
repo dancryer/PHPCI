@@ -1,0 +1,59 @@
+{% extends 'AcmeDemoBundle::layout.html.twig' %}
+
+{% block title %}Symfony - Welcome{% endblock %}
+
+{% block content %}
+
+<h1>Welcome!</h1>
+    <p>Congratulations! You have successfully installed a new Symfony application.</p>
+
+    <div class="symfony-blocks-welcome">
+        <div class="block-quick-tour">
+            <div class="illustration">
+                <img src="{{ asset('bundles/acmedemo/images/welcome-quick-tour.gif') }}" alt="Quick tour" />
+            </div>
+            <a class="symfony-button-green" href="http://symfony.com/doc/2.0/quick_tour/index.html">Read the Quick Tour</a>
+        </div>
+        <div class="block-configure">
+            <div class="illustration">
+                <img src="{{ asset('bundles/acmedemo/images/welcome-configure.gif') }}" alt="Configure your appication" />
+            </div>
+            <a class="symfony-button-green" href="{{ path('_configurator_home') }}">Configure</a>
+        </div>
+        <div class="block-demo">
+            <div class="illustration">
+                <img src="{{ asset('bundles/acmedemo/images/welcome-demo.gif') }}" alt="Demo" />
+            </div>
+            <a class="symfony-button-green" href="{{ path('_demo') }}">Run The Demo</a>
+        </div>
+    </div>
+
+    <div class="symfony-blocks-help">
+        <div class="block-documentation">
+            <ul>
+                <li><strong>Documentation</strong></li>
+                <li><a href="http://symfony.com/doc/2.0/book/index.html">The book</a></li>
+                <li><a href="http://symfony.com/doc/2.0/reference/index.html">The cookbook</a></li>
+                <li><a href="http://symfony.com/doc/2.0/glossary/index.html">Glossary</a></li>
+            </ul>
+        </div>
+        <div class="block-documentation-more">
+            <ul>
+                <li>&nbsp;</li>
+                <li><a href="http://symfony.com/doc/2.0/contributing/index.html">Contributing</a></li>
+                <li><a href="http://trainings.sensiolabs.com">Trainings</a></li>
+                <li><a href="http://books.sensiolabs.com">Books</a></li>
+            </ul>
+        </div>
+        <div class="block-community">
+            <ul>
+                <li><strong>Community</strong></li>
+                <li><a href="http://symfony.com/irc">IRC channel</a>
+                <li><a href="http://symfony.com/mailing-lists">Mailing lists</a></li>
+                <li><a href="http://forum.symfony-project.org">Forum</a></li>
+                <li><a href="http://symfony.com/doc/2.0/contributing/index.html">How to be involved</a></li>
+                <li><a href="http://symfony.com/doc/2.0/contributing/index.html">Contributing</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -44,9 +44,6 @@ install_git symfony git://github.com/symfony/symfony.git
 # Update the bootstrap files
 ../bin/build_bootstrap.php
 
-# Update assets
-../app/console assets:install ../web/
-
 # Doctrine ORM
 install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.2
 
@@ -94,3 +91,6 @@ mkdir -p bundles/Symfony/Bundle
 cd bundles/Symfony/Bundle
 install_git WebConfiguratorBundle git://github.com/symfony/WebConfiguratorBundle.git
 cd ../../..
+
+# Update assets
+../app/console assets:install ../web/

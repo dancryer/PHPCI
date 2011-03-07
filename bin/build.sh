@@ -17,7 +17,7 @@ mkdir /tmp/Symfony
 cp -r app /tmp/Symfony/
 cp -r src /tmp/Symfony/
 cp -r web /tmp/Symfony/
-cp -r README /tmp/Symfony/
+cp -r README.md /tmp/Symfony/
 cp -r LICENSE /tmp/Symfony/
 cp -r VERSION /tmp/Symfony/
 cd /tmp/Symfony

@@ -30,6 +30,9 @@ don't have git, download the version with the vendors included.
 Installation from Git
 ---------------------
 
+We highly recommend you that you download the packaged version of this
+distribution. If you still want to use Git, your are on your own.
+
 Run the following scripts:
 
  * `bin/vendors.sh`

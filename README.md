@@ -42,7 +42,7 @@ Run the following scripts:
 Configuration
 -------------
 
-Check that everything is working fine by going to the `config.php` page in a
+Check that everything is working fine by going to the `web/config.php` page in a
 browser and follow the instructions.
 
 The distribution is configured with the following defaults:

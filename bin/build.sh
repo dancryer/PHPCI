@@ -15,6 +15,7 @@ $DIR/app/console assets:install web/
 rm -rf /tmp/Symfony
 mkdir /tmp/Symfony
 cp -r app /tmp/Symfony/
+cp -r bin /tmp/Symfony/
 cp -r src /tmp/Symfony/
 cp -r web /tmp/Symfony/
 cp -r README.md /tmp/Symfony/

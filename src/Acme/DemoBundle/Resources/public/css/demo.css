@@ -127,9 +127,13 @@ ul li
 #symfony-search
 {
     position: absolute;
-
     top:   50px;
     right: 30px;
+}
+
+#symfony-search input[type="search"]
+{
+    -webkit-appearance: textfield;
 }
 
 #symfony-search-field

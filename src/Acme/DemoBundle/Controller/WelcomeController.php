@@ -6,12 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class WelcomeController extends Controller
 {
-    /**
-     * @extra:Route("/", name="_welcome")
-     * @extra:Template()
-     */
     public function indexAction()
     {
-        return array();
+        return $this->render('AcmeDemoBundle:Welcome:index.html.twig');
     }
 }

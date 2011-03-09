@@ -1,11 +1,6 @@
 _main:
     resource: routing.yml
 
-_demo:
-    resource: "@AcmeDemoBundle/Controller/DemoController.php"
-    type:     annotation
-    prefix:   /_demo
-
 _assetic:
     resource: .
     type:     assetic

@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="bootstrap.php"
+         bootstrap="bootstrap.php.cache"
 >
   <testsuites>
       <testsuite name="Project Test Suite">

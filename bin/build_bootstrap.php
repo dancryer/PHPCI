@@ -19,7 +19,7 @@ $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array('Symfony' => __DIR__.'/../vendor/symfony/src'));
 $loader->register();
 
-$file = __DIR__.'/../app/bootstrap.php';
+$file = __DIR__.'/../app/bootstrap.php.cache';
 if (file_exists($file)) {
     unlink($file);
 }
@@ -50,11 +50,11 @@ ClassCollectionLoader::load(array(
     'Symfony\\Component\\ClassLoader\\MapFileClassLoader',
 
     'Symfony\\Component\\Config\\ConfigCache',
-), dirname($file), basename($file, '.php'), false);
+), dirname($file), basename($file, '.php.cache'), false, false, '.php.cache');
 
 file_put_contents($file, "<?php\n\nnamespace { require_once __DIR__.'/autoload.php'; }\n\n".substr(file_get_contents($file), 5));
 
-$file = __DIR__.'/../app/bootstrap_cache.php';
+$file = __DIR__.'/../app/bootstrap_cache.php.cache';
 if (file_exists($file)) {
     unlink($file);
 }
@@ -78,6 +78,6 @@ ClassCollectionLoader::load(array(
     'Symfony\\Component\\HttpFoundation\\Response',
 
     'Symfony\\Component\\ClassLoader\\UniversalClassLoader',
-), dirname($file), basename($file, '.php'), false);
+), dirname($file), basename($file, '.php.cache'), false, false, '.php.cache');
 
 file_put_contents($file, "<?php\n\nnamespace { require_once __DIR__.'/autoload.php'; }\n\n".substr(file_get_contents($file), 5));

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../app/bootstrap_cache.php';
+require_once __DIR__.'/../app/bootstrap_cache.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
 //require_once __DIR__.'/../app/AppCache.php';
 

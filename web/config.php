@@ -62,7 +62,7 @@ if (!function_exists('utf8_decode')) {
 }
 
 if (!function_exists('posix_isatty')) {
-    $minorProblems[] = 'Install and enable the <strong>php_posix</strong> extension (used to colorized the CLI output).';
+    $minorProblems[] = 'Install and enable the <strong>php_posix</strong> extension (used to colorize the CLI output).';
 }
 
 if (!class_exists('Locale')) {

@@ -67,7 +67,7 @@ cd swiftmailer && rm -rf CHANGES README* build* docs notes test-suite tests crea
 cd $TARGET
 
 # Symfony
-cd symfony && rm -rf README phpunit.xml* tests *.sh vendor
+cd symfony && rm -rf README.md phpunit.xml* tests *.sh vendor
 cd $TARGET
 
 # Twig

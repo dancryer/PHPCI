@@ -28,17 +28,22 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   %database_driver%
-        host:     %database_host%
-        dbname:   %database_name%
-        user:     %database_user%
-        password: %database_password%
-        logging:  %kernel.debug%
+        default_connection: default
+        connections:
+            default:
+                driver:   %database_driver%
+                host:     %database_host%
+                dbname:   %database_name%
+                user:     %database_user%
+                password: %database_password%
 
     orm:
         auto_generate_proxy_classes: %kernel.debug%
-        mappings:
-            AcmeDemoBundle: ~
+        default_entity_manager: default
+        entity_managers:
+            default:
+                mappings:
+                    AcmeDemoBundle: ~
 
 # Swiftmailer Configuration
 swiftmailer:

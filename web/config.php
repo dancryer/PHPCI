@@ -132,13 +132,13 @@ if (ini_get('session.auto_start')) {
                     <?php endif ?>
 
                     <?php if (count($minorProblems)): ?>
-                        <h2>Recommandations</h2>
+                        <h2>Recommendations</h2>
                         <p>
                             <?php if ($majorProblems): ?>
                                 Additionally, to
                             <?php else: ?>
                                 To<?php endif; ?>
-                            enhance your Symfony experience, it’s recommended that you fixe the following :
+                            enhance your Symfony experience, it’s recommended that you fix the following :
                         </p>
                         <ol>
                             <?php foreach ($minorProblems as $problem): ?>

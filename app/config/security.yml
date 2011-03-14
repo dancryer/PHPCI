@@ -1,0 +1,23 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+        
+    providers:
+        in_memory:
+            users:
+                MyUser: { password: testing }
+    
+    firewalls:
+        profiler:
+            pattern: /_profiler.*
+            security: false
+        wdt:
+            pattern: /_wdt.*
+            security: false
+        default:
+            form_login: ~
+            anonymous: ~
+            logout: ~
+            
+    access_control:
+        - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY, channel: https }

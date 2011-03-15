@@ -4,8 +4,14 @@ DIR=`php -r "echo realpath(dirname(\\$_SERVER['argv'][0]));"`
 VENDOR=$DIR/vendor
 
 # initialization
-if [ "$1" = "--reinstall" ]; then
+if [ "$1" = "--reinstall" -o "$2" = "--reinstall" ]; then
     rm -rf $VENDOR
+fi
+
+# just the latest revision
+CLONE_OPTIONS=''
+if [ "$1" = "--min" -o "$2" = "--min" ]; then
+    CLONE_OPTIONS='--depth 1'
 fi
 
 mkdir -p $VENDOR && cd $VENDOR
@@ -26,7 +32,7 @@ install_git()
     fi
 
     if [ ! -d $INSTALL_DIR ]; then
-        git clone $SOURCE_URL $INSTALL_DIR
+        git clone $CLONE_OPTIONS $SOURCE_URL $INSTALL_DIR
     fi
 
     cd $INSTALL_DIR

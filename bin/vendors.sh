@@ -1,8 +1,8 @@
 #!/bin/sh
 
 DIR=`php -r "echo realpath(dirname(\\$_SERVER['argv'][0]));"`
-VENDOR=$DIR/vendor
-VERSION=`cat $DIR/VERSION`
+VENDOR="$DIR/vendor"
+VERSION=`cat "$DIR/VERSION"`
 
 # initialization
 if [ "$1" = "--reinstall" -o "$2" = "--reinstall" ]; then
@@ -15,7 +15,7 @@ if [ "$1" = "--min" -o "$2" = "--min" ]; then
     CLONE_OPTIONS='--depth 1'
 fi
 
-mkdir -p $VENDOR && cd $VENDOR
+mkdir -p "$VENDOR" && cd "$VENDOR"
 
 ##
 # @param destination directory (e.g. "doctrine")

@@ -2,6 +2,7 @@
 
 DIR=`php -r "echo realpath(dirname(\\$_SERVER['argv'][0]));"`
 VENDOR=$DIR/vendor
+VERSION=`cat $DIR/VERSION`
 
 # initialization
 if [ "$1" = "--reinstall" -o "$2" = "--reinstall" ]; then
@@ -42,10 +43,10 @@ install_git()
 }
 
 # Assetic
-install_git assetic git://github.com/kriswallsmith/assetic.git
+install_git assetic git://github.com/kriswallsmith/assetic.git v1.0.0alpha1
 
 # Symfony
-install_git symfony git://github.com/symfony/symfony.git
+install_git symfony git://github.com/symfony/symfony.git $VERSION
 
 # Update the bootstrap files
 ../bin/build_bootstrap.php

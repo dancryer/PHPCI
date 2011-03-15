@@ -20,4 +20,4 @@ security:
             logout: ~
             
     access_control:
-        - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY, channel: https }
+        - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

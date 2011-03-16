@@ -36,7 +36,7 @@ class DemoExtension extends \Twig_Extension
         $template = htmlspecialchars($this->getTemplateCode($template), ENT_QUOTES, 'UTF-8');
 
         // remove the code block
-        $template = str_replace('{% block code %}{{ code(_self) }}{% endblock %}', '', $template);
+        $template = str_replace('{% set code = code(_self) %}', '', $template);
 
         return <<<EOF
 <p><strong>Controller Code</strong></p>

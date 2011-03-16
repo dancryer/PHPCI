@@ -5,7 +5,8 @@ security:
     providers:
         in_memory:
             users:
-                admin: { password: pass, roles: [ 'ROLE_USER' ] }
+                user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
         profiler:

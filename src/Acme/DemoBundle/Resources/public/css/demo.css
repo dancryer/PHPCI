@@ -75,7 +75,7 @@ p
     padding-bottom: 20px;
 }
 
-ul a
+ul#demo-list a
 {
     background: url(../images/blue-arrow.png) no-repeat right 6px;
     padding-right: 10px;

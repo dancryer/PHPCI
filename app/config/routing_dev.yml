@@ -1,6 +1,3 @@
-_main:
-    resource: routing.yml
-
 _assetic:
     resource: .
     type:     assetic
@@ -16,3 +13,6 @@ _profiler:
 _configurator:
     resource: "@SymfonyWebConfiguratorBundle/Resources/config/routing/configurator.xml"
     prefix:   /_configurator
+
+_main:
+    resource: routing.yml

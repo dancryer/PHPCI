@@ -9,7 +9,7 @@ use Acme\DemoBundle\Form\ContactForm;
 class DemoController extends Controller
 {
     /**
-     * @extra:Route("/demo", name="_demo")
+     * @extra:Route("/", name="_demo")
      * @extra:Template()
      */
     public function indexAction()

@@ -5,7 +5,7 @@ security:
     providers:
         in_memory:
             users:
-                admin: { password: pa$$word, roles: [ 'ROLE_USER' ] }
+                admin: { password: pass, roles: [ 'ROLE_USER' ] }
 
     firewalls:
         profiler:
@@ -17,13 +17,20 @@ security:
             security: false
 
         login:
-            pattern:  /login
+            pattern:  /demo/secured/login
             security: false
 
-        default:
-            form_login: ~
-            anonymous:  ~
-            logout:     ~
+        secured_area:
+            pattern:    /demo/secured/.*
+            form_login:
+                check_path: /demo/secured/login_check
+                login_path: /demo/secured/login
+            logout:
+                path:   /demo/secured/logout
+                target: /demo/
+            #anonymous: ~
+            #http_basic:
+            #    realm: "Secured Demo Area"
 
     access_control:
-        - { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        #- { path: /login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

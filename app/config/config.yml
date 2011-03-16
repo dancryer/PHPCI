@@ -1,6 +1,6 @@
 imports:
     - { resource: parameters.ini }
-#    - { resource: security.yml }
+    - { resource: security.yml }
 
 framework:
     charset:       UTF-8

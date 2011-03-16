@@ -155,7 +155,7 @@ ul li
     display: none;
 }
 
-input[type=text]
+input[type=text], input[type=password]
 {
     border:      1px solid #DADADA;
     background:  white url(../images/field-background.gif) repeat-x left top;
@@ -263,4 +263,30 @@ input[type=text]
     margin: 5px;
     margin-top: 15px;
     background-color: #ffe;
+}
+
+.error
+{
+    color: red;
+}
+
+#login label
+{
+    display: block;
+    float: left;
+    width: 90px;
+}
+
+ul#menu
+{
+    float: right;
+    margin-bottom: 20px;
+    padding-left: 0;
+}
+
+#menu li
+{
+    padding-left: 0;
+    margin-right: 10px;
+    display: inline;
 }

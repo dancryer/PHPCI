@@ -48,11 +48,10 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport:  %mailer_transport%
-    host:       %mailer_host%
-    username:   %mailer_user%
-    password:   %mailer_password%
-    logging:    %kernel.debug%
+    transport: %mailer_transport%
+    host:      %mailer_host%
+    username:  %mailer_user%
+    password:  %mailer_password%
 
 jms_security_extra:
     secure_controllers:  true

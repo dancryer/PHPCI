@@ -54,3 +54,6 @@ swiftmailer:
     password:   %mailer_password%
     logging:    %kernel.debug%
 
+jms_security_extra:
+    secure_controllers:  true
+    secure_all_services: false

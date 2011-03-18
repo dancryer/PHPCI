@@ -69,10 +69,8 @@ install_git twig git://github.com/fabpot/Twig.git
 # Twig Extensions
 install_git twig-extensions git://github.com/fabpot/Twig-extensions.git
 
-# Zend Framework Log
-mkdir -p zend-log/Zend
-cd zend-log/Zend
-install_git Log git://github.com/symfony/zend-log.git
+# Monolog
+install_git monolog git://github.com/Seldaek/monolog.git
 cd ../..
 
 # FrameworkExtraBundle

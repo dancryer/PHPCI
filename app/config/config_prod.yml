@@ -1,2 +1,12 @@
 imports:
     - { resource: config.yml }
+
+monolog:
+    handlers:
+        main:
+            type:         fingerscrossed
+            action_level: error
+            handler:
+                type:  stream
+                path:  %kernel.logs_dir%/%kernel.environment%.log
+                level: debug

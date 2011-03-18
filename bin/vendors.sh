@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DIR="`dirname $0`/../"
+DIR=`php -r "echo dirname(dirname(realpath('$0')));"`
 VENDOR="$DIR/vendor"
 VERSION=`cat "$DIR/VERSION"`
 
@@ -49,7 +49,7 @@ install_git assetic git://github.com/kriswallsmith/assetic.git v1.0.0alpha1
 install_git symfony git://github.com/symfony/symfony.git $VERSION
 
 # Update the bootstrap files
-../bin/build_bootstrap.php
+$DIR/bin/build_bootstrap.php
 
 # Doctrine ORM
 install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.2
@@ -94,4 +94,4 @@ install_git WebConfiguratorBundle git://github.com/symfony/WebConfiguratorBundle
 cd ../../..
 
 # Update assets
-../app/console assets:install ../web/
+$DIR/app/console assets:install $DIR/web/

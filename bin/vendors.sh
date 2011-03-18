@@ -49,7 +49,7 @@ install_git assetic git://github.com/kriswallsmith/assetic.git v1.0.0alpha1
 install_git symfony git://github.com/symfony/symfony.git $VERSION
 
 # Update the bootstrap files
-$DIR/bin/build_bootstrap.php
+../bin/build_bootstrap.php
 
 # Doctrine ORM
 install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.2
@@ -94,4 +94,4 @@ install_git WebConfiguratorBundle git://github.com/symfony/WebConfiguratorBundle
 cd ../../..
 
 # Update assets
-$DIR/app/console assets:install $DIR/web/
+../app/console assets:install ../web/

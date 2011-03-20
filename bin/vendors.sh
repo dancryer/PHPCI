@@ -43,19 +43,19 @@ install_git()
 }
 
 # Assetic
-install_git assetic git://github.com/kriswallsmith/assetic.git v1.0.0alpha1
+install_git assetic git://github.com/kriswallsmith/assetic.git #v1.0.0alpha1
 
 # Symfony
-install_git symfony git://github.com/symfony/symfony.git $VERSION
+install_git symfony git://github.com/symfony/symfony.git #$VERSION
 
 # Update the bootstrap files
 $DIR/bin/build_bootstrap.php
 
 # Doctrine ORM
-install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.2
+install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.3
 
 # Doctrine DBAL
-install_git doctrine-dbal git://github.com/doctrine/dbal.git 2.0.2
+install_git doctrine-dbal git://github.com/doctrine/dbal.git 2.0.3
 
 # Doctrine Common
 install_git doctrine-common git://github.com/doctrine/common.git 2.0.1

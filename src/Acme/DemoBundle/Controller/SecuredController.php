@@ -61,7 +61,7 @@ class SecuredController extends Controller
      * @extra:Secure(roles="ROLE_ADMIN")
      * @extra:Template()
      */
-    public function helloAdminAction($name)
+    public function helloadminAction($name)
     {
         return array('name' => $name);
     }

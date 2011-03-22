@@ -83,6 +83,7 @@ find . -name .git | xargs rm -rf -
 find . -name .gitignore | xargs rm -rf -
 find . -name .gitmodules | xargs rm -rf -
 find . -name .svn | xargs rm -rf -
+find . -name .DS_Store | xargs rm -rf -
 
 cd /tmp/
 mv /tmp/vendor /tmp/Symfony/

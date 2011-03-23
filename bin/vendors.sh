@@ -75,10 +75,10 @@ cd zend-log/Zend
 install_git Log git://github.com/symfony/zend-log.git
 cd ../..
 
-# FrameworkExtraBundle
+# SensioFrameworkExtraBundle
 mkdir -p bundles/Sensio/Bundle
 cd bundles/Sensio/Bundle
-install_git FrameworkExtraBundle git://github.com/sensio/FrameworkExtraBundle.git
+install_git FrameworkExtraBundle git://github.com/sensio/SensioFrameworkExtraBundle.git
 cd ../../..
 
 # SecurityExtraBundle

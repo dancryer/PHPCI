@@ -14,19 +14,19 @@ security:
 
     firewalls:
         profiler:
-            pattern:  /_profiler.*
+            pattern:  ^/_profiler
             security: false
 
         wdt:
-            pattern:  /_wdt.*
+            pattern:  ^/_wdt
             security: false
 
         login:
-            pattern:  /demo/secured/login
+            pattern:  ^/demo/secured/login$
             security: false
 
         secured_area:
-            pattern:    /demo/secured/.*
+            pattern:    ^/demo/secured/
             form_login:
                 check_path: /demo/secured/login_check
                 login_path: /demo/secured/login

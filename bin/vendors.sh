@@ -64,7 +64,7 @@ install_git doctrine-common git://github.com/doctrine/common.git 2.0.1
 install_git swiftmailer git://github.com/swiftmailer/swiftmailer.git origin/4.1
 
 # Twig
-install_git twig git://github.com/fabpot/Twig.git
+install_git twig git://github.com/fabpot/Twig.git v1.0.0
 
 # Twig Extensions
 install_git twig-extensions git://github.com/fabpot/Twig-extensions.git

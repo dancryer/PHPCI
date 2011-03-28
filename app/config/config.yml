@@ -25,6 +25,9 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: false
+    filters:
+        cssrewrite: ~
+        closure:    ~
 
 # Doctrine Configuration
 doctrine:

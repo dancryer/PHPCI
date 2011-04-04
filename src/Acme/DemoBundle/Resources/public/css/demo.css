@@ -122,6 +122,7 @@ ul li
     -webkit-border-radius:      16px;
     border-radius:              16px;
     margin-bottom:              20px;
+    word-wrap:                  break-word;
 }
 
 #symfony-search

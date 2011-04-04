@@ -82,6 +82,10 @@ cd $TARGET
 cd twig-extensions && rm -rf README doc phpunit.xml* test
 cd $TARGET
 
+# Monolog
+cd monolog && rm -rf README.markdown phpunit.xml* tests
+cd $TARGET
+
 # cleanup
 find . -name .git | xargs rm -rf -
 find . -name .gitignore | xargs rm -rf -

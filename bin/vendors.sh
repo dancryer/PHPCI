@@ -4,7 +4,6 @@ DIR=`php -r "echo dirname(dirname(realpath('$0')));"`
 VENDOR="$DIR/vendor"
 VERSION=`cat "$DIR/VERSION"`
 BUNDLES=$VENDOR/bundles
-SRC=$DIR/src
 
 # initialization
 if [ "$1" = "--reinstall" -o "$2" = "--reinstall" ]; then

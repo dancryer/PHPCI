@@ -71,7 +71,6 @@ install_git twig-extensions git://github.com/fabpot/Twig-extensions.git
 
 # Monolog
 install_git monolog git://github.com/Seldaek/monolog.git
-cd ../..
 
 # SensioFrameworkExtraBundle
 mkdir -p bundles/Sensio/Bundle

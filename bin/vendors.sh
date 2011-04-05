@@ -29,7 +29,7 @@ install_git()
     SOURCE_URL=$2
     REV=$3
 
-    echo $INSTALL_DIR
+    echo "> Installing/Updating " $INSTALL_DIR
 
     if [ -z $REV ]; then
         REV=origin/HEAD

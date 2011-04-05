@@ -20,7 +20,7 @@ mkdir -p "$VENDOR" && cd "$VENDOR"
 
 ##
 # @param destination directory (e.g. "doctrine")
-# @param URL of the git remote (e.g. git://github.com/doctrine/doctrine2.git)
+# @param URL of the git remote (e.g. https://github.com/doctrine/doctrine2.git)
 # @param revision to point the head (e.g. origin/HEAD)
 #
 install_git()
@@ -46,48 +46,48 @@ install_git()
 }
 
 # Assetic
-install_git assetic git://github.com/kriswallsmith/assetic.git #v1.0.0alpha1
+install_git assetic https://github.com/kriswallsmith/assetic.git #v1.0.0alpha1
 
 # Symfony
-install_git symfony git://github.com/symfony/symfony.git #v$VERSION
+install_git symfony https://github.com/symfony/symfony.git #v$VERSION
 
 # Doctrine ORM
-install_git doctrine git://github.com/doctrine/doctrine2.git 2.0.3
+install_git doctrine https://github.com/doctrine/doctrine2.git 2.0.3
 
 # Doctrine DBAL
-install_git doctrine-dbal git://github.com/doctrine/dbal.git 2.0.3
+install_git doctrine-dbal https://github.com/doctrine/dbal.git 2.0.3
 
 # Doctrine Common
-install_git doctrine-common git://github.com/doctrine/common.git 2.0.1
+install_git doctrine-common https://github.com/doctrine/common.git 2.0.1
 
 # Swiftmailer
-install_git swiftmailer git://github.com/swiftmailer/swiftmailer.git origin/4.1
+install_git swiftmailer https://github.com/swiftmailer/swiftmailer.git origin/4.1
 
 # Twig
-install_git twig git://github.com/fabpot/Twig.git v1.0.0
+install_git twig https://github.com/fabpot/Twig.git v1.0.0
 
 # Twig Extensions
-install_git twig-extensions git://github.com/fabpot/Twig-extensions.git
+install_git twig-extensions https://github.com/fabpot/Twig-extensions.git
 
 # Monolog
-install_git monolog git://github.com/Seldaek/monolog.git
+install_git monolog https://github.com/Seldaek/monolog.git
 
 # SensioFrameworkExtraBundle
 mkdir -p $BUNDLES/Sensio/Bundle
 cd $BUNDLES/Sensio/Bundle
-install_git FrameworkExtraBundle git://github.com/sensio/SensioFrameworkExtraBundle.git
+install_git FrameworkExtraBundle https://github.com/sensio/SensioFrameworkExtraBundle.git
 
 # SecurityExtraBundle
 mkdir -p $BUNDLES/JMS
 cd $BUNDLES/JMS
-install_git SecurityExtraBundle git://github.com/schmittjoh/SecurityExtraBundle.git
+install_git SecurityExtraBundle https://github.com/schmittjoh/SecurityExtraBundle.git
 
 # Symfony bundles
 mkdir -p $BUNDLES/Symfony/Bundle
 cd $BUNDLES/Symfony/Bundle
 
 # WebConfiguratorBundle
-install_git WebConfiguratorBundle git://github.com/symfony/WebConfiguratorBundle.git
+install_git WebConfiguratorBundle https://github.com/symfony/WebConfiguratorBundle.git
 
 # Update the bootstrap files
 $DIR/bin/build_bootstrap.php

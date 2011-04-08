@@ -4,7 +4,7 @@ imports:
 monolog:
     handlers:
         main:
-            type:         fingerscrossed
+            type:         fingers_crossed
             action_level: error
             handler:      nested
         nested:

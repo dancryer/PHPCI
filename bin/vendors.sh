@@ -52,13 +52,13 @@ install_git assetic https://github.com/kriswallsmith/assetic.git #v1.0.0alpha1
 install_git symfony https://github.com/symfony/symfony.git #v$VERSION
 
 # Doctrine ORM
-install_git doctrine https://github.com/doctrine/doctrine2.git 2.0.3
+install_git doctrine https://github.com/doctrine/doctrine2.git 2.0.4
 
 # Doctrine DBAL
-install_git doctrine-dbal https://github.com/doctrine/dbal.git 2.0.3
+install_git doctrine-dbal https://github.com/doctrine/dbal.git 2.0.4
 
 # Doctrine Common
-install_git doctrine-common https://github.com/doctrine/common.git 2.0.1
+install_git doctrine-common https://github.com/doctrine/common.git 2.0.2
 
 # Swiftmailer
 install_git swiftmailer https://github.com/swiftmailer/swiftmailer.git origin/4.1

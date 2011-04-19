@@ -77,6 +77,10 @@ if (!function_exists('sqlite_open') && !in_array('sqlite', PDO::getAvailableDriv
     $majorProblems[] = 'Install and enable the <strong>SQLite</strong> or <strong>PDO_SQLite</strong> extension.';
 }
 
+if (!function_exists('json_encode')) {
+    $majorProblems[] = 'Install and enable the <strong>json</strong> extension.';
+}
+
 // php.ini
 if (!ini_get('date.timezone')) {
     $phpini = true;

@@ -15,6 +15,9 @@ monolog:
             type:  stream
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
+        firephp:
+            type:  firephp
+            level: info
 
 assetic:
     use_controller: true

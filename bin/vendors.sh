@@ -46,7 +46,7 @@ install_git()
 }
 
 # Assetic
-install_git assetic http://github.com/kriswallsmith/assetic.git #v1.0.0alpha1
+install_git assetic http://github.com/kriswallsmith/assetic.git v1.0.0alpha2
 
 # Symfony
 install_git symfony http://github.com/symfony/symfony.git #v$VERSION

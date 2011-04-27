@@ -43,8 +43,7 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: %kernel.debug%
-        mappings:
-            auto_mapping: true
+        auto_mapping: true
 
 # Swiftmailer Configuration
 swiftmailer:

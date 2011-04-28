@@ -11,7 +11,7 @@ Symfony Standard Edition comes pre-configured with the following bundles:
  * DoctrineBundle
  * TwigBundle
  * SwiftmailerBundle
- * ZendBundle
+ * MonologBundle
  * AsseticBundle
  * WebProfilerBundle (in dev/test env)
  * SymfonyWebConfiguratorBundle (in dev/test env)

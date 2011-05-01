@@ -51,10 +51,10 @@ The distribution is configured with the following defaults:
  * Annotations for everything are enabled.
 
 A default bundle, `AcmeDemoBundle`, shows you Symfony2 in action. After
-playing with it, you can remove it by following these steps :
+playing with it, you can remove it by following these steps:
+
  * delete the `src/Acme` directory.
  * remove the routing entry in `app/config/routing.yml`.
- * remove the `Acme` reference in `app/config/config.yml`.
  * remove the AcmeBundle from the registered bundles in `app/AppKernel.php`
  * remove the Acme registered namespace in `app/autoload.php`
 

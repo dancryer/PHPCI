@@ -20,8 +20,9 @@ Symfony Standard Edition comes pre-configured with the following bundles:
 Installation from an Archive
 ----------------------------
 
-If you have downloaded an archive, unpack it somewhere under your web server
-root directory.
+The easiest way to get started is to download an archive with vendors included
+(http://symfony.com/download). Unpack it somewhere under your web server root
+directory and you're done.
 
 If you have downloaded an archive without the vendors, run the
 `bin/vendors.sh` script (`git` must be installed on your machine). If you

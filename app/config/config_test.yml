@@ -3,6 +3,8 @@ imports:
 
 framework:
     test: ~
+    session:
+        storage_id: session.storage.filesystem
 
 web_profiler:
     toolbar: false

@@ -54,10 +54,10 @@ The distribution is configured with the following defaults:
 A default bundle, `AcmeDemoBundle`, shows you Symfony2 in action. After
 playing with it, you can remove it by following these steps:
 
- * delete the `src/Acme` directory.
- * remove the routing entry in `app/config/routing.yml`.
- * remove the AcmeBundle from the registered bundles in `app/AppKernel.php`
- * remove the Acme registered namespace in `app/autoload.php`
+ * delete the `src/Acme` directory;
+ * remove the routing entries referencing AcmeBundle in `app/config/routing_dev.yml`;
+ * remove the AcmeBundle from the registered bundles in `app/AppKernel.php`;
+ * remove the Acme registered namespace in `app/autoload.php`.
 
 Configure the distribution by editing `app/config/parameters.ini` or by
 accessing `web/config.php` in a browser.

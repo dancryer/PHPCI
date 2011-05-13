@@ -4,6 +4,7 @@ use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\ClassLoader\DebugUniversalClassLoader;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 class AppKernel extends Kernel
 {
@@ -38,6 +39,7 @@ class AppKernel extends Kernel
 
             DebugUniversalClassLoader::enable();
             ErrorHandler::register();
+            ExceptionHandler::register();
         } else {
             ini_set('display_errors', 0);
         }

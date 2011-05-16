@@ -36,7 +36,7 @@ distribution. If you still want to use Git, your are on your own.
 
 Run the following scripts:
 
- * `bin/vendors.sh` (use `--min` if you don't want all the history)
+ * `bin/vendors.sh`
 
 Configuration
 -------------

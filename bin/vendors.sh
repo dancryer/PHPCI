@@ -40,26 +40,26 @@ install_git()
     fi
 
     cd $INSTALL_DIR
-	echo "> Reseting to version " $REV
+    echo "> Reseting to version " $REV
     git fetch origin
     git reset --hard $REV
 }
 
 # Assetic
 cd $VENDOR
-install_git assetic http://github.com/kriswallsmith/assetic.git bb7f2c7a1e2f4bdd623b
+install_git assetic http://github.com/kriswallsmith/assetic.git
 
 # Symfony
 cd $VENDOR
-install_git symfony http://github.com/symfony/symfony.git v$VERSION
+install_git symfony http://github.com/symfony/symfony.git #v$VERSION
 
 # Doctrine ORM
 cd $VENDOR
-install_git doctrine http://github.com/doctrine/doctrine2.git 2.0.4
+install_git doctrine http://github.com/doctrine/doctrine2.git 2.0.5
 
 # Doctrine DBAL
 cd $VENDOR
-install_git doctrine-dbal http://github.com/doctrine/dbal.git 2.0.4
+install_git doctrine-dbal http://github.com/doctrine/dbal.git 2.0.5
 
 # Doctrine Common
 cd $VENDOR
@@ -84,12 +84,12 @@ install_git monolog http://github.com/Seldaek/monolog.git
 # SensioFrameworkExtraBundle
 mkdir -p $BUNDLES/Sensio/Bundle
 cd $BUNDLES/Sensio/Bundle
-install_git FrameworkExtraBundle http://github.com/sensio/SensioFrameworkExtraBundle.git 3b1ec25fc11097afadb0
+install_git FrameworkExtraBundle http://github.com/sensio/SensioFrameworkExtraBundle.git
 
 # SecurityExtraBundle
 mkdir -p $BUNDLES/JMS
 cd $BUNDLES/JMS
-install_git SecurityExtraBundle http://github.com/schmittjoh/SecurityExtraBundle.git 70c6d100ef0c49b0c80f
+install_git SecurityExtraBundle http://github.com/schmittjoh/SecurityExtraBundle.git
 
 # Symfony bundles
 mkdir -p $BUNDLES/Symfony/Bundle

@@ -13,6 +13,7 @@ Symfony Standard Edition comes pre-configured with the following bundles:
 * SwiftmailerBundle
 * MonologBundle
 * AsseticBundle
+* JMSSecurityExtraBundle
 * WebProfilerBundle (in dev/test env)
 * SymfonyWebConfiguratorBundle (in dev/test env)
 * AcmeDemoBundle (in dev/test env)

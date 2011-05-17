@@ -39,15 +39,7 @@ cd assetic && rm -rf phpunit.xml* README* tests
 
 # Doctrine ORM
 cd $TARGET
-cd doctrine && rm -rf UPGRADE* build* bin tests tools lib/vendor
-
-# Doctrine DBAL
-cd $TARGET
-cd doctrine-dbal && rm -rf bin build* tests lib/vendor
-
-# Doctrine Common
-cd $TARGET
-cd doctrine-common && rm -rf build* tests lib/vendor
+cd doctrine && rm -rf UPGRADE* build* bin tests tools lib/vendor/Symfony
 
 # Swiftmailer
 cd $TARGET

@@ -47,7 +47,7 @@ Run the following commands:
     rm -rf .git
     php bin/vendors.php
 
-..note::
+.. note::
 
     Symfony SE does/can not use git submodules as it you should not keep the
     `.git` directory.

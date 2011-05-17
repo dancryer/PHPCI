@@ -10,9 +10,9 @@
  * file that was distributed with this source code.
  */
 
-$DIR = dirname(__DIR__);
-$VENDOR = $DIR.'/vendor';
-$VERSION = trim(file_get_contents($DIR.'/VERSION'));
+$rootDir = dirname(__DIR__);
+$vendorDir = $rootDir.'/vendor';
+$version = trim(file_get_contents($rootDir.'/VERSION'));
 
 $deps = array();
 foreach (file(__DIR__.'/deps') as $line) {
@@ -26,7 +26,7 @@ foreach (file(__DIR__.'/deps') as $line) {
     list($path, $name, $url) = $parts;
 
     ob_start();
-    system('cd '.$VENDOR.'/'.$path.'/'.$name.'; git log -n 1 --format=%H');
+    system('cd '.$vendorDir.'/'.$path.'/'.$name.'; git log -n 1 --format=%H');
     $deps[] = trim($name.' '.ob_get_clean());
 }
-file_put_contents($DIR.'/bin/'.$VERSION.'.deps', implode("\n", $deps));
+file_put_contents($rootDir.'/bin/'.$version.'.deps', implode("\n", $deps));

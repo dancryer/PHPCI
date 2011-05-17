@@ -10,26 +10,27 @@
  * file that was distributed with this source code.
  */
 
-$DIR = dirname(__DIR__);
-$VENDOR = $DIR.'/vendor';
-$VERSION = trim(file_get_contents($DIR.'/VERSION'));
+$rootDir = dirname(__DIR__);
+$vendorDir = $rootDir.'/vendor';
+$version = trim(file_get_contents($rootDir.'/VERSION'));
 
 // Initialization
 if (in_array('--reinstall', $argv)) {
-    system('rm -rf $VENDOR');
+    system('rm -rf $vendorDir');
 }
 
+$cloneOptions = '';
 if (in_array('--min', $argv)) {
-    $CLONE_OPTIONS = '--depth 1';
+    $cloneOptions = '--depth 1';
 }
 
-if (!is_dir($VENDOR)) {
-    mkdir($VENDOR, 0777, true);
+if (!is_dir($vendorDir)) {
+    mkdir($vendorDir, 0777, true);
 }
 
 // versions
 $versions = array();
-foreach (file(__DIR__.'/'.$VERSION.'.deps') as $line) {
+foreach (file(__DIR__.'/'.$version.'.deps') as $line) {
     if (!trim($line)) {
         continue;
     }
@@ -50,21 +51,21 @@ foreach (file(__DIR__.'/deps') as $line) {
     }
     list($path, $name, $url) = $parts;
 
-    $installDir = $VENDOR.'/'.$path.'/'.$name;
+    $installDir = $vendorDir.'/'.$path.'/'.$name;
 
     $rev = isset($versions[$name]) ? $versions[$name] : 'origin/HEAD';
 
     echo "> Installing/Updating $name\n";
 
     if (!is_dir($installDir)) {
-        system(sprintf('git clone %s %s %s', $CLONE_OPTIONS, $url, $installDir));
+        system(sprintf('git clone %s %s %s', $cloneOptions, $url, $installDir));
     }
 
     system(sprintf('cd %s && git fetch origin && git reset --hard %s', $installDir, $rev));
 }
 
 // Update the bootstrap files
-system($DIR.'/bin/build_bootstrap.php');
+system($rootDir.'/bin/build_bootstrap.php');
 
 // Update assets
-system($DIR.'/app/console assets:install '.$DIR.'/web/');
+system($rootDir.'/app/console assets:install '.$rootDir.'/web/');

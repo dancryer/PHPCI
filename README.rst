@@ -49,7 +49,7 @@ Run the following commands:
 
 .. note::
 
-    Symfony SE does/can not use git submodules as it you should not keep the
+    Symfony SE does/can not use git submodules as you should not keep the
     `.git` directory.
 
 Configuration

@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# This file is part of the Symfony Standard Edition.
+#
+# (c) Fabien Potencier <fabien@symfony.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
 DIR=`php -r "echo realpath(dirname(\\$_SERVER['argv'][0]));"`
 cd $DIR
 VERSION=`cat VERSION`

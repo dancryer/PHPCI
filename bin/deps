@@ -1,0 +1,12 @@
+/                       assetic               http://github.com/kriswallsmith/assetic.git
+/                       symfony               http://github.com/symfony/symfony.git
+/                       doctrine              http://github.com/doctrine/doctrine2.git
+/                       doctrine-dbal         http://github.com/doctrine/dbal.git
+/                       doctrine-common       http://github.com/doctrine/common.git
+/                       swiftmailer           http://github.com/swiftmailer/swiftmailer.git
+/                       twig                  http://github.com/fabpot/Twig.git
+/                       twig-extensions       http://github.com/fabpot/Twig-extensions.git
+/                       monolog               http://github.com/Seldaek/monolog.git
+/bundles/Sensio/Bundle  FrameworkExtraBundle  http://github.com/sensio/SensioFrameworkExtraBundle.git
+/bundles/JMS            SecurityExtraBundle   http://github.com/schmittjoh/SecurityExtraBundle.git
+/bundles/Symfony/Bundle WebConfiguratorBundle http://github.com/symfony/WebConfiguratorBundle.git

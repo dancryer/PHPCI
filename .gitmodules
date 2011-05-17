@@ -7,6 +7,12 @@
 [submodule "vendor/doctrine"]
 	path = vendor/doctrine
 	url = http://github.com/doctrine/doctrine2.git
+[submodule "vendor/doctrine-dbal"]
+	path = vendor/doctrine-dbal
+	url = http://github.com/doctrine/dbal.git
+[submodule "vendor/doctrine-common"]
+	path = vendor/doctrine-common
+	url = http://github.com/doctrine/common.git
 [submodule "vendor/swiftmailer"]
 	path = vendor/swiftmailer
 	url = http://github.com/swiftmailer/swiftmailer.git

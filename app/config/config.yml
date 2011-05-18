@@ -3,13 +3,13 @@ imports:
     - { resource: security.yml }
 
 framework:
-    secret:        %secret%
-    charset:       UTF-8
-    csrf_protection:
-        enabled: true
-    router:        { resource: "%kernel.root_dir%/config/routing.yml" }
-    validation:    { enabled: true, annotations: true }
-    templating:    { engines: ['twig'] } #assets_version: SomeVersionScheme
+    secret:          %secret%
+    charset:         UTF-8
+    router:          { resource: "%kernel.root_dir%/config/routing.yml" }
+    form:            true
+    csrf_protection: true
+    validation:      true
+    templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
     session:
         default_locale: %locale%
         lifetime:       3600

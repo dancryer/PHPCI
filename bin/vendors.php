@@ -16,7 +16,7 @@ $version = trim(file_get_contents($rootDir.'/VERSION'));
 
 // Initialization
 if (in_array('--reinstall', $argv)) {
-    system('rm -rf $vendorDir');
+    system('rm -rf '.$vendorDir);
 }
 
 $cloneOptions = '';

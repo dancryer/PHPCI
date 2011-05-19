@@ -65,7 +65,7 @@ if (!function_exists('utf8_decode')) {
     $minorProblems[] = 'Install and enable the <strong>XML</strong> extension.';
 }
 
-if (!function_exists('posix_isatty')) {
+if (PHP_OS != 'WINNT' && !function_exists('posix_isatty')) {
     $minorProblems[] = 'Install and enable the <strong>php_posix</strong> extension (used to colorize the CLI output).';
 }
 
@@ -73,8 +73,8 @@ if (!class_exists('Locale')) {
     $minorProblems[] = 'Install and enable the <strong>intl</strong> extension.';
 }
 
-if (!function_exists('sqlite_open') && !in_array('sqlite', PDO::getAvailableDrivers())) {
-    $majorProblems[] = 'Install and enable the <strong>SQLite</strong> or <strong>PDO_SQLite</strong> extension.';
+if (!class_exists('SQLite3') && !in_array('sqlite', PDO::getAvailableDrivers())) {
+    $majorProblems[] = 'Install and enable the <strong>SQLite3</strong> or <strong>PDO_SQLite</strong> extension.';
 }
 
 if (!function_exists('json_encode')) {

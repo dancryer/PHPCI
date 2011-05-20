@@ -65,7 +65,7 @@ foreach (file(__DIR__.'/deps') as $line) {
 }
 
 // Update the bootstrap files
-system($rootDir.'/bin/build_bootstrap.php');
+system('php '.$rootDir.'/bin/build_bootstrap.php');
 
 // Update assets
-system($rootDir.'/app/console assets:install '.$rootDir.'/web/');
+system('php '.$rootDir.'/app/console assets:install '.$rootDir.'/web/');

@@ -4,15 +4,18 @@ namespace Acme\DemoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\SecurityContext;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 
 /**
- * @extra:Route("/demo/secured")
+ * @Route("/demo/secured")
  */
 class SecuredController extends Controller
 {
     /**
-     * @extra:Route("/login", name="_demo_login")
-     * @extra:Template()
+     * @Route("/login", name="_demo_login")
+     * @Template()
      */
     public function loginAction()
     {
@@ -29,7 +32,7 @@ class SecuredController extends Controller
     }
 
     /**
-     * @extra:Route("/login_check", name="_security_check")
+     * @Route("/login_check", name="_security_check")
      */
     public function securityCheckAction()
     {
@@ -37,7 +40,7 @@ class SecuredController extends Controller
     }
 
     /**
-     * @extra:Route("/logout", name="_demo_logout")
+     * @Route("/logout", name="_demo_logout")
      */
     public function logoutAction()
     {
@@ -45,11 +48,9 @@ class SecuredController extends Controller
     }
 
     /**
-     * @extra:Routes({
-     *   @extra:Route("/hello", defaults={"name"="World"}),
-     *   @extra:Route("/hello/{name}", name="_demo_secured_hello")
-     * })
-     * @extra:Template()
+     * @Route("/hello", defaults={"name"="World"}),
+     * @Route("/hello/{name}", name="_demo_secured_hello")
+     * @Template()
      */
     public function helloAction($name)
     {
@@ -57,9 +58,9 @@ class SecuredController extends Controller
     }
 
     /**
-     * @extra:Route("/hello/admin/{name}", name="_demo_secured_hello_admin")
-     * @extra:Secure(roles="ROLE_ADMIN")
-     * @extra:Template()
+     * @Route("/hello/admin/{name}", name="_demo_secured_hello_admin")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
      */
     public function helloadminAction($name)
     {

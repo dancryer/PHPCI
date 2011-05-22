@@ -7,6 +7,7 @@
 /                       twig                  http://github.com/fabpot/Twig.git
 /                       twig-extensions       http://github.com/fabpot/Twig-extensions.git
 /                       monolog               http://github.com/Seldaek/monolog.git
+/                       metadata              http://github.com/schmittjoh/metadata.git
 /bundles/Sensio/Bundle  FrameworkExtraBundle  http://github.com/sensio/SensioFrameworkExtraBundle.git
 /bundles/JMS            SecurityExtraBundle   http://github.com/schmittjoh/SecurityExtraBundle.git
 /bundles/Symfony/Bundle WebConfiguratorBundle http://github.com/symfony/WebConfiguratorBundle.git

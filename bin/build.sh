@@ -25,7 +25,7 @@ cp -r app /tmp/Symfony/
 cp -r bin /tmp/Symfony/
 cp -r src /tmp/Symfony/
 cp -r web /tmp/Symfony/
-cp -r README.md /tmp/Symfony/
+cp -r README.rst /tmp/Symfony/
 cp -r LICENSE /tmp/Symfony/
 cp -r VERSION /tmp/Symfony/
 cd /tmp/Symfony
@@ -48,56 +48,49 @@ cd $DIR
 rm -rf /tmp/vendor
 mkdir /tmp/vendor
 TARGET=/tmp/vendor
-cd $TARGET
 
 if [ ! -d "$DIR/vendor" ]; then
     echo "The master vendor directory does not exist"
     exit
 fi
 
-cp -r $DIR/vendor/* .
+cp -r $DIR/vendor/* $TARGET/
 
 # Assetic
-cd assetic && rm -rf phpunit.xml* README* tests
-cd $TARGET
+cd $TARGET/assetic && rm -rf phpunit.xml* README* tests
 
 # Doctrine ORM
-cd doctrine && rm -rf UPGRADE* build* bin tests tools lib/vendor
-cd $TARGET
+cd $TARGET/doctrine && rm -rf UPGRADE* build* bin tests tools lib/vendor
 
 # Doctrine DBAL
-cd doctrine-dbal && rm -rf bin build* tests lib/vendor
-cd $TARGET
+cd $TARGET/doctrine-dbal && rm -rf bin build* tests lib/vendor
 
 # Doctrine Common
-cd doctrine-common && rm -rf build* tests lib/vendor
-cd $TARGET
+cd $TARGET/doctrine-common && rm -rf build* tests lib/vendor
 
 # Swiftmailer
-cd swiftmailer && rm -rf CHANGES README* build* docs notes test-suite tests create_pear_package.php package*
-cd $TARGET
+cd $TARGET/swiftmailer && rm -rf CHANGES README* build* docs notes test-suite tests create_pear_package.php package*
 
 # Symfony
-cd symfony && rm -rf README.md phpunit.xml* tests *.sh vendor
-cd $TARGET
+cd $TARGET/symfony && rm -rf README.md phpunit.xml* tests *.sh vendor
 
 # Twig
-cd twig && rm -rf AUTHORS CHANGELOG README.markdown bin doc package.xml.tpl phpunit.xml* test
-cd $TARGET
+cd $TARGET/twig && rm -rf AUTHORS CHANGELOG README.markdown bin doc package.xml.tpl phpunit.xml* test
 
 # Twig Extensions
-cd twig-extensions && rm -rf README doc phpunit.xml* test
-cd $TARGET
+cd $TARGET/twig-extensions && rm -rf README doc phpunit.xml* test
 
 # Monolog
-cd monolog && rm -rf README.markdown phpunit.xml* tests
-cd $TARGET
+cd $TARGET/monolog && rm -rf README.markdown phpunit.xml* tests
+
+# Metadata
+cd $TARGET/metadata && rm -rf README.rst phpunit.xml* tests
 
 # cleanup
-find . -name .git | xargs rm -rf -
-find . -name .gitignore | xargs rm -rf -
-find . -name .gitmodules | xargs rm -rf -
-find . -name .svn | xargs rm -rf -
+find $TARGET -name .git | xargs rm -rf -
+find $TARGET -name .gitignore | xargs rm -rf -
+find $TARGET -name .gitmodules | xargs rm -rf -
+find $TARGET -name .svn | xargs rm -rf -
 
 cd /tmp/
 mv /tmp/vendor /tmp/Symfony/

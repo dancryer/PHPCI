@@ -15,10 +15,6 @@ $vendorDir = $rootDir.'/vendor';
 $version = trim(file_get_contents($rootDir.'/VERSION'));
 
 // Initialization
-if (in_array('--reinstall', $argv)) {
-    system('rm -rf '.$vendorDir);
-}
-
 $cloneOptions = '';
 if (in_array('--min', $argv)) {
     $cloneOptions = '--depth 1';
@@ -52,7 +48,9 @@ foreach (file(__DIR__.'/deps') as $line) {
     list($path, $name, $url) = $parts;
 
     $installDir = $vendorDir.'/'.$path.'/'.$name;
-
+    if (in_array('--reinstall', $argv)) {
+		    system('rm -rf '.$installDir);
+		}
     $rev = isset($versions[$name]) ? $versions[$name] : 'origin/HEAD';
 
     echo "> Installing/Updating $name\n";

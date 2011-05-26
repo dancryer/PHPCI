@@ -49,8 +49,8 @@ foreach (file(__DIR__.'/deps') as $line) {
 
     $installDir = $vendorDir.'/'.$path.'/'.$name;
     if (in_array('--reinstall', $argv)) {
-		    if (PHP_OS == 'WINNT') {
-				system('rmdir /Q /S '.$installDir);
+			if (PHP_OS == 'WINNT') {
+				system('rmdir /S /Q '.realpath($installDir));
 			} else {
 				system('rm -rf '.$installDir);
 			}

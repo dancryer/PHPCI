@@ -5,12 +5,14 @@ namespace Acme\DemoBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Acme\DemoBundle\Form\ContactForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class DemoController extends Controller
 {
     /**
-     * @extra:Route("/", name="_demo")
-     * @extra:Template()
+     * @Route("/", name="_demo")
+     * @Template()
      */
     public function indexAction()
     {
@@ -18,8 +20,8 @@ class DemoController extends Controller
     }
 
     /**
-     * @extra:Route("/hello/{name}", name="_demo_hello")
-     * @extra:Template()
+     * @Route("/hello/{name}", name="_demo_hello")
+     * @Template()
      */
     public function helloAction($name)
     {
@@ -27,8 +29,8 @@ class DemoController extends Controller
     }
 
     /**
-     * @extra:Route("/contact", name="_demo_contact")
-     * @extra:Template()
+     * @Route("/contact", name="_demo_contact")
+     * @Template()
      */
     public function contactAction()
     {

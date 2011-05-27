@@ -271,7 +271,7 @@ input[type=text], input[type=password]
     color: red;
 }
 
-#login label
+#login label, #contact_form label
 {
     display: block;
     float: left;

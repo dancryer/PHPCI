@@ -26,17 +26,5 @@ $loader->registerPrefixFallback(array(
 
 // Swiftmailer needs a special autoloader to allow
 // the lazy loading of the init file (which is expensive)
-spl_autoload_register(function ($class) {
-    static $initialized = false;
-
-    $src = __DIR__.'/../vendor/swiftmailer/lib';
-
-    if (0 === strpos($class, 'Swift_') && file_exists($path = $src.'/classes/'.str_replace('_', '/', $class).'.php')) {
-        if (!$initialized) {
-            $initialized = true;
-            require $src.'/swift_init.php';
-        }
-
-        require $path;
-    }
-});
+require_once __DIR__.'/../vendor/swiftmailer/lib/classes/Swift.php';
+Swift::registerAutoload(__DIR__.'/../vendor/swiftmailer/lib/swift_init.php');

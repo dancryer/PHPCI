@@ -12,7 +12,6 @@ framework:
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
     session:
         default_locale: %locale%
-        lifetime:       3600
         auto_start:     true
 
 # Twig Configuration

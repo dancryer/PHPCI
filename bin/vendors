@@ -32,12 +32,6 @@ if (!in_array($command = array_shift($argv), array('install', 'update'))) {
     die(sprintf("Command \"%s\" does not exist.\n", $command));
 }
 
-// Initialization
-$cloneOptions = '';
-if (in_array('--min', $argv)) {
-    $cloneOptions = '--depth 1';
-}
-
 if (!is_dir($vendorDir)) {
     mkdir($vendorDir, 0777, true);
 }
@@ -88,7 +82,7 @@ foreach (file($rootDir.'/deps') as $line) {
     echo "> Installing/Updating $name\n";
 
     if (!is_dir($installDir)) {
-        system(sprintf('git clone %s %s %s', $cloneOptions, $url, $installDir));
+        system(sprintf('git clone %s %s', $url, $installDir));
     }
 
     system(sprintf('cd %s && git fetch origin && git reset --hard %s', $installDir, $rev));

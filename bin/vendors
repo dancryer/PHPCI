@@ -82,10 +82,10 @@ foreach (file($rootDir.'/deps') as $line) {
     echo "> Installing/Updating $name\n";
 
     if (!is_dir($installDir)) {
-        system(sprintf('git clone %s %s', $url, escapeshellarg($installDir)));
+        system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
     }
 
-    system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), $rev));
+    system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
 }
 
 // update?

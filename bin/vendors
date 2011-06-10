@@ -73,19 +73,19 @@ foreach (file($rootDir.'/deps') as $line) {
     $installDir = $vendorDir.'/'.$path.'/'.$name;
     if (in_array('--reinstall', $argv)) {
         if (PHP_OS == 'WINNT') {
-            system('rmdir /S /Q "'.realpath($installDir)).'"';
+            system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
         } else {
-            system('rm -rf "'.$installDir.'"');
+            system(sprintf('rm -rf %s', escapeshellarg($installDir)));
         }
     }
 
     echo "> Installing/Updating $name\n";
 
     if (!is_dir($installDir)) {
-        system(sprintf('git clone %s "%s"', $url, $installDir));
+        system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
     }
 
-    system(sprintf('cd "%s" && git fetch origin && git reset --hard %s', $installDir, $rev));
+    system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
 }
 
 // update?
@@ -102,7 +102,7 @@ if ('update' === $command) {
         list($name, $path, $url) = $parts;
 
         ob_start();
-        system('cd "'.$vendorDir.'/'.$path.'/'.$name.'"; git log -n 1 --format=%H');
+        system(sprintf('cd %s; git log -n 1 --format=%%H', escapeshellarg($vendorDir.'/'.$path.'/'.$name)));
         $deps[] = trim($name.' '.ob_get_clean());
     }
     file_put_contents($rootDir.'/deps.lock', implode("\n", $deps));
@@ -112,10 +112,10 @@ if ('update' === $command) {
 $interpreter = PHP_OS == 'WINNT' ? 'php.exe' : '';
 
 // Update the bootstrap files
-system(sprintf('%s "%s/bin/build_bootstrap"', $interpreter, $rootDir));
+system(sprintf('%s %s', $interpreter, escapeshellarg($rootDir.'/bin/build_bootstrap')));
 
 // Update assets
-system(sprintf('%s "%s/app/console" assets:install "%s/web/"', $interpreter, $rootDir, $rootDir));
+system(sprintf('%s %s assets:install %s', $interpreter, escapeshellarg($rootDir.'/app/console'), escapeshellarg($rootDir.'/web/')));
 
 // Remove the cache
-system(sprintf('%s "%s/app/console" cache:clear --no-warmup', $interpreter, $rootDir));
+system(sprintf('%s %s cache:clear --no-warmup', $interpreter, escapeshellarg($rootDir.'/app/console')));

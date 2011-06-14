@@ -102,7 +102,7 @@ if ('update' === $command) {
         list($name, $path, $url) = $parts;
 
         ob_start();
-        system(sprintf('cd %s; git log -n 1 --format=%%H', escapeshellarg($vendorDir.'/'.$path.'/'.$name)));
+        system(sprintf('cd %s && git log -n 1 --format=%%H', escapeshellarg($vendorDir.'/'.$path.'/'.$name)));
         $deps[] = trim($name.' '.ob_get_clean());
     }
     file_put_contents($rootDir.'/deps.lock', implode("\n", $deps));

@@ -156,7 +156,7 @@ if (ini_get('session.auto_start')) {
                     <?php endif ?>
 
                     <?php if ($phpini): ?>
-                            <a name="phpini"></a>
+                            <a id="phpini"></a>
                                 <p>*
                                     <?php if (get_cfg_var('cfg_file_path')): ?>
                                         Changes to the <strong>php.ini</strong> file must be done in "<strong><?php echo get_cfg_var('cfg_file_path') ?></strong>".

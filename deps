@@ -11,3 +11,4 @@ metadata              /                       http://github.com/schmittjoh/metad
 FrameworkExtraBundle  /bundles/Sensio/Bundle  http://github.com/sensio/SensioFrameworkExtraBundle.git
 SecurityExtraBundle   /bundles/JMS            http://github.com/schmittjoh/SecurityExtraBundle.git
 WebConfiguratorBundle /bundles/Symfony/Bundle http://github.com/symfony/WebConfiguratorBundle.git
+AsseticBundle         /bundles/Symfony/Bundle http://github.com/symfony/AsseticBundle.git

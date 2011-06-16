@@ -84,7 +84,7 @@ foreach ($deps as $name => $dep) {
 
     if ('update' === $command) {
         ob_start();
-        system(sprintf('cd %s; git log -n 1 --format=%%H', escapeshellarg($installDir)));
+        system(sprintf('cd %s && git log -n 1 --format=%%H', escapeshellarg($installDir)));
         $newversions[] = trim($name.' '.ob_get_clean());
     }
 }

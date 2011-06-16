@@ -196,6 +196,6 @@ if (ini_get('session.auto_start')) {
                 </div>
             </div>
         </div>
-        <div class="version">Symfony Standard Edition v.<?php echo file_get_contents(__DIR__.'/../VERSION') ?></div>
+        <div class="version">Symfony Standard Edition</div>
     </body>
 </html>

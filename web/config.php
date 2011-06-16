@@ -71,6 +71,25 @@ if (PHP_OS != 'WINNT' && !function_exists('posix_isatty')) {
 
 if (!class_exists('Locale')) {
     $minorProblems[] = 'Install and enable the <strong>intl</strong> extension.';
+} else {
+    $version = '';
+
+    if (defined('INTL_ICU_VERSION')) {
+        $version =  INTL_ICU_VERSION;
+    } else {
+        $reflector = new \ReflectionExtension('intl');
+
+        ob_start();
+        $reflector->info();
+        $output = strip_tags(ob_get_clean());
+
+        preg_match('/^ICU version (.*)$/m', $output, $matches);
+        $version = $matches[1];
+    }
+
+    if(!version_compare($matches[1], '4.0', '>=')) {
+        $minorProblems[] = 'Upgrade your intl extension with a newer ICU version (4+).';
+    }
 }
 
 if (!class_exists('SQLite3') && !in_array('sqlite', PDO::getAvailableDrivers())) {

@@ -48,23 +48,18 @@ if ('install' === $command && file_exists($rootDir.'/deps.lock')) {
     }
 }
 
-foreach (file($rootDir.'/deps', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-    $parts = array_values(array_filter(explode(' ', $line)));
-    if (3 !== count($parts)) {
-        exit(sprintf('The deps file is not valid (near "%s")', $line));
-    }
-    list($name, $path, $url) = $parts;
-
-    $rev = 'origin/HEAD';
-    if (false !== strpos($url, '@')) {
-        list($url, $rev) = explode('@', $url);
-    }
-
+$newversions = array();
+$deps = parse_ini_file($rootDir.'/deps', true, INI_SCANNER_RAW);
+foreach ($deps as $name => $dep) {
+    // revision
     if (isset($versions[$name])) {
         $rev = $versions[$name];
+    } else {
+        $rev = isset($dep['version']) ? $dep['version'] : 'origin/HEAD';
     }
 
-    $installDir = $vendorDir.'/'.$path.'/'.$name;
+    // install dir
+    $installDir = isset($dep['target']) ? $vendorDir.'/'.$dep['target'] : $vendorDir.'/'.$name;
     if (in_array('--reinstall', $argv)) {
         if (PHP_OS == 'WINNT') {
             system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
@@ -75,28 +70,28 @@ foreach (file($rootDir.'/deps', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) a
 
     echo "> Installing/Updating $name\n";
 
+    // url
+    if (!isset($dep['git'])) {
+        exit(sprintf('The "git" value for the "%s" dependency must be set.', $name));
+    }
+    $url = $dep['git'];
+
     if (!is_dir($installDir)) {
         system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
     }
 
     system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
+
+    if ('update' === $command) {
+        ob_start();
+        system(sprintf('cd %s; git log -n 1 --format=%%H', escapeshellarg($installDir)));
+        $newversions[] = trim($name.' '.ob_get_clean());
+    }
 }
 
 // update?
 if ('update' === $command) {
-    $deps = array();
-    foreach (file($rootDir.'/deps', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        $parts = array_values(array_filter(explode(' ', $line)));
-        if (3 !== count($parts)) {
-            exit(sprintf('The deps file is not valid (near "%s")', $line));
-        }
-        list($name, $path, $url) = $parts;
-
-        ob_start();
-        system(sprintf('cd %s; git log -n 1 --format=%%H', escapeshellarg($vendorDir.'/'.$path.'/'.$name)));
-        $deps[] = trim($name.' '.ob_get_clean());
-    }
-    file_put_contents($rootDir.'/deps.lock', implode("\n", $deps));
+    file_put_contents($rootDir.'/deps.lock', implode("\n", $newversions));
 }
 
 // php on windows can't use the shebang line from system()

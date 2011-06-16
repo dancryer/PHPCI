@@ -1,14 +1,49 @@
-assetic               /                       http://github.com/kriswallsmith/assetic.git
-symfony               /                       http://github.com/symfony/symfony.git
-doctrine              /                       http://github.com/doctrine/doctrine2.git@origin/2.0.x
-doctrine-dbal         /                       http://github.com/doctrine/dbal.git@2.0.5
-doctrine-common       /                       http://github.com/doctrine/common.git@origin/3.0.x
-swiftmailer           /                       http://github.com/swiftmailer/swiftmailer.git@origin/4.1
-twig                  /                       http://github.com/fabpot/Twig.git
-twig-extensions       /                       http://github.com/fabpot/Twig-extensions.git
-monolog               /                       http://github.com/Seldaek/monolog.git
-metadata              /                       http://github.com/schmittjoh/metadata.git
-FrameworkExtraBundle  /bundles/Sensio/Bundle  http://github.com/sensio/SensioFrameworkExtraBundle.git
-SecurityExtraBundle   /bundles/JMS            http://github.com/schmittjoh/SecurityExtraBundle.git
-WebConfiguratorBundle /bundles/Symfony/Bundle http://github.com/symfony/WebConfiguratorBundle.git
-AsseticBundle         /bundles/Symfony/Bundle http://github.com/symfony/AsseticBundle.git
+[assetic]
+    git=http://github.com/kriswallsmith/assetic.git
+
+[symfony]
+    git=http://github.com/symfony/symfony.git
+
+[doctrine]
+    git=http://github.com/doctrine/doctrine2.git
+    version=origin/2.0.x
+
+[doctrine-dbal]
+    git=http://github.com/doctrine/dbal.git
+    version=origin/2.0.5
+
+[doctrine-common]
+    git=http://github.com/doctrine/common.git
+    version=origin/3.0.x
+
+[swiftmailer]
+    git=http://github.com/swiftmailer/swiftmailer.git
+    version=origin/4.1
+
+[twig]
+    git=http://github.com/fabpot/Twig.git
+
+[twig-extensions]
+    git=http://github.com/fabpot/Twig-extensions.git
+
+[monolog]
+    git=http://github.com/Seldaek/monolog.git
+
+[metadata]
+    git=http://github.com/schmittjoh/metadata.git
+
+[SensioFrameworkExtraBundle]
+    git=http://github.com/sensio/SensioFrameworkExtraBundle.git
+    target=/bundles/Sensio/Bundle/FrameworkExtraBundle
+
+[JMSSecurityExtraBundle]
+    git=http://github.com/schmittjoh/SecurityExtraBundle.git
+    target=/bundles/JMS/SecurityExtraBundle
+
+[WebConfiguratorBundle]
+    git=http://github.com/symfony/WebConfiguratorBundle.git
+    target=/bundles/Symfony/Bundle/WebConfiguratorBundle
+
+[AsseticBundle]
+    git=http://github.com/symfony/AsseticBundle.git
+    target=/bundles/Symfony/Bundle/AsseticBundle

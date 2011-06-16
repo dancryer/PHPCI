@@ -1,33 +1,33 @@
-[assetic]
-    git=http://github.com/kriswallsmith/assetic.git
-
 [symfony]
     git=http://github.com/symfony/symfony.git
 
-[doctrine]
-    git=http://github.com/doctrine/doctrine2.git
-    version=origin/2.0.x
+[twig]
+    git=http://github.com/fabpot/Twig.git
 
-[doctrine-dbal]
-    git=http://github.com/doctrine/dbal.git
-    version=origin/2.0.5
+[monolog]
+    git=http://github.com/Seldaek/monolog.git
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
     version=origin/3.0.x
 
+[doctrine-dbal]
+    git=http://github.com/doctrine/dbal.git
+    version=origin/2.0.5
+
+[doctrine]
+    git=http://github.com/doctrine/doctrine2.git
+    version=origin/2.0.x
+
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
     version=origin/4.1
 
-[twig]
-    git=http://github.com/fabpot/Twig.git
+[assetic]
+    git=http://github.com/kriswallsmith/assetic.git
 
 [twig-extensions]
     git=http://github.com/fabpot/Twig-extensions.git
-
-[monolog]
-    git=http://github.com/Seldaek/monolog.git
 
 [metadata]
     git=http://github.com/schmittjoh/metadata.git

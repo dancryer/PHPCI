@@ -28,6 +28,7 @@ check(ini_get('date.timezone'), 'Checking that the "date.timezone" setting is se
 check(is_writable(__DIR__.'/../app/cache'), sprintf('Checking that app/cache/ directory is writable'), 'Change the permissions of the app/cache/ directory so that the web server can write in it', true);
 check(is_writable(__DIR__.'/../app/logs'), sprintf('Checking that the app/logs/ directory is writable'), 'Change the permissions of the app/logs/ directory so that the web server can write in it', true);
 check(function_exists('json_encode'), 'Checking that the json_encode() is available', 'Install and enable the json extension', true);
+check(class_exists('SQLite3') || in_array('sqlite', PDO::getAvailableDrivers()), 'Install and enable the SQLite3 or PDO_SQLite extension.', true);
 
 // warnings
 echo_title("Optional checks");

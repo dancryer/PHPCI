@@ -37,8 +37,28 @@ check(function_exists('token_get_all'), 'Checking that the token_get_all() funct
 check(function_exists('mb_strlen'), 'Checking that the mb_strlen() function is available', 'Install and enable the mbstring extension', false);
 check(function_exists('iconv'), 'Checking that the iconv() function is available', 'Install and enable the iconv extension', false);
 check(function_exists('utf8_decode'), 'Checking that the utf8_decode() is available', 'Install and enable the XML extension', false);
-check(function_exists('posix_isatty'), 'Checking that the posix_isatty() is available', 'Install and enable the php_posix extension (used to colorized the CLI output)', false);
+if (PHP_OS != 'WINNT') {
+    check(function_exists('posix_isatty'), 'Checking that the posix_isatty() is available', 'Install and enable the php_posix extension (used to colorized the CLI output)', false);
+}
 check(class_exists('Locale'), 'Checking that the intl extension is available', 'Install and enable the intl extension (used for validators)', false);
+if (class_exists('Locale')) {
+    $version = '';
+
+    if (defined('INTL_ICU_VERSION')) {
+        $version =  INTL_ICU_VERSION;
+    } else {
+        $reflector = new \ReflectionExtension('intl');
+
+        ob_start();
+        $reflector->info();
+        $output = ob_get_clean();
+
+        preg_match('/^ICU version => (.*)$/m', $output, $matches);
+        $version = $matches[1];
+    }
+
+    check(version_compare($matches[1], '4.0', '>='), 'Checking that the intl ICU version is at least 4+', 'Upgrade your intl extension with a newer ICU version (4+)', false);
+}
 
 $accelerator = 
     (function_exists('apc_store') && ini_get('apc.enabled'))

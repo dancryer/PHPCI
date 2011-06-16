@@ -15,7 +15,7 @@ $vendorDir = $rootDir.'/vendor';
 
 array_shift($argv);
 if (!isset($argv[0])) {
-    die(<<<EOF
+    exit(<<<EOF
 Symfony2 vendors script management.
 
 Specify a command to run:
@@ -29,7 +29,7 @@ EOF
 }
 
 if (!in_array($command = array_shift($argv), array('install', 'update'))) {
-    die(sprintf("Command \"%s\" does not exist.\n", $command));
+    exit(sprintf("Command \"%s\" does not exist.\n", $command));
 }
 
 if (!is_dir($vendorDir)) {
@@ -39,25 +39,19 @@ if (!is_dir($vendorDir)) {
 // versions
 $versions = array();
 if ('install' === $command && file_exists($rootDir.'/deps.lock')) {
-    foreach (file($rootDir.'/deps.lock') as $line) {
-        if (!trim($line)) {
-            continue;
-        }
-        $parts = array_values(array_filter(explode(' ', trim($line))));
+    foreach (file($rootDir.'/deps.lock', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $parts = array_values(array_filter(explode(' ', $line)));
         if (2 !== count($parts)) {
-            die(sprintf('The deps version file is not valid (near "%s")', $line));
+            exit(sprintf('The deps version file is not valid (near "%s")', $line));
         }
         $versions[$parts[0]] = $parts[1];
     }
 }
 
-foreach (file($rootDir.'/deps') as $line) {
-    if (!trim($line)) {
-        continue;
-    }
-    $parts = array_values(array_filter(explode(' ', trim($line))));
+foreach (file($rootDir.'/deps', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+    $parts = array_values(array_filter(explode(' ', $line)));
     if (3 !== count($parts)) {
-        die(sprintf('The deps file is not valid (near "%s")', $line));
+        exit(sprintf('The deps file is not valid (near "%s")', $line));
     }
     list($name, $path, $url) = $parts;
 
@@ -91,13 +85,10 @@ foreach (file($rootDir.'/deps') as $line) {
 // update?
 if ('update' === $command) {
     $deps = array();
-    foreach (file($rootDir.'/deps') as $line) {
-        if (!trim($line)) {
-            continue;
-        }
-        $parts = array_values(array_filter(explode(' ', trim($line))));
+    foreach (file($rootDir.'/deps', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $parts = array_values(array_filter(explode(' ', $line)));
         if (3 !== count($parts)) {
-            die(sprintf('The deps file is not valid (near "%s")', $line));
+            exit(sprintf('The deps file is not valid (near "%s")', $line));
         }
         list($name, $path, $url) = $parts;
 

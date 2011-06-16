@@ -13,11 +13,9 @@
 
 [doctrine-dbal]
     git=http://github.com/doctrine/dbal.git
-    version=origin/2.0.5
 
 [doctrine]
     git=http://github.com/doctrine/doctrine2.git
-    version=origin/2.0.x
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git

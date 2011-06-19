@@ -88,7 +88,7 @@ if (!class_exists('Locale')) {
     }
 
     if(!version_compare($matches[1], '4.0', '>=')) {
-        $minorProblems[] = 'Upgrade your intl extension with a newer ICU version (4+).';
+        $minorProblems[] = 'Upgrade your <strong>intl</strong> extension with a newer ICU version (4+).';
     }
 }
 

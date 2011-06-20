@@ -38,9 +38,9 @@
     git=http://github.com/schmittjoh/SecurityExtraBundle.git
     target=/bundles/JMS/SecurityExtraBundle
 
-[WebConfiguratorBundle]
-    git=http://github.com/symfony/WebConfiguratorBundle.git
-    target=/bundles/Symfony/Bundle/WebConfiguratorBundle
+[SensioDistributionBundle]
+    git=http://github.com/sensio/SensioDistributionBundle.git
+    target=/bundles/Sensio/Bundle/DistributionBundle
 
 [AsseticBundle]
     git=http://github.com/symfony/AsseticBundle.git

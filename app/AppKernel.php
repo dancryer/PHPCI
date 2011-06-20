@@ -2,9 +2,6 @@
 
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\ClassLoader\DebugUniversalClassLoader;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 class AppKernel extends Kernel
 {
@@ -29,22 +26,6 @@ class AppKernel extends Kernel
         }
 
         return $bundles;
-    }
-
-    public function init()
-    {
-        if ($this->debug) {
-            ini_set('display_errors', 1);
-            error_reporting(-1);
-
-            DebugUniversalClassLoader::enable();
-            ErrorHandler::register();
-            if ('cli' !== php_sapi_name()) {
-                ExceptionHandler::register();
-            }
-        } else {
-            ini_set('display_errors', 0);
-        }
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

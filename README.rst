@@ -15,7 +15,7 @@ Symfony Standard Edition comes pre-configured with the following bundles:
 * AsseticBundle
 * JMSSecurityExtraBundle
 * WebProfilerBundle (in dev/test env)
-* SymfonyWebConfiguratorBundle (in dev/test env)
+* SensioDistributionBundle (in dev/test env)
 * AcmeDemoBundle (in dev/test env)
 
 Installation from an Archive

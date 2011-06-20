@@ -130,7 +130,7 @@ if (ini_get('session.auto_start')) {
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <link href="bundles/symfonywebconfigurator/css/install.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="bundles/sensiodistribution/webconfigurator/css/install.css" rel="stylesheet" type="text/css" media="all" />
         <title>Symfony Configuration</title>
     </head>
     <body>
@@ -138,7 +138,7 @@ if (ini_get('session.auto_start')) {
             <div id="symfony-content">
                 <div class="symfony-blocks-install">
                 <div class="symfony-block-logo">
-                    <img src="bundles/symfonywebconfigurator/images/logo-big.gif" alt="sf_symfony" />
+                    <img src="bundles/sensiodistribution/webconfigurator/images/logo-big.gif" alt="sf_symfony" />
                 </div>
 
                 <div class="symfony-block-content">

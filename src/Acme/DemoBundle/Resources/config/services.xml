@@ -11,7 +11,7 @@
         </service>
 
         <service id="acme.demo.listener" class="Acme\DemoBundle\ControllerListener">
-            <tag name="kernel.event_listener" event="core.controller" method="onCoreController" />
+            <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
             <argument type="service" id="twig.extension.acme.demo" />
         </service>
     </services>

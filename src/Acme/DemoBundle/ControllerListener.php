@@ -16,7 +16,7 @@ class ControllerListener
         $this->extension = $extension;
     }
 
-    public function onCoreController(FilterControllerEvent $event)
+    public function onKernelController(FilterControllerEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             $this->extension->setController($event->getController());

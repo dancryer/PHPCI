@@ -9,7 +9,6 @@
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
-    version=origin/3.0.x
 
 [doctrine-dbal]
     git=http://github.com/doctrine/dbal.git

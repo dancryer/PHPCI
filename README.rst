@@ -35,7 +35,7 @@ Installation from Git
 ---------------------
 
 We highly recommend you that you download the packaged version of this
-distribution. If you still want to use Git, your are on your own.
+distribution. If you still want to use Git, you are on your own.
 
 Run the following commands:
 

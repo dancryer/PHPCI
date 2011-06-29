@@ -32,6 +32,22 @@ if (!in_array($command = array_shift($argv), array('install', 'update'))) {
     exit(sprintf("Command \"%s\" does not exist.\n", $command));
 }
 
+/*
+ * Check wether this project is based on the Standard Edition that was
+ * shipped with vendors or not.
+ */
+if (!is_dir($vendorDir.'/symfony/.git'))
+{
+    exit(<<<EOF
+Your project seems to be based on a Standard Edition that included vendors.
+
+Try to remove the vendor/ folder and run ./bin/vendors again.
+
+
+EOF
+);
+}
+
 if (!is_dir($vendorDir)) {
     mkdir($vendorDir, 0777, true);
 }

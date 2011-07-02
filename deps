@@ -35,7 +35,7 @@
     target=/bundles/Sensio/Bundle/FrameworkExtraBundle
 
 [JMSSecurityExtraBundle]
-    git=http://github.com/schmittjoh/SecurityExtraBundle.git
+    git=http://github.com/schmittjoh/JMSSecurityExtraBundle.git
     target=/bundles/JMS/SecurityExtraBundle
 
 [SensioDistributionBundle]

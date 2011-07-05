@@ -19,9 +19,14 @@ $loader->registerPrefixes(array(
     'Twig_Extensions_' => __DIR__.'/../vendor/twig-extensions/lib',
     'Twig_'            => __DIR__.'/../vendor/twig/lib',
 ));
-$loader->registerPrefixFallbacks(array(
-    __DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs',
-));
+
+// intl
+if (!function_exists('intl_get_error_code')) {
+    require_once __DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+
+    $loader->registerPrefixFallbacks(array(__DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs'));
+}
+
 $loader->registerNamespaceFallbacks(array(
     __DIR__.'/../src',
 ));

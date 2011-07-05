@@ -36,7 +36,7 @@ if (!in_array($command = array_shift($argv), array('install', 'update'))) {
  * Check wether this project is based on the Standard Edition that was
  * shipped with vendors or not.
  */
-if (!is_dir($vendorDir.'/symfony/.git') && !in_array('--reinstall', $argv)) {
+if (is_dir($vendorDir.'/symfony') && !is_dir($vendorDir.'/symfony/.git') && !in_array('--reinstall', $argv)) {
     exit(<<<EOF
 Your project seems to be based on a Standard Edition that includes vendors.
 

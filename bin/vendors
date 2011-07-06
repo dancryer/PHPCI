@@ -66,6 +66,8 @@ if ('install' === $command && file_exists($rootDir.'/deps.lock')) {
 $newversions = array();
 $deps = parse_ini_file($rootDir.'/deps', true, INI_SCANNER_RAW);
 foreach ($deps as $name => $dep) {
+    $dep = array_map('trim', $dep);
+
     // revision
     if (isset($versions[$name])) {
         $rev = $versions[$name];

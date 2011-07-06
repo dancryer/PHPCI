@@ -18,7 +18,6 @@ monolog:
         firephp:
             type:  firephp
             level: info
-            processors: [@monolog.processor.introspection]
 
 assetic:
     use_controller: true

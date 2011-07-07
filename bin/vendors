@@ -65,6 +65,9 @@ if ('install' === $command && file_exists($rootDir.'/deps.lock')) {
 
 $newversions = array();
 $deps = parse_ini_file($rootDir.'/deps', true, INI_SCANNER_RAW);
+if (false === $deps) {
+    exit("The deps file is not valid ini syntax. Perhaps missing a trailing newline?\n");
+}
 foreach ($deps as $name => $dep) {
     $dep = array_map('trim', $dep);
 

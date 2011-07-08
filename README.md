@@ -127,6 +127,8 @@ The Symfony Standard Edition comes pre-configured with the following bundles:
   ([documentation](http://symfony.com/doc/current/book/doctrine.html))
 * **TwigBundle** - Adds support for the Twig templating engine
   ([documentation](http://symfony.com/doc/current/book/templating.html))
+* **SecurityBundle** - Adds security by integrating Symfony's security component
+  ([documentation](http://symfony.com/doc/current/book/security.html))
 * **SwiftmailerBundle** - Adds support for Swiftmailer, a library for sending emails
   ([documentation](http://symfony.com/doc/2.0/cookbook/email.html))
 * **MonologBundle** - Adds support for Monolog, a logging library

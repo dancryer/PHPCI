@@ -27,6 +27,7 @@
 
 [assetic]
     git=http://github.com/kriswallsmith/assetic.git
+    version=v1.0.0
 
 [twig-extensions]
     git=http://github.com/fabpot/Twig-extensions.git
@@ -53,3 +54,4 @@
 [AsseticBundle]
     git=http://github.com/symfony/AsseticBundle.git
     target=/bundles/Symfony/Bundle/AsseticBundle
+    version=v1.0.0RC1

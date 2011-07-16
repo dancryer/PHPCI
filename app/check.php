@@ -52,15 +52,10 @@ if (class_exists('Locale')) {
 
         ob_start();
         $reflector->info();
-        $output = ob_get_clean();
+        $output = strip_tags(ob_get_clean());
 
-        if (preg_match('/^ICU version => (.*)$/m', $output, $matches)) {
-            $version = $matches[1];
-        } elseif ( preg_match('/^<tr><td class="e">ICU version <\/td><td class="v">(.*)<\/td><\/tr>$/m', $output, $matches) ) {
-            $version = $matches[1];
-        } else {
-            $version = '';
-        }
+        preg_match('/^ICU version +(?:=> )?(.*)$/m', $output, $matches);
+        $version = $matches[1];
     }
 
     check(version_compare($matches[1], '4.0', '>='), 'Checking that the intl ICU version is at least 4+', 'Upgrade your intl extension with a newer ICU version (4+)', false);

@@ -3,7 +3,7 @@
 
 [twig]
     git=http://github.com/fabpot/Twig.git
-    version=v1.1.0
+    version=v1.1.1
 
 [monolog]
     git=http://github.com/Seldaek/monolog.git
@@ -27,7 +27,7 @@
 
 [assetic]
     git=http://github.com/kriswallsmith/assetic.git
-    version=v1.0.0
+    version=v1.0.1
 
 [twig-extensions]
     git=http://github.com/fabpot/Twig-extensions.git

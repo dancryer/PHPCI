@@ -9,7 +9,7 @@ if (!in_array(@$_SERVER['REMOTE_ADDR'], array(
     '::1',
 ))) {
     header('HTTP/1.0 403 Forbidden');
-    die('This script is only accessible from localhost.');
+    die('You are not allowed to access this file. Check '.basename(__FILE__).' for more informations.');
 }
 
 $majorProblems = array();

@@ -29,6 +29,8 @@ check(is_writable(__DIR__.'/../app/cache'), sprintf('Checking that app/cache/ di
 check(is_writable(__DIR__.'/../app/logs'), sprintf('Checking that the app/logs/ directory is writable'), 'Change the permissions of the app/logs/ directory so that the web server can write in it', true);
 check(function_exists('json_encode'), 'Checking that the json_encode() is available', 'Install and enable the json extension', true);
 check(class_exists('SQLite3') || in_array('sqlite', PDO::getAvailableDrivers()), 'Checking that the SQLite3 or PDO_SQLite extension is available', 'Install and enable the SQLite3 or PDO_SQLite extension.', true);
+check(function_exists('session_start'), 'Checking that the session_start() is available', 'Install and enable the session extension', true);
+check(function_exists('ctype_alpha'), 'Checking that the ctype_alpha() is available', 'Install and enable the ctype extension', true);
 
 // warnings
 echo_title("Optional checks");
@@ -62,7 +64,7 @@ if (class_exists('Locale')) {
 }
 
 $accelerator = 
-    (function_exists('apc_store') && ini_get('apc.enabled'))
+    ((version_compare(phpversion('apc'), '3.0.17', '>=') && ini_get('apc.enabled'))
     ||
     function_exists('eaccelerator_put') && ini_get('eaccelerator.enable')
     ||

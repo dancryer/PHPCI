@@ -45,8 +45,12 @@ if (!defined('LIBXML_COMPACT')) {
     $minorProblems[] = 'Upgrade your <strong>php-xml</strong> extension with a newer libxml.';
 }
 
-if (!((version_compare(phpversion('apc'), '3.0.17', '>=') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
+if (!(function_exists('apc_store') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
     $minorProblems[] = 'Install and enable a <strong>PHP accelerator</strong> like APC (highly recommended).';
+}
+
+if (!(function_exists('apc_store') && ini_get('apc.enabled') && version_compare(phpversion('apc'), '3.0.17', '>=')) {
+    $majorProblems[] = 'Upgrade your <strong>APC</strong> extension (3.0.17+)';
 }
 
 if (!function_exists('token_get_all')) {

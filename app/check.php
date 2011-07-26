@@ -64,13 +64,14 @@ if (class_exists('Locale')) {
 }
 
 $accelerator = 
-    ((version_compare(phpversion('apc'), '3.0.17', '>=') && ini_get('apc.enabled'))
+    (function_exists('apc_store') && ini_get('apc.enabled'))
     ||
     function_exists('eaccelerator_put') && ini_get('eaccelerator.enable')
     ||
     function_exists('xcache_set')
 ;
 check($accelerator, 'Checking that a PHP accelerator is installed', 'Install a PHP accelerator like APC (highly recommended)', false);
+check(function_exists('apc_store') && ini_get('apc.enabled') && version_compare(phpversion('apc'), '3.0.17', '>='), 'Checking that the APC version is at least 3.0.17', 'Upgrade your intl extension with a newer ICU version (4+)', true);
 
 check(!ini_get('short_open_tag'), 'Checking that php.ini has short_open_tag set to off', 'Set short_open_tag to off in php.ini', false);
 check(!ini_get('magic_quotes_gpc'), 'Checking that php.ini has magic_quotes_gpc set to off', 'Set magic_quotes_gpc to off in php.ini', false);

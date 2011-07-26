@@ -45,7 +45,7 @@ if (!defined('LIBXML_COMPACT')) {
     $minorProblems[] = 'Upgrade your <strong>php-xml</strong> extension with a newer libxml.';
 }
 
-if (!((function_exists('apc_store') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
+if (!((version_compare(phpversion('apc'), '3.0.17', '>=') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
     $minorProblems[] = 'Install and enable a <strong>PHP accelerator</strong> like APC (highly recommended).';
 }
 
@@ -98,6 +98,14 @@ if (!class_exists('SQLite3') && !in_array('sqlite', PDO::getAvailableDrivers()))
 
 if (!function_exists('json_encode')) {
     $majorProblems[] = 'Install and enable the <strong>json</strong> extension.';
+}
+
+if (!function_exists('session_start')) {
+    $majorProblems[] = 'Install and enable the <strong>session</strong> extension.';
+}
+
+if (!function_exists('ctype_alpha')) {
+    $majorProblems[] = 'Install and enable the <strong>ctype</strong> extension.';
 }
 
 // php.ini

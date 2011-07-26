@@ -45,7 +45,7 @@ if (!defined('LIBXML_COMPACT')) {
     $minorProblems[] = 'Upgrade your <strong>php-xml</strong> extension with a newer libxml.';
 }
 
-if (!(function_exists('apc_store') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
+if (!((function_exists('apc_store') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
     $minorProblems[] = 'Install and enable a <strong>PHP accelerator</strong> like APC (highly recommended).';
 }
 

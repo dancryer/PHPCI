@@ -1,5 +1,6 @@
 [symfony]
     git=http://github.com/symfony/symfony.git
+    version=v2.0.0
 
 [twig]
     git=http://github.com/fabpot/Twig.git
@@ -55,4 +56,4 @@
 [AsseticBundle]
     git=http://github.com/symfony/AsseticBundle.git
     target=/bundles/Symfony/Bundle/AsseticBundle
-    version=v1.0.0RC1
+    version=v1.0.0RC2

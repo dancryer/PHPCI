@@ -29,6 +29,8 @@ check(is_writable(__DIR__.'/../app/cache'), sprintf('Checking that app/cache/ di
 check(is_writable(__DIR__.'/../app/logs'), sprintf('Checking that the app/logs/ directory is writable'), 'Change the permissions of the app/logs/ directory so that the web server can write in it', true);
 check(function_exists('json_encode'), 'Checking that the json_encode() is available', 'Install and enable the json extension', true);
 check(class_exists('SQLite3') || in_array('sqlite', PDO::getAvailableDrivers()), 'Checking that the SQLite3 or PDO_SQLite extension is available', 'Install and enable the SQLite3 or PDO_SQLite extension.', true);
+check(function_exists('session_start'), 'Checking that the session_start() is available', 'Install and enable the session extension', true);
+check(function_exists('ctype_alpha'), 'Checking that the ctype_alpha() is available', 'Install and enable the ctype extension', true);
 
 // warnings
 echo_title("Optional checks");
@@ -69,6 +71,7 @@ $accelerator =
     function_exists('xcache_set')
 ;
 check($accelerator, 'Checking that a PHP accelerator is installed', 'Install a PHP accelerator like APC (highly recommended)', false);
+check(function_exists('apc_store') && ini_get('apc.enabled') && version_compare(phpversion('apc'), '3.0.17', '>='), 'Checking that the APC version is at least 3.0.17', 'Upgrade your APC extension (3.0.17+)', true);
 
 check(!ini_get('short_open_tag'), 'Checking that php.ini has short_open_tag set to off', 'Set short_open_tag to off in php.ini', false);
 check(!ini_get('magic_quotes_gpc'), 'Checking that php.ini has magic_quotes_gpc set to off', 'Set magic_quotes_gpc to off in php.ini', false);

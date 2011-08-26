@@ -1,6 +1,6 @@
 [symfony]
     git=http://github.com/symfony/symfony.git
-    version=origin/2.0
+    version=v2.0.1
 
 [twig]
     git=http://github.com/fabpot/Twig.git
@@ -8,19 +8,19 @@
 
 [monolog]
     git=http://github.com/Seldaek/monolog.git
-    version=1.0.0
+    version=1.0.1
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
-    version=origin/2.1.x
+    version=2.1.1
 
 [doctrine-dbal]
     git=http://github.com/doctrine/dbal.git
-    version=origin/2.1.x
+    version=2.1.1
 
 [doctrine]
     git=http://github.com/doctrine/doctrine2.git
-    version=origin/2.1.x
+    version=2.1.1
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
@@ -35,7 +35,7 @@
 
 [metadata]
     git=http://github.com/schmittjoh/metadata.git
-    version=origin/1.0.x
+    version=1.0.0
 
 [SensioFrameworkExtraBundle]
     git=http://github.com/sensio/SensioFrameworkExtraBundle.git

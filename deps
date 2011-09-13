@@ -1,14 +1,13 @@
 [symfony]
     git=http://github.com/symfony/symfony.git
-    version=origin/2.0
 
 [twig]
     git=http://github.com/fabpot/Twig.git
-    version=v1.1.2
+    version=v1.2.0
 
 [monolog]
     git=http://github.com/Seldaek/monolog.git
-    version=1.0.0
+    version=1.0.1
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
@@ -24,11 +23,11 @@
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
-    version=v4.1.1
+    version=v4.1.2
 
 [assetic]
     git=http://github.com/kriswallsmith/assetic.git
-    version=v1.0.1
+    version=v1.0.2
 
 [twig-extensions]
     git=http://github.com/fabpot/Twig-extensions.git

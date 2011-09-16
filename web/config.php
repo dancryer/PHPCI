@@ -96,10 +96,6 @@ if (!class_exists('Locale')) {
     }
 }
 
-if (!class_exists('SQLite3') && !in_array('sqlite', PDO::getAvailableDrivers())) {
-    $majorProblems[] = 'Install and enable the <strong>SQLite3</strong> or <strong>PDO_SQLite</strong> extension.';
-}
-
 if (!function_exists('json_encode')) {
     $majorProblems[] = 'Install and enable the <strong>json</strong> extension.';
 }

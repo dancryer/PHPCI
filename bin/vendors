@@ -81,7 +81,7 @@ foreach ($deps as $name => $dep) {
     // install dir
     $installDir = isset($dep['target']) ? $vendorDir.'/'.$dep['target'] : $vendorDir.'/'.$name;
     if (in_array('--reinstall', $argv)) {
-        if (PHP_OS == 'WINNT') {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
         } else {
             system(sprintf('rm -rf %s', escapeshellarg($installDir)));
@@ -115,7 +115,7 @@ if ('update' === $command) {
 }
 
 // php on windows can't use the shebang line from system()
-$interpreter = PHP_OS == 'WINNT' ? 'php.exe' : '';
+$interpreter = defined('PHP_WINDOWS_VERSION_BUILD') ? 'php.exe' : '';
 
 // Update the bootstrap files
 system(sprintf('%s %s', $interpreter, escapeshellarg($rootDir.'/vendor/bundles/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php')));

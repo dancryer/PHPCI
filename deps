@@ -43,6 +43,7 @@
 [JMSSecurityExtraBundle]
     git=http://github.com/schmittjoh/JMSSecurityExtraBundle.git
     target=/bundles/JMS/SecurityExtraBundle
+    version=origin/1.0.x
 
 [SensioDistributionBundle]
     git=http://github.com/sensio/SensioDistributionBundle.git

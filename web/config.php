@@ -112,6 +112,10 @@ if (!function_exists('ctype_alpha')) {
     $majorProblems[] = 'Install and enable the <strong>ctype</strong> extension.';
 }
 
+if (!function_exists('token_get_all')) {
+    $majorProblems[] = 'Install and enable the <strong>Tokenizer</strong> extension.';
+}
+
 // php.ini
 if (!ini_get('date.timezone')) {
     $phpini = true;

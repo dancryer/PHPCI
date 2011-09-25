@@ -1,6 +1,6 @@
 [symfony]
     git=http://github.com/symfony/symfony.git
-    version=origin/2.0
+    version=v2.0.3
 
 [twig]
     git=http://github.com/fabpot/Twig.git
@@ -12,15 +12,15 @@
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
-    version=origin/2.1.x
+    version=2.1.1
 
 [doctrine-dbal]
     git=http://github.com/doctrine/dbal.git
-    version=origin/2.1.x
+    version=2.1.2
 
 [doctrine]
     git=http://github.com/doctrine/doctrine2.git
-    version=origin/2.1.x
+    version=2.1.1
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
@@ -49,6 +49,7 @@
 [SensioDistributionBundle]
     git=http://github.com/sensio/SensioDistributionBundle.git
     target=/bundles/Sensio/Bundle/DistributionBundle
+    version=origin/1.0
 
 [SensioGeneratorBundle]
     git=http://github.com/sensio/SensioGeneratorBundle.git

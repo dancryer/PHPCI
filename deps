@@ -34,7 +34,7 @@
 
 [metadata]
     git=http://github.com/schmittjoh/metadata.git
-    version=origin/1.0.x
+    version=1.1.0
 
 [SensioFrameworkExtraBundle]
     git=http://github.com/sensio/SensioFrameworkExtraBundle.git

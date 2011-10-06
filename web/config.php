@@ -152,7 +152,7 @@ if (ini_get('session.auto_start')) {
                 <div class="symfony-block-content">
                     <h1>Welcome!</h1>
                     <p>Welcome to your new Symfony project.</p>
-                    <p>This script will guide you through the basic configuration of your project. You can also do the same by editing the ‘<strong>app/config/parameters.ini</strong>’ file directly.</p>
+                    <p>This script will guide you through the basic configuration of your project. You can also do the same by editing the ‘<strong>app/config/parameters.yml</strong>’ file directly.</p>
 
                     <?php if (count($majorProblems)): ?>
                         <h2>

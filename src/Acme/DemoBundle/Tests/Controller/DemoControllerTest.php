@@ -8,7 +8,7 @@ class DemoControllerTest extends WebTestCase
 {
     public function testIndex()
     {
-        $client = $this->createClient();
+        $client = static::createClient();
 
         $crawler = $client->request('GET', '/demo/hello/Fabien');
 

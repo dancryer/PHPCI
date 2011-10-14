@@ -3,7 +3,7 @@
 
 [twig]
     git=http://github.com/fabpot/Twig.git
-    version=v1.2.0
+    version=v1.3.0
 
 [monolog]
     git=http://github.com/Seldaek/monolog.git
@@ -48,7 +48,6 @@
 [SensioDistributionBundle]
     git=http://github.com/sensio/SensioDistributionBundle.git
     target=/bundles/Sensio/Bundle/DistributionBundle
-    version=origin/1.0
 
 [SensioGeneratorBundle]
     git=http://github.com/sensio/SensioGeneratorBundle.git

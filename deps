@@ -11,15 +11,15 @@
 
 [doctrine-common]
     git=http://github.com/doctrine/common.git
-    version=origin/2.1.x
+    version=origin/master
 
 [doctrine-dbal]
     git=http://github.com/doctrine/dbal.git
-    version=origin/2.1.x
+    version=origin/master
 
 [doctrine]
     git=http://github.com/doctrine/doctrine2.git
-    version=origin/2.1.x
+    version=origin/master
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git

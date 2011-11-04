@@ -26,10 +26,10 @@ if (!version_compare(phpversion(), '5.3.2', '>=')) {
 EOF;
 }
 
-if (!is_dir(__DIR__ . '/../vendor/symfony')) {
+if (!is_dir(__DIR__.'/../vendor/symfony')) {
     $vendorsAreMissing = true;
-    $majorProblems[] = '<strong>CRITICAL</strong>: Vendors are missing. Run
-        "<strong>bin/vendors</strong>" to install dependencies.';
+    $majorProblems[] = '<strong>CRITICAL</strong>: Vendor libraries are missing. Run
+        "<strong>bin/vendors install</strong>" to install them.';
 } else {
     $vendorsAreMissing = false;
 }

@@ -26,6 +26,14 @@ if (!version_compare(phpversion(), '5.3.2', '>=')) {
 EOF;
 }
 
+if (!is_dir(__DIR__ . '/../vendor/symfony')) {
+    $vendorsAreMissing = true;
+    $majorProblems[] = '<strong>CRITICAL</strong>: Vendors are missing. Run
+        "<strong>bin/vendors</strong>" to install dependencies.';
+} else {
+    $vendorsAreMissing = false;
+}
+
 if (!is_writable(__DIR__ . '/../app/cache')) {
     $majorProblems[] = 'Change the permissions of the "<strong>app/cache/</strong>"
         directory so that the web server can write into it.';
@@ -133,21 +141,26 @@ if (ini_get('session.auto_start')) {
     $phpini = true;
     $minorProblems[] = 'Set <strong>session.auto_start</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
 }
+
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <?php if (!$vendorsAreMissing): ?>
         <link href="bundles/sensiodistribution/webconfigurator/css/install.css" rel="stylesheet" type="text/css" media="all" />
+        <?php endif; ?>
         <title>Symfony Configuration</title>
     </head>
     <body>
         <div id="symfony-wrapper">
             <div id="symfony-content">
                 <div class="symfony-blocks-install">
+                <?php if (!$vendorsAreMissing): ?>
                 <div class="symfony-block-logo">
                     <img src="bundles/sensiodistribution/webconfigurator/images/logo-big.gif" alt="sf_symfony" />
                 </div>
+                <?php endif; ?>
 
                 <div class="symfony-block-content">
                     <h1>Welcome!</h1>

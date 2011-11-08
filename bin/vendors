@@ -102,6 +102,10 @@ foreach ($deps as $name => $dep) {
         system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
     }
 
+    $status = system(sprintf('cd %s && git status --porcelain', escapeshellarg($installDir)));
+    if (!empty($status)) {
+      exit("$name has local modifications. Will not proceed without --force.\n");
+    }
     system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
 
     if ('update' === $command) {

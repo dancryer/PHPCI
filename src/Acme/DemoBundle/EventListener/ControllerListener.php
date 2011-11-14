@@ -1,6 +1,6 @@
 <?php
 
-namespace Acme\DemoBundle;
+namespace Acme\DemoBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

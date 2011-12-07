@@ -103,6 +103,11 @@ foreach ($deps as $name => $dep) {
             $rev = isset($dep['version']) ? $dep['version'] : 'origin/HEAD';
         }
 
+        $status = system(sprintf('cd %s && git status --porcelain', escapeshellarg($installDir)));
+        if (!empty($status)) {
+            exit(sprintf('"%s" has local modifications. Please revert or commit/push them before running this command again.', $name));
+        }
+
         system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
     }
 

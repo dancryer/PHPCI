@@ -107,6 +107,10 @@ foreach ($deps as $name => $dep) {
         if (!empty($status)) {
             exit(sprintf('"%s" has local modifications. Please revert or commit/push them before running this command again.', $name));
         }
+        $current_rev = system(sprintf('cd %s && git rev-list --max-count=1 HEAD', escapeshellarg($installDir)));
+        if ($current_rev === $rev) {
+            continue;
+        }
 
         system(sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev)));
     }

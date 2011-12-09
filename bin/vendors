@@ -102,7 +102,7 @@ foreach ($deps as $name => $dep) {
         system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
     }
 
-    $status = system(sprintf('cd %s && git status --porcelain', escapeshellarg($installDir)));
+    $status = system(sprintf('cd %s && git status --porcelain -uno', escapeshellarg($installDir)));
     if (!empty($status)) {
         exit(sprintf('"%s" has local modifications. Please revert or commit/push them before running this command again.', $name));
     }

@@ -112,6 +112,10 @@ if (!function_exists('token_get_all')) {
     $majorProblems[] = 'Install and enable the <strong>Tokenizer</strong> extension.';
 }
 
+if (!function_exists('simplexml_import_dom')) {
+    $majorProblems[] = 'Install and enable the <strong>SimpleXML</strong> extension.';
+}
+
 // php.ini
 if (!ini_get('date.timezone')) {
     $phpini = true;

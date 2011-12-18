@@ -32,6 +32,7 @@ check(function_exists('json_encode'), 'Checking that the json_encode() is availa
 check(function_exists('session_start'), 'Checking that the session_start() is available', 'Install and enable the session extension', true);
 check(function_exists('ctype_alpha'), 'Checking that the ctype_alpha() is available', 'Install and enable the ctype extension', true);
 check(function_exists('token_get_all'), 'Checking that the token_get_all() is available', 'Install and enable the tokenizer extension', true);
+check(function_exists('simplexml_import_dom'), 'Checking that the simplexml_import_dom() is available', 'Install and enable the simplexml extension', true);
 check(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compare(phpversion('apc'), '3.0.17', '>='), 'Checking that the APC version is at least 3.0.17', 'Upgrade your APC extension (3.0.17+)', true);
 
 // warnings

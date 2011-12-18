@@ -37,7 +37,6 @@ check(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compa
 // warnings
 echo_title("Optional checks");
 check(class_exists('DomDocument'), 'Checking that the PHP-XML module is installed', 'Install and enable the php-xml module', false);
-check(function_exists('token_get_all'), 'Checking that the token_get_all() function is available', 'Install and enable the Tokenizer extension (highly recommended)', false);
 check(function_exists('mb_strlen'), 'Checking that the mb_strlen() function is available', 'Install and enable the mbstring extension', false);
 check(function_exists('iconv'), 'Checking that the iconv() function is available', 'Install and enable the iconv extension', false);
 check(function_exists('utf8_decode'), 'Checking that the utf8_decode() is available', 'Install and enable the XML extension', false);

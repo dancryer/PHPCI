@@ -57,10 +57,6 @@ if (!(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compa
     $majorProblems[] = 'Upgrade your <strong>APC</strong> extension (3.0.17+)';
 }
 
-if (!function_exists('token_get_all')) {
-    $minorProblems[] = 'Install and enable the <strong>Tokenizer</strong> extension.';
-}
-
 if (!function_exists('mb_strlen')) {
     $minorProblems[] = 'Install and enable the <strong>mbstring</strong> extension.';
 }
@@ -114,6 +110,10 @@ if (!function_exists('ctype_alpha')) {
 
 if (!function_exists('token_get_all')) {
     $majorProblems[] = 'Install and enable the <strong>Tokenizer</strong> extension.';
+}
+
+if (!function_exists('simplexml_import_dom')) {
+    $majorProblems[] = 'Install and enable the <strong>SimpleXML</strong> extension.';
 }
 
 // php.ini

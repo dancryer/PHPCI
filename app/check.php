@@ -32,12 +32,12 @@ check(function_exists('json_encode'), 'Checking that the json_encode() is availa
 check(function_exists('session_start'), 'Checking that the session_start() is available', 'Install and enable the session extension', true);
 check(function_exists('ctype_alpha'), 'Checking that the ctype_alpha() is available', 'Install and enable the ctype extension', true);
 check(function_exists('token_get_all'), 'Checking that the token_get_all() is available', 'Install and enable the tokenizer extension', true);
+check(function_exists('simplexml_import_dom'), 'Checking that the simplexml_import_dom() is available', 'Install and enable the simplexml extension', true);
 check(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compare(phpversion('apc'), '3.0.17', '>='), 'Checking that the APC version is at least 3.0.17', 'Upgrade your APC extension (3.0.17+)', true);
 
 // warnings
 echo_title("Optional checks");
 check(class_exists('DomDocument'), 'Checking that the PHP-XML module is installed', 'Install and enable the php-xml module', false);
-check(function_exists('token_get_all'), 'Checking that the token_get_all() function is available', 'Install and enable the Tokenizer extension (highly recommended)', false);
 check(function_exists('mb_strlen'), 'Checking that the mb_strlen() function is available', 'Install and enable the mbstring extension', false);
 check(function_exists('iconv'), 'Checking that the iconv() function is available', 'Install and enable the iconv extension', false);
 check(function_exists('utf8_decode'), 'Checking that the utf8_decode() is available', 'Install and enable the XML extension', false);

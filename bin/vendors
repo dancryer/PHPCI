@@ -118,7 +118,19 @@ foreach ($deps as $name => $dep) {
     if ('update' === $command || 'lock' === $command) {
         ob_start();
         system(sprintf('cd %s && git log -n 1 --format=%%H', escapeshellarg($installDir)));
-        $newversions[] = trim($name.' '.ob_get_clean());
+        $newversion = trim(ob_get_clean());
+
+        ob_start();
+        system(sprintf('cd %s && git name-rev --tags --name-only %s', escapeshellarg($installDir), $newversion));
+        // remove trailing ^0 from tags, those are the tags themselves
+        $niceversion = preg_replace('/\^0$/', '', trim(ob_get_clean()));
+
+        // undefined is returned in case no name-rev could be found
+        if ('undefined' !== $niceversion) {
+            $newversions[] = $name.' '.$niceversion;
+        } else {
+            $newversions[] = $name.' '.$newversion;
+        }
     }
 }
 

@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/SymfonyRequirements.php';
 
-$symfonyRequirements = new \Symfony\StandardEdition\SymfonyRequirements();
+$symfonyRequirements = new SymfonyRequirements();
 
 $iniPath = $symfonyRequirements->getPhpIniConfigPath() ?: 'WARNING: not using a php.ini file';
 
@@ -38,10 +38,10 @@ foreach ($symfonyRequirements->getRecommendations() as $req) {
 /**
  * Prints a Requirement instance
  */
-function echo_requirement($requirement)
+function echo_requirement(Requirement $requirement)
 {
-    $title = $requirement->isFulfilled() ? 'OK' : ($requirement->isOptional() ? 'WARNING' : 'ERROR');
-    echo ' ' . str_pad($title, 9);
+    $result = $requirement->isFulfilled() ? 'OK' : ($requirement->isOptional() ? 'WARNING' : 'ERROR');
+    echo ' ' . str_pad($result, 9);
     echo $requirement->getTestMessage() . "\n";
 
     if (!$requirement->isFulfilled()) {

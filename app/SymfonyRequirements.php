@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\StandardEdition;
-
 /**
  * This class specifies all requirements and optional recommendations that
  * are necessary to run the Symfony Standard Edition.
+ *
+ * Users of PHP 5.2 should be able to run the requirements checks.
+ * This is why the class must be compatible with PHP 5.2
+ * (e.g. not using namespaces and closures).
  *
  * @author Tobias Schultze <http://tobion.de>
  */
@@ -247,7 +249,7 @@ class SymfonyRequirements
         );
 
         if (class_exists('PDO')) {
-            $drivers = \PDO::getAvailableDrivers();
+            $drivers = PDO::getAvailableDrivers();
             $this->requirements[] = new Requirement(
                 count($drivers),
                 sprintf('PDO should have some drivers installed (currently available: %s)', implode(', ', $drivers) ?: 'none'),
@@ -275,9 +277,19 @@ class SymfonyRequirements
      */
     public function getRequirements()
     {
+        $array = array();
+        foreach ($this->requirements as $req) {
+            if (!$req->isOptional()) {
+                $array[] = $req;
+            }
+        }
+
+        return $array;
+
+        /* for reference: abandoned version using closures available since PHP 5.3
         return array_filter($this->requirements, function ($req) {
             return !$req->isOptional();
-        });
+        }); */
     }
 
     /**
@@ -287,9 +299,14 @@ class SymfonyRequirements
      */
     public function getFailedRequirements()
     {
-        return array_filter($this->requirements, function ($req) {
-            return !$req->isFulfilled() && !$req->isOptional();
-        });
+        $array = array();
+        foreach ($this->requirements as $req) {
+            if (!$req->isFulfilled() && !$req->isOptional()) {
+                $array[] = $req;
+            }
+        }
+
+        return $array;
     }
 
     /**
@@ -299,9 +316,14 @@ class SymfonyRequirements
      */
     public function getRecommendations()
     {
-        return array_filter($this->requirements, function ($req) {
-            return $req->isOptional();
-        });
+        $array = array();
+        foreach ($this->requirements as $req) {
+            if ($req->isOptional()) {
+                $array[] = $req;
+            }
+        }
+
+        return $array;
     }
 
     /**
@@ -311,9 +333,14 @@ class SymfonyRequirements
      */
     public function getFailedRecommendations()
     {
-        return array_filter($this->requirements, function ($req) {
-            return !$req->isFulfilled() && $req->isOptional();
-        });
+        $array = array();
+        foreach ($this->requirements as $req) {
+            if (!$req->isFulfilled() && $req->isOptional()) {
+                $array[] = $req;
+            }
+        }
+
+        return $array;
     }	
 
     /**
@@ -374,8 +401,8 @@ class Requirement
         $this->testMessage = $testMessage;
         $this->helpText = $helpText;
         $this->helpHtml = $helpHtml ?: $helpText;
-        $this->optional = $optional;
-        $this->phpIniConfig = $phpIniConfig;
+        $this->optional = (Boolean) $optional;
+        $this->phpIniConfig = (Boolean) $phpIniConfig;
     }
 
     /**

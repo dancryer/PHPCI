@@ -12,7 +12,7 @@ echo "*  Symfony requirements check  *\n";
 echo "*                              *\n";
 echo "********************************\n\n";
 
-echo sprintf("Configuration file used by PHP: %s\n\n", $iniPath);
+echo sprintf("* Configuration file used by PHP: %s\n\n", $iniPath);
 
 echo "** ATTENTION **\n";
 echo "*  The PHP CLI can use a different php.ini file\n";

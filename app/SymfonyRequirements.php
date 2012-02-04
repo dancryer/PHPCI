@@ -165,7 +165,7 @@ class SymfonyRequirements
             if (defined('INTL_ICU_VERSION')) {
                 $version =  INTL_ICU_VERSION;
             } else {
-                $reflector = new \ReflectionExtension('intl');
+                $reflector = new ReflectionExtension('intl');
 
                 ob_start();
                 $reflector->info();
@@ -202,7 +202,7 @@ class SymfonyRequirements
 
         $this->requirements[] = new Requirement(
             !ini_get('short_open_tag'),
-            'php.ini has short_open_tag set to off',
+            'short_open_tag should be disabled in php.ini',
             'Set <strong>short_open_tag</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
             null,
             true, true
@@ -210,7 +210,7 @@ class SymfonyRequirements
 
         $this->requirements[] = new Requirement(
             !ini_get('magic_quotes_gpc'),
-            'php.ini has magic_quotes_gpc set to off',
+            'magic_quotes_gpc should be disabled in php.ini',
             'Set <strong>magic_quotes_gpc</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
             null,
             true, true
@@ -218,7 +218,7 @@ class SymfonyRequirements
 
         $this->requirements[] = new Requirement(
             !ini_get('register_globals'),
-            'php.ini has register_globals set to off',
+            'register_globals should be disabled in php.ini',
             'Set <strong>register_globals</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
             null,
             true, true
@@ -226,7 +226,7 @@ class SymfonyRequirements
 
         $this->requirements[] = new Requirement(
             !ini_get('session.auto_start'),
-            'php.ini has session.auto_start set to off',
+            'session.auto_start should be disabled in php.ini',
             'Set <strong>session.auto_start</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
             null,
             true, true
@@ -244,7 +244,7 @@ class SymfonyRequirements
             $drivers = PDO::getAvailableDrivers();
             $this->requirements[] = new Requirement(
                 count($drivers),
-                sprintf('PDO should have some drivers installed (currently available: %s)', implode(', ', $drivers) ?: 'none'),
+                sprintf('PDO should have some drivers installed (currently available: %s)', count($drivers) ? implode(', ', $drivers) : 'none'),
                 'Install <strong>PDO drivers</strong> (mandatory for Doctrine).',
                 null,
                 true
@@ -392,7 +392,7 @@ class Requirement
         $this->fulfilled = (Boolean) $fulfilled;
         $this->testMessage = $testMessage;
         $this->helpHtml = $helpHtml;
-        $this->helpText = $helpText ?: strip_tags($helpHtml);
+        $this->helpText = $helpText ? $helpText : strip_tags($helpHtml);
         $this->optional = (Boolean) $optional;
         $this->phpIniConfig = (Boolean) $phpIniConfig;
     }

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/SymfonyRequirements.php';
+require_once dirname(__FILE__).'/SymfonyRequirements.php';
 
 $symfonyRequirements = new SymfonyRequirements();
 

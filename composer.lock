@@ -1,13 +1,9 @@
 {
-    "hash": "b31c6f72e06d374fdd7eccbfe3043013",
+    "hash": "47931c0f0bbdfc6cee14739ffd23e969",
     "packages": [
         {
             "package": "jms\/metadata",
             "version": "1.1.1"
-        },
-        {
-            "package": "jms\/security-extra-bundle",
-            "version": "1.0.x-dev"
         },
         {
             "package": "twig\/twig",
@@ -34,10 +30,6 @@
             "version": "1.1.0"
         },
         {
-            "package": "sensio\/generator-bundle",
-            "version": "master-dev"
-        },
-        {
             "package": "sensio\/framework-extra-bundle",
             "version": "2.0-dev"
         },
@@ -46,24 +38,40 @@
             "version": "2.0-dev"
         },
         {
-            "package": "symfony\/assetic-bundle",
-            "version": "master-dev"
-        },
-        {
             "package": "twig\/extensions",
             "version": "master-dev"
         },
         {
+            "package": "jms\/cg",
+            "version": "1.0.0"
+        },
+        {
+            "package": "jms\/aop-bundle",
+            "version": "1.0.0"
+        },
+        {
+            "package": "sensio\/generator-bundle",
+            "version": "2.0-dev"
+        },
+        {
+            "package": "symfony\/assetic-bundle",
+            "version": "2.0-dev"
+        },
+        {
             "package": "doctrine\/orm",
-            "version": "2.1.4"
+            "version": "2.1.6"
         },
         {
             "package": "doctrine\/dbal",
-            "version": "2.1.5"
+            "version": "2.1.6"
         },
         {
             "package": "symfony\/symfony",
-            "version": "2.0.7"
+            "version": "v2.0.10"
+        },
+        {
+            "package": "jms\/security-extra-bundle",
+            "version": "1.0.x-dev"
         }
     ]
 }

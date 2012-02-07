@@ -27,6 +27,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
         ]
     },
+    "config": {
+        "bin-dir": "bin"
+    },
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web"

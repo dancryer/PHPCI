@@ -119,7 +119,7 @@ playing with it, you can remove it by following these steps:
 What's inside?
 ---------------
 The Symfony Standard Edition comes pre-configured with the following bundles:
-	
+
 * **FrameworkBundle** - The core Symfony framework bundle
 * **SensioFrameworkExtraBundle** - Adds several enhancements, including template
   and routing annotation capability ([documentation](http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html))

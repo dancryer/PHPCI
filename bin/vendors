@@ -138,7 +138,7 @@ foreach ($deps as $name => $dep) {
 if ('update' === $command || 'lock' === $command) {
     echo '> Updating deps.lock'.PHP_EOL;
 
-    file_put_contents($rootDir.'/deps.lock', implode("\n", $newversions));
+    file_put_contents($rootDir.'/deps.lock', implode("\n", $newversions)."\n");
 }
 
 // php on windows can't use the shebang line from system()

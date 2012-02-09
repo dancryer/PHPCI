@@ -1,6 +1,14 @@
 {
-    "hash": "92e6d0b9c1eab4b0a1750d37303188cd",
+    "hash": "7a061167f0b3ee8bda205c519fc5bd94",
     "packages": [
+        {
+            "package": "swiftmailer\/swiftmailer",
+            "version": "4.1.6-dev"
+        },
+        {
+            "package": "twig\/twig",
+            "version": "1.7.0-dev"
+        },
         {
             "package": "jms\/cg",
             "version": "1.0.0"
@@ -23,11 +31,7 @@
         },
         {
             "package": "doctrine\/common",
-            "version": "master-dev"
-        },
-        {
-            "package": "jms\/metadata",
-            "version": "master-dev"
+            "version": "2.2.0"
         },
         {
             "package": "jms\/security-extra-bundle",
@@ -67,11 +71,11 @@
         },
         {
             "package": "doctrine\/orm",
-            "version": "master-dev"
+            "version": "2.2.0"
         },
         {
             "package": "doctrine\/dbal",
-            "version": "master-dev"
+            "version": "2.2.1"
         },
         {
             "package": "symfony\/symfony",

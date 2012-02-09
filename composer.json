@@ -5,8 +5,7 @@
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": "2.1.0-dev",
-        "doctrine/dbal": "master-dev",
-        "doctrine/orm": "master-dev",
+        "doctrine/orm": "2.2.0",
         "doctrine/doctrine-bundle": "master-dev",
         "twig/extensions": "master-dev",
         "symfony/assetic-bundle": "2.1.0-dev",
@@ -15,8 +14,7 @@
         "sensio/distribution-bundle": "master-dev",
         "sensio/framework-extra-bundle": "master-dev",
         "sensio/generator-bundle": "master-dev",
-        "jms/security-extra-bundle": "master-dev",
-        "jms/metadata": "master-dev"
+        "jms/security-extra-bundle": "master-dev"
     },
     "scripts": {
         "post-install-cmd": [

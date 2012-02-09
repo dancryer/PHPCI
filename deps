@@ -70,3 +70,8 @@
     git=http://github.com/symfony/SwiftmailerBundle.git
     target=/bundles/Symfony/Bundle/SwiftmailerBundle
     version=origin/master
+
+[MonologBundle]
+    git=http://github.com/symfony/MonologBundle.git
+    target=/bundles/Symfony/Bundle/MonologBundle
+    version=origin/master

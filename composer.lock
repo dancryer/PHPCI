@@ -1,77 +1,81 @@
 {
-    "hash": "47931c0f0bbdfc6cee14739ffd23e969",
+    "hash": "92e6d0b9c1eab4b0a1750d37303188cd",
     "packages": [
-        {
-            "package": "jms\/metadata",
-            "version": "1.1.1"
-        },
-        {
-            "package": "twig\/twig",
-            "version": "1.4.0"
-        },
-        {
-            "package": "swiftmailer\/swiftmailer",
-            "version": "4.1.6-dev"
-        },
-        {
-            "package": "monolog\/monolog",
-            "version": "1.0.2"
-        },
-        {
-            "package": "doctrine\/common",
-            "version": "2.1.x-dev"
-        },
-        {
-            "package": "kriswallsmith\/assetic",
-            "version": "master-dev"
-        },
-        {
-            "package": "metadata\/metadata",
-            "version": "1.1.0"
-        },
-        {
-            "package": "sensio\/framework-extra-bundle",
-            "version": "2.0-dev"
-        },
-        {
-            "package": "sensio\/distribution-bundle",
-            "version": "2.0-dev"
-        },
-        {
-            "package": "twig\/extensions",
-            "version": "master-dev"
-        },
         {
             "package": "jms\/cg",
             "version": "1.0.0"
+        },
+        {
+            "package": "jms\/metadata",
+            "version": "1.1.1"
         },
         {
             "package": "jms\/aop-bundle",
             "version": "1.0.0"
         },
         {
-            "package": "sensio\/generator-bundle",
-            "version": "2.0-dev"
+            "package": "symfony\/swiftmailer-bridge",
+            "version": "2.1.0-dev"
         },
         {
-            "package": "symfony\/assetic-bundle",
-            "version": "2.0-dev"
+            "package": "kriswallsmith\/assetic",
+            "version": "1.1.0-dev"
         },
         {
-            "package": "doctrine\/orm",
-            "version": "2.1.6"
+            "package": "doctrine\/common",
+            "version": "master-dev"
         },
         {
-            "package": "doctrine\/dbal",
-            "version": "2.1.6"
-        },
-        {
-            "package": "symfony\/symfony",
-            "version": "v2.0.10"
+            "package": "jms\/metadata",
+            "version": "master-dev"
         },
         {
             "package": "jms\/security-extra-bundle",
-            "version": "1.0.x-dev"
+            "version": "master-dev"
+        },
+        {
+            "package": "sensio\/generator-bundle",
+            "version": "master-dev"
+        },
+        {
+            "package": "sensio\/framework-extra-bundle",
+            "version": "master-dev"
+        },
+        {
+            "package": "sensio\/distribution-bundle",
+            "version": "master-dev"
+        },
+        {
+            "package": "symfony\/monolog-bundle",
+            "version": "2.1.0-dev"
+        },
+        {
+            "package": "symfony\/swiftmailer-bundle",
+            "version": "2.1.0-dev"
+        },
+        {
+            "package": "symfony\/assetic-bundle",
+            "version": "2.1.0-dev"
+        },
+        {
+            "package": "twig\/extensions",
+            "version": "master-dev"
+        },
+        {
+            "package": "doctrine\/doctrine-bundle",
+            "version": "master-dev"
+        },
+        {
+            "package": "doctrine\/orm",
+            "version": "master-dev"
+        },
+        {
+            "package": "doctrine\/dbal",
+            "version": "master-dev"
+        },
+        {
+            "package": "symfony\/symfony",
+            "version": "2.1.0-dev"
         }
     ]
 }

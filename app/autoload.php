@@ -22,9 +22,9 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 // intl
 if (!function_exists('intl_get_error_code')) {
-    require_once __DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+    require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 
-    $loader->add('', __DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs');
+    $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
 }
 
 if (!interface_exists('SessionHandlerInterface', false)) {

@@ -27,14 +27,15 @@ if (!function_exists('intl_get_error_code')) {
 
     $loader->registerPrefixFallback(__DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs');
 }
+
 if (!interface_exists('SessionHandlerInterface', false)) {
     $loader->registerPrefix('SessionHandlerInterface', __DIR__.'/../vendor/symfony/src/Symfony/Component/HttpFoundation/Resources/stubs');
 }
-$loader->register();
 
 $loader->registerNamespaceFallbacks(array(
     __DIR__.'/../src',
 ));
+
 $loader->register();
 
 AnnotationRegistry::registerLoader(function($class) use ($loader) {
@@ -47,4 +48,3 @@ AnnotationRegistry::registerFile(__DIR__.'/../vendor/doctrine/lib/Doctrine/ORM/M
 // the lazy loading of the init file (which is expensive)
 require_once __DIR__.'/../vendor/swiftmailer/lib/classes/Swift.php';
 Swift::registerAutoload(__DIR__.'/../vendor/swiftmailer/lib/swift_init.php');
-

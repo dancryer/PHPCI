@@ -122,6 +122,17 @@ if (!ini_get('date.timezone')) {
     $majorProblems[] = 'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).';
 }
 
+if (ini_get('detect_unicode')) {
+    $phpini = true;
+    $majorProblems[] = 'Set the "<strong>detect_unicode</strong>" to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
+}
+
+$suhosin = ini_get('suhosin.executor.include.whitelist');
+if (false !== $suhosin && false === stripos($suhosin, 'phar')) {
+    $phpini = true;
+    $majorProblems[] = 'Set the "<strong>suhosin.executor.include.whitelist</strong>" to "<strong>phar'.($suhosin?' '.$suhosin:'').'</strong>" in php.ini<a href="#phpini">*</a>.';
+}
+
 if (ini_get('short_open_tag')) {
     $phpini = true;
     $minorProblems[] = 'Set <strong>short_open_tag</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';

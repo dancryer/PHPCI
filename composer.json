@@ -1,0 +1,38 @@
+{
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": "2.1.*",
+        "doctrine/orm": "2.2.0",
+        "doctrine/doctrine-bundle": "dev-master",
+        "twig/extensions": "dev-master",
+        "symfony/assetic-bundle": "dev-master",
+        "symfony/swiftmailer-bundle": "dev-master",
+        "symfony/monolog-bundle": "dev-master",
+        "sensio/distribution-bundle": "dev-master",
+        "sensio/framework-extra-bundle": "dev-master",
+        "sensio/generator-bundle": "dev-master",
+        "jms/security-extra-bundle": "dev-master"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
+        ],
+        "post-update-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web"
+    }
+}

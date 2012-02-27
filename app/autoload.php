@@ -1,50 +1,39 @@
 <?php
 
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
+if (!$loader = include __DIR__.'/../vendor/.composer/autoload.php') {
+    $nl = PHP_SAPI === 'cli' ? PHP_EOL : '<br />';
+    echo "$nl$nl";
+    if (is_writable(dirname(__DIR__)) && $installer = @file_get_contents('http://getcomposer.org/installer')) {
+        echo 'You must set up the project dependencies.'.$nl;
+        $installerPath = dirname(__DIR__).'/install-composer.php';
+        file_put_contents($installerPath, $installer);
+        echo 'The composer installer has been downloaded in '.$installerPath.$nl;
+        die('Run the following commands in '.dirname(__DIR__).':'.$nl.$nl.
+            'php install-composer.php'.$nl.
+            'php composer.phar install'.$nl);
+    }
+    die('You must set up the project dependencies.'.$nl.
+        'Run the following commands in '.dirname(__DIR__).':'.$nl.$nl.
+        'curl -s http://getcomposer.org/installer | php'.$nl.
+        'php composer.phar install'.$nl);
+}
 
-$loader = new UniversalClassLoader();
-$loader->registerNamespaces(array(
-    'Symfony'          => array(__DIR__.'/../vendor/symfony/src', __DIR__.'/../vendor/bundles'),
-    'Sensio'           => __DIR__.'/../vendor/bundles',
-    'JMS'              => __DIR__.'/../vendor/bundles',
-    'Doctrine\\Bundle' => __DIR__.'/../vendor/bundles',
-    'Doctrine\\Common' => __DIR__.'/../vendor/doctrine-common/lib',
-    'Doctrine\\DBAL'   => __DIR__.'/../vendor/doctrine-dbal/lib',
-    'Doctrine'         => __DIR__.'/../vendor/doctrine/lib',
-    'Monolog'          => __DIR__.'/../vendor/monolog/src',
-    'Assetic'          => __DIR__.'/../vendor/assetic/src',
-    'Metadata'         => __DIR__.'/../vendor/metadata/src',
-));
-$loader->registerPrefixes(array(
-    'Twig_Extensions_' => __DIR__.'/../vendor/twig-extensions/lib',
-    'Twig_'            => __DIR__.'/../vendor/twig/lib',
-));
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 // intl
 if (!function_exists('intl_get_error_code')) {
-    require_once __DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+    require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 
-    $loader->registerPrefixFallback(__DIR__.'/../vendor/symfony/src/Symfony/Component/Locale/Resources/stubs');
+    $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
 }
 
 if (!interface_exists('SessionHandlerInterface', false)) {
-    $loader->registerPrefix('SessionHandlerInterface', __DIR__.'/../vendor/symfony/src/Symfony/Component/HttpFoundation/Resources/stubs');
+    $loader->add('SessionHandlerInterface', __DIR__.'/../vendor/symfony/src/Symfony/Component/HttpFoundation/Resources/stubs');
 }
 
-$loader->registerNamespaceFallbacks(array(
-    __DIR__.'/../src',
-));
-
-$loader->register();
-
-AnnotationRegistry::registerLoader(function($class) use ($loader) {
-    $loader->loadClass($class);
-    return class_exists($class, false);
-});
-AnnotationRegistry::registerFile(__DIR__.'/../vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
 // Swiftmailer needs a special autoloader to allow
 // the lazy loading of the init file (which is expensive)
-require_once __DIR__.'/../vendor/swiftmailer/lib/classes/Swift.php';
-Swift::registerAutoload(__DIR__.'/../vendor/swiftmailer/lib/swift_init.php');
+require_once __DIR__.'/../vendor/swiftmailer/swiftmailer/lib/classes/Swift.php';
+Swift::registerAutoload(__DIR__.'/../vendor/swiftmailer/swiftmailer/lib/swift_init.php');

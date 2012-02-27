@@ -4,17 +4,17 @@
     },
     "require": {
         "php": ">=5.3.2",
-        "symfony/symfony": "2.1.0-dev",
+        "symfony/symfony": "2.1.*",
         "doctrine/orm": "2.2.0",
-        "doctrine/doctrine-bundle": "master-dev",
-        "twig/extensions": "master-dev",
-        "symfony/assetic-bundle": "2.1.0-dev",
-        "symfony/swiftmailer-bundle": "2.1.0-dev",
-        "symfony/monolog-bundle": "2.1.0-dev",
-        "sensio/distribution-bundle": "master-dev",
-        "sensio/framework-extra-bundle": "master-dev",
-        "sensio/generator-bundle": "master-dev",
-        "jms/security-extra-bundle": "master-dev"
+        "doctrine/doctrine-bundle": "dev-master",
+        "twig/extensions": "dev-master",
+        "symfony/assetic-bundle": "dev-master",
+        "symfony/swiftmailer-bundle": "dev-master",
+        "symfony/monolog-bundle": "dev-master",
+        "sensio/distribution-bundle": "dev-master",
+        "sensio/framework-extra-bundle": "dev-master",
+        "sensio/generator-bundle": "dev-master",
+        "jms/security-extra-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

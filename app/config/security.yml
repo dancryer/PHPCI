@@ -1,3 +1,7 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
 security:
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext

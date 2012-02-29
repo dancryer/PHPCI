@@ -1,4 +1,5 @@
 {
+    "name": "symfony/framework-standard-edition",
     "autoload": {
         "psr-0": { "": "src/" }
     },

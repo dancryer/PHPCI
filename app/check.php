@@ -36,7 +36,7 @@ check(function_exists('simplexml_import_dom'), 'Checking that the simplexml_impo
 check(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compare(phpversion('apc'), '3.0.17', '>='), 'Checking that the APC version is at least 3.0.17', 'Upgrade your APC extension (3.0.17+)', true);
 check(!ini_get('detect_unicode'), 'Checking that php.ini has detect_unicode set to off', 'Set detect_unicode to off in php.ini', true);
 $suhosin = ini_get('suhosin.executor.include.whitelist');
-check(false === $suhosin || true === stripos($suhosin, 'phar'), 'Checking that php.ini has suhosin.executor.include.whitelist correctly configured', 'Set suhosin.executor.include.whitelist to "phar'.($suhosin? ' '.$suhosin:'').'"  in php.ini', true);
+check(false === $suhosin || false !== stripos($suhosin, 'phar'), 'Checking that php.ini has suhosin.executor.include.whitelist correctly configured', 'Set suhosin.executor.include.whitelist to "phar'.($suhosin? ' '.$suhosin:'').'"  in php.ini', true);
 
 // warnings
 echo_title("Optional checks");

@@ -155,11 +155,11 @@ if (ini_get('session.auto_start')) {
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta charset="UTF-8" />
         <?php if (!$vendorsAreMissing): ?>
-        <link href="bundles/sensiodistribution/webconfigurator/css/install.css" rel="stylesheet" type="text/css" media="all" />
+        <link rel="stylesheet" href="bundles/sensiodistribution/webconfigurator/css/install.css" />
         <?php endif; ?>
         <title>Symfony Configuration</title>
     </head>
@@ -169,19 +169,20 @@ if (ini_get('session.auto_start')) {
                 <div class="symfony-blocks-install">
                     <?php if (!$vendorsAreMissing): ?>
                     <div class="symfony-block-logo">
-                        <img src="bundles/sensiodistribution/webconfigurator/images/logo-big.gif" alt="sf_symfony" />
+                        <img src="bundles/sensiodistribution/webconfigurator/images/logo-big.gif" alt="Symfony logo" />
                     </div>
                     <?php endif; ?>
 
                     <div class="symfony-block-content">
                         <h1>Welcome!</h1>
                         <p>Welcome to your new Symfony project.</p>
-                        <p>This script will guide you through the basic configuration of your project. You can also do the same by editing the ‘<strong>app/config/parameters.yml</strong>’ file directly.</p>
+                        <p>
+                            This script will guide you through the basic configuration of your project. 
+                            You can also do the same by editing the ‘<strong>app/config/parameters.yml</strong>’ file directly.
+                        </p>
 
                         <?php if (count($majorProblems)): ?>
-                            <h2>
-                                <span><?php echo count($majorProblems) ?> Major problems</span>
-                            </h2>
+                            <h2><?php echo count($majorProblems) ?> Major problems</h2>
                             <p>Major problems have been detected and <strong>must</strong> be fixed before continuing:</p>
                             <ol>
                                 <?php foreach ($majorProblems as $problem): ?>
@@ -192,19 +193,19 @@ if (ini_get('session.auto_start')) {
 
                         <?php if (count($minorProblems)): ?>
                             <h2>Recommendations</h2>
-                        <p>
-                            <?php if ($majorProblems): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience, it’s recommended that you fix the following:
-                        </p>
-                        <ol>
-                            <?php foreach ($minorProblems as $problem): ?>
-                                <li><?php echo $problem ?></li>
-                            <?php endforeach; ?>
-                        </ol>
+                            <p>
+                                <?php if ($majorProblems): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience, 
+                                it’s recommended that you fix the following:
+                            </p>
+                            <ol>
+                                <?php foreach ($minorProblems as $problem): ?>
+                                    <li><?php echo $problem ?></li>
+                                <?php endforeach; ?>
+                            </ol>
                         <?php endif; ?>
 
                         <?php if ($phpini): ?>
-                            <a id="phpini"></a>
-                            <p>*
+                            <p id="phpini">*
                                 <?php if (get_cfg_var('cfg_file_path')): ?>
                                     Changes to the <strong>php.ini</strong> file must be done in "<strong><?php echo get_cfg_var('cfg_file_path') ?></strong>".
                                 <?php else: ?>

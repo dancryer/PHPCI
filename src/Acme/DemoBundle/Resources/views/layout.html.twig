@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" href="{{ asset('bundles/acmedemo/css/demo.css') }}" type="text/css" media="all" />
+        <meta charset="UTF-8" />
         <title>{% block title %}Demo Bundle{% endblock %}</title>
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" sizes="16x16" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/acmedemo/css/demo.css') }}" />
     </head>
     <body>
         <div id="symfony-wrapper">
             <div id="symfony-header">
                 <a href="{{ path('_welcome') }}">
-                    <img src="{{ asset('bundles/acmedemo/images/logo.gif') }}" alt="Symfony">
+                    <img src="{{ asset('bundles/acmedemo/images/logo.gif') }}" alt="Symfony logo">
                 </a>
                 <form id="symfony-search" method="GET" action="http://symfony.com/search">
                     <label for="symfony-search-field"><span>Search on Symfony Website</span></label>

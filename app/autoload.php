@@ -27,10 +27,6 @@ if (!function_exists('intl_get_error_code')) {
     $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
 }
 
-if (!interface_exists('SessionHandlerInterface', false)) {
-    $loader->add('SessionHandlerInterface', __DIR__.'/../vendor/symfony/src/Symfony/Component/HttpFoundation/Resources/stubs');
-}
-
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
 // Swiftmailer needs a special autoloader to allow

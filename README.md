@@ -30,7 +30,7 @@ looks when you access `http://localhost` in a browser.
 We highly recommend that you download the packaged version of this distribution.
 But if you still want to use Git, you are on your own.
 
-Run the following commands:
+Run the following commands::
 
     git clone http://github.com/symfony/symfony-standard.git
     cd symfony-standard
@@ -45,7 +45,7 @@ involves making sure your system is ready for Symfony.
 ### a) Check your System Configuration
 
 Before you begin, make sure that your local system is properly configured
-for Symfony. To do this, execute the following:
+for Symfony. To do this, execute the following::
 
     php app/check.php
 
@@ -57,7 +57,7 @@ If you downloaded the archive "without vendors" or installed via git, then
 you need to download all of the necessary vendor libraries. If you're not
 sure if you need to do this, check to see if you have a ``vendor/`` directory.
 If you don't, or if that directory is empty, download composer following the
-instructions on http://getcomposer.org/ and then run the following:
+instructions on http://getcomposer.org/ and then run the following::
 
     php composer.phar install
 
@@ -65,7 +65,7 @@ instructions on http://getcomposer.org/ and then run the following:
 
 Congratulations! You're now ready to use Symfony. If you've unzipped Symfony
 in the web root of your computer, then you should be able to access the
-web version of the Symfony requirements check via:
+web version of the Symfony requirements check via::
 
     http://localhost/Symfony/web/config.php
 
@@ -75,7 +75,7 @@ link to load up your first Symfony page.
 You can also use a web-based configurator by clicking on the "Configure your
 Symfony Application online" link of the ``config.php`` page.
 
-To see a real-live Symfony page in action, access the following page:
+To see a real-live Symfony page in action, access the following page::
 
     web/app_dev.php/demo/hello/Fabien
 
@@ -111,7 +111,6 @@ playing with it, you can remove it by following these steps:
 * delete the ``src/Acme`` directory;
 * remove the routing entries referencing AcmeBundle in ``app/config/routing_dev.yml``;
 * remove the AcmeBundle from the registered bundles in ``app/AppKernel.php``;
-
 
 What's inside?
 ---------------

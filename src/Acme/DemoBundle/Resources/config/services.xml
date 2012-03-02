@@ -10,7 +10,7 @@
             <argument type="service" id="twig.loader" />
         </service>
 
-        <service id="acme.demo.listener" class="Acme\DemoBundle\ControllerListener">
+        <service id="acme.demo.listener" class="Acme\DemoBundle\EventListener\ControllerListener">
             <tag name="kernel.event_listener" event="kernel.controller" method="onKernelController" />
             <argument type="service" id="twig.extension.acme.demo" />
         </service>

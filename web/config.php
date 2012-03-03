@@ -28,8 +28,8 @@ EOF;
 
 if (!is_dir(__DIR__.'/../vendor/symfony')) {
     $vendorsAreMissing = true;
-    $majorProblems[] = '<strong>CRITICAL</strong>: Vendor libraries are missing. Run
-        "<strong>bin/vendors install</strong>" to install them.';
+    $majorProblems[] = '<strong>CRITICAL</strong>: Vendor libraries are missing. Install composer following instructions from: <a href="http://getcomposer.org/">http://getcomposer.org/</a>. Then run
+        "<strong>php composer.phar install</strong>" to install them.';
 } else {
     $vendorsAreMissing = false;
 }

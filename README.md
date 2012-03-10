@@ -111,7 +111,7 @@ playing with it, you can remove it by following these steps:
 * delete the ``src/Acme`` directory;
 * remove the routing entries referencing AcmeBundle in ``app/config/routing_dev.yml``;
 * remove the AcmeBundle from the registered bundles in ``app/AppKernel.php``;
-* remove the ``web/bundles/acmedemo`` directory
+* remove the ``web/bundles/acmedemo`` directory.
 
 What's inside?
 ---------------

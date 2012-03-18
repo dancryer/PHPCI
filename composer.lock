@@ -1,5 +1,5 @@
 {
-    "hash": "ae2c4420f240dce0c7c5292bd8d817c5",
+    "hash": "046935a2c834daba47d9532dd2975f35",
     "packages": [
         {
             "package": "doctrine/common",
@@ -27,13 +27,16 @@
             "version": "1.0.0"
         },
         {
+            "package": "jms/di-extra-bundle",
+            "version": "1.0.1"
+        },
+        {
             "package": "jms/metadata",
             "version": "1.1.1"
         },
         {
             "package": "jms/security-extra-bundle",
-            "version": "dev-master",
-            "source-reference": "e43b9a5b5456bb8dd5b07bed7f776a7c233e2091"
+            "version": "1.1.0"
         },
         {
             "package": "kriswallsmith/assetic",

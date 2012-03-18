@@ -15,7 +15,8 @@
         "sensio/distribution-bundle": "dev-master",
         "sensio/framework-extra-bundle": "dev-master",
         "sensio/generator-bundle": "dev-master",
-        "jms/security-extra-bundle": "dev-master"
+        "jms/security-extra-bundle": "1.1.0",
+        "jms/di-extra-bundle": "1.0.1"
     },
     "scripts": {
         "post-install-cmd": [

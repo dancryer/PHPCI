@@ -55,7 +55,7 @@
         {
             "package": "sensio/framework-extra-bundle",
             "version": "dev-master",
-            "source-reference": "d371c21a464b9f1ac6bfebf643e14a4d88acd2d8"
+            "source-reference": "6e3cccb66d3577fdbd5b6935a5d6b8bed8d47768"
         },
         {
             "package": "sensio/generator-bundle",

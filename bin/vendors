@@ -75,7 +75,7 @@ foreach ($deps as $name => $dep) {
 
     // install dir
     $installDir = isset($dep['target']) ? $vendorDir.'/'.$dep['target'] : $vendorDir.'/'.$name;
-    if (in_array('--reinstall', $argv)) {
+    if (in_array('--reinstall', $argv) && realpath($installDir)) {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
         } else {

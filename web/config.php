@@ -141,8 +141,8 @@ if (ini_get('session.auto_start')) {
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <link href="bundles/sensiodistribution/webconfigurator/css/install.css" rel="stylesheet" type="text/css" media="all" />
+        <meta charset="UTF-8" />
+        <link href="bundles/sensiodistribution/webconfigurator/css/install.css" rel="stylesheet" media="all" />
         <title>Symfony Configuration</title>
     </head>
     <body>

@@ -1,9 +1,9 @@
 {
-    "hash": "046935a2c834daba47d9532dd2975f35",
+    "hash": "9f166bb300e1950423791597a6b42562",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.2.0"
+            "version": "2.2.1"
         },
         {
             "package": "doctrine/dbal",
@@ -12,7 +12,7 @@
         {
             "package": "doctrine/doctrine-bundle",
             "version": "dev-master",
-            "source-reference": "caecd032878c45c05a962d6ddfac4f45a7a39fb1"
+            "source-reference": "90e39fb7ff5b4c13577602dab7e08c90067160b4"
         },
         {
             "package": "doctrine/orm",
@@ -41,7 +41,7 @@
         {
             "package": "kriswallsmith/assetic",
             "version": "dev-master",
-            "source-reference": "58e9c45aa27be35d16add0394e1e254b82f3f914"
+            "source-reference": "2634d29cc193981761e3daf28e1afc6358bb43b1"
         },
         {
             "package": "monolog/monolog",
@@ -55,12 +55,12 @@
         {
             "package": "sensio/framework-extra-bundle",
             "version": "dev-master",
-            "source-reference": "1b0ca00361050760f14f70be6f3a31f125211f3d"
+            "source-reference": "d371c21a464b9f1ac6bfebf643e14a4d88acd2d8"
         },
         {
             "package": "sensio/generator-bundle",
             "version": "dev-master",
-            "source-reference": "fe924497677ea41d0d09f0c011e55142bda12cd7"
+            "source-reference": "43c5c95e42e451ac7250d6a863f0540c7f266e1d"
         },
         {
             "package": "swiftmailer/swiftmailer",
@@ -69,7 +69,7 @@
         {
             "package": "symfony/assetic-bundle",
             "version": "dev-master",
-            "source-reference": "da4a46ce37557dcf3068b8493b12bdbbe47455e2"
+            "source-reference": "b9cff021abc3d9433a892fa9908d9856393c0d09"
         },
         {
             "package": "symfony/monolog-bundle",
@@ -89,7 +89,7 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "3de31c62d6d695477803d797177fbfe2a2fa3ef5",
+            "source-reference": "3d84153d687c285b1356683298531421ec108359",
             "alias": "2.1.9999999.9999999-dev"
         },
         {
@@ -99,7 +99,7 @@
         },
         {
             "package": "twig/twig",
-            "version": "1.6.0"
+            "version": "1.6.2"
         }
     ],
     "aliases": []

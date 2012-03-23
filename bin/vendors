@@ -22,9 +22,10 @@ Symfony2 vendors script management.
 
 Specify a command to run:
 
- install: install vendors as specified in deps or deps.lock (recommended)
- update:  update vendors to their latest versions (as specified in deps)
- lock:  lock vendors to their current versions
+    install: install vendors as specified in deps or deps.lock (recommended)
+    update:  update vendors to their latest versions (as specified in deps)
+    lock:    lock vendors to their current versions
+
 
 EOF
     );
@@ -84,7 +85,7 @@ foreach ($deps as $name => $dep) {
     }
 
     if ('install' === $command || 'update' === $command) {
-        echo '> Installing/Updating '.$name.PHP_EOL;
+        echo PHP_EOL.'> Installing/Updating '.$name.PHP_EOL;
 
         // url
         if (!isset($dep['git'])) {
@@ -136,7 +137,7 @@ foreach ($deps as $name => $dep) {
 
 // update?
 if ('update' === $command || 'lock' === $command) {
-    echo '> Updating deps.lock'.PHP_EOL;
+    echo PHP_EOL.'> Updating deps.lock'.PHP_EOL;
 
     file_put_contents($rootDir.'/deps.lock', implode("\n", $newversions)."\n");
 }

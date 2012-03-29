@@ -21,6 +21,8 @@
  */
 class SymfonyRequirements
 {
+    const REQUIRED_PHP_VERSION = '5.3.2';
+
     private $requirements;
 
     /**
@@ -32,23 +34,22 @@ class SymfonyRequirements
 
         /* mandatory requirements follow */
 
-        $requiredVersion = '5.3.2';
-        $installedVersion = phpversion();
+        $installedPhpVersion = phpversion();
 
         $this->requirements[] = new Requirement(
-            version_compare($installedVersion, $requiredVersion, '>='),
-            sprintf('PHP version must be at least %s (%s installed)', $requiredVersion, $installedVersion),
+            version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>='),
+            sprintf('PHP version must be at least %s (%s installed)', self::REQUIRED_PHP_VERSION, $installedPhpVersion),
             sprintf('You are running PHP version "<strong>%s</strong>", but Symfony needs at least PHP "<strong>%s</strong>" to run.
                 Before using Symfony, upgrade your PHP installation, preferably to the latest version.',
-                $installedVersion, $requiredVersion),
-            sprintf('Install PHP %s or newer (installed version is %s)', $requiredVersion, $installedVersion)
+                $installedPhpVersion, self::REQUIRED_PHP_VERSION),
+            sprintf('Install PHP %s or newer (installed version is %s)', self::REQUIRED_PHP_VERSION, $installedPhpVersion)
         );
 
         $this->requirements[] = new Requirement(
             is_dir(__DIR__.'/../vendor/symfony'),
             'Vendor libraries must be installed',
-            '<strong>CRITICAL</strong>: Vendor libraries are missing. Run "<strong>bin/vendors install</strong>" to install them.',
-            'Vendor libraries are missing; run "bin/vendors install" to install them'
+            'Vendor libraries are missing. Install composer following instructions from <a href="http://getcomposer.org/">http://getcomposer.org/</a>. ' . 
+                'Then run "<strong>php composer.phar install</strong>" to install them.'
         );
 
         $this->requirements[] = new Requirement(
@@ -105,6 +106,20 @@ class SymfonyRequirements
             !(function_exists('apc_store') && ini_get('apc.enabled')) || version_compare(phpversion('apc'), '3.0.17', '>='),
             'APC version must be at least 3.0.17',
             'Upgrade your <strong>APC</strong> extension (3.0.17+)'
+        );
+
+        $this->requirements[] = new Requirement(
+            !ini_get('detect_unicode'),
+            'detect_unicode must be disabled in php.ini',
+            'Set <strong>detect_unicode</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.'
+        );
+
+        $suhosin = ini_get('suhosin.executor.include.whitelist');
+
+        $this->requirements[] = new Requirement(
+            false === $suhosin || false !== stripos($suhosin, 'phar'),
+            'suhosin.executor.include.whitelist must be configured correctly in php.ini',
+            'Set <strong>suhosin.executor.include.whitelist</strong> to "<strong>phar'.($suhosin ? ' '.$suhosin : '').'</strong>" in php.ini<a href="#phpini">*</a>.'
         );
 
         /* optional recommendations follow */
@@ -277,11 +292,6 @@ class SymfonyRequirements
         }
 
         return $array;
-
-        /* for reference: abandoned version using closures available since PHP 5.3
-        return array_filter($this->requirements, function ($req) {
-            return !$req->isOptional();
-        }); */
     }
 
     /**

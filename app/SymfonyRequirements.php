@@ -48,7 +48,7 @@ class SymfonyRequirements
         $this->requirements[] = new Requirement(
             is_dir(__DIR__.'/../vendor/symfony'),
             'Vendor libraries must be installed',
-            'Vendor libraries are missing. Install composer following instructions from <a href="http://getcomposer.org/">http://getcomposer.org/</a>. ' . 
+            'Vendor libraries are missing. Install composer following instructions from <a href="http://getcomposer.org/">http://getcomposer.org/</a>. ' .
                 'Then run "<strong>php composer.phar install</strong>" to install them.'
         );
 
@@ -64,12 +64,10 @@ class SymfonyRequirements
             'Change the permissions of the "<strong>app/logs/</strong>" directory so that the web server can write into it.'
         );
 
-        $this->requirements[] = new Requirement(
-            ini_get('date.timezone'),
-            '"date.timezone" setting must be set',
-            'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).',
-            null,
-            false, true
+        $this->requirements[] = new PhpIniRequirement(
+            'date.timezone', true, false,
+            'date.timezone setting must be set',
+            'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).'
         );
 
         $this->requirements[] = new Requirement(
@@ -108,18 +106,16 @@ class SymfonyRequirements
             'Upgrade your <strong>APC</strong> extension (3.0.17+)'
         );
 
-        $this->requirements[] = new Requirement(
-            !ini_get('detect_unicode'),
-            'detect_unicode must be disabled in php.ini',
-            'Set <strong>detect_unicode</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.'
+        $this->requirements[] = new PhpIniRequirement(
+            'detect_unicode', false
         );
 
-        $suhosin = ini_get('suhosin.executor.include.whitelist');
-
-        $this->requirements[] = new Requirement(
-            false === $suhosin || false !== stripos($suhosin, 'phar'),
+        $this->requirements[] = new PhpIniRequirement(
+            'suhosin.executor.include.whitelist',
+            create_function('$cfgValue', 'return false !== stripos($cfgValue, "phar");'),
+            true,
             'suhosin.executor.include.whitelist must be configured correctly in php.ini',
-            'Set <strong>suhosin.executor.include.whitelist</strong> to "<strong>phar'.($suhosin ? ' '.$suhosin : '').'</strong>" in php.ini<a href="#phpini">*</a>.'
+            'Add "<strong>phar</strong>" to <strong>suhosin.executor.include.whitelist</strong> in php.ini<a href="#phpini">*</a>.'
         );
 
         /* optional recommendations follow */
@@ -175,10 +171,8 @@ class SymfonyRequirements
         );
 
         if (class_exists('Locale')) {
-            $version = '';
-
             if (defined('INTL_ICU_VERSION')) {
-                $version =  INTL_ICU_VERSION;
+                $version = INTL_ICU_VERSION;
             } else {
                 $reflector = new ReflectionExtension('intl');
 
@@ -215,36 +209,28 @@ class SymfonyRequirements
             true
         );
 
-        $this->requirements[] = new Requirement(
-            !ini_get('short_open_tag'),
-            'short_open_tag should be disabled in php.ini',
-            'Set <strong>short_open_tag</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
-            null,
-            true, true
+        $this->requirements[] = new PhpIniRequirement(
+            'short_open_tag', false, false,
+            null, null, null,
+            true
         );
 
-        $this->requirements[] = new Requirement(
-            !ini_get('magic_quotes_gpc'),
-            'magic_quotes_gpc should be disabled in php.ini',
-            'Set <strong>magic_quotes_gpc</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
-            null,
-            true, true
+        $this->requirements[] = new PhpIniRequirement(
+            'magic_quotes_gpc', false, true,
+            null, null, null,
+            true
         );
 
-        $this->requirements[] = new Requirement(
-            !ini_get('register_globals'),
-            'register_globals should be disabled in php.ini',
-            'Set <strong>register_globals</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
-            null,
-            true, true
+        $this->requirements[] = new PhpIniRequirement(
+            'register_globals', false, true,
+            null, null, null,
+            true
         );
 
-        $this->requirements[] = new Requirement(
-            !ini_get('session.auto_start'),
-            'session.auto_start should be disabled in php.ini',
-            'Set <strong>session.auto_start</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.',
-            null,
-            true, true
+        $this->requirements[] = new PhpIniRequirement(
+            'session.auto_start', false, false,
+            null, null, null,
+            true
         );
 
         $this->requirements[] = new Requirement(
@@ -353,7 +339,7 @@ class SymfonyRequirements
     public function hasPhpIniConfigIssue()
     {
         foreach ($this->requirements as $req) {
-            if (!$req->isFulfilled() && $req->isPhpIniConfig()) {
+            if (!$req->isFulfilled() && $req instanceof PhpIniRequirement) {
                 return true;
             }
         }
@@ -372,9 +358,67 @@ class SymfonyRequirements
     }
 }
 
+
+
 /**
- * Represents a single PHP requirement, e.g. an installed extension
- * or a php.ini configuration.
+ * Represents a PHP requirement in form of a php.ini configuration.
+ *
+ * @author Tobias Schultze <http://tobion.de>
+ */
+class PhpIniRequirement extends Requirement
+{
+    /**
+     * Constructor that initializes the requirement.
+     *	
+     * @param string            $cfgName            The configuration name used for ini_get()
+     * @param Boolean|callback  $evaluation         Either a Boolean indicating whether the configuration should evaluate to true or false,
+                                                    or a callback function receiving the configuration value as parameter to determine the fulfillment of the requirement
+     * @param Boolean           $approveCfgAbsence  If true the Requirement will be fulfilled even if the configuration option does not exist, i.e. ini_get() returns false.
+                                                    This is helpful for abandoned configs in later PHP versions or configs of an optional extension, like Suhosin.
+                                                    Example: You require a config to be true but PHP later removes this config and defaults it to true internally.
+     * @param string            $testMessage        The message for testing the requirement (when null and $evaluation is a Boolean a default message is derived)
+     * @param string            $helpHtml           The help text formatted in HTML for resolving the problem (when null and $evaluation is a Boolean a default help is derived)
+     * @param string|null       $helpText           The help text (when null, it will be inferred from $helpHtml, i.e. stripped from HTML tags)
+     * @param Boolean           $optional           Whether this is only an optional recommendation not a mandatory requirement
+     */
+    public function __construct($cfgName, $evaluation, $approveCfgAbsence = false, $testMessage = null, $helpHtml = null, $helpText = null, $optional = false)
+    {
+        $cfgValue = ini_get($cfgName);
+
+        if (is_callable($evaluation)) {
+            if (null === $testMessage || null === $helpHtml) {
+                throw new InvalidArgumentException('You must provide the parameters testMessage and helpHtml for a callback evaluation.');
+            }
+
+            $fulfilled = call_user_func($evaluation, $cfgValue);
+        } else {
+            if (null === $testMessage) {
+                $testMessage = sprintf('%s %s be %s in php.ini',
+                    $cfgName,
+                    $optional ? 'should' : 'must',
+                    $evaluation ? 'enabled' : 'disabled'
+                );
+            }
+
+            if (null === $helpHtml) {
+                $helpHtml = sprintf('Set <strong>%s</strong> to <strong>%s</strong> in php.ini<a href="#phpini">*</a>.',
+                    $cfgName,
+                    $evaluation ? 'on' : 'off'
+                );
+            }
+
+            $fulfilled = $evaluation == $cfgValue;
+        }
+
+        parent::__construct($fulfilled || ($approveCfgAbsence && false === $cfgValue), $testMessage, $helpHtml, $helpText, $optional);
+    }
+	
+}
+
+/**
+ * Represents a single PHP requirement, e.g. an installed extension.
+ * It can be a mandatory requirement or an optional recommendation.
+ * There is a special subclass, named PhpIniRequirement, to check a php.ini configuration.
  *
  * @author Tobias Schultze <http://tobion.de>
  */
@@ -385,7 +429,6 @@ class Requirement
     private $helpText;
     private $helpHtml;
     private $optional;
-    private $phpIniConfig;
 
     /**
      * Constructor that initializes the requirement.
@@ -395,16 +438,14 @@ class Requirement
      * @param string       $helpHtml      The help text formatted in HTML for resolving the problem
      * @param string|null  $helpText      The help text (when null, it will be inferred from $helpHtml, i.e. stripped from HTML tags)
      * @param Boolean      $optional      Whether this is only an optional recommendation not a mandatory requirement
-     * @param Boolean      $phpIniConfig  Whether this requirement is part of the php.ini configuration
      */
-    public function __construct($fulfilled, $testMessage, $helpHtml, $helpText = null, $optional = false, $phpIniConfig = false)
+    public function __construct($fulfilled, $testMessage, $helpHtml, $helpText = null, $optional = false)
     {
         $this->fulfilled = (Boolean) $fulfilled;
-        $this->testMessage = $testMessage;
-        $this->helpHtml = $helpHtml;
-        $this->helpText = $helpText ? $helpText : strip_tags($helpHtml);
+        $this->testMessage = (string) $testMessage;
+        $this->helpHtml = (string) $helpHtml;
+        $this->helpText = null === $helpText ? strip_tags($this->helpHtml) : (string) $helpText;
         $this->optional = (Boolean) $optional;
-        $this->phpIniConfig = (Boolean) $phpIniConfig;
     }
 
     /**
@@ -457,13 +498,4 @@ class Requirement
         return $this->optional;
     }
 
-    /**
-     * Returns whether this requirement is part of the php.ini configuration.
-     *
-     * @return Boolean true if part of php.ini config, otherwise false
-     */
-    public function isPhpIniConfig()
-    {
-        return $this->phpIniConfig;
-    }	
 }

@@ -82,6 +82,7 @@ foreach ($deps as $name => $dep) {
         } else {
             system(sprintf('rm -rf %s', escapeshellarg($installDir)));
         }
+        clearstatcache();
     }
 
     if ('install' === $command || 'update' === $command) {
@@ -103,6 +104,7 @@ foreach ($deps as $name => $dep) {
                 } else {
                     system(sprintf('rm -rf %s', escapeshellarg($installDir)));
                 }
+                clearstatcache();
             }
         }
 

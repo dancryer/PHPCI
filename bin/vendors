@@ -93,6 +93,19 @@ foreach ($deps as $name => $dep) {
         }
         $url = $dep['git'];
 
+        if ('update' === $command && is_dir($installDir)) {
+            ob_start();
+            system(sprintf('cd %s && git config --get remote.origin.url', escapeshellarg($installDir)));
+            $current_url = trim(ob_get_clean());
+            if ($current_url !== $url) {
+                if (PHP_OS == 'WINNT') {
+                    system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
+                } else {
+                    system(sprintf('rm -rf %s', escapeshellarg($installDir)));
+                }
+            }
+        }
+
         if (!is_dir($installDir)) {
             system(sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir)));
         }

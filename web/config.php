@@ -12,181 +12,43 @@ if (!in_array(@$_SERVER['REMOTE_ADDR'], array(
     exit('This script is only accessible from localhost.');
 }
 
-$majorProblems = array();
-$minorProblems = array();
-$phpini = false;
+require_once dirname(__FILE__).'/../app/SymfonyRequirements.php';
 
-// minimum
-if (!version_compare(phpversion(), '5.3.2', '>=')) {
-    $version = phpversion();
-    $majorProblems[] = <<<EOF
-        You are running PHP version "<strong>$version</strong>", but Symfony
-        needs at least PHP "<strong>5.3.2</strong>" to run. Before using Symfony, install
-        PHP "<strong>5.3.2</strong>" or newer.
-EOF;
-}
+$symfonyRequirements = new SymfonyRequirements();
 
-if (!is_dir(__DIR__.'/../vendor/symfony')) {
-    $vendorsAreMissing = true;
-    $majorProblems[] = '<strong>CRITICAL</strong>: Vendor libraries are missing. Install composer following instructions from: <a href="http://getcomposer.org/">http://getcomposer.org/</a>. Then run
-        "<strong>php composer.phar install</strong>" to install them.';
-} else {
-    $vendorsAreMissing = false;
-}
-
-if (!is_writable(__DIR__ . '/../app/cache')) {
-    $majorProblems[] = 'Change the permissions of the "<strong>app/cache/</strong>"
-        directory so that the web server can write into it.';
-}
-
-if (!is_writable(__DIR__ . '/../app/logs')) {
-    $majorProblems[] = 'Change the permissions of the "<strong>app/logs/</strong>"
-        directory so that the web server can write into it.';
-}
-
-// extensions
-if (!class_exists('DomDocument')) {
-    $minorProblems[] = 'Install and enable the <strong>php-xml</strong> module.';
-}
-
-if (!((function_exists('apc_store') && ini_get('apc.enabled')) || function_exists('eaccelerator_put') && ini_get('eaccelerator.enable') || function_exists('xcache_set'))) {
-    $minorProblems[] = 'Install and enable a <strong>PHP accelerator</strong> like APC (highly recommended).';
-}
-
-if (!(!(function_exists('apc_store') && ini_get('apc.enabled')) || version_compare(phpversion('apc'), '3.0.17', '>='))) {
-    $majorProblems[] = 'Upgrade your <strong>APC</strong> extension (3.0.17+)';
-}
-
-if (!function_exists('mb_strlen')) {
-    $minorProblems[] = 'Install and enable the <strong>mbstring</strong> extension.';
-}
-
-if (!function_exists('iconv')) {
-    $minorProblems[] = 'Install and enable the <strong>iconv</strong> extension.';
-}
-
-if (!function_exists('utf8_decode')) {
-    $minorProblems[] = 'Install and enable the <strong>XML</strong> extension.';
-}
-
-if (!defined('PHP_WINDOWS_VERSION_BUILD') && !function_exists('posix_isatty')) {
-    $minorProblems[] = 'Install and enable the <strong>php_posix</strong> extension (used to colorize the CLI output).';
-}
-
-if (!class_exists('Locale')) {
-    $minorProblems[] = 'Install and enable the <strong>intl</strong> extension.';
-} else {
-    $version = '';
-
-    if (defined('INTL_ICU_VERSION')) {
-        $version =  INTL_ICU_VERSION;
-    } else {
-        $reflector = new \ReflectionExtension('intl');
-
-        ob_start();
-        $reflector->info();
-        $output = strip_tags(ob_get_clean());
-
-        preg_match('/^ICU version (.*)$/m', $output, $matches);
-        $version = $matches[1];
-    }
-
-    if (!version_compare($version, '4.0', '>=')) {
-        $minorProblems[] = 'Upgrade your <strong>intl</strong> extension with a newer ICU version (4+).';
-    }
-}
-
-if (!function_exists('json_encode')) {
-    $majorProblems[] = 'Install and enable the <strong>json</strong> extension.';
-}
-
-if (!function_exists('session_start')) {
-    $majorProblems[] = 'Install and enable the <strong>session</strong> extension.';
-}
-
-if (!function_exists('ctype_alpha')) {
-    $majorProblems[] = 'Install and enable the <strong>ctype</strong> extension.';
-}
-
-if (!function_exists('token_get_all')) {
-    $majorProblems[] = 'Install and enable the <strong>Tokenizer</strong> extension.';
-}
-
-if (!function_exists('simplexml_import_dom')) {
-    $majorProblems[] = 'Install and enable the <strong>SimpleXML</strong> extension.';
-}
-
-// php.ini
-if (!ini_get('date.timezone')) {
-    $phpini = true;
-    $majorProblems[] = 'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).';
-}
-
-if (ini_get('detect_unicode')) {
-    $phpini = true;
-    $majorProblems[] = 'Set the "<strong>detect_unicode</strong>" to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
-}
-
-$suhosin = ini_get('suhosin.executor.include.whitelist');
-if (false !== $suhosin && false === stripos($suhosin, 'phar')) {
-    $phpini = true;
-    $majorProblems[] = 'Set the "<strong>suhosin.executor.include.whitelist</strong>" to "<strong>phar'.($suhosin?' '.$suhosin:'').'</strong>" in php.ini<a href="#phpini">*</a>.';
-}
-
-if (ini_get('short_open_tag')) {
-    $phpini = true;
-    $minorProblems[] = 'Set <strong>short_open_tag</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
-}
-
-if (ini_get('magic_quotes_gpc')) {
-    $phpini = true;
-    $minorProblems[] = 'Set <strong>magic_quotes_gpc</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
-}
-
-if (ini_get('register_globals')) {
-    $phpini = true;
-    $minorProblems[] = 'Set <strong>register_globals</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
-}
-
-if (ini_get('session.auto_start')) {
-    $phpini = true;
-    $minorProblems[] = 'Set <strong>session.auto_start</strong> to <strong>off</strong> in php.ini<a href="#phpini">*</a>.';
-}
+$majorProblems = $symfonyRequirements->getFailedRequirements();
+$minorProblems = $symfonyRequirements->getFailedRecommendations();
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <?php if (!$vendorsAreMissing): ?>
         <link rel="stylesheet" href="bundles/sensiodistribution/webconfigurator/css/install.css" />
-        <?php endif; ?>
         <title>Symfony Configuration</title>
     </head>
     <body>
         <div id="symfony-wrapper">
             <div id="symfony-content">
                 <div class="symfony-blocks-install">
-                    <?php if (!$vendorsAreMissing): ?>
                     <div class="symfony-block-logo">
                         <img src="bundles/sensiodistribution/webconfigurator/images/logo-big.gif" alt="Symfony logo" />
                     </div>
-                    <?php endif; ?>
 
                     <div class="symfony-block-content">
                         <h1>Welcome!</h1>
                         <p>Welcome to your new Symfony project.</p>
                         <p>
-                            This script will guide you through the basic configuration of your project. 
+                            This script will guide you through the basic configuration of your project.
                             You can also do the same by editing the ‘<strong>app/config/parameters.yml</strong>’ file directly.
                         </p>
 
                         <?php if (count($majorProblems)): ?>
-                            <h2><?php echo count($majorProblems) ?> Major problems</h2>
+                            <h2>Major problems</h2>
                             <p>Major problems have been detected and <strong>must</strong> be fixed before continuing:</p>
                             <ol>
                                 <?php foreach ($majorProblems as $problem): ?>
-                                    <li><?php echo $problem ?></li>
+                                    <li><?php echo $problem->getHelpHtml() ?></li>
                                 <?php endforeach; ?>
                             </ol>
                         <?php endif; ?>
@@ -194,20 +56,20 @@ if (ini_get('session.auto_start')) {
                         <?php if (count($minorProblems)): ?>
                             <h2>Recommendations</h2>
                             <p>
-                                <?php if ($majorProblems): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience, 
+                                <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience,
                                 it’s recommended that you fix the following:
                             </p>
                             <ol>
                                 <?php foreach ($minorProblems as $problem): ?>
-                                    <li><?php echo $problem ?></li>
+                                    <li><?php echo $problem->getHelpHtml() ?></li>
                                 <?php endforeach; ?>
                             </ol>
                         <?php endif; ?>
 
-                        <?php if ($phpini): ?>
+                        <?php if ($symfonyRequirements->hasPhpIniConfigIssue()): ?>
                             <p id="phpini">*
-                                <?php if (get_cfg_var('cfg_file_path')): ?>
-                                    Changes to the <strong>php.ini</strong> file must be done in "<strong><?php echo get_cfg_var('cfg_file_path') ?></strong>".
+                                <?php if ($symfonyRequirements->getPhpIniConfigPath()): ?>
+                                    Changes to the <strong>php.ini</strong> file must be done in "<strong><?php echo $symfonyRequirements->getPhpIniConfigPath() ?></strong>".
                                 <?php else: ?>
                                     To change settings, create a "<strong>php.ini</strong>".
                                 <?php endif; ?>

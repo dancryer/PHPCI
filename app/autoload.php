@@ -1,6 +1,6 @@
 <?php
 
-if (!$loader = include __DIR__.'/../vendor/.composer/autoload.php') {
+if (!$loader = include __DIR__.'/../vendor/autoload.php') {
     $nl = PHP_SAPI === 'cli' ? PHP_EOL : '<br />';
     echo "$nl$nl";
     if (is_writable(dirname(__DIR__)) && $installer = @file_get_contents('http://getcomposer.org/installer')) {

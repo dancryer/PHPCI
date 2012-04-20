@@ -111,10 +111,14 @@ playing with it, you can remove it by following these steps:
 * delete the ``src/Acme`` directory;
 * remove the routing entries referencing AcmeBundle in ``app/config/routing_dev.yml``;
 * remove the AcmeBundle from the registered bundles in ``app/AppKernel.php``;
-* remove the ``web/bundles/acmedemo`` directory.
+* remove the ``web/bundles/acmedemo`` directory;
+* remove the inclusion of the security configuration in
+  ``app/config/config.yml`` (remove the ``- { resource: security.yml }`` line)
+  or tweak the default configuration to fit your needs.
 
 What's inside?
 ---------------
+
 The Symfony Standard Edition comes pre-configured with the following bundles:
 
 * **FrameworkBundle** - The core Symfony framework bundle

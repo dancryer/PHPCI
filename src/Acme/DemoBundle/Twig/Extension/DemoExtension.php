@@ -4,6 +4,7 @@ namespace Acme\DemoBundle\Twig\Extension;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
+use CG\Core\ClassUtils;
 
 class DemoExtension extends \Twig_Extension
 {
@@ -49,7 +50,12 @@ EOF;
 
     protected function getControllerCode()
     {
-        $r = new \ReflectionClass($this->controller[0]);
+        $class = get_class($this->controller[0]);
+        if (class_exists('CG\Core\ClassUtils')) {
+            $class = ClassUtils::getUserClass($class);
+        }
+
+        $r = new \ReflectionClass($class);
         $m = $r->getMethod($this->controller[1]);
 
         $code = file($r->getFilename());

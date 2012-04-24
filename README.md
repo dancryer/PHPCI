@@ -137,8 +137,9 @@ The Symfony Standard Edition comes pre-configured with the following bundles:
 * **AsseticBundle** - Adds support for Assetic, an asset processing library
   ([documentation](http://symfony.com/doc/2.0/cookbook/assetic/asset_management.html))
 * **JMSSecurityExtraBundle** - Allows security to be added via annotations
-  ([documentation](http://symfony.com/doc/current/bundles/JMSSecurityExtraBundle/index.html))
+  ([documentation](http://jmsyst.com/bundles/JMSSecurityExtraBundle/1.1))
 * **JMSDiExtraBundle** - Adds more powerful dependency injection features 
+  ([documentation](http://jmsyst.com/bundles/JMSDiExtraBundle/1.0))
 * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
   the web debug toolbar
 * **SensioDistributionBundle** (in dev/test env) - Adds functionality for configuring

@@ -26,7 +26,7 @@ class Requirement
 
     /**
      * Constructor that initializes the requirement.
-     *	
+     *
      * @param Boolean      $fulfilled     Whether the requirement is fulfilled
      * @param string       $testMessage   The message for testing the requirement
      * @param string       $helpHtml      The help text formatted in HTML for resolving the problem
@@ -102,7 +102,7 @@ class PhpIniRequirement extends Requirement
 {
     /**
      * Constructor that initializes the requirement.
-     *	
+     *
      * @param string            $cfgName            The configuration name used for ini_get()
      * @param Boolean|callback  $evaluation         Either a Boolean indicating whether the configuration should evaluate to true or false,
                                                     or a callback function receiving the configuration value as parameter to determine the fulfillment of the requirement
@@ -328,7 +328,7 @@ class RequirementCollection implements IteratorAggregate
         }
 
         return $array;
-    }	
+    }
 
     /**
      * Returns whether a php.ini configuration is not correct.
@@ -454,6 +454,14 @@ class SymfonyRequirements extends RequirementCollection
             true,
             'suhosin.executor.include.whitelist must be configured correctly in php.ini',
             'Add "<strong>phar</strong>" to <strong>suhosin.executor.include.whitelist</strong> in php.ini<a href="#phpini">*</a>.'
+        );
+
+        $pcreVersion = defined('PCRE_VERSION') ? (float) PCRE_VERSION : null;
+
+        $this->addRequirement(
+            null !== $pcreVersion && $pcreVersion > 8.0,
+            sprintf('PCRE extension must be available and at least 8.0 (%s installed)', $pcreVersion ? $pcreVersion : 'not'),
+            'Upgrade your <strong>PCRE</strong> extension (8.0+)'
         );
 
         /* optional recommendations follow */

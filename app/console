@@ -19,4 +19,4 @@ $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(array('-
 
 $kernel = new AppKernel($env, $debug);
 $application = new Application($kernel);
-$application->run();
+$application->run($input);

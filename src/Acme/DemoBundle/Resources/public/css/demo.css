@@ -79,6 +79,7 @@ ul#demo-list a
 {
     background: url(../images/blue-arrow.png) no-repeat right 6px;
     padding-right: 10px;
+    margin-right:  30px;
 }
 
 ul, ol

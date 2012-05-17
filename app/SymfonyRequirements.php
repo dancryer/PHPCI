@@ -411,11 +411,13 @@ class SymfonyRequirements extends RequirementCollection
             'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).'
         );
 
-        $this->addRequirement(
+        if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
+          $this->addRequirement(
             (in_array(date_default_timezone_get(), \DateTimeZone::listIdentifiers())),
-            'Using deprecated timezone '.date_default_timezone_get(),
+            'Timezone cannot be deprecated. '.date_default_timezone_get(),
             'List of deprecated timezones http://us.php.net/manual/en/timezones.others.php, and correct php.ini file.'
-        );
+          );
+        }
 
         $this->addRequirement(
             function_exists('json_encode'),

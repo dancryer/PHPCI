@@ -468,6 +468,12 @@ class SymfonyRequirements extends RequirementCollection
         /* optional recommendations follow */
 
         $this->addRecommendation(
+            version_compare($installedPhpVersion, '5.3.8', '>='),
+            sprintf('Annotations might not work properly due to the PHP bug #55156 before PHP 5.3.8 (%s installed)', $installedPhpVersion),
+            'Install PHP 5.3.8 or newer if your project uses annotations'
+        );
+
+        $this->addRecommendation(
             class_exists('DomDocument'),
             'PHP-XML module should be installed',
             'Install and enable the <strong>PHP-XML</strong> module.'

@@ -24,3 +24,13 @@ AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 // the lazy loading of the init file (which is expensive)
 require_once __DIR__.'/../vendor/swiftmailer/swiftmailer/lib/classes/Swift.php';
 Swift::registerAutoload(__DIR__.'/../vendor/swiftmailer/swiftmailer/lib/swift_init.php');
+
+// Use APC as autoloading to improve performance
+//if (ini_get('apc.enabled')) {
+    //require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/ClassLoader/ApcClassLoader.php';
+
+    // Change 'sf2' by the prefix you want in order to prevent key conflict with an other application
+    //$apcClassLoader = new Symfony\Component\ClassLoader\ApcClassLoader('sf2', $loader);
+    //$apcClassLoader->register(true);
+//}
+

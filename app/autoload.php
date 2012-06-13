@@ -1,12 +1,21 @@
 <?php
 
-if (!$loader = include __DIR__.'/../vendor/autoload.php') {
-    $nl = PHP_SAPI === 'cli' ? PHP_EOL : '<br />';
-    echo "$nl$nl";
-    die('You must set up the project dependencies.'.$nl.
-        'Run the following commands in '.dirname(__DIR__).':'.$nl.$nl.
-        'curl -s http://getcomposer.org/installer | php'.$nl.
-        'php composer.phar install'.$nl);
+if (!$loader = @include __DIR__.'/../vendor/autoload.php') {
+
+    $message = <<< EOF
+<p>You must set up the project dependencies by running the following commands:</p>
+<pre>
+    curl -s http://getcomposer.org/installer | php
+    php composer.phar install
+</pre>
+
+EOF;
+
+    if (PHP_SAPI === 'cli') {
+        $message = strip_tags($message);
+    }
+
+    die($message);
 }
 
 use Doctrine\Common\Annotations\AnnotationRegistry;

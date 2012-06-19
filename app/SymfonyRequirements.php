@@ -414,8 +414,8 @@ class SymfonyRequirements extends RequirementCollection
         if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
           $this->addRequirement(
             (in_array(date_default_timezone_get(), \DateTimeZone::listIdentifiers())),
-            'Timezone cannot be deprecated. '.date_default_timezone_get(),
-            'List of deprecated timezones http://us.php.net/manual/en/timezones.others.php, and correct php.ini file.'
+            sprintf('Default timezone is deprecated (%s)', date_default_timezone_get()),
+            'Fix your <strong>php.ini</strong> file (list of deprecated timezones http://us.php.net/manual/en/timezones.others.php).'
           );
         }
 

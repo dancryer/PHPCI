@@ -19,6 +19,7 @@ EOF;
 }
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Symfony\Component\ClassLoader\ApcClassLoader;
 
 // intl
 if (!function_exists('intl_get_error_code')) {
@@ -32,10 +33,8 @@ AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 // Use APC as autoloading to improve performance
 /*
 if (ini_get('apc.enabled')) {
-    require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/ClassLoader/ApcClassLoader.php';
-
     // Change 'sf2' by the prefix you want in order to prevent key conflict with another application
-    $apcClassLoader = new Symfony\Component\ClassLoader\ApcClassLoader('sf2', $loader);
-    $apcClassLoader->register(true);
+    $loader = new ApcClassLoader('sf2', $loader);
+    $loader->register(true);
 }
 */

@@ -19,11 +19,11 @@
                 </form>
             </div>
 
-            {% if app.session.flash('notice') %}
+            {% for flashMessage in app.session.flashbag.get('notice') %}
                 <div class="flash-message">
-                    <em>Notice</em>: {{ app.session.flash('notice') }}
+                    <em>Notice</em>: {{ flashMessage }}
                 </div>
-            {% endif %}
+            {% endfor %}
 
             {% block content_header %}
                 <ul id="menu">

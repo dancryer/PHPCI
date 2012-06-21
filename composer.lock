@@ -58,7 +58,7 @@
         {
             "package": "sensio/distribution-bundle",
             "version": "dev-master",
-            "source-reference": "cf64fbe0d4cd0d6b88b2018efb037f18a0753271"
+            "source-reference": "a360ad61fe34206a7295c1ef00b5455b2b2e1071"
         },
         {
             "package": "sensio/framework-extra-bundle",
@@ -79,7 +79,7 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "0509c682d482940949ea7f7128c582d9d8b628e2"
+            "source-reference": "d57ffdeed664d6061cef0047e1f5d3fc3ee3fb99"
         },
         {
             "package": "symfony/assetic-bundle",
@@ -105,7 +105,7 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "55c6df995fd89a76ae09068da806eb9ae5e4a2e0"
+            "source-reference": "v2.1.0-BETA1"
         },
         {
             "package": "twig/extensions",

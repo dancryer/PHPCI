@@ -73,7 +73,7 @@ To see a real-live Symfony page in action, access the following page:
 
     web/app_dev.php/demo/hello/Fabien
 
-3) Getting started with Symfony
+4) Getting started with Symfony
 -------------------------------
 
 This distribution is meant to be the starting point for your Symfony

@@ -24,7 +24,7 @@
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
-    version=v4.1.7
+    version=v4.2.0
 
 [assetic]
     git=http://github.com/kriswallsmith/assetic.git

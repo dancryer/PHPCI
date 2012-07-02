@@ -14,8 +14,8 @@
         {
             "package": "doctrine/doctrine-bundle",
             "version": "dev-master",
-            "source-reference": "9b4dd7398cbc4d2dfe04eefc3c0451f1e13e141c",
-            "commit-date": "1340813490"
+            "source-reference": "1d5061d3e426feb990f2378fbcbee58f6ecadd12",
+            "commit-date": "1341222099"
         },
         {
             "package": "doctrine/orm",
@@ -62,8 +62,8 @@
         {
             "package": "sensio/distribution-bundle",
             "version": "dev-master",
-            "source-reference": "f3515e702f9cae8e727d982557dca8de82dd12c5",
-            "commit-date": "1340790396"
+            "source-reference": "bab334833eb6cf177b97b18dd5479ebdfe6e1c26",
+            "commit-date": "1341232762"
         },
         {
             "package": "sensio/framework-extra-bundle",
@@ -76,6 +76,12 @@
             "version": "dev-master",
             "source-reference": "43ed45c48db18e4a0e48aec0c098f42e56e22d36",
             "commit-date": "1340138445"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "dev-master",
+            "alias-pretty-version": "4.2.x-dev",
+            "alias-version": "4.2.9999999.9999999-dev"
         },
         {
             "package": "swiftmailer/swiftmailer",
@@ -98,8 +104,8 @@
         {
             "package": "symfony/swiftmailer-bundle",
             "version": "dev-master",
-            "source-reference": "4140ae9813f231a4d8324f405c51041b966e190b",
-            "commit-date": "1341077900"
+            "source-reference": "8e4d1eef4edc6a6375ab003a51cb9323795b08ec",
+            "commit-date": "1341222992"
         },
         {
             "package": "symfony/symfony",
@@ -110,8 +116,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "b6e4fd0393bcd1d7837cb2711cc7de8a081421fe",
-            "commit-date": "1341178091"
+            "source-reference": "81fe2ff8e2563997db8d78b4fd294d7cb713f701",
+            "commit-date": "1341225477"
         },
         {
             "package": "twig/extensions",

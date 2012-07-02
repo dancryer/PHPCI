@@ -68,8 +68,8 @@
         {
             "package": "sensio/framework-extra-bundle",
             "version": "dev-master",
-            "source-reference": "b9f630e35059f661a59ec4e0f5505b067fed4e55",
-            "commit-date": "1340889912"
+            "source-reference": "4f54e5d5fb3b54fb107892684018f3704934c48d",
+            "commit-date": "1341126219"
         },
         {
             "package": "sensio/generator-bundle",
@@ -79,7 +79,9 @@
         },
         {
             "package": "swiftmailer/swiftmailer",
-            "version": "v4.1.8"
+            "version": "dev-master",
+            "source-reference": "05b497ee28355a33eb521dcaf7526824e0dda3b2",
+            "commit-date": "1341154877"
         },
         {
             "package": "symfony/assetic-bundle",
@@ -90,14 +92,14 @@
         {
             "package": "symfony/monolog-bundle",
             "version": "dev-master",
-            "source-reference": "660a1aeaf93e8ffdc34c27b3a82dc47195ad1d8d",
-            "commit-date": "1340609637"
+            "source-reference": "7fe7f711bb04b86ad7f45a9e11a7f8cbaf9bc1a5",
+            "commit-date": "1341078487"
         },
         {
             "package": "symfony/swiftmailer-bundle",
             "version": "dev-master",
-            "source-reference": "v2.1.0-BETA1",
-            "commit-date": "1340144744"
+            "source-reference": "4140ae9813f231a4d8324f405c51041b966e190b",
+            "commit-date": "1341077900"
         },
         {
             "package": "symfony/symfony",
@@ -108,8 +110,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "b5e6613ad028f96c98f8e69d31dc9a5f51719d25",
-            "commit-date": "1340888865"
+            "source-reference": "b6e4fd0393bcd1d7837cb2711cc7de8a081421fe",
+            "commit-date": "1341178091"
         },
         {
             "package": "twig/extensions",
@@ -126,8 +128,8 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "48a04538659e85e4c89da3787587e1988db9c5e9",
-            "commit-date": "1340790574"
+            "source-reference": "73da773aaad0f97f2e967ec8241b8adf7b1e03d2",
+            "commit-date": "1340890758"
         }
     ],
     "packages-dev": null,

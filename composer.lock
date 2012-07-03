@@ -104,8 +104,8 @@
         {
             "package": "symfony/swiftmailer-bundle",
             "version": "dev-master",
-            "source-reference": "8e4d1eef4edc6a6375ab003a51cb9323795b08ec",
-            "commit-date": "1341222992"
+            "source-reference": "880706f227e40e8fd676fd1273e415c2a395deed",
+            "commit-date": "1341301661"
         },
         {
             "package": "symfony/symfony",
@@ -116,8 +116,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "81fe2ff8e2563997db8d78b4fd294d7cb713f701",
-            "commit-date": "1341225477"
+            "source-reference": "e9477820f2b2b82b0a9917893a661b852ae6429f",
+            "commit-date": "1341311044"
         },
         {
             "package": "twig/extensions",
@@ -138,7 +138,9 @@
             "commit-date": "1340890758"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],

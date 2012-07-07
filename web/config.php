@@ -86,7 +86,7 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                     </div>
                 </div>
             </div>
+            <div class="version">Symfony Standard Edition</div>
         </div>
-        <div class="version">Symfony Standard Edition</div>
     </body>
 </html>

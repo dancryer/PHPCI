@@ -133,7 +133,7 @@ The `storage_id` setting must be changed to `session.storage.mock_file`:
 
 ### `app/config/parameters.ini`
 
-The file has been converted to a YAML file which read as follows:
+The file has been converted to a YAML file which reads as follows:
 
     parameters:
         database_driver:   pdo_mysql
@@ -182,7 +182,7 @@ Under `security.providers`, the `in_memory` example was updated to the following
 
 ### `app/AppKernel.php`
 
-The following bundles was added to the list of default registered bundles:
+The following bundles have been added to the list of default registered bundles:
 
     `new JMS\AopBundle\JMSAopBundle(),
     `new JMS\DiExtraBundle\JMSDiExtraBundle($this),

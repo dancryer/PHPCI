@@ -5,6 +5,8 @@
 {% block content_header '' %}
 
 {% block content %}
+    {% set version = constant('Symfony\\Component\\HttpKernel\\Kernel::MAJOR_VERSION') ~ '.' ~ constant('Symfony\\Component\\HttpKernel\\Kernel::MINOR_VERSION')%}
+
     <h1>Welcome!</h1>
 
     <p>Congratulations! You have successfully installed a new Symfony application.</p>
@@ -14,7 +16,7 @@
             <div class="illustration">
                 <img src="{{ asset('bundles/acmedemo/images/welcome-quick-tour.gif') }}" alt="Quick tour" />
             </div>
-            <a class="symfony-button-green" href="http://symfony.com/doc/current/quick_tour/index.html">Read the Quick Tour</a>
+            <a class="symfony-button-green" href="http://symfony.com/doc/{{ version }}/quick_tour/index.html">Read the Quick Tour</a>
         </div>
         {% if app.environment == 'dev' %}
             <div class="block-configure">
@@ -36,11 +38,11 @@
         <div class="block-documentation">
             <ul>
                 <li><strong>Documentation</strong></li>
-                <li><a href="http://symfony.com/doc/current/book/index.html">The Book</a></li>
-                <li><a href="http://symfony.com/doc/current/cookbook/index.html">The Cookbook</a></li>
-                <li><a href="http://symfony.com/doc/current/components/index.html">The Components</a></li>
-                <li><a href="http://symfony.com/doc/current/reference/index.html">Reference</a></li>
-                <li><a href="http://symfony.com/doc/current/glossary.html">Glossary</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/book/index.html">The Book</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/cookbook/index.html">The Cookbook</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/components/index.html">The Components</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/reference/index.html">Reference</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/glossary.html">Glossary</a></li>
             </ul>
         </div>
         <div class="block-documentation-more">
@@ -56,7 +58,7 @@
                 <li><a href="http://symfony.com/irc">IRC channel</a></li>
                 <li><a href="http://symfony.com/mailing-lists">Mailing lists</a></li>
                 <li><a href="http://forum.symfony-project.org">Forum</a></li>
-                <li><a href="http://symfony.com/doc/current/contributing/index.html">Contributing</a></li>
+                <li><a href="http://symfony.com/doc/{{ version }}/contributing/index.html">Contributing</a></li>
             </ul>
         </div>
     </div>

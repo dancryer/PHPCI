@@ -29,7 +29,7 @@ a link cannot be generated):
             strict_parameters: %kernel.debug%
 
 The `default_locale` parameter is now a setting of the main `framework`
-configuration (it was under the `framework.router` in 2.0):
+configuration (it was under the `framework.session` in 2.0):
 
     framework:
         default_locale: %locale%

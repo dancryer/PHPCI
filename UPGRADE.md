@@ -86,7 +86,13 @@ configuration (it was under the `framework.session` in 2.0):
         default_locale: %locale%
 
 The `auto_start` setting under `framework.session` must be removed as it is
-not used anymore (the session is now always started on-demand).
+not used anymore (the session is now always started on-demand). If
+`auto_start` was the only setting under the `framework.session` entry, don't
+remove it entirely, but set its value to `~` (`~` means `null` in YAML)
+instead:
+
+    framework:
+        session: ~
 
 The `trust_proxy_headers` setting was added in the default configuration file
 (as it should be set to `true` when you install your application behind a

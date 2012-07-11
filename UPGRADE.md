@@ -38,22 +38,22 @@ The default `autoload.php` reads as follows (it has been simplified a lot as
 autoloading for libraries and bundles declared in your `composer.json` file is
 automatically managed by the Composer autoloader):
 
-  <?php
+    <?php
 
-  use Doctrine\Common\Annotations\AnnotationRegistry;
+    use Doctrine\Common\Annotations\AnnotationRegistry;
 
-  $loader = include __DIR__.'/../vendor/autoload.php';
+    $loader = include __DIR__.'/../vendor/autoload.php';
 
-  // intl
-  if (!function_exists('intl_get_error_code')) {
-      require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
+    // intl
+    if (!function_exists('intl_get_error_code')) {
+        require_once __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs/functions.php';
 
-      $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
-  }
+        $loader->add('', __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/Locale/Resources/stubs');
+    }
 
-  AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+    AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-  return $loader;
+    return $loader;
 
 ### `app/config/config.yml`
 

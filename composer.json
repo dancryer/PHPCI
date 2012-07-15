@@ -5,7 +5,7 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "php": ">=5.3.4",
+        "php": ">=5.3.3",
         "symfony/symfony": "2.1.*",
         "doctrine/orm": "2.2.*",
         "doctrine/doctrine-bundle": "dev-master",

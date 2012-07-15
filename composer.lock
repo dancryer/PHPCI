@@ -116,8 +116,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "d09bfe7552148d1d36b65487dfcbd378830b55a0",
-            "commit-date": "1342347592"
+            "source-reference": "v2.1.0-BETA3",
+            "commit-date": "1342375577"
         },
         {
             "package": "twig/extensions",

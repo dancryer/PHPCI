@@ -26,7 +26,7 @@ you have customized your `deps` file, move the added dependencies to the
 `composer.json` file (many bundles and PHP libraries are already available as
 Composer packages -- search for them on [Packagist](http://packagist.org/)).
 
-Remove your current `vendors` directory.
+Remove your current `vendor` directory.
 
 Finally, run Composer:
 

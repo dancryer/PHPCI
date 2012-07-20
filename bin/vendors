@@ -165,7 +165,7 @@ if ('update' === $command || 'lock' === $command) {
 }
 
 // php on windows can't use the shebang line from system()
-$interpreter = defined('PHP_WINDOWS_VERSION_BUILD') ? 'php.exe' : '';
+$interpreter = defined('PHP_WINDOWS_VERSION_BUILD') ? 'php.exe' : 'php';
 
 // Update the bootstrap files
 system(sprintf('%s %s %s', $interpreter, escapeshellarg($rootDir.'/vendor/bundles/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php'), escapeshellarg($rootDir)));

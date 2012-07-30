@@ -205,6 +205,7 @@ if (ini_get('session.auto_start')) {
                         <li><a href="config.php">Re-check configuration</a></li>
                     </ul>
                 </div>
+                </div>
             </div>
         </div>
         <div class="version">Symfony Standard Edition</div>

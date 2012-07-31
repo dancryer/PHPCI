@@ -1,15 +1,17 @@
 {
-    "hash": "1a1259c83478d633de476b776290a632",
+    "hash": "2c0ad4beaacc810752764681fc5067a8",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.2.2"
+            "version": "2.3.x-dev",
+            "source-reference": "1ba1f944c174db5ea2320fab3f49a6ca0ea79b9b",
+            "commit-date": "1343558692"
         },
         {
             "package": "doctrine/dbal",
-            "version": "2.2.x-dev",
-            "source-reference": "b961a3fce6bf220f1dca47d7d747b9074bea4730",
-            "commit-date": "1341779435"
+            "version": "2.3.x-dev",
+            "source-reference": "86b10e7eda2eed1d9a07a580a40e14cea8e1733a",
+            "commit-date": "1343559046"
         },
         {
             "package": "doctrine/doctrine-bundle",
@@ -19,9 +21,9 @@
         },
         {
             "package": "doctrine/orm",
-            "version": "2.2.x-dev",
-            "source-reference": "7d343302a8f886be9cfb2a9c8345a95740dcfde9",
-            "commit-date": "1343560954"
+            "version": "2.3.x-dev",
+            "source-reference": "3f2ddc60d42ebc140de7bbadf7f7af6115c3690a",
+            "commit-date": "1343745264"
         },
         {
             "package": "jms/aop-bundle",
@@ -132,8 +134,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "4b521985f121be25360365e2dc7a36645daa26b1",
-            "commit-date": "1343744174"
+            "source-reference": "b1618d210cb7e27036edcea9c163a94167e7df59",
+            "commit-date": "1343747192"
         },
         {
             "package": "twig/extensions",

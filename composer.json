@@ -7,7 +7,7 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.1.*",
-        "doctrine/orm": "2.2.*",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "dev-master",
         "symfony/assetic-bundle": "dev-master",

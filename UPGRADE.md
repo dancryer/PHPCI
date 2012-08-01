@@ -71,13 +71,13 @@ class instead:
         // ...
     }
 
-You might want to add the new `strict_parameters` parameter to
+You might want to add the new `strict_requirements` parameter to
 `framework.router` (it avoids fatal errors in the production environment when
 a link cannot be generated):
 
     framework:
         router:
-            strict_parameters: %kernel.debug%
+            strict_requirements: %kernel.debug%
 
 The `default_locale` parameter is now a setting of the main `framework`
 configuration (it was under the `framework.session` in 2.0):

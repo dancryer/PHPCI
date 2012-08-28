@@ -1,10 +1,10 @@
 [symfony]
     git=http://github.com/symfony/symfony.git
-    version=origin/2.0
+    version=v2.0.17
 
 [twig]
     git=http://github.com/fabpot/Twig.git
-    version=v1.8.2
+    version=v1.9.2
 
 [monolog]
     git=http://github.com/Seldaek/monolog.git
@@ -24,7 +24,7 @@
 
 [swiftmailer]
     git=http://github.com/swiftmailer/swiftmailer.git
-    version=v4.2.0
+    version=v4.2.1
 
 [assetic]
     git=http://github.com/kriswallsmith/assetic.git

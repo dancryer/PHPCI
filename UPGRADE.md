@@ -79,6 +79,11 @@ a link cannot be generated):
         router:
             strict_requirements: %kernel.debug%
 
+You can even disable the requirements check on production with `null` as you should
+know that the parameters for URL generation always pass the requirements, e.g. by
+validating them beforehand. This additionally enhances performance. See
+[config_prod.yml](https://github.com/symfony/symfony-standard/blob/master/app/config/config_prod.yml).
+
 The `default_locale` parameter is now a setting of the main `framework`
 configuration (it was under the `framework.session` in 2.0):
 

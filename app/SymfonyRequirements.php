@@ -507,8 +507,8 @@ class SymfonyRequirements extends RequirementCollection
 
         $this->addRequirement(
             version_compare($installedPhpVersion, '5.3.16', '!='),
-            'Symfony won\'t work properly with PHP 5.3.16',
-            'Install PHP 5.3.17 or newer'
+            'Symfony won\'t work properly with PHP 5.3.16 due to issues in this version',
+            'Install PHP 5.3.17 or newer when possible, or downgrade to PHP 5.3.15'
         );
 
         /* optional recommendations follow */

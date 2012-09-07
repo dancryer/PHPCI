@@ -42,8 +42,8 @@
         {
             "package": "jms/di-extra-bundle",
             "version": "1.1.x-dev",
-            "source-reference": "1.1.0-RC",
-            "commit-date": "1345140102"
+            "source-reference": "af219527024c584d7311aa855d7522429c5bdb67",
+            "commit-date": "1346947722"
         },
         {
             "package": "jms/metadata",
@@ -52,8 +52,8 @@
         {
             "package": "jms/security-extra-bundle",
             "version": "1.2.x-dev",
-            "source-reference": "81070f525ec24f9e6cf6509532b260bc54c42ea5",
-            "commit-date": "1346345841"
+            "source-reference": "9ab6aceda50fc7a2b07d741ba4b3f0695508afcb",
+            "commit-date": "1346947943"
         },
         {
             "package": "kriswallsmith/assetic",
@@ -166,7 +166,8 @@
         {
             "package": "symfony/symfony",
             "version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
+            "source-reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
+            "commit-date": "1346926323"
         },
         {
             "package": "twig/extensions",
@@ -193,9 +194,7 @@
             "commit-date": "1346397138"
         }
     ],
-    "packages-dev": [
-
-    ],
+    "packages-dev": null,
     "aliases": [
 
     ],

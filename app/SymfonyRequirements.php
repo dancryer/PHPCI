@@ -477,7 +477,13 @@ class SymfonyRequirements extends RequirementCollection
 
         $this->addPhpIniRequirement('detect_unicode', false);
 
-        if (extension_loaded('suhosin')) {
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_contents();
+        ob_end_clean();
+
+        // the phpinfo check is necessary when Suhosin is compiled into PHP
+        if (extension_loaded('suhosin') || false !== strpos($phpinfo, 'Suhosin')) {
             $this->addPhpIniRequirement(
                 'suhosin.executor.include.whitelist',
                 create_function('$cfgValue', 'return false !== stripos($cfgValue, "phar");'),

@@ -1,44 +1,49 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-0": { "": "src/" }
-    },
-    "require": {
-        "php": ">=5.3.3",
-        "symfony/symfony": "2.1.*",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
-        "doctrine/doctrine-bundle": "1.0.*",
-        "twig/extensions": "1.0.*",
-        "symfony/assetic-bundle": "2.1.*",
-        "symfony/swiftmailer-bundle": "2.1.*",
-        "symfony/monolog-bundle": "2.1.*",
-        "sensio/distribution-bundle": "2.1.*",
-        "sensio/framework-extra-bundle": "2.1.*",
-        "sensio/generator-bundle": "2.1.*",
-        "jms/security-extra-bundle": "1.2.*",
-        "jms/di-extra-bundle": "1.1.*"
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-        ],
-        "post-update-cmd": [
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-        ]
+        "psr-0": {
+        "": "src/"
+    }
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "vendor/bin"
     },
-    "minimum-stability": "dev",
+    "description": "The \"Symfony Standard Edition\" distribution",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web"
+    },
+    "minimum-stability": "alpha",
+    "name": "symfony/framework-standard-edition",
+    "require": {
+        "doctrine/doctrine-bundle": "1.0.*",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "jms/di-extra-bundle": "1.1.*",
+        "jms/security-extra-bundle": "1.2.*",
+        "php": ">=5.3.3",
+        "sensio/distribution-bundle": "2.1.*",
+        "sensio/framework-extra-bundle": "2.1.*",
+        "sensio/generator-bundle": "2.1.*",
+        "symfony/assetic-bundle": "2.1.*",
+        "symfony/monolog-bundle": "2.1.*",
+        "symfony/swiftmailer-bundle": "2.1.*",
+        "symfony/symfony": "2.1.*",
+        "twig/extensions": "1.0.*"
+    },
+    "require-dev": {
+        "symfony/process": "2.1.*"
+    },
+    "scripts": {
+        "post-install-cmd": [
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+  ],
+        "post-update-cmd": [
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+"Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+  ]
     }
 }

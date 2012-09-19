@@ -165,13 +165,19 @@ if ('update' === $command || 'lock' === $command) {
 }
 
 // php on windows can't use the shebang line from system()
-$interpreter = defined('PHP_WINDOWS_VERSION_BUILD') ? 'php.exe' : '';
+$interpreter = defined('PHP_WINDOWS_VERSION_BUILD') ? 'php.exe' : 'php';
 
 // Update the bootstrap files
-system(sprintf('%s %s %s', $interpreter, escapeshellarg($rootDir.'/vendor/bundles/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php'), escapeshellarg($rootDir)));
+if (!@system(sprintf('%s %s %s', $interpreter, escapeshellarg($rootDir.'/vendor/bundles/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php'), escapeshellarg($rootDir)))){
+    echo PHP_EOL.">Updating the bootstrap files failed.\nPlease run command \"php vendor/bundles/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php /\" manually".PHP_EOL;
+}
 
 // Update assets
-system(sprintf('%s %s assets:install %s', $interpreter, escapeshellarg($rootDir.'/app/console'), escapeshellarg($rootDir.'/web/')));
+if (!@system(sprintf('%s %s assets:install %s', $interpreter, escapeshellarg($rootDir.'/app/console'), escapeshellarg($rootDir.'/web/')))){
+    echo PHP_EOL.">Updating assets failed.\nPlease run command \"php app/console assets:install web\" manually".PHP_EOL;
+}
 
 // Remove the cache
-system(sprintf('%s %s cache:clear --no-warmup', $interpreter, escapeshellarg($rootDir.'/app/console')));
+if (!@system(sprintf('%s %s cache:clear --no-warmup', $interpreter, escapeshellarg($rootDir.'/app/console')))){
+    echo PHP_EOL.">Updating assets failed.\nPlease run command \"php app/console cache:clear --no-warmup\" manually".PHP_EOL;
+}

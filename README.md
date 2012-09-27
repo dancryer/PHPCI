@@ -26,7 +26,9 @@ http://getcomposer.org/ or just run the following command:
 
 Then, use the `create-project` command to generate a new Symfony application:
 
-    php composer.phar create-project symfony/framework-standard-edition path/to/install
+    php composer.phar create-project symfony/framework-standard-edition path/to/install 2.1.x-dev
+
+For an exact version, replace 2.1.x-dev with the latest Symfony version (e.g. 2.1.1).
 
 Composer will install Symfony and all its dependencies under the
 `path/to/install` directory.

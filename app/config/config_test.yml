@@ -6,7 +6,7 @@ framework:
     session:
         storage_id: session.storage.mock_file
     profiler:
-        enable: false
+        enabled: false
 
 web_profiler:
     toolbar: false

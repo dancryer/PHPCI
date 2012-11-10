@@ -12,6 +12,6 @@ class DemoControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/demo/hello/Fabien');
 
-        $this->assertTrue($crawler->filter('html:contains("Hello Fabien")')->count() > 0);
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Hello Fabien")')->count());
     }
 }

@@ -1,5 +1,5 @@
 {
-    "hash": "871ca732d39c832f0b78012cc83cec2e",
+    "hash": "addf2541972b996b4b6ae1658b8e4591",
     "packages": [
         {
             "name": "doctrine/common",
@@ -531,12 +531,12 @@
             "source": {
                 "type": "git",
                 "url": "http://github.com/kriswallsmith/assetic.git",
-                "reference": "a1b6fa1f7bb27c203b6c3cf7d0dd0184f8dffcdc"
+                "reference": "d6203098559cf9fc90e2890c10533d0adad33bd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/kriswallsmith/assetic/zipball/a1b6fa1f7bb27c203b6c3cf7d0dd0184f8dffcdc",
-                "reference": "a1b6fa1f7bb27c203b6c3cf7d0dd0184f8dffcdc",
+                "url": "https://github.com/kriswallsmith/assetic/archive/d6203098559cf9fc90e2890c10533d0adad33bd0.zip",
+                "reference": "d6203098559cf9fc90e2890c10533d0adad33bd0",
                 "shasum": ""
             },
             "require": {
@@ -557,7 +557,7 @@
                 "ptachoire/cssembed": "Assetic provides the integration with phpcssembed to embed data uris",
                 "leafo/scssphp-compass": "Assetic provides the integration with the SCSS compass plugin"
             },
-            "time": "1351079542",
+            "time": "1352285252",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1206,8 +1206,9 @@
     "aliases": [
 
     ],
-    "minimum-stability": "dev",
-    "stability-flags": [
-
-    ]
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "twig/extensions": 20,
+        "kriswallsmith/assetic": 20
+    }
 }

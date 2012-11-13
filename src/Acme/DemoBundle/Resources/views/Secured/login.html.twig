@@ -1,7 +1,7 @@
 {% extends 'AcmeDemoBundle::layout.html.twig' %}
 
 {% block content %}
-    <h1>Login</h1>
+    <h1 class="title">Login</h1>
 
     <p>
         Choose between two default users: <em>user/userpass</em> <small>(ROLE_USER)</small> or <em>admin/adminpass</em> <small>(ROLE_ADMIN)</small>
@@ -22,7 +22,13 @@
             <input type="password" id="password" name="_password" />
         </div>
 
-        <input type="submit" class="symfony-button-grey" value="LOGIN" />
+        <button type="submit" class="sf-button">
+            <span class="border-l">
+                <span class="border-r">
+                    <span class="btn-bg">Login</span>
+                </span>
+            </span>
+        </button>
     </form>
 {% endblock %}
 

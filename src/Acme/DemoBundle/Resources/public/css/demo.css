@@ -1,61 +1,12 @@
-/*
-Copyright (c) 2010, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.com/yui/license.html
-version: 2.8.2r1
-
-Reset
-*/
-
-html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{*font-size:100%;}
-
-html, body
-{
-    background-color: #EFEFEF;
+body {
+    font-size: 14px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 }
-
-body
-{
-    font-size:        14px;
-    font-family:      "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    color:            #313131;
-}
-
-a
-{
-    color:           #08C;
-    text-decoration: none;
-}
-
-a:hover
-{
-    text-decoration: underline;
-}
-
-strong
-{
-    font-weight: bold;
-}
-
-em
-{
-    font-style: italic;
-}
-
-h1, h2, h3
-{
-    font-family:    Georgia, "Times New Roman", Times, serif;
-    color:          #404040;
-}
-
-h1
-{
-    font-size:      45px;
+h1.title {
+    font-size: 45px;
     padding-bottom: 30px;
 }
-
-h2
-{
+.sf-reset h2 {
     font-weight:   bold;
     color:         #FFFFFF;
     /* Font is duplicated of body (sans-serif) */
@@ -68,161 +19,23 @@ h2
     text-transform:   uppercase;
 
 }
-
-p
-{
+p {
     line-height:    20px;
     padding-bottom: 20px;
 }
-
-ul#demo-list a
-{
+ul#demo-list a {
     background: url(../images/blue-arrow.png) no-repeat right 6px;
     padding-right: 10px;
     margin-right:  30px;
 }
-
-ul, ol
-{
-    padding-left: 20px;
-}
-
-li
-{
-    padding-bottom: 18px;
-}
-
-ol li
-{
-    list-style-type: decimal;
-}
-
-ul li
-{
-    list-style-type: none;
-}
-
-#symfony-header
-{
+#symfony-header {
     position: relative;
     padding: 30px 30px 20px 30px;
 }
-
-#symfony-wrapper
-{
-    width:  970px;
-    margin: 0 auto;
-}
-
-.symfony-content
-{
-    background-color:           white;
-    border:                     1px solid #DFDFDF;
-    padding:                    50px;
-    -moz-border-radius:         16px;
-    -webkit-border-radius:      16px;
-    border-radius:              16px;
-    margin-bottom:              20px;
-    word-wrap:                  break-word;
-}
-
-#symfony-search
-{
-    position: absolute;
-    top:   50px;
-    right: 30px;
-}
-
-#symfony-search input[type="search"]
-{
-    -webkit-appearance: textfield;
-}
-
-#symfony-search-field
-{
-    width: 190px;
-}
-
-#symfony-search label
-{
-    display: block;
-    float: left;
-    width: 20px;
-    height: 25px;
-    background: url(../images/search.png) no-repeat left 5px;
-}
-
-#symfony-search label span
-{
-    display: none;
-}
-
-input[type=text], input[type=password]
-{
-    border:      1px solid #DADADA;
-    background:  white url(../images/field-background.gif) repeat-x left top;
-    padding:     5px 6px;
-    color:       #565656;
-    font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
-    font-size:   12px;
-}
-
-.symfony-button-grey,
-.symfony-button-green
-{
-    font-size: 0.85em;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    display: inline-block;
-    outline: none;
-
-    text-align:     center;
-    text-transform: uppercase;
-
-    padding: 3px 10px;
-
-    text-shadow: 0 1px 1px rgba(0,0,0,.3);
-
-    -webkit-border-radius: 4px;
-    -moz-border-radius:    4px;
-    border-radius:         4px;
-}
-
-.symfony-button-grey
-{
-    color:       #868686;
-    font-weight: normal;
-
-    padding:    5px 10px;
-    border:     solid 1px #d7d7d7;
-    background: #ffffff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#d7d7d7));
-    background: -moz-linear-gradient(top,  #ffffff,  #d7d7d7);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#d7d7d7');
-}
-
-.symfony-button-green
-{
-    padding: 5px 12px;
-
-    color: white;
-
-    border:     solid 1px #a7da39;
-    background: #a7da39;
-    background: -webkit-gradient(linear, left top, left bottom, from(#a7da39), to(#6a9211));
-    background: -moz-linear-gradient(top,  #a7da39,  #6a9211);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#a7da39', endColorstr='#6a9211');
-}
-
-.symfony-blocks-welcome
-{
+.sf-reset .symfony-blocks-welcome {
     overflow: hidden;
 }
-
-.symfony-blocks-welcome > div
-{
+.sf-reset .symfony-blocks-welcome > div {
     background-color: whitesmoke;
     float:            left;
     width:            240px;
@@ -230,65 +43,59 @@ input[type=text], input[type=password]
     text-align:       center;
     padding:          26px 20px;
 }
-
-.symfony-blocks-welcome > div.block-demo
-{
+.sf-reset .symfony-blocks-welcome > div.block-demo {
     margin-right: 0;
 }
-
-.symfony-blocks-welcome .illustration
-{
+.sf-reset .symfony-blocks-welcome .illustration {
     padding-bottom: 20px;
 }
-
-.symfony-blocks-help
-{
+.sf-reset .symfony-blocks-help {
     overflow: hidden;
 }
-
-.symfony-blocks-help
-{
+.sf-reset .symfony-blocks-help {
     margin-top: 30px;
     padding:    18px;
     border:     1px solid #E6E6E6;
 }
-
-.symfony-blocks-help > div
-{
+.sf-reset .symfony-blocks-help > div {
     width:        254px;
     float:        left;
 }
-
-.flash-message
-{
+.flash-message {
     padding: 10px;
     margin: 5px;
     margin-top: 15px;
     background-color: #ffe;
 }
-
-.error
-{
+.sf-reset .error {
     color: red;
 }
-
-#login label, #contact_form label
-{
+#login label, #contact_form label {
     display: block;
     float: left;
     width: 90px;
 }
-
-ul#menu
-{
+.sf-reset ul#menu {
     float: right;
     margin-bottom: 20px;
     padding-left: 0;
 }
-
-#menu li
-{
+.sf-reset #menu li {
     padding-left: 0;
     margin-right: 10px;
     display: inline;
+}
+.sf-reset a,
+.sf-reset li a {
+    color: #08C;
+    text-decoration: none;
+}
+.sf-reset a:hover,
+.sf-reset li a:hover {
+    color: #08C;
+    text-decoration: underline;
+}
+.sf-reset .symfony-content pre {
+    white-space: pre;
+    font-family: monospace;
 }

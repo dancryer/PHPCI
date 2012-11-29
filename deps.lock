@@ -1,4 +1,4 @@
-symfony v2.0.18
+symfony v2.0.19
 twig v1.10.3
 monolog 1.2.1
 doctrine-common 2.1.4
@@ -11,5 +11,5 @@ metadata 1.0.0
 SensioFrameworkExtraBundle v2.0.17
 JMSSecurityExtraBundle e752f888c51425f71382c056961f10f2be642102
 SensioDistributionBundle v2.0.17
-SensioGeneratorBundle v2.0.17
+SensioGeneratorBundle v2.0.19
 AsseticBundle 6f15728c1aefa5246caa83730e3dbf70b0d46052

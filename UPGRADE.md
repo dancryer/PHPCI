@@ -32,6 +32,8 @@ Finally, run Composer:
 
     $ composer.phar install
 
+Note: You must complete the upgrade steps below so composer can successfully generate the autoload files.
+
 ### `app/autoload.php`
 
 The default `autoload.php` reads as follows (it has been simplified a lot as

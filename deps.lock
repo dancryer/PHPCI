@@ -1,4 +1,4 @@
-symfony v2.0.19
+symfony v2.0.20
 twig v1.10.3
 monolog 1.2.1
 doctrine-common 2.1.4
@@ -8,7 +8,7 @@ swiftmailer v4.2.2
 assetic v1.0.4
 twig-extensions v1.0.0-alpha
 metadata 1.0.0
-SensioFrameworkExtraBundle v2.0.17
+SensioFrameworkExtraBundle v2.0.20
 JMSSecurityExtraBundle e752f888c51425f71382c056961f10f2be642102
 SensioDistributionBundle v2.0.17
 SensioGeneratorBundle v2.0.19

@@ -194,6 +194,14 @@ The following bundles have been added to the list of default registered bundles:
     new JMS\AopBundle\JMSAopBundle(),
     new JMS\DiExtraBundle\JMSDiExtraBundle($this),
 
+You must also rename the DoctrineBundle from:
+
+    new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+
+to:
+
+    new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+
 ### `web/app.php`
 
 The default `web/app.php` file now reads as follows:

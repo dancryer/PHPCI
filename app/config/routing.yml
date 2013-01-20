@@ -1,0 +1,4 @@
+# Uncomment to handle HTTP content rederering strategies like ESI
+#_proxy:
+#    resource: "@FrameworkBundle/Resources/config/routing/proxy.xml"
+#    prefix:   /proxy

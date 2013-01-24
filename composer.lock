@@ -54,7 +54,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -869,12 +869,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensio/SensioDistributionBundle",
-                "reference": "a8c3fa0c66e2e372e5abbd799849fa0b109c5e2e"
+                "reference": "v2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sensio/SensioDistributionBundle/archive/a8c3fa0c66e2e372e5abbd799849fa0b109c5e2e.zip",
-                "reference": "a8c3fa0c66e2e372e5abbd799849fa0b109c5e2e",
+                "url": "https://github.com/sensio/SensioDistributionBundle/archive/v2.2.0-BETA2.zip",
+                "reference": "v2.2.0-BETA2",
                 "shasum": ""
             },
             "require": {
@@ -915,12 +915,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensio/SensioFrameworkExtraBundle",
-                "reference": "15e312243b3e3e958ce2105f15330d4304134765"
+                "reference": "v2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sensio/SensioFrameworkExtraBundle/archive/15e312243b3e3e958ce2105f15330d4304134765.zip",
-                "reference": "15e312243b3e3e958ce2105f15330d4304134765",
+                "url": "https://github.com/sensio/SensioFrameworkExtraBundle/archive/v2.2.0-BETA2.zip",
+                "reference": "v2.2.0-BETA2",
                 "shasum": ""
             },
             "require": {
@@ -962,12 +962,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensio/SensioGeneratorBundle",
-                "reference": "5adbe8b38f9a16461fa13f2ed587967e8e989b35"
+                "reference": "v2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/sensio/SensioGeneratorBundle/archive/5adbe8b38f9a16461fa13f2ed587967e8e989b35.zip",
-                "reference": "5adbe8b38f9a16461fa13f2ed587967e8e989b35",
+                "url": "https://github.com/sensio/SensioGeneratorBundle/archive/v2.2.0-BETA2.zip",
+                "reference": "v2.2.0-BETA2",
                 "shasum": ""
             },
             "require": {
@@ -1237,12 +1237,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "7c957e3411c6af7ed274cb35aaef8771c19d9965"
+                "reference": "v2.2.0-BETA2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/archive/7c957e3411c6af7ed274cb35aaef8771c19d9965.zip",
-                "reference": "7c957e3411c6af7ed274cb35aaef8771c19d9965",
+                "url": "https://github.com/symfony/symfony/archive/v2.2.0-BETA2.zip",
+                "reference": "v2.2.0-BETA2",
                 "shasum": ""
             },
             "require": {
@@ -1297,7 +1297,7 @@
             "suggest": {
                 "doctrine/data-fixtures": "1.0.*"
             },
-            "time": "2013-01-23 19:54:36",
+            "time": "2013-01-24 07:15:19",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1430,7 +1430,9 @@
             ]
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],

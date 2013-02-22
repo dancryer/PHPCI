@@ -10,5 +10,5 @@
 
     # rewrite requests to non-existent files to front controller
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ app.php [QSA,END]
+    RewriteRule ^(.*)$ app.php [END]
 </IfModule>

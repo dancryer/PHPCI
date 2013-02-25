@@ -6,7 +6,7 @@ UPGRADE FROM 2.1 to 2.2
    So you might want to update your `.htaccess` file as well.
 
  * The ``_internal`` route is not used any more. It should then be removed
-   from both your routing and security configurations. A ``framgents`` key has
+   from both your routing and security configurations. A ``fragments`` key has
    been added to the framework configuration and must be specified when ESI or
    Hinclude are in use. No security configuration is required for this path as
    by default ESI access is only permitted for trusted hosts and Hinclude

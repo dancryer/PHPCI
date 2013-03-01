@@ -1,10 +1,36 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    #<IfModule mod_vhost_alias.c>
-    #    RewriteBase /
-    #</IfModule>
+    # This reduces the matching process for the startpage (path "/") because
+    # otherwise apache will apply the rewritting rules to each configured
+    # DirectoryIndex file needlessly (e.g. index.php, index.html, index.pl).
+    DirectoryIndex
 
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ app.php [QSA,L]
+    # Redirect to URI without front controller to prevent duplicate content
+    # (with and without `/app.php`). Only do this redirect on the initial
+    # rewrite by apache and not on subsequent cycles. Otherwise we would get an
+    # endless redirect loop (request -> rewrite to front controller ->
+    # redirect -> request -> ...).
+    # So in case you get a "too many redirects" error because your apache does
+    # not expose the REDIRECT_STATUS environment variable, you have 2 choices:
+    # - disable this feature by commenting the following 2 lines or
+    # - use apache >= 2.3.9 and replace all L flags by END flags and remove the
+    #   following RewriteCond (best solution)
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^app\.php(/(.*)|$) %{CONTEXT_PREFIX}/$2 [R=301,L]
+
+    # If the requested filename exists, simply serve it.
+    # We only want to let apache serve files and not directories.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule .? - [L]
+
+    # The following rewrites all other queries to app.php. The
+    # condition ensures that if you are using Apache aliases to do
+    # mass virtual hosting, the base path will be prepended to
+    # allow proper resolution of the app.php file; it will work
+    # in non-aliased environments as well, providing a safe, one-size
+    # fits all solution.
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+    RewriteRule .? %{ENV:BASE}app.php [L]
 </IfModule>

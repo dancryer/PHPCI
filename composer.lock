@@ -978,12 +978,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "b86d43c75988d4c48fe0be0be4df5cff456dbd4d"
+                "reference": "50a24301b40cd7df29a7da4efd5573a9ef4622f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/b86d43c75988d4c48fe0be0be4df5cff456dbd4d",
-                "reference": "b86d43c75988d4c48fe0be0be4df5cff456dbd4d",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/50a24301b40cd7df29a7da4efd5573a9ef4622f8",
+                "reference": "50a24301b40cd7df29a7da4efd5573a9ef4622f8",
                 "shasum": ""
             },
             "require": {
@@ -1041,7 +1041,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-03-25 20:10:50"
+            "time": "2013-03-25 20:14:55"
         },
         {
             "name": "monolog/monolog",
@@ -1199,12 +1199,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensio/SensioDistributionBundle.git",
-                "reference": "329d87ab0a0621bf7075f8041cba6885807f3e5e"
+                "reference": "232071cd059ea8b95f713ee9ee76d5cba4abc51e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensio/SensioDistributionBundle/zipball/329d87ab0a0621bf7075f8041cba6885807f3e5e",
-                "reference": "329d87ab0a0621bf7075f8041cba6885807f3e5e",
+                "url": "https://api.github.com/repos/sensio/SensioDistributionBundle/zipball/232071cd059ea8b95f713ee9ee76d5cba4abc51e",
+                "reference": "232071cd059ea8b95f713ee9ee76d5cba4abc51e",
                 "shasum": ""
             },
             "require": {
@@ -1236,7 +1236,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2013-03-23 14:19:22"
+            "time": "2013-03-26 08:24:36"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -1389,12 +1389,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/AsseticBundle.git",
-                "reference": "683b8f25e7795e84f1bc482b2437c2157ef77136"
+                "reference": "90d3e238743a5c8def765079ad8084151d4e4fee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/683b8f25e7795e84f1bc482b2437c2157ef77136",
-                "reference": "683b8f25e7795e84f1bc482b2437c2157ef77136",
+                "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/90d3e238743a5c8def765079ad8084151d4e4fee",
+                "reference": "90d3e238743a5c8def765079ad8084151d4e4fee",
                 "shasum": ""
             },
             "require": {
@@ -1443,7 +1443,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-03-21 17:08:52"
+            "time": "2013-03-25 20:16:21"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -1564,12 +1564,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "c1bd3b5b25a80ebfece8a89d8278035625bec3ea"
+                "reference": "e8b7f0fd34cb354ce14d5f7aa21264fb10e3721a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/c1bd3b5b25a80ebfece8a89d8278035625bec3ea",
-                "reference": "c1bd3b5b25a80ebfece8a89d8278035625bec3ea",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e8b7f0fd34cb354ce14d5f7aa21264fb10e3721a",
+                "reference": "e8b7f0fd34cb354ce14d5f7aa21264fb10e3721a",
                 "shasum": ""
             },
             "require": {
@@ -1655,7 +1655,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-03-25 20:03:44"
+            "time": "2013-03-25 20:28:18"
         },
         {
             "name": "twig/extensions",

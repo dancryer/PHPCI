@@ -40,7 +40,7 @@ class DemoController extends Controller
 
         $request = $this->get('request');
         if ('POST' == $request->getMethod()) {
-            $form->bindRequest($request);
+            $form->bind($request);
             if ($form->isValid()) {
                 $mailer = $this->get('mailer');
                 // .. setup a message and send it

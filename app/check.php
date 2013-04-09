@@ -29,7 +29,7 @@ $checkPassed = true;
 foreach ($symfonyRequirements->getRequirements() as $req) {
     /** @var $req Requirement */
     echo_requirement($req);
-    if (! $req->isFulfilled()) {
+    if (!$req->isFulfilled()) {
         $checkPassed = false;
     }
 }

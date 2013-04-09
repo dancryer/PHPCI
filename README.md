@@ -52,6 +52,9 @@ Execute the `check.php` script from the command line:
 
     php app/check.php
 
+`app/check.php` returns status code (`0` if all mandatory requirements were
+met, `1` otherwise) and thus can be added to build script.
+
 Access the `config.php` script from a browser:
 
     http://localhost/path/to/symfony/app/web/config.php

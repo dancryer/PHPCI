@@ -1,5 +1,7 @@
 {
     "name": "symfony/framework-standard-edition",
+    "license": "MIT",
+    "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-0": { "": "src/" }
@@ -36,13 +38,12 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
         "branch-alias": {
             "dev-master": "2.3-dev"
         }
-    },
-    "type": "project"
+    }
 }

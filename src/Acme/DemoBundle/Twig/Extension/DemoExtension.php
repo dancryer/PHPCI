@@ -2,7 +2,6 @@
 
 namespace Acme\DemoBundle\Twig\Extension;
 
-use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 use CG\Core\ClassUtils;
 
 class DemoExtension extends \Twig_Extension
@@ -10,7 +9,7 @@ class DemoExtension extends \Twig_Extension
     protected $loader;
     protected $controller;
 
-    public function __construct(FilesystemLoader $loader)
+    public function __construct(\Twig_LoaderInterface $loader)
     {
         $this->loader = $loader;
     }

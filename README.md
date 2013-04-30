@@ -139,23 +139,20 @@ It comes pre-configured with the following bundles:
   * [**AsseticBundle**][12] - Adds support for Assetic, an asset processing
     library
 
-  * [**JMSSecurityExtraBundle**][13] - Allows security to be added via
-    annotations
-
-  * [**JMSDiExtraBundle**][14] - Adds more powerful dependency injection
-    features
-
   * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
     the web debug toolbar
 
   * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
     configuring and working with Symfony distributions
 
-  * [**SensioGeneratorBundle**][15] (in dev/test env) - Adds code generation
+  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
     capabilities
 
   * **AcmeDemoBundle** (in dev/test env) - A demo bundle with some example
     code
+
+All libraries and bundles included in the Symfony Standard Edition are
+released under the MIT or BSD license.
 
 Enjoy!
 
@@ -171,6 +168,4 @@ Enjoy!
 [10]: http://symfony.com/doc/2.1/cookbook/email.html
 [11]: http://symfony.com/doc/2.1/cookbook/logging/monolog.html
 [12]: http://symfony.com/doc/2.1/cookbook/assetic/asset_management.html
-[13]: http://jmsyst.com/bundles/JMSSecurityExtraBundle/master
-[14]: http://jmsyst.com/bundles/JMSDiExtraBundle/master
-[15]: http://symfony.com/doc/2.1/bundles/SensioGeneratorBundle/index.html
+[13]: http://symfony.com/doc/2.1/bundles/SensioGeneratorBundle/index.html

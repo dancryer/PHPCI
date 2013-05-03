@@ -1,0 +1,15 @@
+{
+    "name": "block8/phpci",
+    "description": "Simple continuous integration for PHP projects.",
+
+    "authors": [
+        {
+            "name": "Dan Cryer",
+            "email": "dan.cryer@block8.co.uk"
+        }
+    ],
+
+    "require": {
+        "block8/b8framework": "dev-master"
+    }
+}

@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="span3">
+		<ul>
+			<?php foreach($projects as $project): ?>
+			<li><a href="/project/view/<?= $project->getId(); ?>"><?= $project->getTitle(); ?></a></li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+	<div class="span9">
+		<table width="100%" class="table-striped table-bordered">
+			<tr>
+				<th>Project</th>
+				<th>Commit</th>
+				<th>Branch</th>
+				<th>Status</th>
+			</tr>
+			<?php foreach($builds as $build): ?>
+			<tr>
+				<td><?= $build->getProject()->getTitle(); ?></th>
+				<td><?= $build->getCommitId(); ?></th>
+				<td><?= $build->getBranch(); ?></th>
+				<td><?= $build->getStatus(); ?></th>
+			</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

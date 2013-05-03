@@ -13,18 +13,37 @@ class GithubController extends b8\Controller
 		$this->_buildStore		= Store\Factory::getStore('Build');
 	}
 
-	public function index()
+	public function webhook($project)
 	{
-		$payload	= json_decode($this->getParam('payload'));
+		$payload	= json_decode($this->getParam('payload'), true);
 
-		$build		= new Build();
-		$build->setProjectId($this->getParam('project'));
-		$build->setCommitId($payload['after']);
-		$build->setStatus(0);
-		$build->setLog('');
-		$build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
+		try
+		{
+			$build		= new Build();
+			$build->setProjectId($project);
+			$build->setCommitId($payload['after']);
+			$build->setStatus(0);
+			$build->setLog('');
+			$build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
+		}
+		catch(\Exception $ex)
+		{
+			header('HTTP/1.1 400 Bad Request');
+			header('Ex: ' . $ex->getMessage());
+			die('FAIL');
+		}
 
-		$this->_buildStore->save($build);
+		try
+		{
+			$this->_buildStore->save($build);
+		}
+		catch(\Exception $ex)
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+			header('Ex: ' . $ex->getMessage());
+			die('FAIL');
+		}
+		
 		die('OK');
 	}
 }

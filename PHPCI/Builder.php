@@ -149,6 +149,7 @@ class Builder
 
 		mkdir($this->buildPath, 0777, true);
 		file_put_contents($keyFile, $key);
+		chmod($keyFile, 0600);
 		$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
 		unlink($keyFile);
 

@@ -2,11 +2,17 @@
     "name": "block8/phpci",
     "description": "Simple continuous integration for PHP projects.",
     "minimum-stability": "dev",
+    "type": "library",
+    "keywords": ["php", "phpci", "ci", "continuous", "integration", "jenkins", "travis"],
+    "homepage": "https://github.com/Block8/PHPCI",
+    "license": "BSD-2-Clause",
 
     "authors": [
         {
             "name": "Dan Cryer",
-            "email": "dan.cryer@block8.co.uk"
+            "email": "dan.cryer@block8.co.uk",
+            "homepage": "http://www.block8.co.uk",
+            "role": "Developer"
         }
     ],
 

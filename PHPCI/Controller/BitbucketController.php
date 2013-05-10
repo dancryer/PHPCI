@@ -15,34 +15,36 @@ class BitbucketController extends b8\Controller
 
 	public function webhook($project)
 	{
-		$payload	= json_decode($this->getParam('payload'), true);
+		$payload	= json_decode(file_get_contents('php://input'), true);
+		$branches	= array();
+		$commits	= array();
 
-		try
+		foreach($payload['commits'] as $commit)
 		{
-			$build		= new Build();
-			$build->setProjectId($project);
-			$build->setCommitId($payload['after']);
-			$build->setStatus(0);
-			$build->setLog('');
-			$build->setCreated(new \DateTime());
-			$build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
-		}
-		catch(\Exception $ex)
-		{
-			header('HTTP/1.1 400 Bad Request');
-			header('Ex: ' . $ex->getMessage());
-			die('FAIL');
+			if(!in_array($commit['branch'], $branches))
+			{
+				$branches[]					= $commit['branch'];
+				$commits[$commit['branch']]	= $commit['raw_node'];
+			}
 		}
 
-		try
+		foreach($branches as $branch)
 		{
-			$this->_buildStore->save($build);
-		}
-		catch(\Exception $ex)
-		{
-			header('HTTP/1.1 500 Internal Server Error');
-			header('Ex: ' . $ex->getMessage());
-			die('FAIL');
+			try
+			{
+
+				$build		= new Build();
+				$build->setProjectId($project);
+				$build->setCommitId($commits[$branch]);
+				$build->setStatus(0);
+				$build->setLog('');
+				$build->setCreated(new \DateTime());
+				$build->setBranch($branch);
+				$this->_buildStore->save($build);
+			}
+			catch(\Exception $ex)
+			{
+			}
 		}
 		
 		die('OK');

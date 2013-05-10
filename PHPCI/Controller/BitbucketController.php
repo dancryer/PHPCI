@@ -15,7 +15,7 @@ class BitbucketController extends b8\Controller
 
 	public function webhook($project)
 	{
-		$payload	= json_decode(file_get_contents('php://input'), true);
+		$payload	= json_decode($this->getParam('payload'), true);
 		$branches	= array();
 		$commits	= array();
 

@@ -144,8 +144,6 @@ class Builder
 			$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
 		}
 		
-		file_put_contents($this->buildPath . 'phpci.yml', file_get_contents('/www/b8framework/phpci.yml'));
-
 		if(!is_file($this->buildPath . 'phpci.yml'))
 		{
 			$this->logFailure('Project does not contain a phpci.yml file.');

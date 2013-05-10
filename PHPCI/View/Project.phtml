@@ -10,11 +10,12 @@
 			<li><a href="/project/view/<?= $project->getId(); ?>"><i class="icon-folder-open"></i> <?= $project->getTitle(); ?></a></li>
 			<li class="divider"></li>
 			<li class="nav-header">Options</li>
-			<li><a href="/project/edit/<?= $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
 			<li><a href="/project/build/<?= $project->getId(); ?>"><i class="icon-cog"></i> Build Now</a></li>
+
+			<?php if($this->User()->getIsAdmin()): ?>
+			<li><a href="/project/edit/<?= $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
 			<li><a href="javascript:confirmDelete('/project/delete/<?= $project->getId(); ?>')"><i class="icon-trash"></i> Delete Project</a></li>
-
-
+			<?php endif; ?>
 		</ul>
 		</div>
 

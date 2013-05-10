@@ -77,8 +77,9 @@
 			<div class="navbar-inner">
 				<div class="container">
 				<a class="brand" href="/">PHPCI <span class="badge badge-important" style="position: relative; top: -3px; margin-left: 10px">1.0 Alpha</span></a>
-
+<?php if($this->User()->getIsAdmin()): ?>
 				<a class="pull-right btn" href="/project/add">Add Project</a>
+<?php endif; ?>
 				</div>
 			</div>
 		</div>

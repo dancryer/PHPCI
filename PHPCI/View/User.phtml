@@ -1,0 +1,65 @@
+<div id="title">
+	<h1>Users</h1>
+</div>
+
+<div class="row">
+	<div class="span3">
+		<div class="well" style="padding: 8px 0">
+		<ul class="nav nav-list">
+			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="/user"><i class="icon-user"></i> Users</a></li>
+			<?php if($this->User()->getIsAdmin()): ?>
+			<li><a href="/user/add"><i class="icon-plus-sign"></i> Add User</a></li>
+			<?php endif; ?>
+		</ul>
+		</div>
+	</div>
+	<div class="span9">
+		<table class="table table-striped table-bordered">
+			<thead>
+			<tr>
+				<th>Email Address</th>
+				<th>Name</th>
+				<th>Administrator</th>
+				<th style="width: 1%"></th>
+			</tr>
+			</thead>
+			<tbody>
+				<?php foreach($users['items'] as $user): ?>
+				<?php
+				switch($user->getIsAdmin())
+				{
+					case 0:
+						$cls = '';
+						$status = 'No';
+					break;
+
+					case 1:
+						$cls = 'warning';
+						$status = 'Yes';
+					break;
+				}
+				?>
+				<tr class="<?= $cls; ?>">
+					<td><a href="/user/edit/<?= $user->getId(); ?>"><?= $user->getEmail(); ?></a></td>
+					<td><?= $user->getName(); ?></td>
+					<td><?= $status; ?></td>
+					<td>
+						<?php if($this->User()->getIsAdmin()): ?>
+						<div class="btn-group">
+							<a class="btn" href="/user/edit/<?= $user->getId(); ?>">Edit</a>
+							<button class="btn dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="javascript:confirmDelete('/user/delete/<?= $user->getId(); ?>');">Delete User</a></li>
+							</ul>
+						</div>
+						<?php endif; ?>
+					</td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+</div>

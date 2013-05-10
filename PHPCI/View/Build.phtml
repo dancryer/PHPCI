@@ -12,9 +12,9 @@
 			<li class="divider"></li>
 			<li class="nav-header">Options</li>
 			<li><a href="/build/rebuild/<?= $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
+			<?php if($this->User()->getIsAdmin()): ?>
 			<li><a href="javascript:confirmDelete('/build/delete/<?= $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
-
-
+			<?php endif; ?>
 		</ul>
 		</div>
 	</div>

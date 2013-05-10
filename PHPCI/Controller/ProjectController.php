@@ -46,6 +46,11 @@ class ProjectController extends b8\Controller
 
 	public function delete($id)
 	{
+		if(!Registry::getInstance()->get('user')->getIsAdmin())
+		{
+			throw new \Exception('You do not have permission to do that.');
+		}
+
 		$project	= $this->_projectStore->getById($id);
 		$this->_projectStore->delete($project);
 
@@ -69,6 +74,11 @@ class ProjectController extends b8\Controller
 
 	public function add()
 	{
+		if(!Registry::getInstance()->get('user')->getIsAdmin())
+		{
+			throw new \Exception('You do not have permission to do that.');
+		}
+
 		$method	= Registry::getInstance()->get('requestMethod');
 
 		if($method == 'POST')
@@ -114,6 +124,11 @@ class ProjectController extends b8\Controller
 
 	public function edit($id)
 	{
+		if(!Registry::getInstance()->get('user')->getIsAdmin())
+		{
+			throw new \Exception('You do not have permission to do that.');
+		}
+		
 		$method		= Registry::getInstance()->get('requestMethod');
 		$project	= $this->_projectStore->getById($id);
 

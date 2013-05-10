@@ -22,6 +22,8 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 * Multiple PHP-version tests.
 * Multiple testing workers.
 * Install PEAR or PECL extensions.
+* Deployments.
+* Success / Failure emails.
 
 ##Installing PHPCI:
 ####Pre-requisites:

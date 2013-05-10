@@ -1,0 +1,18 @@
+<div id="title">
+	<h1><?= $type == 'add' ? 'Add User' : 'Edit ' . $user->getName() ?></h1>
+</div>
+
+<div class="row">
+	<div class="span4">
+		<div class="well" style="">
+			<?php if($type == 'add'): ?>
+			<p>Fill in the form to the right to add a new user.</p>
+			<?php else: ?>
+			<p>Edit user details using the form to the right.</p>
+			<?php endif; ?>
+		</div>
+	</div>
+	<div class="span8">
+		<?= $form; ?>
+	</div>
+</div>

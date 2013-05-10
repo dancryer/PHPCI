@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Log in</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+	<!-- link rel="stylesheet" type="text/css" href="/assets/css/cms.css" -->
+
+	<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+	<script src="/assets/js/bootstrap.min.js"></script>
+
+	<style type="text/css">
+
+		body
+		{
+			background: #246;
+			font-family: Roboto, Arial, Sans-Serif;
+			font-style: normal;
+			font-weight: 300;
+			padding-top: 70px;
+		}
+
+		#login-box
+		{
+			background: #fff;
+			border: 10px solid #369;
+			margin: 0 auto;
+			padding: 10px;
+			text-align: left;
+			width: 270px;
+		}
+
+		#logo {
+			display: block;
+		}
+
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="row" style="margin-top: 10%; text-align: center">
+		<div class="" id="login-box">
+			<?= $form; ?>
+		</div>
+
+		<a id="logo" href="http://www.block8.co.uk/"><img src="http://cms.block8.co.uk/assets/img/small-logo-trans-white.png"></a>
+	</div>
+</div>
+</body>
+</html>

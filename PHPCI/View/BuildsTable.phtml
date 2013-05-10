@@ -39,12 +39,14 @@ switch($build->getStatus())
 	<td>
 		<div class="btn-group">
 			<a class="btn" href="/build/view/<?= $build->getId(); ?>">View</a>
+			<?php if($this->User()->getIsAdmin()): ?>
 			<button class="btn dropdown-toggle" data-toggle="dropdown">
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">
 				<li><a href="javascript:confirmDelete('/build/delete/<?= $build->getId(); ?>');">Delete Build</a></li>
 			</ul>
+			<?php endif; ?>
 		</div>
 	</td>
 </tr>

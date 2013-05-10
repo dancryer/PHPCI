@@ -16,6 +16,7 @@
         "phpmd/phpmd" : "1.*",
         "sebastian/phpcpd": "1.*",
         "squizlabs/php_codesniffer": "1.*",
+        "ircmaxell/password-compat": "1.x",
         "ext-yaml": "*"
     }
 }

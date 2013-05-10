@@ -1,0 +1,135 @@
+<div id="title">
+	<h1 style="display: inline-block">Build #<?= $build->getId(); ?></h1>
+			<h3 style="margin-left: 40px; display: inline-block">Branch: <?= $build->getBranch(); ?> - <?= $build->getCommitId() == 'Manual' ? 'Manual Build' : 'Commit: ' . $build->getCommitId(); ?></h3>
+</div>
+
+<div class="row">
+	<div class="span3">
+		<div class="well" style="padding: 8px 0">
+		<ul class="nav nav-list">
+			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="/project/view/<?= $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?= $build->getProject()->getTitle(); ?></a></li>
+			<li class="divider"></li>
+			<li class="nav-header">Options</li>
+			<li><a href="/build/rebuild/<?= $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
+			<li><a href="javascript:confirmDelete('/build/delete/<?= $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
+
+
+		</ul>
+		</div>
+	</div>
+	<div class="span9">
+		<div id="status"></div>
+
+		<table class="table table-striped table-bordered">
+			<thead>
+			<tr>
+				<th style="width: 33.3%">Build Created</th>
+				<th style="width: 33.3%">Build Started</th>
+				<th style="width: 33.3%">Build Finished</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td id="created"></td>
+					<td id="started"></td>
+					<td id="finished"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-striped table-bordered">
+			<thead>
+			<tr>
+				<th>Build Log</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><pre style="height: 300px; overflow-y: auto;" id="log"></pre></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<?php if($build->getStatus() == 0 || $build->getStatus() == 1 || true): ?>
+<script>
+setInterval(function()
+{
+	$.getJSON('/build/data/<?= $build->getId(); ?>', updateBuildView);
+}, 10000);
+</script>
+<?php endif; ?>
+
+<script>
+	window.initial = <?= $data; ?>;
+
+	function updateBuildView(data)
+	{
+		console.log(data);
+		$('#status').attr('class', 'alert');
+
+		var cls;
+		var msg;
+
+		switch(data.status)
+		{
+			case 0:
+				cls = 'alert-info';
+				msg = 'This build has not yet started.';
+			break;
+
+			case 1:
+				cls = 'alert-warning';
+				msg = 'This build is in progress.';
+			break;
+
+			case 2:
+				cls = 'alert-success';
+				msg = 'This build was successful!';
+			break;
+
+			case 3:
+				cls = 'alert-error';
+				msg = 'This build has failed.';
+			break;
+		}
+
+		$('#status').addClass(cls).text(msg);
+
+		if(data.created)
+		{
+			$('#created').text(data.created);
+		}
+		else
+		{
+			$('#created').text('Not created yet.');
+		}
+
+		if(data.started)
+		{
+			$('#started').text(data.started);
+		}
+		else
+		{
+			$('#started').text('Not started yet.');
+		}
+
+		if(data.finished)
+		{
+			$('#finished').text(data.finished);
+		}
+		else
+		{
+			$('#finished').text('Not finished yet.');
+		}
+
+		$('#log').html(data.log);
+	}
+
+	$(document).ready(function()
+	{
+		updateBuildView(window.initial);
+	});
+</script>

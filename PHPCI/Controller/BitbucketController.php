@@ -6,7 +6,7 @@ use b8,
 	PHPCI\Model\Build;
 
 
-class GithubController extends b8\Controller
+class BitbucketController extends b8\Controller
 {
 	public function init()
 	{

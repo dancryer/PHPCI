@@ -1,10 +1,13 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>PHPCI</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900,300italic' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-responsive.min.css">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="/assets/js/bootstrap.min.js"></script>
 
@@ -12,6 +15,9 @@
 			body
 			{
 				background: #246;
+				font-family: Roboto, Arial, Sans-Serif;
+				font-style: normal;
+				font-weight: 300;
 				padding-top: 70px;
 			}
 
@@ -21,13 +27,58 @@
 				border: 10px solid #369;
 				padding: 10px;
 			}
+
+			.widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header, .ui-dialog .ui-dialog-titlebar {
+				background-color: #efefef;
+				background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
+				background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+			    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+			    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+			    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+			    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+			    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 ); /* IE6-9 */
+			    border-bottom: 1px solid #CDCDCD;
+			}
+
+			#title
+			{
+				background: #f8f8f8;
+				border-bottom: 1px solid #ccc;
+				margin: -10px -10px 15px -10px;
+				padding: 10px;
+			}
+
+				#title h1
+				{
+					font-size: 2em;
+					margin: 0;
+					padding: 0;
+				}
 		</style>
+
+		<script>
+
+		function confirmDelete(url)
+		{
+			if(confirm('Are you sure you want to delete this?'))
+			{
+				window.location.href = url;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		</script>
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-				<a class="brand" href="/">PHPCI</a>
+				<a class="brand" href="/">PHPCI <span class="badge badge-important" style="position: relative; top: -3px; margin-left: 10px">1.0 Alpha</span></a>
+
+				<a class="pull-right btn" href="/project/add">Add Project</a>
 				</div>
 			</div>
 		</div>

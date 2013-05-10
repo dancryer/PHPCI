@@ -13,12 +13,24 @@ class IndexController extends b8\Controller
 
 	public function index()
 	{
-		$builds		= $this->_buildStore->getWhere(array(), 10, 0, array(), array('id' => 'DESC'));
-		$projects	= $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+		$projects		= $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+		$view			= new b8\View('Index');
+		$view->builds	= $this->getLatestBuildsHtml();
+		$view->projects	= $projects['items'];
 
-		$view = new b8\View('Index');
-		$view->builds = $builds['items'];
-		$view->projects = $projects['items'];
+		return $view->render();
+	}
+
+	public function latest()
+	{
+		die($this->getLatestBuildsHtml());
+	}
+
+	protected function getLatestBuildsHtml()
+	{
+		$builds			= $this->_buildStore->getWhere(array(), 10, 0, array(), array('id' => 'DESC'));
+		$view			= new b8\View('BuildsTable');
+		$view->builds	= $builds['items'];
 
 		return $view->render();
 	}

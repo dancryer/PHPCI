@@ -16,5 +16,21 @@ use PHPCI\Model\Base\BuildBase;
  */
 class Build extends BuildBase
 {
-	// This class has been left blank so that you can modify it - changes in this file will not be overwritten.
+	public function getCommitLink()
+	{
+		switch($this->getProject()->getType())
+		{
+			case 'github':
+				return 'https://github.com/' . $this->getProject()->getReference() . '/commit/' . $this->getCommitId();
+		}
+	}
+
+	public function getBranchLink()
+	{
+		switch($this->getProject()->getType())
+		{
+			case 'github':
+				return 'https://github.com/' . $this->getProject()->getReference() . '/tree/' . $this->getBranch();
+		}
+	}
 }

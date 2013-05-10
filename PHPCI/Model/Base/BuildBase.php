@@ -22,6 +22,9 @@ class BuildBase extends Model
 					'status'    =>    null,
 					'log'    =>    null,
 					'branch'    =>    null,
+					'created'    =>    null,
+					'started'    =>    null,
+					'finished'    =>    null,
                                   );
 	protected $_getters     = array(
 					'id'    =>    'getId',
@@ -30,6 +33,9 @@ class BuildBase extends Model
 					'status'    =>    'getStatus',
 					'log'    =>    'getLog',
 					'branch'    =>    'getBranch',
+					'created'    =>    'getCreated',
+					'started'    =>    'getStarted',
+					'finished'    =>    'getFinished',
 
 					'Project'  => 'getProject',
 
@@ -42,6 +48,9 @@ class BuildBase extends Model
 					'status'    =>    'setStatus',
 					'log'    =>    'setLog',
 					'branch'    =>    'setBranch',
+					'created'    =>    'setCreated',
+					'started'    =>    'setStarted',
+					'finished'    =>    'setFinished',
 
 	'Project'  => 'setProject',
                                  );
@@ -90,6 +99,30 @@ class BuildBase extends Model
 													'type' => 'varchar',
 													'length' => '50',
 
+
+
+
+												),
+					'created'    =>    array(
+													'type' => 'datetime',
+													'length' => '',
+													'nullable' => true,
+
+
+
+												),
+					'started'    =>    array(
+													'type' => 'datetime',
+													'length' => '',
+													'nullable' => true,
+
+
+
+												),
+					'finished'    =>    array(
+													'type' => 'datetime',
+													'length' => '',
+													'nullable' => true,
 
 
 
@@ -149,6 +182,48 @@ class BuildBase extends Model
 	public function getBranch()
 	{
 		$rtn    = $this->_data['branch'];
+
+		
+		return $rtn;
+	}
+
+	public function getCreated()
+	{
+		$rtn    = $this->_data['created'];
+
+		
+		if(!empty($rtn))
+		{
+			$rtn    = new \DateTime($rtn);
+		}
+
+		
+		return $rtn;
+	}
+
+	public function getStarted()
+	{
+		$rtn    = $this->_data['started'];
+
+		
+		if(!empty($rtn))
+		{
+			$rtn    = new \DateTime($rtn);
+		}
+
+		
+		return $rtn;
+	}
+
+	public function getFinished()
+	{
+		$rtn    = $this->_data['finished'];
+
+		
+		if(!empty($rtn))
+		{
+			$rtn    = new \DateTime($rtn);
+		}
 
 		
 		return $rtn;
@@ -238,6 +313,48 @@ class BuildBase extends Model
 		$this->_data['branch'] = $value;
 
 		$this->_setModified('branch');
+	}
+
+	public function setCreated($value)
+	{
+
+		$this->_validateDate('Created', $value);
+		if($this->_data['created'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['created'] = $value;
+
+		$this->_setModified('created');
+	}
+
+	public function setStarted($value)
+	{
+
+		$this->_validateDate('Started', $value);
+		if($this->_data['started'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['started'] = $value;
+
+		$this->_setModified('started');
+	}
+
+	public function setFinished($value)
+	{
+
+		$this->_validateDate('Finished', $value);
+		if($this->_data['finished'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['finished'] = $value;
+
+		$this->_setModified('finished');
 	}
 
 

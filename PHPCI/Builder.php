@@ -19,42 +19,49 @@ class Builder
 	public function __construct(Build $build)
 	{
 		$this->build = $build;
+		$this->store = Store\Factory::getStore('Build');
 	}
 
 	public function execute()
 	{
 		$this->build->setStatus(1);
-		$this->build = Store\Factory::getStore('Build')->save($this->build);
+		$this->build->setStarted(new \DateTime());
+		$this->build = $this->store->save($this->build);
 
 		if($this->setupBuild())
 		{
-			$this->executeEvent('prepare');
-			$this->executePlugins();
+			$this->executePlugins('setup');
+			$this->executePlugins('test');
 
 			$this->log('');
 
-			$this->executeEvent('on_complete');
+			$this->executePlugins('complete');
 
 			if($this->success)
 			{
-				$this->executeEvent('on_success');
+				$this->executePlugins('success');
 				$this->logSuccess('BUILD SUCCESSFUL!');
 				$this->build->setStatus(2);
 			}
 			else
 			{
-				$this->executeEvent('on_failure');
+				$this->executePlugins('failure');
 				$this->logFailure('BUILD FAILED!');
 				$this->build->setStatus(3);
 			}
 
 			$this->log('');
 		}
+		else
+		{
+			$this->build->setStatus(3);
+		}
 
 		$this->removeBuild();
 
+		$this->build->setFinished(new \DateTime());
 		$this->build->setLog($this->log);
-		Store\Factory::getStore('Build')->save($this->build);
+		$this->store->save($this->build);
 	}
 
 	public function executeCommand($command)
@@ -94,6 +101,9 @@ class Builder
 			$this->log .= $message;
 			print $message;
 		}
+
+		$this->build->setLog($this->log);
+		$this->build = $this->store->save($this->build);
 	}
 
 	protected function logSuccess($message)
@@ -106,52 +116,35 @@ class Builder
 		$this->log("\033[0;31m" . $message . "\033[0m");
 	}
 
-	protected function executeEvent($event)
-	{
-		$this->log('RUNNING '.strtoupper($event).' ACTIONS:');
-
-		if(!isset($this->config[$event]))
-		{
-			return;
-		}
-
-		if(is_string($this->config[$event]))
-		{
-			if(!$this->executeCommand($this->config[$event]))
-			{
-				$this->success = false;
-			}
-
-			return;
-		}
-
-		if(is_array($this->config[$event]))
-		{
-			foreach($this->config[$event] as $command)
-			{
-				if(!$this->executeCommand($command))
-				{
-					$this->success = false;
-				}
-			}
-		}
-	}
-
 	protected function setupBuild()
 	{
 		$commitId			= $this->build->getCommitId();
 		$url				= $this->build->getProject()->getGitUrl();
 		$key				= $this->build->getProject()->getGitKey();
 
+		$buildId			= 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
+
 		$this->ciDir		= realpath(dirname(__FILE__) . '/../') . '/';
-		$this->buildPath	= $this->ciDir . 'build/' . $commitId . '/';
-		$keyFile			= $this->ciDir . 'build/' . $commitId . '.key';
+		$this->buildPath	= $this->ciDir . 'build/' . $buildId . '/';
 
 		mkdir($this->buildPath, 0777, true);
-		file_put_contents($keyFile, $key);
-		chmod($keyFile, 0600);
-		$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
-		unlink($keyFile);
+
+		if(!empty($key))
+		{
+			// Do an SSH clone:
+			$keyFile			= $this->ciDir . 'build/' . $buildId . '.key';
+			file_put_contents($keyFile, $key);
+			chmod($keyFile, 0600);
+			$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
+			unlink($keyFile);
+		}
+		else
+		{
+			// Do an HTTP clone:
+			$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
+		}
+		
+		file_put_contents($this->buildPath . 'phpci.yml', file_get_contents('/www/b8framework/phpci.yml'));
 
 		if(!is_file($this->buildPath . 'phpci.yml'))
 		{
@@ -186,15 +179,15 @@ class Builder
 		shell_exec('rm -Rf ' . $this->buildPath);
 	}
 
-	protected function executePlugins()
+	protected function executePlugins($stage)
 	{
-		foreach($this->config['plugins'] as $plugin => $options)
+		foreach($this->config[$stage] as $plugin => $options)
 		{
 			$this->log('');
 			$this->log('RUNNING PLUGIN: ' . $plugin);
 
 			// Is this plugin allowed to fail?
-			if(!isset($options['allow_failures']))
+			if($stage == 'test' && !isset($options['allow_failures']))
 			{
 				$options['allow_failures'] = false;
 			}
@@ -207,7 +200,7 @@ class Builder
 			{
 				$this->logFailure('Plugin does not exist: ' . $plugin);
 
-				if(!$options['allow_failures'])
+				if($stage == 'test' && !$options['allow_failures'])
 				{
 					$this->success = false;
 				}
@@ -221,7 +214,7 @@ class Builder
 
 				if(!$plugin->execute())
 				{
-					if(!$options['allow_failures'])
+					if($stage == 'test' && !$options['allow_failures'])
 					{
 						$this->success = false;
 					}
@@ -234,7 +227,7 @@ class Builder
 			{
 				$this->logFailure('EXCEPTION: ' . $ex->getMessage());
 
-				if(!$options['allow_failures'])
+				if($stage == 'test' && !$options['allow_failures'])
 				{
 					$this->success = false;
 					continue;

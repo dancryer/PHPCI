@@ -2,3 +2,4 @@
 vendor/
 composer.lock
 config.php
+.DS_Store

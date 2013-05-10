@@ -11,7 +11,7 @@ class Composer implements \PHPCI\Plugin
 	public function __construct(\PHPCI\Builder $phpci, array $options = array())
 	{
 		$this->phpci		= $phpci;
-		$this->directory	= isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
+		$this->directory	= isset($options['directory']) ? $phpci->buildPath . '/' . $options['directory'] : $phpci->buildPath;
 		$this->action		= isset($options['action']) ? $options['action'] : 'update';
 	}
 

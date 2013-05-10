@@ -18,14 +18,16 @@ class ProjectBase extends Model
 	protected $_data        = array(
 					'id'    =>    null,
 					'title'    =>    null,
-					'git_url'    =>    null,
+					'reference'    =>    null,
 					'git_key'    =>    null,
+					'type'    =>    null,
                                   );
 	protected $_getters     = array(
 					'id'    =>    'getId',
 					'title'    =>    'getTitle',
-					'git_url'    =>    'getGitUrl',
+					'reference'    =>    'getReference',
 					'git_key'    =>    'getGitKey',
+					'type'    =>    'getType',
 
 
 							);
@@ -33,8 +35,9 @@ class ProjectBase extends Model
 	protected $_setters     = array(
 					'id'    =>    'setId',
 					'title'    =>    'setTitle',
-					'git_url'    =>    'setGitUrl',
+					'reference'    =>    'setReference',
 					'git_key'    =>    'setGitKey',
+					'type'    =>    'setType',
 
                                  );
 	public $columns         = array(
@@ -54,9 +57,9 @@ class ProjectBase extends Model
 
 
 												),
-					'git_url'    =>    array(
+					'reference'    =>    array(
 													'type' => 'varchar',
-													'length' => '1024',
+													'length' => '250',
 
 
 
@@ -65,6 +68,14 @@ class ProjectBase extends Model
 					'git_key'    =>    array(
 													'type' => 'text',
 													'length' => '',
+
+
+
+
+												),
+					'type'    =>    array(
+													'type' => 'varchar',
+													'length' => '50',
 
 
 
@@ -95,9 +106,9 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
-	public function getGitUrl()
+	public function getReference()
 	{
-		$rtn    = $this->_data['git_url'];
+		$rtn    = $this->_data['reference'];
 
 		
 		return $rtn;
@@ -106,6 +117,14 @@ class ProjectBase extends Model
 	public function getGitKey()
 	{
 		$rtn    = $this->_data['git_key'];
+
+		
+		return $rtn;
+	}
+
+	public function getType()
+	{
+		$rtn    = $this->_data['type'];
 
 		
 		return $rtn;
@@ -141,18 +160,18 @@ class ProjectBase extends Model
 		$this->_setModified('title');
 	}
 
-	public function setGitUrl($value)
+	public function setReference($value)
 	{
-		$this->_validateNotNull('GitUrl', $value);
-		$this->_validateString('GitUrl', $value);
-		if($this->_data['git_url'] == $value)
+		$this->_validateNotNull('Reference', $value);
+		$this->_validateString('Reference', $value);
+		if($this->_data['reference'] == $value)
 		{
 			return;
 		}
 
-		$this->_data['git_url'] = $value;
+		$this->_data['reference'] = $value;
 
-		$this->_setModified('git_url');
+		$this->_setModified('reference');
 	}
 
 	public function setGitKey($value)
@@ -167,6 +186,20 @@ class ProjectBase extends Model
 		$this->_data['git_key'] = $value;
 
 		$this->_setModified('git_key');
+	}
+
+	public function setType($value)
+	{
+		$this->_validateNotNull('Type', $value);
+		$this->_validateString('Type', $value);
+		if($this->_data['type'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['type'] = $value;
+
+		$this->_setModified('type');
 	}
 
 

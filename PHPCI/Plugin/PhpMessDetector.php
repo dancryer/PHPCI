@@ -23,6 +23,6 @@ class PhpMessDetector implements \PHPCI\Plugin
 			$ignore = ' --exclude ' . implode(',', $ignore);
 		}
 
-		return $this->phpci->executeCommand('phpmd ' . $this->phpci->buildPath . ' text codesize,unusedcode,naming' . $ignore);
+		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpmd ' . $this->phpci->buildPath . ' text codesize,unusedcode,naming' . $ignore);
 	}
 }

@@ -17,6 +17,6 @@ class Composer implements \PHPCI\Plugin
 
 	public function execute()
 	{
-		return $this->phpci->executeCommand('composer --working-dir=' . $this->directory . ' ' . $this->action);
+		return $this->phpci->executeCommand(PHPCI_DIR . 'composer.phar --working-dir=' . $this->directory . ' ' . $this->action);
 	}
 }

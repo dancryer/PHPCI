@@ -1,6 +1,7 @@
 {
     "name": "block8/phpci",
     "description": "Simple continuous integration for PHP projects.",
+    "minimum-stability": "dev",
 
     "authors": [
         {
@@ -10,6 +11,11 @@
     ],
 
     "require": {
-        "block8/b8framework": "dev-master"
+        "block8/b8framework": "dev-master",
+        "phpunit/phpunit": "3.*",
+        "phpmd/phpmd" : "1.*",
+        "sebastian/phpcpd": "1.*",
+        "squizlabs/php_codesniffer": "1.*",
+        "ext-yaml": "*"
     }
 }

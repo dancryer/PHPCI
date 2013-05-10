@@ -17,9 +17,11 @@ class Mysql implements \PHPCI\Plugin
 	{
 		$rtn = true;
 
+		$db	= \b8\Database::getConnection('write')->getDetails();
+
 		foreach($this->queries as $query)
 		{
-			$rtn = !$this->phpci->executeCommand('mysql -uroot -e "'.$query.'"') ? false : $rtn;
+			$rtn = !$this->phpci->executeCommand('mysql -h'.PHPCI_DB_HOST.' -u'.$db['user'].(!empty($db['pass']) ? ' -p' . $db['pass'] : '').' -e "'.$query.'"') ? false : $rtn;
 		}
 
 		return $rtn;

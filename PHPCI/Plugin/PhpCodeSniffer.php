@@ -27,6 +27,6 @@ class PhpCodeSniffer implements \PHPCI\Plugin
 			$ignore = ' --ignore=' . implode(',', $ignore);
 		}
 
-		return $this->phpci->executeCommand('phpcs --standard=' . $this->standard . $ignore. ' ' . $this->phpci->buildPath);
+		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcs --standard=' . $this->standard . $ignore. ' ' . $this->phpci->buildPath);
 	}
 }

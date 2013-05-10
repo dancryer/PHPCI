@@ -58,7 +58,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 
 Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:
 
-    `* * * * * /usr/bin/php /path/to/phpci/cron.php`
+    * * * * * /usr/bin/php /path/to/phpci/cron.php
     
 Obviously, make sure you change the /path/to/phpci to the directory in which you installed PHPCI, and update the PHP path if necessary.
 

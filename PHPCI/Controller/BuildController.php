@@ -2,6 +2,7 @@
 
 namespace PHPCI\Controller;
 use b8,
+	b8\Registry,
 	PHPCI\Model\Build;
 
 class BuildController extends b8\Controller

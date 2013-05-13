@@ -62,7 +62,7 @@ Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `cronta
 
     * * * * * /usr/bin/php /path/to/phpci/cron.php
     
-Obviously, make sure you change the /path/to/phpci to the directory in which you installed PHPCI, and update the PHP path if necessary.
+Obviously, make sure you change the `/path/to/phpci` to the directory in which you installed PHPCI, and update the PHP path if necessary.
 
 ##Adding support for PHPCI to your projects:
 Similar to Travis CI, to support PHPCI in your project, you simply need to add a `phpci.yml` file to the root of your repository. The file should look something like this:
@@ -91,7 +91,7 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
     
     complete:
     	mysql:
-    		- "DROP DATABASE IF EXISTS b8_test;"
+    		- "DROP DATABASE IF EXISTS test;"
     		
 As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
 
@@ -107,4 +107,4 @@ The `ignore` section is merely an array of paths that should be ignored in all t
 Contributions from others would be very much appreciated! Simply fork the repository, and send us a pull request when you're ready. 
 
 ##Questions?
-Email us at hello@block8.co.uk and we'll do our best to help!
+Email us at hello+phpci@block8.co.uk and we'll do our best to help!

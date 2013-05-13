@@ -121,27 +121,41 @@ class Builder
 		$commitId			= $this->build->getCommitId();
 		$url				= $this->build->getProject()->getGitUrl();
 		$key				= $this->build->getProject()->getGitKey();
+		$type				= $this->build->getProject()->getType();
 
 		$buildId			= 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
 
 		$this->ciDir		= realpath(dirname(__FILE__) . '/../') . '/';
 		$this->buildPath	= $this->ciDir . 'build/' . $buildId . '/';
 
-		mkdir($this->buildPath, 0777, true);
 
-		if(!empty($key))
-		{
-			// Do an SSH clone:
-			$keyFile			= $this->ciDir . 'build/' . $buildId . '.key';
-			file_put_contents($keyFile, $key);
-			chmod($keyFile, 0600);
-			$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
-			unlink($keyFile);
-		}
-		else
-		{
-			// Do an HTTP clone:
-			$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
+		switch ($type) {
+			case 'local':
+				$reference = $this->build->getProject()->getReference();
+				$this->buildPath	= $this->ciDir . 'build/' . $buildId;
+				if(is_link($this->buildPath) && is_file($this->buildPath)) {
+				} else {
+					symlink($reference, $this->buildPath);
+				}
+				$this->buildPath	.= '/';
+				break;
+			default:
+				mkdir($this->buildPath, 0777, true);
+				if(!empty($key))
+				{
+					// Do an SSH clone:
+					$keyFile			= $this->ciDir . 'build/' . $buildId . '.key';
+					file_put_contents($keyFile, $key);
+					chmod($keyFile, 0600);
+					$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
+					unlink($keyFile);
+				}
+				else
+				{
+					// Do an HTTP clone:
+					$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
+				}
+				break;
 		}
 
 		if(!is_file($this->buildPath . 'phpci.yml'))
@@ -179,6 +193,10 @@ class Builder
 
 	protected function executePlugins($stage)
 	{
+		if ( array_key_exists($stage, $this->config) && !is_array($this->config[$stage]) ) {
+			return;
+		}
+
 		foreach($this->config[$stage] as $plugin => $options)
 		{
 			$this->log('');

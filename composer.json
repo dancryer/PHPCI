@@ -19,6 +19,7 @@
     "require": {
         "block8/b8framework": "dev-master",
         "phpunit/phpunit": "3.*",
+        "phpunit/php-code-coverage": "1.2.x",
         "phpmd/phpmd" : "1.*",
         "sebastian/phpcpd": "1.*",
         "squizlabs/php_codesniffer": "1.*",

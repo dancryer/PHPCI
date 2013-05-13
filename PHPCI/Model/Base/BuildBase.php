@@ -143,7 +143,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -151,7 +151,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['project_id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -159,7 +159,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['commit_id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -167,7 +167,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['status'];
 
-		
+
 		return $rtn;
 	}
 
@@ -175,7 +175,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['log'];
 
-		
+
 		return $rtn;
 	}
 
@@ -183,7 +183,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['branch'];
 
-		
+
 		return $rtn;
 	}
 
@@ -191,13 +191,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['created'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -205,13 +205,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['started'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -219,13 +219,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['finished'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -277,7 +277,7 @@ class BuildBase extends Model
 	{
 		$this->_validateNotNull('Status', $value);
 		$this->_validateInt('Status', $value);
-		if($this->_data['status'] == $value)
+		if($this->_data['status'] === $value)
 		{
 			return;
 		}

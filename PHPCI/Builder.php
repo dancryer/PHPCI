@@ -143,7 +143,7 @@ class Builder
 			// Do an HTTP clone:
 			$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
 		}
-		
+
 		if(!is_file($this->buildPath . 'phpci.yml'))
 		{
 			$this->logFailure('Project does not contain a phpci.yml file.');
@@ -202,7 +202,7 @@ class Builder
 				{
 					$this->success = false;
 				}
-				
+
 				continue;
 			}
 
@@ -216,7 +216,7 @@ class Builder
 					{
 						$this->success = false;
 					}
-					
+
 					$this->logFailure('PLUGIN STATUS: FAILED');
 					continue;
 				}

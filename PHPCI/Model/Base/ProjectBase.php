@@ -94,7 +94,7 @@ class ProjectBase extends Model
 	{
 		$rtn    = $this->_data['id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -102,7 +102,7 @@ class ProjectBase extends Model
 	{
 		$rtn    = $this->_data['title'];
 
-		
+
 		return $rtn;
 	}
 
@@ -110,7 +110,7 @@ class ProjectBase extends Model
 	{
 		$rtn    = $this->_data['reference'];
 
-		
+
 		return $rtn;
 	}
 
@@ -118,7 +118,7 @@ class ProjectBase extends Model
 	{
 		$rtn    = $this->_data['git_key'];
 
-		
+
 		return $rtn;
 	}
 
@@ -126,7 +126,7 @@ class ProjectBase extends Model
 	{
 		$rtn    = $this->_data['type'];
 
-		
+
 		return $rtn;
 	}
 
@@ -150,7 +150,7 @@ class ProjectBase extends Model
 	{
 		$this->_validateNotNull('Title', $value);
 		$this->_validateString('Title', $value);
-		if($this->_data['title'] == $value)
+		if($this->_data['title'] === $value)
 		{
 			return;
 		}
@@ -164,7 +164,7 @@ class ProjectBase extends Model
 	{
 		$this->_validateNotNull('Reference', $value);
 		$this->_validateString('Reference', $value);
-		if($this->_data['reference'] == $value)
+		if($this->_data['reference'] === $value)
 		{
 			return;
 		}
@@ -178,7 +178,7 @@ class ProjectBase extends Model
 	{
 		$this->_validateNotNull('GitKey', $value);
 		$this->_validateString('GitKey', $value);
-		if($this->_data['git_key'] == $value)
+		if($this->_data['git_key'] === $value)
 		{
 			return;
 		}
@@ -192,7 +192,7 @@ class ProjectBase extends Model
 	{
 		$this->_validateNotNull('Type', $value);
 		$this->_validateString('Type', $value);
-		if($this->_data['type'] == $value)
+		if($this->_data['type'] === $value)
 		{
 			return;
 		}

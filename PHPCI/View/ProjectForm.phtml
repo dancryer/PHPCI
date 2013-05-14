@@ -20,3 +20,32 @@
 		<?= $form; ?>
 	</div>
 </div>
+
+<script>
+
+$(document).ready(function()
+{
+	$('#element-reference').change(function()
+	{
+		var el	= $(this);
+		var val	= el.val();
+
+		var acceptable = {
+			'github_ssh': /git\@github\.com\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+			'github_git': /git\:\/\/github.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+			'github_http': /https\:\/\/github\.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/,
+			'bb_ssh': /git\@bitbucket\.org\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+			'bb_http': /https\:\/\/[a-zA-Z0-9_\-]+\@bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+			'bb_anon': /https\:\/\/bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/
+		};
+
+
+		for(var i in acceptable) {
+			if(val.match(acceptable[i])) {
+				el.val(val.replace(acceptable[i], '$1'));
+			}
+		}
+	});
+});
+
+</script>

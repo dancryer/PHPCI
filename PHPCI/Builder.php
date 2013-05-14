@@ -127,17 +127,17 @@ class Builder
 
 		$this->ciDir		= realpath(dirname(__FILE__) . '/../') . '/';
 		$this->buildPath	= $this->ciDir . 'build/' . $buildId . '/';
+		$reference = $this->build->getProject()->getReference();
 
+		// don't want no slash on the end
+		if(substr($reference, -1) == '/') {
+		    $reference = substr($reference, 0, -1);
+		}
 
 		switch ($type) {
 			case 'local':
-				$reference = $this->build->getProject()->getReference();
 				$this->buildPath	= $this->ciDir . 'build/' . $buildId;
 
-				// don't want no slash on the end
-				if(substr($reference, -1) == '/') {
-				    $reference = substr($reference, 0, -1);
-				}
 
 				if(!is_file($reference . '/phpci.yml'))
 				{
@@ -152,18 +152,18 @@ class Builder
 					&& array_key_exists('preferSymlink', $this->config['prebuild'])
 					&& true === $this->config['prebuild']['preferSymlink'] ) {
 
-						if(is_link($this->buildPath) && is_file($this->buildPath)) {
-							unlink($this->buildPath);
-						}
-
-						symlink($reference, $this->buildPath);
+					if(is_link($this->buildPath) && is_file($this->buildPath)) {
+						unlink($this->buildPath);
 					}
+
+					$this->log(sprintf('Symlinking: %s to %s',$reference, $this->buildPath));
+					symlink($reference, $this->buildPath);
 				} else {
 					$this->executeCommand(
 						sprintf("cp -Rf %s %s/", $reference, $this->buildPath)
 					);
 				}
-
+				$this->buildPath .= '/';
 				break;
 			default:
 				mkdir($this->buildPath, 0777, true);
@@ -184,13 +184,13 @@ class Builder
 				break;
 		}
 
-		if(!is_file($this->buildPath . 'phpci.yml'))
+		if(!is_file($this->buildPath . '/phpci.yml'))
 		{
 			$this->logFailure('Project does not contain a phpci.yml file.');
 			return false;
 		}
 
-		$this->config		= yaml_parse_file($this->buildPath . 'phpci.yml');
+		$this->config		= yaml_parse_file($this->buildPath . '/phpci.yml');
 
 		if(!isset($this->config['verbose']) || !$this->config['verbose'])
 		{

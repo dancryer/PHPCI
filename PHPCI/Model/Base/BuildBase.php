@@ -25,6 +25,7 @@ class BuildBase extends Model
 					'created'    =>    null,
 					'started'    =>    null,
 					'finished'    =>    null,
+					'plugins'    =>    null,
                                   );
 	protected $_getters     = array(
 					'id'    =>    'getId',
@@ -36,6 +37,7 @@ class BuildBase extends Model
 					'created'    =>    'getCreated',
 					'started'    =>    'getStarted',
 					'finished'    =>    'getFinished',
+					'plugins'    =>    'getPlugins',
 
 					'Project'  => 'getProject',
 
@@ -51,6 +53,7 @@ class BuildBase extends Model
 					'created'    =>    'setCreated',
 					'started'    =>    'setStarted',
 					'finished'    =>    'setFinished',
+					'plugins'    =>    'setPlugins',
 
 	'Project'  => 'setProject',
                                  );
@@ -121,6 +124,14 @@ class BuildBase extends Model
 												),
 					'finished'    =>    array(
 													'type' => 'datetime',
+													'length' => '',
+													'nullable' => true,
+
+
+
+												),
+					'plugins'    =>    array(
+													'type' => 'text',
 													'length' => '',
 													'nullable' => true,
 
@@ -224,6 +235,14 @@ class BuildBase extends Model
 		{
 			$rtn    = new \DateTime($rtn);
 		}
+
+		
+		return $rtn;
+	}
+
+	public function getPlugins()
+	{
+		$rtn    = $this->_data['plugins'];
 
 		
 		return $rtn;
@@ -355,6 +374,20 @@ class BuildBase extends Model
 		$this->_data['finished'] = $value;
 
 		$this->_setModified('finished');
+	}
+
+	public function setPlugins($value)
+	{
+
+		$this->_validateString('Plugins', $value);
+		if($this->_data['plugins'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['plugins'] = $value;
+
+		$this->_setModified('plugins');
 	}
 
 

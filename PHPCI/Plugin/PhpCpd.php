@@ -21,12 +21,12 @@ class PhpCpd implements \PHPCI\Plugin
 		{
 			$ignore = array_map(function($item)
 			{
-				return ' --exclude ' . (substr($item, -1) == '/' ? $item . '' : $item . '/');
+				return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
 			}, $this->phpci->ignore);
 
-			$ignore = ' ' . implode('', $ignore);
+			$ignore = implode('', $ignore);
 		}
 
-		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd ' . $ignore . ' ' . $this->phpci->buildPath);
+		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd' . $ignore . ' ' . $this->phpci->buildPath);
 	}
 }

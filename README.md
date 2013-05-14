@@ -76,8 +76,8 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
     		action: "install"
     
     ignore:
-    	- "vendor/"
-    	- "tests/"
+    	- "vendor"
+    	- "tests"
     
     test:
     	php_unit:

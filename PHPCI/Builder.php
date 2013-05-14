@@ -14,6 +14,7 @@ class Builder
 	protected $success	= true;
 	protected $log		= '';
 	protected $verbose	= false;
+	protected $plugins	= array();
 	protected $build;
 
 	public function __construct(Build $build)
@@ -61,6 +62,7 @@ class Builder
 
 		$this->build->setFinished(new \DateTime());
 		$this->build->setLog($this->log);
+		$this->build->setPlugins(json_encode($this->plugins));
 		$this->store->save($this->build);
 	}
 
@@ -103,6 +105,7 @@ class Builder
 		}
 
 		$this->build->setLog($this->log);
+		$this->build->setPlugins(json_encode($this->plugins));
 		$this->build = $this->store->save($this->build);
 	}
 
@@ -198,9 +201,14 @@ class Builder
 			{
 				$this->logFailure('Plugin does not exist: ' . $plugin);
 
-				if($stage == 'test' && !$options['allow_failures'])
+				if($stage == 'test')
 				{
-					$this->success = false;
+					$this->plugins[$plugin] = false;
+
+					if(!$options['allow_failures'])
+					{
+						$this->success = false;
+					}
 				}
 				
 				continue;
@@ -208,13 +216,18 @@ class Builder
 
 			try
 			{
-				$plugin = new $class($this, $options);
+				$obj = new $class($this, $options);
 
-				if(!$plugin->execute())
+				if(!$obj->execute())
 				{
-					if($stage == 'test' && !$options['allow_failures'])
+					if($stage == 'test')
 					{
-						$this->success = false;
+						$this->plugins[$plugin] = false;
+
+						if(!$options['allow_failures'])
+						{
+							$this->success = false;
+						}
 					}
 					
 					$this->logFailure('PLUGIN STATUS: FAILED');
@@ -225,13 +238,25 @@ class Builder
 			{
 				$this->logFailure('EXCEPTION: ' . $ex->getMessage());
 
-				if($stage == 'test' && !$options['allow_failures'])
+				if($stage == 'test')
 				{
-					$this->success = false;
-					continue;
+					$this->plugins[$plugin] = false;
+
+					if(!$options['allow_failures'])
+					{
+						$this->success = false;
+					}
 				}
+
+				$this->logFailure('PLUGIN STATUS: FAILED');
+				continue;
 			}
 
+			if($stage == 'test')
+			{
+				$this->plugins[$plugin] = true;
+			}
+			
 			$this->logSuccess('PLUGIN STATUS: SUCCESS!');
 		}
 	}

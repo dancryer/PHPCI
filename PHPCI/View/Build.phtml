@@ -17,6 +17,17 @@
 			<?php endif; ?>
 		</ul>
 		</div>
+
+		<table class="table table-striped table-bordered">
+			<thead>
+			<tr>
+				<th colspan="2">Plugin Status</th>
+			</tr>
+			</thead>
+			<tbody id="plugins">
+				<?= $plugins; ?>
+			</tbody>
+		</table>
 	</div>
 	<div class="span9">
 		<div id="status"></div>
@@ -123,6 +134,30 @@ setInterval(function()
 		else
 		{
 			$('#finished').text('Not finished yet.');
+		}
+
+		if(data.plugins)
+		{
+			$('#plugins').empty();
+
+			for(var plugin in data.plugins)
+			{
+				var row = $('<tr>').addClass(data.plugins[plugin] ? 'success' : 'error');
+				var name = $('<td>').html('<strong>' + plugin + '</strong>');
+				var status = $('<td>').text(data.plugins[plugin] ? 'OK' : 'Failed');
+
+				row.append(name);
+				row.append(status);
+				$('#plugins').append(row);
+			}
+		}
+		else
+		{
+			var row = $('<tr>');
+			var col = $('<td>').attr('colspan', 2).text('No plugins have run yet.');
+
+			row.append(col);
+			$('#plugins').empty().append(row);
 		}
 
 		$('#log').html(data.log);

@@ -88,7 +88,11 @@ class ProjectController extends b8\Controller
 		}
 		else
 		{
-			$id = '/tmp/' . md5(microtime(true));
+			$tempPath = sys_get_temp_dir() . '/tmp/';
+			$id = $tempPath . md5(microtime(true));
+			if (!is_dir($tempPath)) {
+				mkdir($tempPath);
+			}
 			shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$id.' -N "" -C "deploy@phpci"');
 
 			$pub = file_get_contents($id . '.pub');

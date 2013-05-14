@@ -3,8 +3,8 @@
     "description": "Simple continuous integration for PHP projects.",
     "minimum-stability": "dev",
     "type": "library",
-    "keywords": ["php", "phpci", "ci", "continuous", "integration", "jenkins", "travis"],
-    "homepage": "https://github.com/Block8/PHPCI",
+    "keywords": ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
+    "homepage": "http://www.phptesting.org/",
     "license": "BSD-2-Clause",
 
     "authors": [
@@ -15,6 +15,12 @@
             "role": "Developer"
         }
     ],
+
+    "support": {
+        "email": "hello+phpci@block8.co.uk",
+        "issues": "https://github.com/Block8/PHPCI/issues",
+        "source": "https://github.com/Block8/PHPCI"
+    },
 
     "require": {
         "block8/b8framework": "dev-master",

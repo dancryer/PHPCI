@@ -1,6 +1,6 @@
 <div id="title">
-	<h1 style="display: inline-block">Build #<?= $build->getId(); ?></h1>
-			<h3 style="margin-left: 40px; display: inline-block">Branch: <?= $build->getBranch(); ?> - <?= $build->getCommitId() == 'Manual' ? 'Manual Build' : 'Commit: ' . $build->getCommitId(); ?></h3>
+	<h1 style="display: inline-block">Build #<?php echo $build->getId(); ?></h1>
+			<h3 style="margin-left: 40px; display: inline-block">Branch: <?php echo $build->getBranch(); ?> - <?php echo $build->getCommitId() == 'Manual' ? 'Manual Build' : 'Commit: ' . $build->getCommitId(); ?></h3>
 </div>
 
 <div class="row">
@@ -8,12 +8,12 @@
 		<div class="well" style="padding: 8px 0">
 		<ul class="nav nav-list">
 			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="/project/view/<?= $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?= $build->getProject()->getTitle(); ?></a></li>
+			<li><a href="/project/view/<?php echo $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php echo $build->getProject()->getTitle(); ?></a></li>
 			<li class="divider"></li>
 			<li class="nav-header">Options</li>
-			<li><a href="/build/rebuild/<?= $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
+			<li><a href="/build/rebuild/<?php echo $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="javascript:confirmDelete('/build/delete/<?= $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
+			<li><a href="javascript:confirmDelete('/build/delete/<?php echo $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -25,7 +25,7 @@
 			</tr>
 			</thead>
 			<tbody id="plugins">
-				<?= $plugins; ?>
+				<?php echo $plugins; ?>
 			</tbody>
 		</table>
 	</div>
@@ -68,13 +68,13 @@
 <script>
 setInterval(function()
 {
-	$.getJSON('/build/data/<?= $build->getId(); ?>', updateBuildView);
+	$.getJSON('/build/data/<?php echo $build->getId(); ?>', updateBuildView);
 }, 10000);
 </script>
 <?php endif; ?>
 
 <script>
-	window.initial = <?= $data; ?>;
+	window.initial = <?php echo $data; ?>;
 
 	function updateBuildView(data)
 	{

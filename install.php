@@ -25,12 +25,12 @@ if(!file_exists('./composer.phar'))
 {
 	print 'INSTALLING: Composer' . PHP_EOL;
 	file_put_contents('./composerinstaller.php', file_get_contents('https://getcomposer.org/installer'));
-	shell_exec('php ./composerinstaller.php');
+	shell_exec('php composerinstaller.php');
 	unlink('./composerinstaller.php');
 }
 
 print 'RUNNING: Composer' . PHP_EOL;
-shell_exec('./composer.phar install');
+shell_exec('php composer.phar install');
 
 
 require_once('bootstrap.php');

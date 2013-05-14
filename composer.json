@@ -30,6 +30,6 @@
         "squizlabs/php_codesniffer": "1.*",
         "ircmaxell/password-compat": "1.x",
         "phpspec/phpspec": "2.*",
-        "ext-yaml": "*"
+        "symfony/yaml": "2.2.x-dev"
     }
 }

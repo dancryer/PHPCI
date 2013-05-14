@@ -6,7 +6,7 @@ PHPCI is a free and open source continuous integration tool specifically designe
 _**Please be aware that this is a brand new project, in an alpha state, so there will be bugs and missing features.**_
 
 ##What it does:
-* Clones your repository from Github or Bitbucket (support for standard Git repositories coming soon.)
+* Clones your project from Github, Bitbucket or a local path (support for standard remote Git repositories coming soon.)
 * Allows you to set up and tear down test databases.
 * Installs your project's Composer dependencies.
 * Runs through any combination of the following plugins:
@@ -14,6 +14,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 	* PHP Mess Detector
 	* PHP Copy/Paste Detector
 	* PHP Code Sniffer
+    * PHP Spec
 * You can mark directories for the plugins to ignore.
 * You can mark certain plugins as being allowed to fail (but still run.)
 
@@ -67,17 +68,18 @@ Obviously, make sure you change the `/path/to/phpci` to the directory in which y
 ##Adding support for PHPCI to your projects:
 Similar to Travis CI, to support PHPCI in your project, you simply need to add a `phpci.yml` file to the root of your repository. The file should look something like this:
 
-	setup:
+    build_settings:
+        ignore:
+            - "vendor"
+            - "tests"
+
+    setup:
 		mysql:
     		- "DROP DATABASE IF EXISTS test;"
     		- "CREATE DATABASE test;"
     		- "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
     	composer:
     		action: "install"
-    
-    ignore:
-    	- "vendor"
-    	- "tests"
     
     test:
     	php_unit:

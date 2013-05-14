@@ -13,11 +13,11 @@ class PhpSpec implements \PHPCI\Plugin
 
 	public function execute()
 	{
-		$cwd = getcwd();
-
-		$command = 'cd ' . $this->phpci->buildPath . ' && ';
-		$command .= PHPCI_BIN_DIR . 'phpspec';
-		$command .= ' && cd ' . $cwd;
-		return $this->phpci->executeCommand($command);
+		$curdir = getcwd();
+		chdir($this->phpci->buildPath);
+		$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpspec');
+		chdir($curdir);
+		
+		return $success;
 	}
 }

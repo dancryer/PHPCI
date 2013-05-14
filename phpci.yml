@@ -1,9 +1,11 @@
+build_settings:
+	verbose: false
+	ignore: 
+		- "vendor"
+
 setup:
   composer:
     action: "install"
-
-ignore:
-  - "vendor/"
 
 test:
   php_mess_detector:

@@ -17,6 +17,11 @@ class PhpUnit implements \PHPCI\Plugin
 
 	public function execute()
 	{
-		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' ' . $this->phpci->buildPath . $this->directory);
+		$curdir = getcwd();
+		chdir($this->phpci->buildPath);
+		$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' ' . $this->phpci->buildPath . $this->directory);
+		chdir($curdir);
+		
+		return $success;
 	}
 }

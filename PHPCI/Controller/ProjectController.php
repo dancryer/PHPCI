@@ -88,7 +88,11 @@ class ProjectController extends b8\Controller
 		}
 		else
 		{
-			$id = '/tmp/' . md5(microtime(true));
+			$tempPath = sys_get_temp_dir() . '/';
+			$id = $tempPath . md5(microtime(true));
+			if (!is_dir($tempPath)) {
+				mkdir($tempPath);
+			}
 			shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$id.' -N "" -C "deploy@phpci"');
 
 			$pub = file_get_contents($id . '.pub');
@@ -192,8 +196,8 @@ class ProjectController extends b8\Controller
 
 		$field = new Form\Element\Select('type');
 		$field->setRequired(true);
-		$field->setPattern('^(github|bitbucket)');
-		$field->setOptions(array('choose' => 'Select repository type...', 'github' => 'Github', 'bitbucket' => 'Bitbucket'));
+		$field->setPattern('^(github|bitbucket|local)');
+		$field->setOptions(array('choose' => 'Select repository type...', 'github' => 'Github', 'bitbucket' => 'Bitbucket', 'local' => 'Local Path'));
 		$field->setLabel('Where is your project hosted?');
 		$field->setClass('span4');
 		$form->addField($field);
@@ -209,8 +213,8 @@ class ProjectController extends b8\Controller
 
 		$field = new Form\Element\Text('reference');
 		$field->setRequired(true);
-		$field->setPattern('[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+');
-		$field->setLabel('Repository Name / URL:');
+		$field->setPattern('[a-zA-Z0-9_\-\/]+');
+		$field->setLabel('Repository Name / URL (Remote) or Path (Local)');
 		$field->setClass('span4');
 		$form->addField($field);
 
@@ -222,7 +226,7 @@ class ProjectController extends b8\Controller
 		
 		$field = new Form\Element\TextArea('key');
 		$field->setRequired(false);
-		$field->setLabel('Private key to use to access repository (leave blank to use anonymous HTTP repository access)');
+		$field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
 		$field->setClass('span7');
 		$field->setRows(6);
 		$form->addField($field);

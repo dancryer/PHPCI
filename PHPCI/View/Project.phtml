@@ -1,5 +1,5 @@
 <div id="title">
-	<h1>Project: <?= $project->getTitle(); ?></h1>
+	<h1>Project: <?php print $project->getTitle(); ?></h1>
 </div>
 
 <div class="row">
@@ -7,14 +7,14 @@
 		<div class="well" style="padding: 8px 0">
 		<ul class="nav nav-list">
 			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="/project/view/<?= $project->getId(); ?>"><i class="icon-folder-open"></i> <?= $project->getTitle(); ?></a></li>
+			<li><a href="/project/view/<?php print $project->getId(); ?>"><i class="icon-folder-open"></i> <?php print $project->getTitle(); ?></a></li>
 			<li class="divider"></li>
 			<li class="nav-header">Options</li>
-			<li><a href="/project/build/<?= $project->getId(); ?>"><i class="icon-cog"></i> Build Now</a></li>
+			<li><a href="/project/build/<?php print $project->getId(); ?>"><i class="icon-cog"></i> Build Now</a></li>
 
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="/project/edit/<?= $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
-			<li><a href="javascript:confirmDelete('/project/delete/<?= $project->getId(); ?>')"><i class="icon-trash"></i> Delete Project</a></li>
+			<li><a href="/project/edit/<?php print $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
+			<li><a href="javascript:confirmDelete('/project/delete/<?php print $project->getId(); ?>')"><i class="icon-trash"></i> Delete Project</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -51,7 +51,7 @@
 			</tr>
 			</thead>
 			<tbody id="latest-builds">
-				<?= $builds; ?>
+				<?php print $builds; ?>
 			</tbody>
 		</table>
 
@@ -80,7 +80,7 @@
 <script>
 setInterval(function()
 {
-	$('#latest-builds').load('/project/builds/<?= $project->getId(); ?>');
+	$('#latest-builds').load('/project/builds/<?php print $project->getId(); ?>');
 }, 10000);
 </script>
 <?php endif; ?>

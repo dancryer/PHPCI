@@ -1,5 +1,5 @@
 <div id="title">
-	<h1><?= $type == 'add' ? 'Add User' : 'Edit ' . $user->getName() ?></h1>
+	<h1><?php print $type == 'add' ? 'Add User' : 'Edit ' . $user->getName() ?></h1>
 </div>
 
 <div class="row">
@@ -13,6 +13,6 @@
 		</div>
 	</div>
 	<div class="span8">
-		<?= $form; ?>
+		<?php print $form; ?>
 	</div>
 </div>

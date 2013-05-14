@@ -11,7 +11,7 @@
 			<li class="nav-header">Projects</li>
 
 			<?php foreach($projects as $project): ?>
-			<li><a href="/project/view/<?= $project->getId(); ?>"><i class="icon-folder-open"></i> <?= $project->getTitle(); ?></a></li>
+			<li><a href="/project/view/<?php echo $project->getId(); ?>"><i class="icon-folder-open"></i> <?php echo $project->getTitle(); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
 		</div>
@@ -29,7 +29,7 @@
 			</tr>
 			</thead>
 			<tbody id="latest-builds">
-				<?= $builds; ?>
+				<?php echo $builds; ?>
 			</tbody>
 		</table>
 	</div>

@@ -184,21 +184,21 @@ class ProjectController extends b8\Controller
 
 		$field = new Form\Element\Select('type');
 		$field->setRequired(true);
-		$field->setOptions(array('github' => 'Github', 'bitbucket' => 'Bitbucket'));
+		$field->setOptions(array('github' => 'Github', 'bitbucket' => 'Bitbucket', 'local' => 'Local Path'));
 		$field->setLabel('Where is your project hosted?');
 		$field->setClass('span4');
 		$form->addField($field);
 
 		$field = new Form\Element\Text('reference');
 		$field->setRequired(true);
-		$field->setPattern('[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+');
-		$field->setLabel('Repository Name on Github / Bitbucket (e.g. block8/phpci)');
+		$field->setPattern('[a-zA-Z0-9_\-\/]+');
+		$field->setLabel('Repository Name / URL (Remote) or Path (Local)');
 		$field->setClass('span4');
 		$form->addField($field);
 
 		$field = new Form\Element\TextArea('key');
 		$field->setRequired(false);
-		$field->setLabel('Private key to use to access repository (leave blank to use anonymous HTTP repository access)');
+		$field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
 		$field->setClass('span7');
 		$field->setRows(6);
 		$form->addField($field);

@@ -30,21 +30,21 @@ switch($build->getStatus())
 	break;
 }
 ?>
-<tr class="<?= $cls; ?>">
-	<td><a href="/build/view/<?= $build->getId(); ?>">#<?= str_pad($build->getId(), 6, '0', STR_PAD_LEFT); ?></a></td>
-	<td><a href="/project/view/<?= $build->getProjectId(); ?>"><?= $build->getProject()->getTitle(); ?></a></td>
-	<td><a href="<?= $build->getCommitLink(); ?>"><?= $build->getCommitId(); ?></a></td>
-	<td><a href="<?= $build->getBranchLink(); ?>"><?= $build->getBranch(); ?></a></td>
-	<td><?= $status; ?></td>
+<tr class="<?php print $cls; ?>">
+	<td><a href="/build/view/<?php print $build->getId(); ?>">#<?php print str_pad($build->getId(), 6, '0', STR_PAD_LEFT); ?></a></td>
+	<td><a href="/project/view/<?php print $build->getProjectId(); ?>"><?php print $build->getProject()->getTitle(); ?></a></td>
+	<td><a href="<?php print $build->getCommitLink(); ?>"><?php print $build->getCommitId(); ?></a></td>
+	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
+	<td><?php print $status; ?></td>
 	<td>
 		<div class="btn-group">
-			<a class="btn" href="/build/view/<?= $build->getId(); ?>">View</a>
+			<a class="btn" href="/build/view/<?php print $build->getId(); ?>">View</a>
 			<?php if($this->User()->getIsAdmin()): ?>
 			<button class="btn dropdown-toggle" data-toggle="dropdown">
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">
-				<li><a href="javascript:confirmDelete('/build/delete/<?= $build->getId(); ?>');">Delete Build</a></li>
+				<li><a href="javascript:confirmDelete('/build/delete/<?php print $build->getId(); ?>');">Delete Build</a></li>
 			</ul>
 			<?php endif; ?>
 		</div>

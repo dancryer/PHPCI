@@ -40,7 +40,7 @@ class Build extends BuildBase
 
 		if($project->getType() == 'github' && $project->getToken())
 		{
-			$url	= 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->build->getCommitId() . '?access_token=' . $project->getToken();
+			$url	= 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
 			$http	= new \b8\HttpClient();
 
 			switch($this->getStatus())
@@ -63,8 +63,11 @@ class Build extends BuildBase
 				break;
 			}
 
-			$params	= array('status' => $status, 'target_url' => \b8\Registry::getInstance()->get('install_url') . '/build/view/' . $this->getId());
-			$http->post($url, $params);
+			$params	= array(	'state' => $status, 
+								'target_url' => \b8\Registry::getInstance()->get('install_url') . '/build/view/' . $this->getId());
+
+			$http->setHeaders(array('Authorization: token ' . $project->getToken()));
+			$http->request('POST', $url, json_encode($params));
 		}
 	}
 }

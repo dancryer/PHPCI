@@ -94,7 +94,7 @@ class ProjectController extends b8\Controller
 			$pub = file_get_contents($id . '.pub');
 			$prv = file_get_contents($id);
 
-			$values = array('key' => $prv, 'pubkey' => $pub);
+			$values = array('key' => $prv, 'pubkey' => $pub, 'token' => $_SESSION['github_token']);
 		}
 
 		$form	= $this->projectForm($values);
@@ -201,7 +201,6 @@ class ProjectController extends b8\Controller
 		if(isset($_SESSION['github_token']))
 		{
 			$field = new Form\Element\Select('github');
-			$field->setPattern('[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+');
 			$field->setLabel('Choose a Github repository:');
 			$field->setClass('span4');
 			$field->setOptions($this->getGithubRepositories());

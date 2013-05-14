@@ -1,7 +1,7 @@
 build_settings:
-	verbose: false
-	ignore: 
-		- "vendor"
+    verbose: false
+    ignore: 
+        - "vendor"
 
 setup:
   composer:

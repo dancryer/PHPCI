@@ -3,6 +3,7 @@
 namespace PHPCI;
 use PHPCI\Model\Build;
 use b8\Store;
+use Symfony\Component\Yaml\Parser as YamlParser;
 
 class Builder
 {
@@ -153,7 +154,9 @@ class Builder
 			return false;
 		}
 
-		$this->config		= yaml_parse_file($this->buildPath . 'phpci.yml');
+		$yamlParser = new YamlParser();
+		$yamlFile = file_get_contents($this->buildPath . 'phpci.yml');
+		$this->config = $yamlParser->parse($yamlFile);
 
 		if(!isset($this->config['verbose']) || !$this->config['verbose'])
 		{

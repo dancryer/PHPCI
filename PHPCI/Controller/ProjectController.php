@@ -88,7 +88,7 @@ class ProjectController extends b8\Controller
 		}
 		else
 		{
-			$tempPath = sys_get_temp_dir() . '/tmp/';
+			$tempPath = sys_get_temp_dir() . '/';
 			$id = $tempPath . md5(microtime(true));
 			if (!is_dir($tempPath)) {
 				mkdir($tempPath);

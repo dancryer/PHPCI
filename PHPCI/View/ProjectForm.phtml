@@ -89,10 +89,7 @@ $(document).ready(function()
 			$('#element-reference').hide();
 			$('#element-type').hide();
 			$('#element-token').val(window.github_token);
-
-			if(!$('#element-title').val()) {
-				$('#element-title').val(val);
-			}
+			$('#element-title').val(val);
 		}
 		else {
 			$('label[for=element-reference]').show();

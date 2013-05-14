@@ -28,6 +28,7 @@ class Builder
 		$this->build->setStatus(1);
 		$this->build->setStarted(new \DateTime());
 		$this->build = $this->store->save($this->build);
+		$this->build->sendStatusPostback();
 
 		if($this->setupBuild())
 		{
@@ -60,6 +61,7 @@ class Builder
 
 		$this->removeBuild();
 
+		$this->build->sendStatusPostback();
 		$this->build->setFinished(new \DateTime());
 		$this->build->setLog($this->log);
 		$this->build->setPlugins(json_encode($this->plugins));

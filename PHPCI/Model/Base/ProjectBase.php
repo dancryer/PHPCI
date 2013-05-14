@@ -16,79 +16,61 @@ class ProjectBase extends Model
 	protected $_tableName   = 'project';
 	protected $_modelName   = 'Project';
 	protected $_data        = array(
-					'id'    =>    null,
-					'title'    =>    null,
-					'reference'    =>    null,
-					'git_key'    =>    null,
-					'type'    =>    null,
-                                  );
+		'id'    =>    null,
+		'title'    =>    null,
+		'reference'    =>    null,
+		'git_key'    =>    null,
+		'type'    =>    null,
+	);
 	protected $_getters     = array(
-					'id'    =>    'getId',
-					'title'    =>    'getTitle',
-					'reference'    =>    'getReference',
-					'git_key'    =>    'getGitKey',
-					'type'    =>    'getType',
-
-
-							);
+		'id'    =>    'getId',
+		'title'    =>    'getTitle',
+		'reference'    =>    'getReference',
+		'git_key'    =>    'getGitKey',
+		'type'    =>    'getType',
+	);
 
 	protected $_setters     = array(
-					'id'    =>    'setId',
-					'title'    =>    'setTitle',
-					'reference'    =>    'setReference',
-					'git_key'    =>    'setGitKey',
-					'type'    =>    'setType',
+		'id'    =>    'setId',
+		'title'    =>    'setTitle',
+		'reference'    =>    'setReference',
+		'git_key'    =>    'setGitKey',
+		'type'    =>    'setType',
+	);
 
-                                 );
 	public $columns         = array(
-					'id'    =>    array(
-													'type' => 'int',
-													'length' => '11',
+		'id'    =>    array(
+			'type' => 'int',
+			'length' => '11',
 
-													'primary_key' => true,
-													'auto_increment' => true,
+			'primary_key' => true,
+			'auto_increment' => true,
 
-												),
-					'title'    =>    array(
-													'type' => 'varchar',
-													'length' => '250',
+		),
+		'title'    =>    array(
+			'type' => 'varchar',
+			'length' => '250',
+		),
+		'reference'    =>    array(
+			'type' => 'varchar',
+			'length' => '250',
+		),
+		'git_key'    =>    array(
+			'type' => 'text',
+			'length' => '',
+		),
+		'type'    =>    array(
+			'type' => 'varchar',
+			'length' => '50',
+		),
+	);
 
-
-
-
-												),
-					'reference'    =>    array(
-													'type' => 'varchar',
-													'length' => '250',
-
-
-
-
-												),
-					'git_key'    =>    array(
-													'type' => 'text',
-													'length' => '',
-
-
-
-
-												),
-					'type'    =>    array(
-													'type' => 'varchar',
-													'length' => '50',
-
-
-
-
-												),
-                                  );
 	public $indexes         = array(
-					'PRIMARY'    =>    array('unique' => true, 'columns' => 'id'),
-                                  );
+		'PRIMARY'    =>    array('unique' => true, 'columns' => 'id'),
+	);
+
 	public $foreignKeys     = array(
-                                  );
-
-
+	);
 
 	public function getId()
 	{

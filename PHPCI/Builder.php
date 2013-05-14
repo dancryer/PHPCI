@@ -193,7 +193,7 @@ class Builder
 
 	protected function executePlugins($stage)
 	{
-		if ( !array_key_exists($stage, $this->config) && !is_array($this->config[$stage]) ) {
+		if ( !array_key_exists($stage, $this->config) || !is_array($this->config[$stage]) ) {
 			return;
 		}
 

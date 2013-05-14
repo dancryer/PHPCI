@@ -128,7 +128,7 @@ class ProjectController extends b8\Controller
 		{
 			throw new \Exception('You do not have permission to do that.');
 		}
-		
+
 		$method		= Registry::getInstance()->get('requestMethod');
 		$project	= $this->_projectStore->getById($id);
 
@@ -180,15 +180,15 @@ class ProjectController extends b8\Controller
 
 		$field = new Form\Element\Select('type');
 		$field->setRequired(true);
-		$field->setOptions(array('github' => 'Github', 'bitbucket' => 'Bitbucket'));
+		$field->setOptions(array('github' => 'Github', 'bitbucket' => 'Bitbucket', 'local' => 'Local FS'));
 		$field->setLabel('Where is your project hosted?');
 		$field->setClass('span4');
 		$form->addField($field);
 
 		$field = new Form\Element\Text('reference');
 		$field->setRequired(true);
-		$field->setPattern('[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+');
-		$field->setLabel('Repository Name on Github / Bitbucket (e.g. block8/phpci)');
+		// $field->setPattern('[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+');
+		$field->setLabel('Repository Name on Github / Bitbucket (e.g. block8/phpci) or directory location');
 		$field->setClass('span4');
 		$form->addField($field);
 

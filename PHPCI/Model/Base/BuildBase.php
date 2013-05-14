@@ -16,126 +16,104 @@ class BuildBase extends Model
 	protected $_tableName   = 'build';
 	protected $_modelName   = 'Build';
 	protected $_data        = array(
-					'id'    =>    null,
-					'project_id'    =>    null,
-					'commit_id'    =>    null,
-					'status'    =>    null,
-					'log'    =>    null,
-					'branch'    =>    null,
-					'created'    =>    null,
-					'started'    =>    null,
-					'finished'    =>    null,
-                                  );
+		'id'    =>    null,
+		'project_id'    =>    null,
+		'commit_id'    =>    null,
+		'status'    =>    null,
+		'log'    =>    null,
+		'branch'    =>    null,
+		'created'    =>    null,
+		'started'    =>    null,
+		'finished'    =>    null,
+		);
 	protected $_getters     = array(
-					'id'    =>    'getId',
-					'project_id'    =>    'getProjectId',
-					'commit_id'    =>    'getCommitId',
-					'status'    =>    'getStatus',
-					'log'    =>    'getLog',
-					'branch'    =>    'getBranch',
-					'created'    =>    'getCreated',
-					'started'    =>    'getStarted',
-					'finished'    =>    'getFinished',
+		'id'    =>    'getId',
+		'project_id'    =>    'getProjectId',
+		'commit_id'    =>    'getCommitId',
+		'status'    =>    'getStatus',
+		'log'    =>    'getLog',
+		'branch'    =>    'getBranch',
+		'created'    =>    'getCreated',
+		'started'    =>    'getStarted',
+		'finished'    =>    'getFinished',
 
-					'Project'  => 'getProject',
+		'Project'  => 'getProject',
 
-							);
+		);
 
 	protected $_setters     = array(
-					'id'    =>    'setId',
-					'project_id'    =>    'setProjectId',
-					'commit_id'    =>    'setCommitId',
-					'status'    =>    'setStatus',
-					'log'    =>    'setLog',
-					'branch'    =>    'setBranch',
-					'created'    =>    'setCreated',
-					'started'    =>    'setStarted',
-					'finished'    =>    'setFinished',
+		'id'    =>    'setId',
+		'project_id'    =>    'setProjectId',
+		'commit_id'    =>    'setCommitId',
+		'status'    =>    'setStatus',
+		'log'    =>    'setLog',
+		'branch'    =>    'setBranch',
+		'created'    =>    'setCreated',
+		'started'    =>    'setStarted',
+		'finished'    =>    'setFinished',
 
-	'Project'  => 'setProject',
-                                 );
+		'Project'  => 'setProject',
+		);
 	public $columns         = array(
-					'id'    =>    array(
-													'type' => 'int',
-													'length' => '11',
+		'id'    =>    array(
+			'type' => 'int',
+			'length' => '11',
 
-													'primary_key' => true,
-													'auto_increment' => true,
+			'primary_key' => true,
+			'auto_increment' => true,
 
-												),
-					'project_id'    =>    array(
-													'type' => 'int',
-													'length' => '11',
+		),
+		'project_id'    =>    array(
+			'type' => 'int',
+			'length' => '11',
 
+		),
+		'commit_id'    =>    array(
+			'type' => 'varchar',
+			'length' => '50',
 
+		),
+		'status'    =>    array(
+			'type' => 'tinyint',
+			'length' => '4',
 
+		),
+		'log'    =>    array(
+			'type' => 'text',
+			'length' => '',
+			'nullable' => true,
 
-												),
-					'commit_id'    =>    array(
-													'type' => 'varchar',
-													'length' => '50',
+		),
+		'branch'    =>    array(
+			'type' => 'varchar',
+			'length' => '50',
 
+		),
+		'created'    =>    array(
+			'type' => 'datetime',
+			'length' => '',
+			'nullable' => true,
 
-
-
-												),
-					'status'    =>    array(
-													'type' => 'tinyint',
-													'length' => '4',
-
-
-
-
-												),
-					'log'    =>    array(
-													'type' => 'text',
-													'length' => '',
-													'nullable' => true,
-
-
-
-												),
-					'branch'    =>    array(
-													'type' => 'varchar',
-													'length' => '50',
-
-
-
-
-												),
-					'created'    =>    array(
-													'type' => 'datetime',
-													'length' => '',
-													'nullable' => true,
-
-
-
-												),
-					'started'    =>    array(
-													'type' => 'datetime',
-													'length' => '',
-													'nullable' => true,
-
-
-
-												),
-					'finished'    =>    array(
-													'type' => 'datetime',
-													'length' => '',
-													'nullable' => true,
-
-
-
-												),
-                                  );
+		),
+		'started'    =>    array(
+			'type' => 'datetime',
+			'length' => '',
+			'nullable' => true,
+		),
+		'finished'    =>    array(
+			'type' => 'datetime',
+			'length' => '',
+			'nullable' => true,
+		),
+	);
 	public $indexes         = array(
-					'PRIMARY'    =>    array('unique' => true, 'columns' => 'id'),
-					'project_id'    =>    array('columns' => 'project_id'),
-					'idx_status'    =>    array('columns' => 'status'),
-                                  );
+		'PRIMARY'    =>    array('unique' => true, 'columns' => 'id'),
+		'project_id'    =>    array('columns' => 'project_id'),
+		'idx_status'    =>    array('columns' => 'status'),
+	);
 	public $foreignKeys     = array(
-					'build_ibfk_1'    =>    array('local_col' => 'project_id', 'update' => 'CASCADE', 'delete' => 'CASCADE', 'table' => 'project', 'col' => 'id'),
-                                  );
+		'build_ibfk_1'    =>    array('local_col' => 'project_id', 'update' => 'CASCADE', 'delete' => 'CASCADE', 'table' => 'project', 'col' => 'id'),
+	);
 
 
 
@@ -143,7 +121,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -151,7 +129,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['project_id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -159,7 +137,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['commit_id'];
 
-		
+
 		return $rtn;
 	}
 
@@ -167,7 +145,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['status'];
 
-		
+
 		return $rtn;
 	}
 
@@ -175,7 +153,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['log'];
 
-		
+
 		return $rtn;
 	}
 
@@ -183,7 +161,7 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['branch'];
 
-		
+
 		return $rtn;
 	}
 
@@ -191,13 +169,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['created'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -205,13 +183,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['started'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -219,13 +197,13 @@ class BuildBase extends Model
 	{
 		$rtn    = $this->_data['finished'];
 
-		
+
 		if(!empty($rtn))
 		{
 			$rtn    = new \DateTime($rtn);
 		}
 
-		
+
 		return $rtn;
 	}
 
@@ -277,7 +255,7 @@ class BuildBase extends Model
 	{
 		$this->_validateNotNull('Status', $value);
 		$this->_validateInt('Status', $value);
-		if($this->_data['status'] == $value)
+		if($this->_data['status'] === $value)
 		{
 			return;
 		}

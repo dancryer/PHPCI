@@ -133,6 +133,10 @@ class Builder
 			case 'local':
 				$reference = $this->build->getProject()->getReference();
 				$this->buildPath	= $this->ciDir . 'build/' . $buildId;
+				// don't want no slash on the end
+				if(substr($reference, -1) == '/') {
+				    $reference = substr($reference, 0, -1)
+				}
 				if(is_link($this->buildPath) && is_file($this->buildPath)) {
 				} else {
 					symlink($reference, $this->buildPath);

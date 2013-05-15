@@ -30,7 +30,6 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 ####Pre-requisites:
 * PHP 5.3+
 * A web server. We prefer nginx.
-* The YAML extension: `pecl install yaml`
 * A MySQL server to connect to (doesn't have to be on the same server.)
 * PHPCI needs to be able to run `exec()`, so make sure this is not disabled.
 
@@ -38,7 +37,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 ####Installing from Github:
 * Step 1: `git clone https://github.com/Block8/PHPCI.git`
 * Step 2: `cd PHPCI`
-* Step 3: `php install.php`
+* Step 3: `chmod +x ./console && ./console phpci:install`
 	* When prompted, enter your database host, username, password and the database name that PHPCI should use.
 	* The script will attempt to create the database if it does not exist already.
 	* If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
@@ -61,7 +60,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 
 Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:
 
-    * * * * * /usr/bin/php /path/to/phpci/cron.php
+    * * * * * /usr/bin/php /path/to/phpci/console phpci:run-builds
     
 Obviously, make sure you change the `/path/to/phpci` to the directory in which you installed PHPCI, and update the PHP path if necessary.
 

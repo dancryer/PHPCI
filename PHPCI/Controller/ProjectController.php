@@ -222,7 +222,27 @@ class ProjectController extends b8\Controller
 
 		$field = new Form\Element\Text('reference');
 		$field->setRequired(true);
-		$field->setPattern('[a-zA-Z0-9_\-\/]+');
+		$field->setValidator(function($val) use ($values)
+		{
+			$type = $values['type'];
+
+			switch($type) {
+				case 'local':
+					if(!is_dir($val)) {
+						throw new \Exception('The path you specified does not exist.');
+					}
+				break;
+
+				case 'github':
+				case 'bitbucket':
+					if(!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+$/', $val)) {
+						throw new \Exception('Repository name must be in the format "owner/repo".');
+					}
+				break;
+			}
+
+			return true;
+		});
 		$field->setLabel('Repository Name / URL (Remote) or Path (Local)');
 		$field->setClass('span4');
 		$form->addField($field);

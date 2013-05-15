@@ -34,7 +34,9 @@ class InstallCommand extends Command
 
         $str = "<?php
 
-define('PHPCI_DB_HOST', '{$dbHost}');
+if(!defined('PHPCI_DB_HOST')) {
+    define('PHPCI_DB_HOST', '{$dbHost}');
+}
 
 b8\Database::setDetails('{$dbName}', '{$dbUser}', '{$dbPass}');
 b8\Database::setWriteServers(array('{$dbHost}'));
@@ -51,18 +53,6 @@ b8\Database::setReadServers(array('{$dbHost}'));
 
 
         file_put_contents(PHPCI_DIR . 'config.php', $str);
-
-        if(!file_exists(PHPCI_DIR . 'composer.phar'))
-        {
-            print 'INSTALLING: Composer' . PHP_EOL;
-            file_put_contents(PHPCI_DIR . 'composerinstaller.php', file_get_contents('https://getcomposer.org/installer'));
-            shell_exec('php ' . PHPCI_DIR . 'composerinstaller.php');
-            unlink(PHPCI_DIR . 'composerinstaller.php');
-        }
-
-        print 'RUNNING: Composer' . PHP_EOL;
-        shell_exec('php '.PHPCI_DIR.'composer.phar install');
-
 
         require(PHPCI_DIR . 'bootstrap.php');
 

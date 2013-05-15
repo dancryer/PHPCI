@@ -1,7 +1,9 @@
 <?php
 
+// Let PHP take a guess as to the default timezone, if the user hasn't set one:
 date_default_timezone_set(@date_default_timezone_get());
 
+// Set up a basic autoloader for PHPCI:
 spl_autoload_register(function ($class)
 {
 	$file = str_replace(array('\\', '_'), '/', $class);
@@ -20,15 +22,21 @@ spl_autoload_register(function ($class)
 	}
 }, true, true);
 
-define('APPLICATION_PATH', dirname(__FILE__) . '/');
-
-require_once('vendor/autoload.php');
-
-if(file_exists(APPLICATION_PATH . 'config.php'))
-{
-	require('config.php');
+// Define our APPLICATION_PATH, if not already defined:
+if(!defined('APPLICATION_PATH')) {
+	define('APPLICATION_PATH', dirname(__FILE__) . '/');
 }
 
+// Load Composer autoloader:
+require_once(APPLICATION_PATH . 'vendor/autoload.php');
+
+// Load configuration if present:
+if(file_exists(APPLICATION_PATH . 'config.php'))
+{
+	require(APPLICATION_PATH . 'config.php');
+}
+
+// Set up the registry:
 b8\Registry::getInstance()->set('app_namespace', 'PHPCI');
 b8\Registry::getInstance()->set('DefaultController', 'Index');
 b8\Registry::getInstance()->set('ViewPath', dirname(__FILE__) . '/PHPCI/View/');

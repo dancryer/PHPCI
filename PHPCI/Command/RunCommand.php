@@ -8,7 +8,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
-use PHPCI\Builder;
+use PHPCI\Builder,
+    PHPCI\BuildFactory;
 
 class RunCommand extends Command
 {
@@ -28,6 +29,8 @@ class RunCommand extends Command
 
         foreach($result['items'] as $build)
         {
+            $build = BuildFactory::getBuild($build);
+            
             if ($input->getOption('verbose')) {
                 $builder = new Builder($build, array($this, 'logCallback'));
             }

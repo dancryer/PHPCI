@@ -18,6 +18,7 @@ class Builder
 	protected $plugins	= array();
 	protected $build;
 	protected $logCallback;
+	protected $config;
 
 	public function __construct(Build $build, $logCallback = null)
 	{
@@ -30,11 +31,21 @@ class Builder
 		}
 	}
 
+	public function setConfigArray(array $config)
+	{
+		$this->config = $config;
+	}
+
+	public function getConfig($key)
+	{
+		return isset($this->config[$key]) ? $this->config[$key] : null;
+	}
+
 	public function execute()
 	{
 		$this->build->setStatus(1);
 		$this->build->setStarted(new \DateTime());
-		$this->build = $this->store->save($this->build);
+		$this->store->save($this->build);
 		$this->build->sendStatusPostback();
 
 		if($this->setupBuild())
@@ -91,7 +102,7 @@ class Builder
 		return ($status == 0) ? true : false;
 	}
 
-	protected function log($message, $prefix = '')
+	public function log($message, $prefix = '')
 	{
 
 		if(is_array($message))
@@ -123,15 +134,15 @@ class Builder
 
 		$this->build->setLog($this->log);
 		$this->build->setPlugins(json_encode($this->plugins));
-		$this->build = $this->store->save($this->build);
+		$this->store->save($this->build);
 	}
 
-	protected function logSuccess($message)
+	public function logSuccess($message)
 	{
 		$this->log("\033[0;32m" . $message . "\033[0m");
 	}
 
-	protected function logFailure($message)
+	public function logFailure($message)
 	{
 		$this->log("\033[0;31m" . $message . "\033[0m");
 	}
@@ -139,102 +150,29 @@ class Builder
 	protected function setupBuild()
 	{
 		$commitId			= $this->build->getCommitId();
-		$url				= $this->build->getProject()->getGitUrl();
-		$key				= $this->build->getProject()->getGitKey();
-		$type				= $this->build->getProject()->getType();
-		$reference			= $this->build->getProject()->getReference();
-		$reference			= substr($reference, -1) == '/' ? substr($reference, 0, -1) : $reference;
 		$buildId			= 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
-		$yamlParser			= new YamlParser();
-
 		$this->ciDir		= realpath(dirname(__FILE__) . '/../') . '/';
 		$this->buildPath	= $this->ciDir . 'build/' . $buildId . '/';
 
-		switch ($type)
-		{
-			case 'local':
-				$this->buildPath = substr($this->buildPath, 0, -1);
-
-				if(!is_file($reference . '/phpci.yml'))
-				{
-					$this->logFailure('Project does not contain a phpci.yml file.');
-					return false;
-				}
-
-				$yamlFile = file_get_contents($reference . '/phpci.yml');
-				$this->config = $yamlParser->parse($yamlFile);
-
-				if(array_key_exists('build_settings', $this->config)
-					&& is_array($this->config['build_settings'])
-					&& array_key_exists('prefer_symlink', $this->config['build_settings'])
-					&& true === $this->config['build_settings']['prefer_symlink'])
-				{
-					if(is_link($this->buildPath) && is_file($this->buildPath))
-					{
-						unlink($this->buildPath);
-					}
-
-					$this->log(sprintf('Symlinking: %s to %s',$reference, $this->buildPath));
-					if ( !symlink($reference, $this->buildPath) )
-					{
-						$this->logFailure('Failed to symlink.');
-						return false;
-					}
-				}
-				else
-				{
-					$this->executeCommand(sprintf("cp -Rf %s %s/", $reference, $this->buildPath));
-				}
-
-				$this->buildPath .= '/';
-			break;
-
-			case 'github':
-			case 'bitbucket':
-				mkdir($this->buildPath, 0777, true);
-
-				if(!empty($key))
-				{
-					// Do an SSH clone:
-					$keyFile			= $this->ciDir . 'build/' . $buildId . '.key';
-					file_put_contents($keyFile, $key);
-					chmod($keyFile, 0600);
-					$this->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath.' && ssh-agent -k');
-					unlink($keyFile);
-				}
-				else
-				{
-					// Do an HTTP clone:
-					$this->executeCommand('git clone -b ' .$this->build->getBranch() . ' ' .$url.' '.$this->buildPath);
-				}
-
-				if(!is_file($this->buildPath . 'phpci.yml'))
-				{
-					$this->logFailure('Project does not contain a phpci.yml file.');
-					return false;
-				}
-
-				$yamlFile = file_get_contents($this->buildPath . 'phpci.yml');
-				$this->config = $yamlParser->parse($yamlFile);
-			break;
+		// Create a working copy of the project:
+		if(!$this->build->createWorkingCopy($this, $this->buildPath)) {
+			return false;
 		}
 
-		if(!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose'])
-		{
+		// Does the project's phpci.yml request verbose mode?
+		if(!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose']) {
 			$this->verbose = false;
 		}
-		else
-		{
+		else {
 			$this->verbose = true;
 		}
 
-		if(isset($this->config['build_settings']['ignore']))
-		{
+		// Does the project have any paths it wants plugins to ignore?
+		if(isset($this->config['build_settings']['ignore'])) {
 			$this->ignore = $this->config['build_settings']['ignore'];
 		}
 
-		$this->log('Set up build: ' . $this->buildPath);
-
+		$this->logSuccess('Working copy created: ' . $this->buildPath);
 		return true;
 	}
 

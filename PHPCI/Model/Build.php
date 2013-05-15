@@ -8,7 +8,8 @@ namespace PHPCI\Model;
 
 require_once(APPLICATION_PATH . 'PHPCI/Model/Base/BuildBase.php');
 
-use PHPCI\Model\Base\BuildBase;
+use PHPCI\Model\Base\BuildBase,
+	PHPCI\Builder;
 
 /**
  * Build Model
@@ -18,56 +19,20 @@ class Build extends BuildBase
 {
 	public function getCommitLink()
 	{
-		switch($this->getProject()->getType())
-		{
-			case 'github':
-				return 'https://github.com/' . $this->getProject()->getReference() . '/commit/' . $this->getCommitId();
-		}
+		return '#';
 	}
 
 	public function getBranchLink()
 	{
-		switch($this->getProject()->getType())
-		{
-			case 'github':
-				return 'https://github.com/' . $this->getProject()->getReference() . '/tree/' . $this->getBranch();
-		}
+		return '#';
 	}
 
 	public function sendStatusPostback()
 	{
-		$project	= $this->getProject();
+		return;
+	}
 
-		if($project->getType() == 'github' && $project->getToken())
-		{
-			$url	= 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
-			$http	= new \b8\HttpClient();
-
-			switch($this->getStatus())
-			{
-				case 0:
-				case 1:
-					$status = 'pending';
-				break;
-
-				case 2:
-					$status = 'success';
-				break;
-
-				case 3: 
-					$status = 'failure';
-				break;
-
-				default:
-					$status = 'error';
-				break;
-			}
-
-			$params	= array(	'state' => $status, 
-								'target_url' => \b8\Registry::getInstance()->get('install_url') . '/build/view/' . $this->getId());
-
-			$http->setHeaders(array('Authorization: token ' . $project->getToken()));
-			$http->request('POST', $url, json_encode($params));
-		}
+	public function createWorkingCopy(Builder $builder, $buildPath)
+	{
 	}
 }

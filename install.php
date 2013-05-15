@@ -7,11 +7,14 @@ $dbHost = ask('Enter your MySQL host: ');
 $dbName = ask('Enter the database name PHPCI should use: ');
 $dbUser = ask('Enter your MySQL username: ');
 $dbPass = ask('Enter your MySQL password: ', true);
+$ciUrl = ask('Your PHPCI URL (without trailing slash): ', true);
+$ghId = ask('(Optional) Github Application ID: ', true);
+$ghSecret = ask('(Optional) Github Application Secret: ', true);
 
 $cmd	= 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost . ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
 shell_exec($cmd);
 
-file_put_contents('./config.php', "<?php
+$str = "<?php
 
 define('PHPCI_DB_HOST', '{$dbHost}');
 
@@ -19,7 +22,17 @@ b8\Database::setDetails('{$dbName}', '{$dbUser}', '{$dbPass}');
 b8\Database::setWriteServers(array('{$dbHost}'));
 b8\Database::setReadServers(array('{$dbHost}'));
 
-");
+\$registry = b8\Registry::getInstance();
+\$registry->set('install_url', '{$ciUrl}');
+";
+
+if(!empty($ghId) && !empty($ghSecret))
+{
+	$str .= PHP_EOL . "\$registry->set('github_app', array('id' => '{$ghId}', 'secret' => '{$ghSecret}'));" . PHP_EOL;
+}
+
+
+file_put_contents('./config.php', $str);
 
 if(!file_exists('./composer.phar'))
 {

@@ -53,6 +53,7 @@ class SessionController extends b8\Controller
 	public function logout()
 	{
 		unset($_SESSION['user_id']);
+		unset($_SESSION['github_token']);
 		header('Location: /');
 		die;
 	}

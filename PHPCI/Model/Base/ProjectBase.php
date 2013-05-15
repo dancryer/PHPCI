@@ -21,6 +21,7 @@ class ProjectBase extends Model
 					'reference'    =>    null,
 					'git_key'    =>    null,
 					'type'    =>    null,
+					'token'    =>    null,
                                   );
 	protected $_getters     = array(
 					'id'    =>    'getId',
@@ -28,6 +29,7 @@ class ProjectBase extends Model
 					'reference'    =>    'getReference',
 					'git_key'    =>    'getGitKey',
 					'type'    =>    'getType',
+					'token'    =>    'getToken',
 
 
 							);
@@ -38,6 +40,7 @@ class ProjectBase extends Model
 					'reference'    =>    'setReference',
 					'git_key'    =>    'setGitKey',
 					'type'    =>    'setType',
+					'token'    =>    'setToken',
 
                                  );
 	public $columns         = array(
@@ -77,6 +80,14 @@ class ProjectBase extends Model
 													'type' => 'varchar',
 													'length' => '50',
 
+
+
+
+												),
+					'token'    =>    array(
+													'type' => 'varchar',
+													'length' => '50',
+													'nullable' => true,
 
 
 
@@ -125,6 +136,14 @@ class ProjectBase extends Model
 	public function getType()
 	{
 		$rtn    = $this->_data['type'];
+
+		
+		return $rtn;
+	}
+
+	public function getToken()
+	{
+		$rtn    = $this->_data['token'];
 
 		
 		return $rtn;
@@ -200,6 +219,20 @@ class ProjectBase extends Model
 		$this->_data['type'] = $value;
 
 		$this->_setModified('type');
+	}
+
+	public function setToken($value)
+	{
+
+		$this->_validateString('Token', $value);
+		if($this->_data['token'] == $value)
+		{
+			return;
+		}
+
+		$this->_data['token'] = $value;
+
+		$this->_setModified('token');
 	}
 
 

@@ -36,7 +36,8 @@ class GithubController extends b8\Controller
 
 		try
 		{
-			$this->_buildStore->save($build);
+			$build = $this->_buildStore->save($build);
+			$build->sendStatusPostback();
 		}
 		catch(\Exception $ex)
 		{

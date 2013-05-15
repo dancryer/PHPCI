@@ -98,18 +98,34 @@ class ProjectController extends b8\Controller
 			$pub = file_get_contents($id . '.pub');
 			$prv = file_get_contents($id);
 
-			$values = array('key' => $prv);
+			$values = array('key' => $prv, 'pubkey' => $pub, 'token' => $_SESSION['github_token']);
 		}
 
 		$form	= $this->projectForm($values);
 
 		if($method != 'POST' || ($method == 'POST' && !$form->validate()))
 		{
+			$gh		= \b8\Registry::getInstance()->get('github_app');
+			$code	= $this->getParam('code', null);
+
+			if(!is_null($code))
+			{
+				$http = new \b8\HttpClient();
+				$resp = $http->post('https://github.com/login/oauth/access_token', array('client_id' => $gh['id'], 'client_secret' => $gh['secret'], 'code' => $code));
+				
+				if($resp['success'])
+				{
+					parse_str($resp['body'], $resp);
+					$_SESSION['github_token'] = $resp['access_token'];
+				}
+			}
+
 			$view			= new b8\View('ProjectForm');
 			$view->type		= 'add';
 			$view->project	= null;
 			$view->form		= $form;
 			$view->key		= $pub;
+			$view->token	= $_SESSION['github_token'] ? $_SESSION['github_token'] : null;
 
 			return $view->render();
 		}
@@ -175,19 +191,25 @@ class ProjectController extends b8\Controller
 		$form->setMethod('POST');
 		$form->setAction('/project/' . $type);
 		$form->addField(new Form\Element\Csrf('csrf'));
-
-		$field = new Form\Element\Text('title');
-		$field->setRequired(true);
-		$field->setLabel('Project Title');
-		$field->setClass('span4');
-		$form->addField($field);
+		$form->addField(new Form\Element\Hidden('token'));
+		$form->addField(new Form\Element\Hidden('pubkey'));
 
 		$field = new Form\Element\Select('type');
 		$field->setRequired(true);
-		$field->setOptions(array('github' => 'Github', 'bitbucket' => 'Bitbucket', 'local' => 'Local Path'));
+		$field->setPattern('^(github|bitbucket|local)');
+		$field->setOptions(array('choose' => 'Select repository type...', 'github' => 'Github', 'bitbucket' => 'Bitbucket', 'local' => 'Local Path'));
 		$field->setLabel('Where is your project hosted?');
 		$field->setClass('span4');
 		$form->addField($field);
+
+		if(isset($_SESSION['github_token']))
+		{
+			$field = new Form\Element\Select('github');
+			$field->setLabel('Choose a Github repository:');
+			$field->setClass('span4');
+			$field->setOptions($this->getGithubRepositories());
+			$form->addField($field);
+		}
 
 		$field = new Form\Element\Text('reference');
 		$field->setRequired(true);
@@ -196,6 +218,12 @@ class ProjectController extends b8\Controller
 		$field->setClass('span4');
 		$form->addField($field);
 
+		$field = new Form\Element\Text('title');
+		$field->setRequired(true);
+		$field->setLabel('Project Title');
+		$field->setClass('span4');
+		$form->addField($field);
+		
 		$field = new Form\Element\TextArea('key');
 		$field->setRequired(false);
 		$field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
@@ -210,5 +238,23 @@ class ProjectController extends b8\Controller
 
 		$form->setValues($values);
 		return $form;
+	}
+
+	protected function getGithubRepositories()
+	{
+		$http = new \b8\HttpClient();
+		$res	= $http->get('https://api.github.com/user/repos', array('type' => 'all', 'access_token' => $_SESSION['github_token']));
+
+		$rtn = array();
+		$rtn['choose'] = 'Select a repository...';
+		if($res['success'])
+		{
+			foreach($res['body'] as $repo)
+			{
+				$rtn[$repo['full_name']] = $repo['full_name'];
+			}
+		}
+
+		return $rtn;
 	}
 }

@@ -83,7 +83,11 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
     
     test:
     	php_unit:
-    		directory: "tests/"
+			config:
+				- "PHPUnit-all.xml"
+				- "PHPUnit-ubuntu-fix.xml"
+			directory:
+				- "tests/"
     	php_mess_detector:
     		allow_failures: true
     	php_code_sniffer:

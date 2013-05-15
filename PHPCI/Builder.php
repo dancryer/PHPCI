@@ -17,11 +17,17 @@ class Builder
 	protected $verbose	= false;
 	protected $plugins	= array();
 	protected $build;
+	protected $logCallback;
 
-	public function __construct(Build $build)
+	public function __construct(Build $build, $logCallback = null)
 	{
 		$this->build = $build;
 		$this->store = Store\Factory::getStore('Build');
+
+		if(!is_null($logCallback) && is_callable($logCallback))
+		{
+			$this->logCallback = $logCallback;
+		}
 	}
 
 	public function execute()
@@ -87,24 +93,32 @@ class Builder
 
 	protected function log($message, $prefix = '')
 	{
+
 		if(is_array($message))
 		{
-			$message = array_map(function($item) use ($prefix)
+			$cb = $this->logCallback;
+
+			$message = array_map(function($item) use ($cb, $prefix)
 			{
-				return $prefix . $item;
-			}, $message);
+				if(is_callable($cb))
+				{
+					$cb($prefix . $item);
+				}
 
-			$message = implode(PHP_EOL, $message);
-
-			$this->log .= $message;
-			print $message . PHP_EOL;
+				$this->log .= $prefix . $item . PHP_EOL;
+			}, $message);			
 		}
 		else
 		{
-			$message = $prefix . $message . PHP_EOL;
+			$message = $prefix . $message;
 
-			$this->log .= $message;
-			print $message;
+			$this->log .= $message . PHP_EOL;
+
+			if(isset($this->logCallback) && is_callable($this->logCallback))
+			{
+				$cb = $this->logCallback;
+				$cb($message);
+			}
 		}
 
 		$this->build->setLog($this->log);

@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set(@date_default_timezone_get());
+
 spl_autoload_register(function ($class)
 {
 	$file = str_replace(array('\\', '_'), '/', $class);
@@ -21,7 +23,7 @@ spl_autoload_register(function ($class)
 define('APPLICATION_PATH', dirname(__FILE__) . '/');
 
 require_once('vendor/autoload.php');
-require_once('config.php');
+require('config.php');
 
 b8\Registry::getInstance()->set('app_namespace', 'PHPCI');
 b8\Registry::getInstance()->set('DefaultController', 'Index');

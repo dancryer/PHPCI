@@ -4,9 +4,10 @@
  * Build model for table: build
  */
 
-namespace PHPCI\Model;
+namespace PHPCI\Model\Build;
 use PHPCI\Model\Build;
 use Symfony\Component\Yaml\Parser as YamlParser;
+use PHPCI\Builder;
 
 /**
  * Build Model

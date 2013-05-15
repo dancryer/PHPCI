@@ -23,7 +23,11 @@ spl_autoload_register(function ($class)
 define('APPLICATION_PATH', dirname(__FILE__) . '/');
 
 require_once('vendor/autoload.php');
-require('config.php');
+
+if(file_exists(APPLICATION_PATH . 'config.php'))
+{
+	require('config.php');
+}
 
 b8\Registry::getInstance()->set('app_namespace', 'PHPCI');
 b8\Registry::getInstance()->set('DefaultController', 'Index');

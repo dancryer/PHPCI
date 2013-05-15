@@ -68,7 +68,7 @@ $(document).ready(function()
 		
 		// Show sign in with Github button.
 		var el = $('#element-reference');
-		var rtn = <?= json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>;
+		var rtn = <?php print json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>;
 		var url = 'https://github.com/login/oauth/authorize?client_id=' + window.github_app_id + '&scope=repo&redirect_uri=' + rtn;
 		var btn = $('<a>').addClass('btn btn-inverse').text('Sign in with Github').attr('href', url);
 

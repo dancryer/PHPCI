@@ -37,7 +37,8 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 ####Installing from Github:
 * Step 1: `git clone https://github.com/Block8/PHPCI.git`
 * Step 2: `cd PHPCI`
-* Step 3: `chmod +x ./console && ./console phpci:install`
+* Step 3: `touch config.php`
+* Step 4: `./console phpci:install`
 	* When prompted, enter your database host, username, password and the database name that PHPCI should use.
 	* The script will attempt to create the database if it does not exist already.
 	* If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.

@@ -86,8 +86,10 @@ class Builder
 		$this->store->save($this->build);
 	}
 
-	public function executeCommand($command)
+	public function executeCommand()
 	{
+		$command = call_user_func_array('sprintf', func_get_args());
+		
 		$this->log('Executing: ' . $command, '	');
 
 		$output	= '';
@@ -179,7 +181,7 @@ class Builder
 	protected function removeBuild()
 	{
 		$this->log('Removing build.');
-		shell_exec('rm -Rf ' . $this->buildPath);
+		shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
 	}
 
 	protected function executePlugins($stage)

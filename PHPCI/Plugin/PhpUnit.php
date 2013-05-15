@@ -62,7 +62,7 @@ class PhpUnit implements \PHPCI\Plugin
 				$curdir = getcwd();
 				chdir($this->phpci->buildPath.'/'.$this->runFrom);
 			}
-			$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' -c ' . $this->phpci->buildPath . $configPath);
+			$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit %s -c "%s"', $this->args, $this->phpci->buildPath . $configPath);
 			if ($this->runFrom) {
 				chdir($curdir);
 			}
@@ -78,7 +78,7 @@ class PhpUnit implements \PHPCI\Plugin
 		else {
 			$curdir = getcwd();
 			chdir($this->phpci->buildPath);
-			$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' ' . $this->phpci->buildPath . $dirPath);
+			$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit %s "%s"', $this->args, $this->phpci->buildPath . $dirPath);
 			chdir($curdir);
 			return $success;
 		}

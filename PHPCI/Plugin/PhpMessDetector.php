@@ -13,6 +13,8 @@ class PhpMessDetector implements \PHPCI\Plugin
 
 	public function execute()
 	{
+		$ignore = '';
+		
 		if(count($this->phpci->ignore))
 		{
 			$ignore = array_map(function($item)
@@ -23,6 +25,6 @@ class PhpMessDetector implements \PHPCI\Plugin
 			$ignore = ' --exclude ' . implode(',', $ignore);
 		}
 
-		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpmd ' . $this->phpci->buildPath . ' text codesize,unusedcode,naming' . $ignore);
+		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpmd "%s" text codesize,unusedcode,naming %s', $this->phpci->buildPath, $ignore);
 	}
 }

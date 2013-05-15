@@ -48,7 +48,7 @@ abstract class RemoteGitBuild extends Build
 
 	protected function cloneByHttp(Builder $builder, $to)
 	{
-		return $builder->executeCommand('git clone -b ' .$this->getBranch() . ' ' .$this->getCloneUrl().' '.$to);
+		return $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $to);
 	}
 
 	protected function cloneBySsh(Builder $builder, $to)
@@ -59,7 +59,7 @@ abstract class RemoteGitBuild extends Build
 		chmod($keyFile, 0600);
 
 		// Use the key file to do an SSH clone:
-		$success = $builder->executeCommand('ssh-agent ssh-add '.$keyFile.' && git clone -b ' .$build->getBranch() . ' ' .$this->getCloneUrl().' '.$to.' && ssh-agent -k');
+		$success = $builder->executeCommand('ssh-agent ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k', $keyFile, $build->getBranch(), $this->getCloneUrl(), $to);
 		
 		// Remove the key file:
 		unlink($keyFile);

@@ -17,6 +17,7 @@ class PhpCpd implements \PHPCI\Plugin
 
 	public function execute()
 	{
+		$ignore = '';
 		if(count($this->phpci->ignore))
 		{
 			$ignore = array_map(function($item)
@@ -27,6 +28,6 @@ class PhpCpd implements \PHPCI\Plugin
 			$ignore = implode('', $ignore);
 		}
 
-		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd' . $ignore . ' ' . $this->phpci->buildPath);
+		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd %s "%s"', $ignore, $this->phpci->buildPath);
 	}
 }

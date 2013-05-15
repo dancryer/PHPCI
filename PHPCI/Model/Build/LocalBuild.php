@@ -44,7 +44,7 @@ class LocalBuild extends Build
 			}
 		}
 		else {
-			$builder->executeCommand(sprintf("cp -Rf %s %s/", $reference, $buildPath));
+			$builder->executeCommand('cp -Rf "%s" "%s/"', $reference, $buildPath);
 		}
 
 		return true;

@@ -28,7 +28,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 
 ##Installing PHPCI:
 ####Pre-requisites:
-* PHP 5.3+
+* PHP 5.3.3+
 * A web server. We prefer nginx.
 * A MySQL server to connect to (doesn't have to be on the same server.)
 * PHPCI needs to be able to run `exec()`, so make sure this is not disabled.
@@ -109,7 +109,9 @@ As mentioned earlier, PHPCI is powered by plugins, there are several phases in w
 The `ignore` section is merely an array of paths that should be ignored in all tests (where possible.)
 
 ##Contributing
-Contributions from others would be very much appreciated! Simply fork the repository, and send us a pull request when you're ready. 
+Contributions from others would be very much appreciated! If you just want to make a simple change, simply fork the repository, and send us a pull request when you're ready. 
+
+If you'd like to get more involved in developing PHPCI or to become a maintainer / committer on the main PHPCI repository, join the [mailing list](https://groups.google.com/forum/#!forum/php-ci).
 
 ##Questions?
-Email us at hello+phpci@block8.co.uk and we'll do our best to help!
+Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci), if you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

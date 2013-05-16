@@ -21,6 +21,9 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 */
 class LocalBuild extends Build
 {
+    /**
+    * Create a working copy by cloning, copying, or similar.
+    */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
         $reference  = $this->getProject()->getReference();

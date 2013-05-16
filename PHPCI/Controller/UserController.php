@@ -27,6 +27,9 @@ class UserController extends b8\Controller
         $this->_userStore       = b8\Store\Factory::getStore('User');
     }
 
+    /**
+    * View user list.
+    */
     public function index()
     {
         $users          = $this->_userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
@@ -36,6 +39,9 @@ class UserController extends b8\Controller
         return $view->render();
     }
 
+    /**
+    * Add a user - handles both form and processing.
+    */
     public function add()
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -74,6 +80,9 @@ class UserController extends b8\Controller
         die;
     }
 
+    /**
+    * Edit a user - handles both form and processing.
+    */
     public function edit($userId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -115,6 +124,9 @@ class UserController extends b8\Controller
         die;
     }
 
+    /**
+    * Create user add / edit form.
+    */
     protected function userForm($values, $type = 'add')
     {
         $form = new Form();
@@ -155,6 +167,9 @@ class UserController extends b8\Controller
         return $form;
     }
 
+    /**
+    * Delete a user.
+    */
     public function delete($userId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {

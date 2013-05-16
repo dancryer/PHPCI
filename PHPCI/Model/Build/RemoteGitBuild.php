@@ -21,8 +21,14 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 */
 abstract class RemoteGitBuild extends Build
 {
+    /**
+    * Get the URL to be used to clone this remote repository.
+    */
     abstract protected function getCloneUrl();
 
+    /**
+    * Create a working copy by cloning, copying, or similar.
+    */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
         $yamlParser = new YamlParser();
@@ -51,11 +57,17 @@ abstract class RemoteGitBuild extends Build
         return true;
     }
 
+    /**
+    * Use an HTTP-based git clone.
+    */
     protected function cloneByHttp(Builder $builder, $to)
     {
         return $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $to);
     }
 
+    /**
+    * Use an SSH-based git clone.
+    */
     protected function cloneBySsh(Builder $builder, $to)
     {
         // Copy the project's keyfile to disk:

@@ -28,6 +28,9 @@ class PhpCpd implements \PHPCI\Plugin
         $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
     }
 
+    /**
+    * Runs PHP Copy/Paste Detector in a specified directory.
+    */
     public function execute()
     {
         $ignore = '';

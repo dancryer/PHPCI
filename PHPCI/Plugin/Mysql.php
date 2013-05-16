@@ -46,6 +46,9 @@ class Mysql implements \PHPCI\Plugin
         }
     }
 
+    /**
+    * Connects to MySQL and runs a specified set of queries.
+    */
     public function execute()
     {
         try {

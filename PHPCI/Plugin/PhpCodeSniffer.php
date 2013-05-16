@@ -28,10 +28,13 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
     }
 
+    /**
+    * Runs PHP Code Sniffer in a specified directory, to a specified standard.
+    */
     public function execute()
     {
         $ignore = '';
-                
+
         if (count($this->phpci->ignore)) {
             $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
         }

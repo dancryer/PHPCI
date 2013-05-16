@@ -32,16 +32,21 @@ class InstallCommand extends Command
             ->setDescription('Install PHPCI.');
     }
 
+    /**
+    * Installs PHPCI - Can be run more than once as long as you ^C instead of entering an email address.
+    */
     protected function execute()
     {
+        // Gather initial data from the user:
         $dbHost = $this->ask('Enter your MySQL host: ');
         $dbName = $this->ask('Enter the database name PHPCI should use: ');
         $dbUser = $this->ask('Enter your MySQL username: ');
         $dbPass = $this->ask('Enter your MySQL password: ', true);
-        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ', true);
+        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
         $ghId = $this->ask('(Optional) Github Application ID: ', true);
         $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
 
+        // Create the database if it doesn't exist:
         $cmd    = 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost .
                     ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
 
@@ -61,21 +66,28 @@ b8\Database::setReadServers(array('{$dbHost}'));
 \$registry->set('install_url', '{$ciUrl}');
 ";
 
+        // Has the user entered Github app details? If so add those to config:
         if (!empty($ghId) && !empty($ghSecret)) {
             $str .= PHP_EOL .
                     "\$registry->set('github_app', array('id' => '{$ghId}', 'secret' => '{$ghSecret}'));" .
                     PHP_EOL;
         }
 
-
+        // Write the config file and then re-bootstrap:
         file_put_contents(PHPCI_DIR . 'config.php', $str);
-
         require(PHPCI_DIR . 'bootstrap.php');
 
+        // Update the database:
         $gen = new \b8\Database\Generator(\b8\Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
         $gen->generate();
 
-        $adminEmail = $this->ask('Enter your email address: ');
+        // Try to create a user account:
+        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true);
+
+        if (empty($adminEmail)) {
+            return;
+        }
+        
         $adminPass = $this->ask('Enter your desired admin password: ');
         $adminName = $this->ask('Enter your name: ');
 

@@ -41,6 +41,9 @@ class Pgsql implements \PHPCI\Plugin
         }
     }
 
+    /**
+    * Connects to PgSQL and runs a specified set of queries.
+    */
     public function execute()
     {
         try {

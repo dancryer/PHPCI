@@ -39,23 +39,26 @@ class PhpUnit implements \PHPCI\Plugin
     {
         $this->phpci        = $phpci;
 
-        if(isset($options['directory'])) {
+        if (isset($options['directory'])) {
             $this->directory = $options['directory'];
         }
 
-        if(isset($options['config'])) {
+        if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];
         }
 
-        if(isset($options['run_from'])) {
+        if (isset($options['run_from'])) {
             $this->runFrom = $options['run_from'];
         }
 
-        if(isset($options['args'])) {
+        if (isset($options['args'])) {
             $this->args = $options['args'];
         }
     }
 
+    /**
+    * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
+    */
     public function execute()
     {
         $success = true;

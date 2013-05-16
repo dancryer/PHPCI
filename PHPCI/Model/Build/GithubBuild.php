@@ -19,16 +19,25 @@ use PHPCI\Model\Build\RemoteGitBuild;
 */
 class GithubBuild extends RemoteGitBuild
 {
+    /**
+    * Get link to commit from another source (i.e. Github)
+    */
     public function getCommitLink()
     {
         return 'https://github.com/' . $this->getProject()->getReference() . '/commit/' . $this->getCommitId();
     }
 
+    /**
+    * Get link to branch from another source (i.e. Github)
+    */
     public function getBranchLink()
     {
         return 'https://github.com/' . $this->getProject()->getReference() . '/tree/' . $this->getBranch();
     }
 
+    /**
+    * Send status updates to any relevant third parties (i.e. Github)
+    */
     public function sendStatusPostback()
     {
         $project    = $this->getProject();
@@ -70,6 +79,9 @@ class GithubBuild extends RemoteGitBuild
         $http->request('POST', $url, json_encode($params));
     }
 
+    /**
+    * Get the URL to be used to clone this remote repository.
+    */
     protected function getCloneUrl()
     {
         $key = trim($this->getProject()->getGitKey());

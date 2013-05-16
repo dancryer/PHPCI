@@ -20,6 +20,10 @@ use PHPCI\Model\Build\BitbucketBuild;
 */
 class BuildFactory
 {
+    /**
+    * Takes a generic build and returns a type-specific build model.
+    * @return PHPCI\Model\Build\LocalBuild|PHPCI\Model\Build\GithubBuild|PHPCI\Model\Build\BitbucketBuild
+    */
     public static function getBuild(Build $base)
     {
         switch($base->getProject()->getType())

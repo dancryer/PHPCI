@@ -76,8 +76,8 @@ abstract class RemoteGitBuild extends Build
         chmod($keyFile, 0600);
 
         // Use the key file to do an SSH clone:
-        $cmd = 'ssh-agent ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
-        $success = $builder->executeCommand($cmd, $keyFile, $build->getBranch(), $this->getCloneUrl(), $to);
+        $cmd = 'eval `ssh-agent -s` && ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
+        $success = $builder->executeCommand($cmd, $keyFile, $this->getBranch(), $this->getCloneUrl(), $to);
         
         // Remove the key file:
         unlink($keyFile);

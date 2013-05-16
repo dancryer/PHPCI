@@ -39,7 +39,7 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "rc",
+    "minimum-stability": "RC",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",

@@ -33,12 +33,6 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         $ignore = '';
         
         if (count($this->phpci->ignore)) {
-            $map = function ($item) {
-                return substr($item, -1) == '/' ? $item . '*' : $item . '/*';
-            };
-
-            $ignore = array_map($map, $this->phpci->ignore);
-
             $ignore = ' --ignore=' . implode(',', $ignore);
         }
 

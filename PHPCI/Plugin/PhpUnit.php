@@ -38,10 +38,22 @@ class PhpUnit implements \PHPCI\Plugin
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
         $this->phpci        = $phpci;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : null;
-        $this->xmlConfigFile = isset($options['config']) ? $options['config'] : null;
-        $this->runFrom = isset($options['run_from']) ? $options['run_from'] : null;
-        $this->args         = isset($options['args']) ? $options['args'] : '';
+
+        if(isset($options['directory'])) {
+            $this->directory = $options['directory'];
+        }
+
+        if(isset($options['config'])) {
+            $this->xmlConfigFile = $options['config'];
+        }
+
+        if(isset($options['run_from'])) {
+            $this->runFrom = $options['run_from'];
+        }
+
+        if(isset($options['args'])) {
+            $this->args = $options['args'];
+        }
     }
 
     public function execute()

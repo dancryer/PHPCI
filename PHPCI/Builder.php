@@ -191,7 +191,7 @@ class Builder
         if (is_array($message)) {
             foreach ($message as $item) {
                 if (is_callable($this->logCallback)) {
-                    call_user_func_array($this->logCallback, $prefix . $item);
+                    call_user_func_array($this->logCallback, array($prefix . $item));
                 }
                 
                 $this->log .= $prefix . $item . PHP_EOL;
@@ -201,7 +201,7 @@ class Builder
             $this->log .= $message . PHP_EOL;
 
             if (isset($this->logCallback) && is_callable($this->logCallback)) {
-                call_user_func_array($this->logCallback, $prefix . $item);
+                call_user_func_array($this->logCallback, array($message));
             }
         }
 

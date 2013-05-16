@@ -31,10 +31,10 @@ class Mysql implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->queries      = $options;
 
-        $db         = \b8\Database::getConnection('write')->getDetails();
+        $config     = \b8\Database::getConnection('write')->getDetails();
         $this->host = PHPCI_DB_HOST;
-        $this->user = $db['user'];
-        $this->pass = $db['pass'];
+        $this->user = $config['user'];
+        $this->pass = $config['pass'];
 
         $buildSettings = $phpci->getConfig('build_settings');
         if (isset($buildSettings['mysql'])) {

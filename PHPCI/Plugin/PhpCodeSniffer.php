@@ -31,15 +31,9 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        
+                
         if (count($this->phpci->ignore)) {
-            $map = function ($item) {
-                return substr($item, -1) == '/' ? $item . '*' : $item . '/*';
-            };
-
-            $ignore = array_map($map, $this->phpci->ignore);
-
-            $ignore = ' --ignore=' . implode(',', $ignore);
+            $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
         }
 
         $cmd = PHPCI_BIN_DIR . 'phpcs --standard=%s %s "%s"';

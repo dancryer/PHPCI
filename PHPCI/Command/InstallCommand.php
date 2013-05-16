@@ -32,7 +32,7 @@ class InstallCommand extends Command
             ->setDescription('Install PHPCI.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute()
     {
         $dbHost = $this->ask('Enter your MySQL host: ');
         $dbName = $this->ask('Enter the database name PHPCI should use: ');
@@ -101,9 +101,9 @@ b8\Database::setReadServers(array('{$dbHost}'));
         print $question . ' ';
 
         $rtn    = '';
-        $fp     = fopen('php://stdin', 'r');
-        $rtn = fgets($fp);
-        fclose($fp);
+        $stdin     = fopen('php://stdin', 'r');
+        $rtn = fgets($stdin);
+        fclose($stdin);
 
         $rtn = trim($rtn);
 

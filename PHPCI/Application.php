@@ -18,9 +18,14 @@ use b8\Registry;
 */
 class Application extends b8\Application
 {
+    /**
+    * Handle an incoming web request.
+    */
     public function handleRequest()
     {
         $controllerName = \b8\Registry::getInstance()->get('ControllerName');
+
+        // Validate the user's session unless it is a login/logout action or a web hook:
         $sessionAction = ($controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
         $webhookAction = in_array($controllerName, array('Bitbucket', 'Github'));
 
@@ -28,12 +33,16 @@ class Application extends b8\Application
             $this->validateSession();
         }
 
+        // Render content into layout and return:
         $view           = new b8\View('Layout');
         $view->content  = parent::handleRequest();
 
         return $view->render();
     }
 
+    /**
+    * Validate whether or not the remote user has a valid session:
+    */
     protected function validateSession()
     {
         if (!empty($_SESSION['user_id'])) {

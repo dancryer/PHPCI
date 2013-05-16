@@ -29,12 +29,7 @@ class PhpMessDetector implements \PHPCI\Plugin
         $ignore = '';
         
         if (count($this->phpci->ignore)) {
-            $map = function ($item) {
-                return substr($item, -1) == '/' ? $item . '*' : $item . '/*';
-            };
-            $ignore = array_map($map, $this->phpci->ignore);
-
-            $ignore = ' --exclude ' . implode(',', $ignore);
+            $ignore = ' --exclude ' . implode(',', $this->phpci->ignore);
         }
 
         $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text codesize,unusedcode,naming %s';

@@ -7,11 +7,15 @@ class PhpUnit implements \PHPCI\Plugin
 	protected $directory;
 	protected $args;
 	protected $phpci;
+	
+	/**
+	 * @var string $runFrom When running PHPUnit with an XML config, the command is run from this directory
+	 */
 	protected $runFrom;
 
-/**
- * @var string $xmlConfigFile The path of an xml config for PHPUnit
- */
+	/**
+	 * @var string $xmlConfigFile The path of an xml config for PHPUnit
+	 */
 	protected $xmlConfigFile;
 
 	public function __construct(\PHPCI\Builder $phpci, array $options = array())

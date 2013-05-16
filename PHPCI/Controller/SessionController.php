@@ -24,6 +24,9 @@ class SessionController extends b8\Controller
         $this->_userStore       = b8\Store\Factory::getStore('User');
     }
 
+    /**
+    * Handles user login (form and processing)
+    */
     public function login()
     {
         if (b8\Registry::getInstance()->get('requestMethod') == 'POST') {
@@ -62,6 +65,9 @@ class SessionController extends b8\Controller
         die($view->render());
     }
 
+    /**
+    * Handles user logout.
+    */
     public function logout()
     {
         unset($_SESSION['user_id']);

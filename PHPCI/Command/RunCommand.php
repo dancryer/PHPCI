@@ -33,6 +33,9 @@ class RunCommand extends Command
             ->setDescription('Run all pending PHPCI builds.');
     }
 
+    /**
+    * Pulls all pending builds from the database and runs them.
+    */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
@@ -53,6 +56,10 @@ class RunCommand extends Command
         }
     }
 
+    /**
+    * Called when log entries are made in Builder / the plugins.
+    * @see \PHPCI\Builder::log()
+    */
     public function logCallback($log)
     {
         $this->output->writeln($log);

@@ -26,6 +26,9 @@ class BuildController extends b8\Controller
         $this->_buildStore      = b8\Store\Factory::getStore('Build');
     }
 
+    /**
+    * View a specific build.
+    */
     public function view($buildId)
     {
         $build          = $this->_buildStore->getById($buildId);
@@ -37,11 +40,17 @@ class BuildController extends b8\Controller
         return $view->render();
     }
 
+    /**
+    * AJAX call to get build data:
+    */
     public function data($buildId)
     {
         die($this->getBuildData($buildId));
     }
 
+    /**
+    * Get build data from database and json encode it:
+    */
     protected function getBuildData($buildId)
     {
         $build  = $this->_buildStore->getById($buildId);
@@ -57,6 +66,9 @@ class BuildController extends b8\Controller
         return json_encode($data);
     }
 
+    /**
+    * Create a build using an existing build as a template:
+    */
     public function rebuild($buildId)
     {
         $copy   = $this->_buildStore->getById($buildId);
@@ -73,6 +85,9 @@ class BuildController extends b8\Controller
         header('Location: /build/view/' . $build->getId());
     }
 
+    /**
+    * Delete a build.
+    */
     public function delete($buildId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -85,6 +100,9 @@ class BuildController extends b8\Controller
         header('Location: /project/view/' . $build->getProjectId());
     }
 
+    /**
+    * Parse log for unix colours and replace with HTML.
+    */
     protected function cleanLog($log)
     {
         $log = str_replace('[0;32m', '<span style="color: green">', $log);

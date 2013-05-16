@@ -24,6 +24,9 @@ class PhpSpec implements \PHPCI\Plugin
         $this->phpci        = $phpci;
     }
 
+    /**
+    * Runs PHP Spec tests.
+    */
     public function execute()
     {
         $curdir = getcwd();

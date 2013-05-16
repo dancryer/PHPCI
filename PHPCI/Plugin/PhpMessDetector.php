@@ -24,6 +24,9 @@ class PhpMessDetector implements \PHPCI\Plugin
         $this->phpci        = $phpci;
     }
 
+    /**
+    * Runs PHP Mess Detector in a specified directory.
+    */
     public function execute()
     {
         $ignore = '';

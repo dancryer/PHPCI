@@ -29,6 +29,9 @@ class ProjectController extends b8\Controller
         $this->_projectStore    = b8\Store\Factory::getStore('Project');
     }
 
+    /**
+    * View a specific project.
+    */
     public function view($projectId)
     {
         $project        = $this->_projectStore->getById($projectId);
@@ -44,6 +47,9 @@ class ProjectController extends b8\Controller
         return $view->render();
     }
 
+    /**
+    * Create a new pending build for a project.
+    */
     public function build($projectId)
     {
         $build = new Build();
@@ -58,6 +64,9 @@ class ProjectController extends b8\Controller
         header('Location: /build/view/' . $build->getId());
     }
 
+    /**
+    * Delete a project.
+    */
     public function delete($projectId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -70,12 +79,18 @@ class ProjectController extends b8\Controller
         header('Location: /');
     }
 
+    /**
+    * AJAX get latest builds.
+    */
     public function builds($projectId)
     {
         $builds = $this->getLatestBuildsHtml($projectId);
         die($builds[0]);
     }
 
+    /**
+    * Render latest builds for project as HTML table.
+    */
     protected function getLatestBuildsHtml($projectId, $start = 0)
     {
         $criteria       = array('project_id' => $projectId);
@@ -87,6 +102,9 @@ class ProjectController extends b8\Controller
         return array($view->render(), $builds['count']);
     }
 
+    /**
+    * Add a new project. Handles both the form, and processing.
+    */
     public function add()
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -150,6 +168,9 @@ class ProjectController extends b8\Controller
         die;
     }
 
+    /**
+    * Handles log in with Github
+    */
     protected function handleGithubResponse()
     {
         $github     = \b8\Registry::getInstance()->get('github_app');
@@ -170,6 +191,9 @@ class ProjectController extends b8\Controller
         }
     }
 
+    /**
+    * Edit a project. Handles both the form and processing. 
+    */
     public function edit($projectId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
@@ -208,6 +232,9 @@ class ProjectController extends b8\Controller
         die;
     }
 
+    /**
+    * Create add / edit project form. 
+    */
     protected function projectForm($values, $type = 'add')
     {
         $form = new Form();
@@ -289,6 +316,9 @@ class ProjectController extends b8\Controller
         return $form;
     }
 
+    /**
+    * Get an array of repositories from Github's API.
+    */
     protected function getGithubRepositories()
     {
         $http = new \b8\HttpClient();

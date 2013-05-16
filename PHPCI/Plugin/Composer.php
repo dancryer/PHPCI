@@ -29,6 +29,9 @@ class Composer implements \PHPCI\Plugin
         $this->action       = isset($options['action']) ? $options['action'] : 'update';
     }
 
+    /**
+    * Executes Composer and runs a specified command (e.g. install / update)
+    */
     public function execute()
     {
         $cmd = PHPCI_DIR . 'composer.phar --prefer-dist --working-dir="%s" %s';

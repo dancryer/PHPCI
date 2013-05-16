@@ -26,6 +26,9 @@ class GithubController extends b8\Controller
         $this->_buildStore      = Store\Factory::getStore('Build');
     }
 
+    /**
+    * Called by Github Webhooks:
+    */
     public function webhook($project)
     {
         $payload    = json_decode($this->getParam('payload'), true);

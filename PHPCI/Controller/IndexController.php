@@ -25,6 +25,9 @@ class IndexController extends b8\Controller
         $this->_projectStore    = b8\Store\Factory::getStore('Project');
     }
 
+    /**
+    * Display PHPCI dashboard:
+    */
     public function index()
     {
         $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
@@ -35,11 +38,17 @@ class IndexController extends b8\Controller
         return $view->render();
     }
 
+    /**
+    * AJAX get latest builds table (HTML)
+    */
     public function latest()
     {
         die($this->getLatestBuildsHtml());
     }
 
+    /**
+    * Get latest builds and render as a table.
+    */
     protected function getLatestBuildsHtml()
     {
         $builds         = $this->_buildStore->getWhere(array(), 10, 0, array(), array('id' => 'DESC'));

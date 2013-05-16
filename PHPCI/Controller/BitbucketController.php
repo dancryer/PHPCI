@@ -26,6 +26,9 @@ class BitbucketController extends b8\Controller
         $this->_buildStore      = Store\Factory::getStore('Build');
     }
 
+    /**
+    * Called by Bitbucket POST service.
+    */
     public function webhook($project)
     {
         $payload    = json_decode($this->getParam('payload'), true);

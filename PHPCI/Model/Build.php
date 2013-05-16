@@ -21,21 +21,33 @@ use PHPCI\Builder;
 */
 class Build extends BuildBase
 {
+    /**
+    * Get link to commit from another source (i.e. Github)
+    */
     public function getCommitLink()
     {
         return '#';
     }
 
+    /**
+    * Get link to branch from another source (i.e. Github)
+    */
     public function getBranchLink()
     {
         return '#';
     }
 
+    /**
+    * Send status updates to any relevant third parties (i.e. Github)
+    */
     public function sendStatusPostback()
     {
         return;
     }
 
+    /**
+    * Create a working copy by cloning, copying, or similar.
+    */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
     }

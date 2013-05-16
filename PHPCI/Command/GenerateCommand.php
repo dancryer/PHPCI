@@ -30,6 +30,9 @@ class GenerateCommand extends Command
             ->setDescription('Generate models and stores from the database.');
     }
 
+    /**
+    * Generates Model and Store classes by reading database meta data.
+    */
     protected function execute()
     {
         $gen = new \b8\Database\CodeGenerator(\b8\Database::getConnection(), 'PHPCI', PHPCI_DIR . '/PHPCI/');

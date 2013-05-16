@@ -96,15 +96,17 @@ class Builder
 
 		if(is_array($message))
 		{
-			$cb = $this->logCallback;
-
-			$message = array_map(function($item) use ($cb, $prefix)
+			
+			foreach ($message as $item)
 			{
-				if(is_callable($cb))
+				if(is_callable($this->logCallback))
 				{
-					$cb($prefix . $item);
+					$this->logCallback($prefix . $item);
 				}
-			}, $message);
+				
+				$this->log .= $prefix . $item . PHP_EOL;
+			}
+			
 		}
 		else
 		{

@@ -8,9 +8,10 @@
 */
 
 namespace PHPCI\Controller;
-use b8,
-	b8\Store,
-	PHPCI\Model\Build;
+
+use b8;
+use b8\Store;
+use PHPCI\Model\Build;
 
 /**
 * BitBucket Controller - Processes webhook pings from BitBucket.
@@ -20,45 +21,39 @@ use b8,
 */
 class BitbucketController extends b8\Controller
 {
-	public function init()
-	{
-		$this->_buildStore		= Store\Factory::getStore('Build');
-	}
+    public function init()
+    {
+        $this->_buildStore      = Store\Factory::getStore('Build');
+    }
 
-	public function webhook($project)
-	{
-		$payload	= json_decode($this->getParam('payload'), true);
-		$branches	= array();
-		$commits	= array();
+    public function webhook($project)
+    {
+        $payload    = json_decode($this->getParam('payload'), true);
+        $branches   = array();
+        $commits    = array();
 
-		foreach($payload['commits'] as $commit)
-		{
-			if(!in_array($commit['branch'], $branches))
-			{
-				$branches[]					= $commit['branch'];
-				$commits[$commit['branch']]	= $commit['raw_node'];
-			}
-		}
+        foreach ($payload['commits'] as $commit) {
+            if (!in_array($commit['branch'], $branches)) {
+                $branches[]                 = $commit['branch'];
+                $commits[$commit['branch']] = $commit['raw_node'];
+            }
+        }
 
-		foreach($branches as $branch)
-		{
-			try
-			{
+        foreach ($branches as $branch) {
+            try {
 
-				$build		= new Build();
-				$build->setProjectId($project);
-				$build->setCommitId($commits[$branch]);
-				$build->setStatus(0);
-				$build->setLog('');
-				$build->setCreated(new \DateTime());
-				$build->setBranch($branch);
-				$this->_buildStore->save($build);
-			}
-			catch(\Exception $ex)
-			{
-			}
-		}
-		
-		die('OK');
-	}
+                $build      = new Build();
+                $build->setProjectId($project);
+                $build->setCommitId($commits[$branch]);
+                $build->setStatus(0);
+                $build->setLog('');
+                $build->setCreated(new \DateTime());
+                $build->setBranch($branch);
+                $this->_buildStore->save($build);
+            } catch (\Exception $ex) {
+            }
+        }
+        
+        die('OK');
+    }
 }

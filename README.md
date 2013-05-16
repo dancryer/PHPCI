@@ -87,6 +87,7 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
 				- "PHPUnit-ubuntu-fix.xml"
 			directory:
 				- "tests/"
+			run_from: "phpunit/"
     	php_mess_detector:
     		allow_failures: true
     	php_code_sniffer:

@@ -9,36 +9,34 @@
 
 namespace PHPCI\Model;
 
-require_once(APPLICATION_PATH . 'PHPCI/Model/Base/BuildBase.php');
-
-use PHPCI\Model\Base\BuildBase,
-	PHPCI\Builder;
+use PHPCI\Model\Base\BuildBase;
+use PHPCI\Builder;
 
 /**
 * Build Model
-* @uses			PHPCI\Model\Base\BuildBase
+* @uses         PHPCI\Model\Base\BuildBase
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Core
 */
 class Build extends BuildBase
 {
-	public function getCommitLink()
-	{
-		return '#';
-	}
+    public function getCommitLink()
+    {
+        return '#';
+    }
 
-	public function getBranchLink()
-	{
-		return '#';
-	}
+    public function getBranchLink()
+    {
+        return '#';
+    }
 
-	public function sendStatusPostback()
-	{
-		return;
-	}
+    public function sendStatusPostback()
+    {
+        return;
+    }
 
-	public function createWorkingCopy(Builder $builder, $buildPath)
-	{
-	}
+    public function createWorkingCopy(Builder $builder, $buildPath)
+    {
+    }
 }

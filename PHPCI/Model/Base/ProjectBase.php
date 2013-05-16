@@ -5,6 +5,7 @@
  */
 
 namespace PHPCI\Model\Base;
+
 use b8\Model;
 
 /**
@@ -12,311 +13,304 @@ use b8\Model;
  */
 class ProjectBase extends Model
 {
-	/**
-	* @var array
-	*/
-	public static $sleepable = array();
+    /**
+    * @var array
+    */
+    public static $sleepable = array();
 
-	/**
-	* @var string
-	*/
-	protected $_tableName = 'project';
+    /**
+    * @var string
+    */
+    protected $tableName = 'project';
 
-	/**
-	* @var string
-	*/
-	protected $_modelName = 'Project';
+    /**
+    * @var string
+    */
+    protected $modelName = 'Project';
 
-	/**
-	* @var array
-	*/
-	protected $_data = array(
-		'id' => null,
-		'title' => null,
-		'reference' => null,
-		'git_key' => null,
-		'type' => null,
-		'token' => null,
-		);
+    /**
+    * @var array
+    */
+    protected $data = array(
+        'id' => null,
+        'title' => null,
+        'reference' => null,
+        'git_key' => null,
+        'type' => null,
+        'token' => null,
+     );
 
-	/**
-	* @var array
-	*/
-	protected $_getters = array(
-		'id' => 'getId',
-		'title' => 'getTitle',
-		'reference' => 'getReference',
-		'git_key' => 'getGitKey',
-		'type' => 'getType',
-		'token' => 'getToken',
-		);
+    /**
+    * @var array
+    */
+    protected $getters = array(
+        'id' => 'getId',
+        'title' => 'getTitle',
+        'reference' => 'getReference',
+        'git_key' => 'getGitKey',
+        'type' => 'getType',
+        'token' => 'getToken',
+     );
 
-	/**
-	* @var array
-	*/
-	protected $_setters = array(
-		'id' => 'setId',
-		'title' => 'setTitle',
-		'reference' => 'setReference',
-		'git_key' => 'setGitKey',
-		'type' => 'setType',
-		'token' => 'setToken',
-		);
+    /**
+    * @var array
+    */
+    protected $setters = array(
+        'id' => 'setId',
+        'title' => 'setTitle',
+        'reference' => 'setReference',
+        'git_key' => 'setGitKey',
+        'type' => 'setType',
+        'token' => 'setToken',
+     );
 
-	/**
-	* @var array
-	*/
-	public $columns = array(
-		'id' => array(
-			'type' => 'int',
-			'length' => '11',
-			'primary_key' => true,
-			'auto_increment' => true,
-			),
-		'title' => array(
-			'type' => 'varchar',
-			'length' => '250',
-			),
-		'reference' => array(
-			'type' => 'varchar',
-			'length' => '250',
-			),
-		'git_key' => array(
-			'type' => 'text',
-			'length' => '',
-			),
-		'type' => array(
-			'type' => 'varchar',
-			'length' => '50',
-			),
-		'token' => array(
-			'type' => 'varchar',
-			'length' => '50',
-			'nullable' => true,
-			),
-		);
+    /**
+    * @var array
+    */
+    public $columns = array(
+        'id' => array(
+            'type' => 'int',
+            'length' => '11',
+            'primary_key' => true,
+            'auto_increment' => true,
+            ),
+        'title' => array(
+            'type' => 'varchar',
+            'length' => '250',
+            ),
+        'reference' => array(
+            'type' => 'varchar',
+            'length' => '250',
+            ),
+        'git_key' => array(
+            'type' => 'text',
+            'length' => '',
+            ),
+        'type' => array(
+            'type' => 'varchar',
+            'length' => '50',
+            ),
+        'token' => array(
+            'type' => 'varchar',
+            'length' => '50',
+            'nullable' => true,
+            ),
+     );
 
-	/**
-	* @var array
-	*/
-	public $indexes = array(
-			'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-		);
+    /**
+    * @var array
+    */
+    public $indexes = array(
+            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
+     );
 
-	/**
-	* @var array
-	*/
-	public $foreignKeys = array(
-		);
+    /**
+    * @var array
+    */
+    public $foreignKeys = array(
+     );
 
 
-	/**
-	* Get the value of Id / id.
-	*
-	* @return int
-	*/
-	public function getId()
-	{
-		$rtn    = $this->_data['id'];
+    /**
+    * Get the value of Id / id.
+    *
+    * @return int
+    */
+    public function getId()
+    {
+        $rtn    = $this->_data['id'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Get the value of Title / title.
-	*
-	* @return string
-	*/
-	public function getTitle()
-	{
-		$rtn    = $this->_data['title'];
+    /**
+    * Get the value of Title / title.
+    *
+    * @return string
+    */
+    public function getTitle()
+    {
+        $rtn    = $this->_data['title'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Get the value of Reference / reference.
-	*
-	* @return string
-	*/
-	public function getReference()
-	{
-		$rtn    = $this->_data['reference'];
+    /**
+    * Get the value of Reference / reference.
+    *
+    * @return string
+    */
+    public function getReference()
+    {
+        $rtn    = $this->_data['reference'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Get the value of GitKey / git_key.
-	*
-	* @return string
-	*/
-	public function getGitKey()
-	{
-		$rtn    = $this->_data['git_key'];
+    /**
+    * Get the value of GitKey / git_key.
+    *
+    * @return string
+    */
+    public function getGitKey()
+    {
+        $rtn    = $this->_data['git_key'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Get the value of Type / type.
-	*
-	* @return string
-	*/
-	public function getType()
-	{
-		$rtn    = $this->_data['type'];
+    /**
+    * Get the value of Type / type.
+    *
+    * @return string
+    */
+    public function getType()
+    {
+        $rtn    = $this->_data['type'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Get the value of Token / token.
-	*
-	* @return string
-	*/
-	public function getToken()
-	{
-		$rtn    = $this->_data['token'];
+    /**
+    * Get the value of Token / token.
+    *
+    * @return string
+    */
+    public function getToken()
+    {
+        $rtn    = $this->_data['token'];
 
-		
-		return $rtn;
-	}
+        
+        return $rtn;
+    }
 
-	/**
-	* Set the value of Id / id.
-	*
-	* Must not be null.
-	* @param $value int
-	*/	
-	public function setId($value)
-	{
-		$this->_validateNotNull('Id', $value);
-		$this->_validateInt('Id', $value);
-		if($this->_data['id'] === $value)
-		{
-			return;
-		}
+    /**
+    * Set the value of Id / id.
+    *
+    * Must not be null.
+    * @param $value int
+    */
+    public function setId($value)
+    {
+        $this->_validateNotNull('Id', $value);
+        $this->_validateInt('Id', $value);
+        if ($this->_data['id'] === $value) {
+            return;
+        }
 
-		$this->_data['id'] = $value;
+        $this->_data['id'] = $value;
 
-		$this->_setModified('id');
-	}
+        $this->_setModified('id');
+    }
 
-	/**
-	* Set the value of Title / title.
-	*
-	* Must not be null.
-	* @param $value string
-	*/	
-	public function setTitle($value)
-	{
-		$this->_validateNotNull('Title', $value);
-		$this->_validateString('Title', $value);
-		if($this->_data['title'] === $value)
-		{
-			return;
-		}
+    /**
+    * Set the value of Title / title.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setTitle($value)
+    {
+        $this->_validateNotNull('Title', $value);
+        $this->_validateString('Title', $value);
+        if ($this->_data['title'] === $value) {
+            return;
+        }
 
-		$this->_data['title'] = $value;
+        $this->_data['title'] = $value;
 
-		$this->_setModified('title');
-	}
+        $this->_setModified('title');
+    }
 
-	/**
-	* Set the value of Reference / reference.
-	*
-	* Must not be null.
-	* @param $value string
-	*/	
-	public function setReference($value)
-	{
-		$this->_validateNotNull('Reference', $value);
-		$this->_validateString('Reference', $value);
-		if($this->_data['reference'] === $value)
-		{
-			return;
-		}
+    /**
+    * Set the value of Reference / reference.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setReference($value)
+    {
+        $this->_validateNotNull('Reference', $value);
+        $this->_validateString('Reference', $value);
+        if ($this->_data['reference'] === $value) {
+            return;
+        }
 
-		$this->_data['reference'] = $value;
+        $this->_data['reference'] = $value;
 
-		$this->_setModified('reference');
-	}
+        $this->_setModified('reference');
+    }
 
-	/**
-	* Set the value of GitKey / git_key.
-	*
-	* Must not be null.
-	* @param $value string
-	*/	
-	public function setGitKey($value)
-	{
-		$this->_validateNotNull('GitKey', $value);
-		$this->_validateString('GitKey', $value);
-		if($this->_data['git_key'] === $value)
-		{
-			return;
-		}
+    /**
+    * Set the value of GitKey / git_key.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setGitKey($value)
+    {
+        $this->_validateNotNull('GitKey', $value);
+        $this->_validateString('GitKey', $value);
+        if ($this->_data['git_key'] === $value) {
+            return;
+        }
 
-		$this->_data['git_key'] = $value;
+        $this->_data['git_key'] = $value;
 
-		$this->_setModified('git_key');
-	}
+        $this->_setModified('git_key');
+    }
 
-	/**
-	* Set the value of Type / type.
-	*
-	* Must not be null.
-	* @param $value string
-	*/	
-	public function setType($value)
-	{
-		$this->_validateNotNull('Type', $value);
-		$this->_validateString('Type', $value);
-		if($this->_data['type'] === $value)
-		{
-			return;
-		}
+    /**
+    * Set the value of Type / type.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setType($value)
+    {
+        $this->_validateNotNull('Type', $value);
+        $this->_validateString('Type', $value);
+        if ($this->_data['type'] === $value) {
+            return;
+        }
 
-		$this->_data['type'] = $value;
+        $this->_data['type'] = $value;
 
-		$this->_setModified('type');
-	}
+        $this->_setModified('type');
+    }
 
-	/**
-	* Set the value of Token / token.
-	*
-	* @param $value string
-	*/	
-	public function setToken($value)
-	{
+    /**
+    * Set the value of Token / token.
+    *
+    * @param $value string
+    */
+    public function setToken($value)
+    {
 
-		$this->_validateString('Token', $value);
-		if($this->_data['token'] === $value)
-		{
-			return;
-		}
+        $this->_validateString('Token', $value);
+        if ($this->_data['token'] === $value) {
+            return;
+        }
 
-		$this->_data['token'] = $value;
+        $this->_data['token'] = $value;
 
-		$this->_setModified('token');
-	}
+        $this->_setModified('token');
+    }
 
-	/**
-	 * Get Build models by ProjectId for this Project.
-	 *
-	 * @uses \PHPCI\Store\BuildStore::getByProjectId()
-	 * @uses \PHPCI\Model\Build
-	 * @return \PHPCI\Model\Build[]
-	 */
-	public function getProjectBuilds()
-	{
-		return \b8\Store\Factory::getStore('Build')->getByProjectId($this->getId());
-	}
-
+    /**
+     * Get Build models by ProjectId for this Project.
+     *
+     * @uses \PHPCI\Store\BuildStore::getByProjectId()
+     * @uses \PHPCI\Model\Build
+     * @return \PHPCI\Model\Build[]
+     */
+    public function getProjectBuilds()
+    {
+        return \b8\Store\Factory::getStore('Build')->getByProjectId($this->getId());
+    }
 }

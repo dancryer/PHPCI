@@ -9,13 +9,11 @@
 
 namespace PHPCI\Model;
 
-require_once(APPLICATION_PATH . 'PHPCI/Model/Base/ProjectBase.php');
-
 use PHPCI\Model\Base\ProjectBase;
 
 /**
 * Project Model
-* @uses			PHPCI\Model\Base\ProjectBase
+* @uses         PHPCI\Model\Base\ProjectBase
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Core

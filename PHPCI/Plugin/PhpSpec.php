@@ -9,6 +9,12 @@
 
 namespace PHPCI\Plugin;
 
+/**
+* PHP Spec Plugin - Allows PHP Spec testing.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class PhpSpec implements \PHPCI\Plugin
 {
 	protected $phpci;

@@ -9,6 +9,12 @@
 
 namespace PHPCI\Plugin;
 
+/**
+* PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class PhpCpd implements \PHPCI\Plugin
 {
 	protected $directory;

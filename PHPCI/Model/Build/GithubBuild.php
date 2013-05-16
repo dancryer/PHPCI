@@ -11,9 +11,11 @@ namespace PHPCI\Model\Build;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
- * Github Build Model
- * @uses PHPCI\Model\Build
- */
+* Github Build Model
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Core
+*/
 class GithubBuild extends RemoteGitBuild
 {
 	public function getCommitLink()

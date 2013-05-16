@@ -15,6 +15,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+* Generate console command - Reads the database and generates models and stores.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Console
+*/
 class GenerateCommand extends Command
 {
     protected function configure()

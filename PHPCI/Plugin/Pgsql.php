@@ -10,6 +10,12 @@
 namespace PHPCI\Plugin;
 use PDO;
 
+/**
+* PgSQL Plugin - Provides access to a PgSQL database.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class Pgsql implements \PHPCI\Plugin
 {
 	protected $phpci;

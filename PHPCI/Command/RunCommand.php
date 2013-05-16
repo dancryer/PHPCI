@@ -18,6 +18,12 @@ use b8\Store\Factory;
 use PHPCI\Builder,
     PHPCI\BuildFactory;
 
+/**
+* Run console command - Runs any pending builds.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Console
+*/
 class RunCommand extends Command
 {
     protected function configure()

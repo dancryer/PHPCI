@@ -15,9 +15,12 @@ use PHPCI\Model\Base\BuildBase,
 	PHPCI\Builder;
 
 /**
- * Build Model
- * @uses PHPCI\Model\Base\BuildBase
- */
+* Build Model
+* @uses			PHPCI\Model\Base\BuildBase
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Core
+*/
 class Build extends BuildBase
 {
 	public function getCommitLink()

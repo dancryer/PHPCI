@@ -9,6 +9,12 @@
 
 namespace PHPCI\Plugin;
 
+/**
+* PHP Code Sniffer Plugin - Allows PHP Code Sniffer testing.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class PhpCodeSniffer implements \PHPCI\Plugin
 {
 	protected $directory;

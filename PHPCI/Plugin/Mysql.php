@@ -10,6 +10,12 @@
 namespace PHPCI\Plugin;
 use PDO;
 
+/**
+* MySQL Plugin - Provides access to a MySQL database.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class Mysql implements \PHPCI\Plugin
 {
 	protected $phpci;

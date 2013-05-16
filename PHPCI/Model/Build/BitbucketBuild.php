@@ -8,13 +8,15 @@
 */
 
 namespace PHPCI\Model\Build;
-use PHPCI\Model\Build;
-use PHPCI\Model\Build\RemoteGitBuild;
+use PHPCI\Model\Build,
+	PHPCI\Model\Build\RemoteGitBuild;
 
 /**
- * BitBucket Build Model
- * @uses PHPCI\Model\Build
- */
+* BitBucket Build Model
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Core
+*/
 class BitbucketBuild extends RemoteGitBuild
 {
 	public function getCommitLink()

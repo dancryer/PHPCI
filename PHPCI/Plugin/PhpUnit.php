@@ -9,6 +9,12 @@
 
 namespace PHPCI\Plugin;
 
+/**
+* PHP Unit Plugin - Allows PHP Unit testing.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class PhpUnit implements \PHPCI\Plugin
 {
 	protected $args;

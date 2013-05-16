@@ -17,6 +17,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
 use PHPCI\Builder;
 
+/**
+* Install console command - Installs PHPCI.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Console
+*/
 class InstallCommand extends Command
 {
     protected function configure()

@@ -10,6 +10,12 @@
 namespace PHPCI\Controller;
 use b8;
 
+/**
+* Index Controller - Displays the PHPCI Dashboard.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class IndexController extends b8\Controller
 {
 	public function init()

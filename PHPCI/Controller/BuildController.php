@@ -12,6 +12,12 @@ use b8,
 	b8\Registry,
 	PHPCI\Model\Build;
 
+/**
+* Build Controller - Allows users to run and view builds.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class BuildController extends b8\Controller
 {
 	public function init()

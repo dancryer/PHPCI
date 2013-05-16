@@ -9,6 +9,12 @@
 
 namespace PHPCI\Plugin;
 
+/**
+* Composer Plugin - Provides access to Composer functionality.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class Composer implements \PHPCI\Plugin
 {
 	protected $directory;

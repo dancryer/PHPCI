@@ -12,7 +12,12 @@ use b8,
 	b8\Store,
 	PHPCI\Model\Build;
 
-
+/**
+* Github Controller - Processes webhook pings from Github.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class GithubController extends b8\Controller
 {
 	public function init()

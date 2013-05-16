@@ -13,6 +13,12 @@ use b8,
 	PHPCI\Model\User,
 	b8\Form;
 
+/**
+* User Controller - Allows an administrator to view, add, edit and delete users.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class UserController extends b8\Controller
 {
 	public function init()

@@ -8,14 +8,16 @@
 */
 
 namespace PHPCI\Model\Build;
-use PHPCI\Model\Build;
-use Symfony\Component\Yaml\Parser as YamlParser;
-use PHPCI\Builder;
+use PHPCI\Model\Build,
+	PHPCI\Builder,
+	Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
- * Local Build Model
- * @uses PHPCI\Model\Build
- */
+* Local Build Model
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Core
+*/
 class LocalBuild extends Build
 {
 	public function createWorkingCopy(Builder $builder, $buildPath)

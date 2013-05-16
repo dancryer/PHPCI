@@ -12,7 +12,12 @@ use b8,
 	b8\Store,
 	PHPCI\Model\Build;
 
-
+/**
+* BitBucket Controller - Processes webhook pings from BitBucket.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class BitbucketController extends b8\Controller
 {
 	public function init()

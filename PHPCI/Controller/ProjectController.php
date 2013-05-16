@@ -14,6 +14,12 @@ use b8,
 	b8\Form,
 	b8\Registry;
 
+/**
+* Project Controller - Allows users to create, edit and view projects.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class ProjectController extends b8\Controller
 {
 	public function init()

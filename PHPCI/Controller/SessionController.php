@@ -10,6 +10,12 @@
 namespace PHPCI\Controller;
 use b8;
 
+/**
+* Session Controller - Handles user login / logout.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Web
+*/
 class SessionController extends b8\Controller
 {
 	public function init()

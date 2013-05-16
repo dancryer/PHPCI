@@ -8,6 +8,7 @@
 */
 
 namespace PHPCI\Plugin;
+
 use PDO;
 
 /**
@@ -18,47 +19,47 @@ use PDO;
 */
 class Mysql implements \PHPCI\Plugin
 {
-	protected $phpci;
-	protected $queries = array();
+    protected $phpci;
+    protected $queries = array();
 
-	protected $host;
-	protected $user;
-	protected $pass;
+    protected $host;
+    protected $user;
+    protected $pass;
 
-	public function __construct(\PHPCI\Builder $phpci, array $options = array())
-	{
-		$this->phpci		= $phpci;
-		$this->queries		= $options;
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    {
+        $this->phpci        = $phpci;
+        $this->queries      = $options;
 
-		$db			= \b8\Database::getConnection('write')->getDetails();
-		$this->host = PHPCI_DB_HOST;
-		$this->user = $db['user'];
-		$this->pass = $db['pass'];
+        $db         = \b8\Database::getConnection('write')->getDetails();
+        $this->host = PHPCI_DB_HOST;
+        $this->user = $db['user'];
+        $this->pass = $db['pass'];
 
-		$buildSettings = $phpci->getConfig('build_settings');
-		if(isset($buildSettings['mysql'])) {
-			$sql	= $buildSettings['mysql'];
+        $buildSettings = $phpci->getConfig('build_settings');
+        if (isset($buildSettings['mysql'])) {
+            $sql    = $buildSettings['mysql'];
 
-			$this->host = !empty($sql['host']) ? $sql['host'] : $this->host;
-			$this->user = !empty($sql['user']) ? $sql['user'] : $this->user;
-			$this->pass = array_key_exists('pass', $sql) ? $sql['pass'] : $this->pass;
-		}
-	}
+            $this->host = !empty($sql['host']) ? $sql['host'] : $this->host;
+            $this->user = !empty($sql['user']) ? $sql['user'] : $this->user;
+            $this->pass = array_key_exists('pass', $sql) ? $sql['pass'] : $this->pass;
+        }
+    }
 
-	public function execute()
-	{
-		try {
-			$pdo = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    public function execute()
+    {
+        try {
+            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+            $pdo = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
 
-			foreach($this->queries as $query) {
-				$pdo->query($query);
-			}
-		}
-		catch(\Exception $ex) {
-			$this->phpci->logFailure($ex->getMessage());
-			return false;
-		}
+            foreach ($this->queries as $query) {
+                $pdo->query($query);
+            }
+        } catch (\Exception $ex) {
+            $this->phpci->logFailure($ex->getMessage());
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

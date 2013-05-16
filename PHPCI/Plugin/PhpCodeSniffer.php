@@ -17,30 +17,32 @@ namespace PHPCI\Plugin;
 */
 class PhpCodeSniffer implements \PHPCI\Plugin
 {
-	protected $directory;
-	protected $args;
-	protected $phpci;
+    protected $directory;
+    protected $args;
+    protected $phpci;
 
-	public function __construct(\PHPCI\Builder $phpci, array $options = array())
-	{
-		$this->phpci		= $phpci;
-		$this->directory	= isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-		$this->standard		= isset($options['standard']) ? $options['standard'] : 'PSR2';
-	}
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    {
+        $this->phpci        = $phpci;
+        $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
+        $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
+    }
 
-	public function execute()
-	{
-		$ignore = '';
-		
-		if(count($this->phpci->ignore)) {
-			$ignore = array_map(function($item)
-			{
-				return substr($item, -1) == '/' ? $item . '*' : $item . '/*';
-			}, $this->phpci->ignore);
+    public function execute()
+    {
+        $ignore = '';
+        
+        if (count($this->phpci->ignore)) {
+            $map = function ($item) {
+                return substr($item, -1) == '/' ? $item . '*' : $item . '/*';
+            };
 
-			$ignore = ' --ignore=' . implode(',', $ignore);
-		}
+            $ignore = array_map($map, $this->phpci->ignore);
 
-		return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcs --standard=%s %s "%s"', $this->standard, $ignore, $this->phpci->buildPath);
-	}
+            $ignore = ' --ignore=' . implode(',', $ignore);
+        }
+
+        $cmd = PHPCI_BIN_DIR . 'phpcs --standard=%s %s "%s"';
+        return $this->phpci->executeCommand($cmd, $this->standard, $ignore, $this->phpci->buildPath);
+    }
 }

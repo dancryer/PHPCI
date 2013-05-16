@@ -8,6 +8,7 @@
 */
 
 namespace PHPCI\Plugin;
+
 use PDO;
 
 /**
@@ -18,42 +19,42 @@ use PDO;
 */
 class Pgsql implements \PHPCI\Plugin
 {
-	protected $phpci;
-	protected $queries = array();
+    protected $phpci;
+    protected $queries = array();
 
-	protected $host;
-	protected $user;
-	protected $pass;
+    protected $host;
+    protected $user;
+    protected $pass;
 
-	public function __construct(\PHPCI\Builder $phpci, array $options = array())
-	{
-		$this->phpci		= $phpci;
-		$this->queries		= $options;
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    {
+        $this->phpci        = $phpci;
+        $this->queries      = $options;
 
-		$buildSettings = $phpci->getConfig('build_settings');
+        $buildSettings = $phpci->getConfig('build_settings');
 
-		if(isset($buildSettings['pgsql'])) {
-			$sql		= $buildSettings['pgsql'];
-			$this->host = $sql['host'];
-			$this->user = $sql['user'];
-			$this->pass = $sql['pass'];
-		}
-	}
+        if (isset($buildSettings['pgsql'])) {
+            $sql        = $buildSettings['pgsql'];
+            $this->host = $sql['host'];
+            $this->user = $sql['user'];
+            $this->pass = $sql['pass'];
+        }
+    }
 
-	public function execute()
-	{
-		try {
-			$pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    public function execute()
+    {
+        try {
+            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+            $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
 
-			foreach($this->queries as $query) {
-				$pdo->query($query);
-			}
-		}
-		catch(\Exception $ex) {
-			$this->phpci->logFailure($ex->getMessage());
-			return false;
-		}
+            foreach ($this->queries as $query) {
+                $pdo->query($query);
+            }
+        } catch (\Exception $ex) {
+            $this->phpci->logFailure($ex->getMessage());
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

@@ -17,19 +17,21 @@ namespace PHPCI\Plugin;
 */
 class Composer implements \PHPCI\Plugin
 {
-	protected $directory;
-	protected $action;
-	protected $phpci;
+    protected $directory;
+    protected $action;
+    protected $phpci;
 
-	public function __construct(\PHPCI\Builder $phpci, array $options = array())
-	{
-		$this->phpci		= $phpci;
-		$this->directory	= isset($options['directory']) ? $phpci->buildPath . '/' . $options['directory'] : $phpci->buildPath;
-		$this->action		= isset($options['action']) ? $options['action'] : 'update';
-	}
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    {
+        $path               = $phpci->buildPath;
+        $this->phpci        = $phpci;
+        $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
+        $this->action       = isset($options['action']) ? $options['action'] : 'update';
+    }
 
-	public function execute()
-	{
-		return $this->phpci->executeCommand(PHPCI_DIR . 'composer.phar --prefer-dist --working-dir="%s" %s', $this->directory, $this->action);
-	}
+    public function execute()
+    {
+        $cmd = PHPCI_DIR . 'composer.phar --prefer-dist --working-dir="%s" %s';
+        return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
+    }
 }

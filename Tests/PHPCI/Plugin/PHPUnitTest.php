@@ -1,13 +1,22 @@
 <?php
+/**
+* PHPCI - Continuous Integration for PHP
+*
+* @copyright	Copyright 2013, Block 8 Limited.
+* @license		https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link			http://www.phptesting.org/
+*/
 
 namespace PHPCI\Plugin\Tests;
-
 use PHPCI\Plugin\PHPUnit;
 
 define('PHPCI_BIN_DIR', "FAKEPHPCIBIN");
 
-class PHPUnitTest
-	extends  \PHPUnit_Framework_TestCase
+/**
+* Unit test for the PHPUnit plugin.
+* @author meadsteve
+*/
+class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 {
 
 	/**

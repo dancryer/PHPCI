@@ -1,14 +1,17 @@
 <?php
-
 /**
- * Build model for table: build
- */
+* PHPCI - Continuous Integration for PHP
+*
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
+*/
 
 namespace PHPCI\Model\Build;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
- * Build Model
+ * Github Build Model
  * @uses PHPCI\Model\Build
  */
 class GithubBuild extends RemoteGitBuild
@@ -58,7 +61,10 @@ class GithubBuild extends RemoteGitBuild
 		$params	= array(	'state' => $status, 
 							'target_url' => \b8\Registry::getInstance()->get('install_url') . '/build/view/' . $this->getId());
 
-		$http->setHeaders(array('Authorization: token ' . $project->getToken()));
+		$http->setHeaders(array(
+			'Authorization: token ' . $project->getToken(),
+			'Content-Type: application/x-www-form-urlencoded'
+			));
 		$http->request('POST', $url, json_encode($params));
 	}
 

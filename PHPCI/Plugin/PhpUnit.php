@@ -4,9 +4,13 @@ namespace PHPCI\Plugin;
 
 class PhpUnit implements \PHPCI\Plugin
 {
-	protected $directory;
 	protected $args;
 	protected $phpci;
+
+	/**
+	 * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
+	 */
+	protected $directory;
 	
 	/**
 	 * @var string $runFrom When running PHPUnit with an XML config, the command is run from this directory
@@ -14,7 +18,7 @@ class PhpUnit implements \PHPCI\Plugin
 	protected $runFrom;
 
 	/**
-	 * @var string $xmlConfigFile The path of an xml config for PHPUnit
+	 * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
 	 */
 	protected $xmlConfigFile;
 

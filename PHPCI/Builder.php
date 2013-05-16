@@ -104,8 +104,6 @@ class Builder
 				{
 					$cb($prefix . $item);
 				}
-
-				$this->log .= $prefix . $item . PHP_EOL;
 			}, $message);
 		}
 		else

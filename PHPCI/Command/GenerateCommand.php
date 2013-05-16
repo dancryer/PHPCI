@@ -33,7 +33,7 @@ class GenerateCommand extends Command
     /**
     * Generates Model and Store classes by reading database meta data.
     */
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $gen = new \b8\Database\CodeGenerator(\b8\Database::getConnection(), 'PHPCI', PHPCI_DIR . '/PHPCI/');
         $gen->generateModels();

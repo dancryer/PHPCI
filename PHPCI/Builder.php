@@ -17,11 +17,17 @@ class Builder
 	protected $verbose	= false;
 	protected $plugins	= array();
 	protected $build;
+	protected $logCallback;
 
-	public function __construct(Build $build)
+	public function __construct(Build $build, $logCallback = null)
 	{
 		$this->build = $build;
 		$this->store = Store\Factory::getStore('Build');
+
+		if(!is_null($logCallback) && is_callable($logCallback))
+		{
+			$this->logCallback = $logCallback;
+		}
 	}
 
 	public function execute()
@@ -87,24 +93,32 @@ class Builder
 
 	protected function log($message, $prefix = '')
 	{
+
 		if(is_array($message))
 		{
-			$message = array_map(function($item) use ($prefix)
+			
+			foreach ($message as $item)
 			{
-				return $prefix . $item;
-			}, $message);
-
-			$message = implode(PHP_EOL, $message);
-
-			$this->log .= $message;
-			print $message . PHP_EOL;
+				if(is_callable($this->logCallback))
+				{
+					$this->logCallback($prefix . $item);
+				}
+				
+				$this->log .= $prefix . $item . PHP_EOL;
+			}
+			
 		}
 		else
 		{
-			$message = $prefix . $message . PHP_EOL;
+			$message = $prefix . $message;
 
-			$this->log .= $message;
-			print $message;
+			$this->log .= $message . PHP_EOL;
+
+			if(isset($this->logCallback) && is_callable($this->logCallback))
+			{
+				$cb = $this->logCallback;
+				$cb($message);
+			}
 		}
 
 		$this->build->setLog($this->log);
@@ -139,8 +153,8 @@ class Builder
 		switch ($type)
 		{
 			case 'local':
-				$this->buildPath  = $this->ciDir . 'build/' . $buildId;
-				
+				$this->buildPath = substr($this->buildPath, 0, -1);
+
 				if(!is_file($reference . '/phpci.yml'))
 				{
 					$this->logFailure('Project does not contain a phpci.yml file.');
@@ -149,7 +163,7 @@ class Builder
 
 				$yamlFile = file_get_contents($reference . '/phpci.yml');
 				$this->config = $yamlParser->parse($yamlFile);
-				
+
 				if(array_key_exists('build_settings', $this->config)
 					&& is_array($this->config['build_settings'])
 					&& array_key_exists('prefer_symlink', $this->config['build_settings'])
@@ -161,20 +175,24 @@ class Builder
 					}
 
 					$this->log(sprintf('Symlinking: %s to %s',$reference, $this->buildPath));
-					symlink($reference, $this->buildPath);
+					if ( !symlink($reference, $this->buildPath) )
+					{
+						$this->logFailure('Failed to symlink.');
+						return false;
+					}
 				}
 				else
 				{
 					$this->executeCommand(sprintf("cp -Rf %s %s/", $reference, $this->buildPath));
 				}
-				
+
 				$this->buildPath .= '/';
 			break;
 
 			case 'github':
 			case 'bitbucket':
 				mkdir($this->buildPath, 0777, true);
-				
+
 				if(!empty($key))
 				{
 					// Do an SSH clone:
@@ -262,7 +280,7 @@ class Builder
 						$this->success = false;
 					}
 				}
-				
+
 				continue;
 			}
 
@@ -281,7 +299,7 @@ class Builder
 							$this->success = false;
 						}
 					}
-					
+
 					$this->logFailure('PLUGIN STATUS: FAILED');
 					continue;
 				}
@@ -308,7 +326,7 @@ class Builder
 			{
 				$this->plugins[$plugin] = true;
 			}
-			
+
 			$this->logSuccess('PLUGIN STATUS: SUCCESS!');
 		}
 	}

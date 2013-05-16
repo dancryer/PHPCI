@@ -28,9 +28,8 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 
 ##Installing PHPCI:
 ####Pre-requisites:
-* PHP 5.3+
+* PHP 5.3.3+
 * A web server. We prefer nginx.
-* The YAML extension: `pecl install yaml`
 * A MySQL server to connect to (doesn't have to be on the same server.)
 * PHPCI needs to be able to run `exec()`, so make sure this is not disabled.
 
@@ -38,7 +37,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 ####Installing from Github:
 * Step 1: `git clone https://github.com/Block8/PHPCI.git`
 * Step 2: `cd PHPCI`
-* Step 3: `php install.php`
+* Step 3: `chmod +x ./console && ./console phpci:install`
 	* When prompted, enter your database host, username, password and the database name that PHPCI should use.
 	* The script will attempt to create the database if it does not exist already.
 	* If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
@@ -61,7 +60,7 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 
 Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:
 
-    * * * * * /usr/bin/php /path/to/phpci/cron.php
+    * * * * * /usr/bin/php /path/to/phpci/console phpci:run-builds
     
 Obviously, make sure you change the `/path/to/phpci` to the directory in which you installed PHPCI, and update the PHP path if necessary.
 
@@ -88,6 +87,7 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
 				- "PHPUnit-ubuntu-fix.xml"
 			directory:
 				- "tests/"
+			run_from: "phpunit/"
     	php_mess_detector:
     		allow_failures: true
     	php_code_sniffer:
@@ -110,7 +110,9 @@ As mentioned earlier, PHPCI is powered by plugins, there are several phases in w
 The `ignore` section is merely an array of paths that should be ignored in all tests (where possible.)
 
 ##Contributing
-Contributions from others would be very much appreciated! Simply fork the repository, and send us a pull request when you're ready. 
+Contributions from others would be very much appreciated! If you just want to make a simple change, simply fork the repository, and send us a pull request when you're ready. 
+
+If you'd like to get more involved in developing PHPCI or to become a maintainer / committer on the main PHPCI repository, join the [mailing list](https://groups.google.com/forum/#!forum/php-ci).
 
 ##Questions?
-Email us at hello+phpci@block8.co.uk and we'll do our best to help!
+Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci), if you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

@@ -12,95 +12,109 @@ use b8\Model;
  */
 class ProjectBase extends Model
 {
-	public static $sleepable= array();
-	protected $_tableName   = 'project';
-	protected $_modelName   = 'Project';
-	protected $_data        = array(
-					'id'    =>    null,
-					'title'    =>    null,
-					'reference'    =>    null,
-					'git_key'    =>    null,
-					'type'    =>    null,
-					'token'    =>    null,
-                                  );
-	protected $_getters     = array(
-					'id'    =>    'getId',
-					'title'    =>    'getTitle',
-					'reference'    =>    'getReference',
-					'git_key'    =>    'getGitKey',
-					'type'    =>    'getType',
-					'token'    =>    'getToken',
+	/**
+	* @var array
+	*/
+	public static $sleepable = array();
+
+	/**
+	* @var string
+	*/
+	protected $_tableName = 'project';
+
+	/**
+	* @var string
+	*/
+	protected $_modelName = 'Project';
+
+	/**
+	* @var array
+	*/
+	protected $_data = array(
+		'id' => null,
+		'title' => null,
+		'reference' => null,
+		'git_key' => null,
+		'type' => null,
+		'token' => null,
+		);
+
+	/**
+	* @var array
+	*/
+	protected $_getters = array(
+		'id' => 'getId',
+		'title' => 'getTitle',
+		'reference' => 'getReference',
+		'git_key' => 'getGitKey',
+		'type' => 'getType',
+		'token' => 'getToken',
+		);
+
+	/**
+	* @var array
+	*/
+	protected $_setters = array(
+		'id' => 'setId',
+		'title' => 'setTitle',
+		'reference' => 'setReference',
+		'git_key' => 'setGitKey',
+		'type' => 'setType',
+		'token' => 'setToken',
+		);
+
+	/**
+	* @var array
+	*/
+	public $columns = array(
+		'id' => array(
+			'type' => 'int',
+			'length' => '11',
+			'primary_key' => true,
+			'auto_increment' => true,
+			),
+		'title' => array(
+			'type' => 'varchar',
+			'length' => '250',
+			),
+		'reference' => array(
+			'type' => 'varchar',
+			'length' => '250',
+			),
+		'git_key' => array(
+			'type' => 'text',
+			'length' => '',
+			),
+		'type' => array(
+			'type' => 'varchar',
+			'length' => '50',
+			),
+		'token' => array(
+			'type' => 'varchar',
+			'length' => '50',
+			'nullable' => true,
+			),
+		);
+
+	/**
+	* @var array
+	*/
+	public $indexes = array(
+			'PRIMARY' => array('unique' => true, 'columns' => 'id'),
+		);
+
+	/**
+	* @var array
+	*/
+	public $foreignKeys = array(
+		);
 
 
-							);
-
-	protected $_setters     = array(
-					'id'    =>    'setId',
-					'title'    =>    'setTitle',
-					'reference'    =>    'setReference',
-					'git_key'    =>    'setGitKey',
-					'type'    =>    'setType',
-					'token'    =>    'setToken',
-
-                                 );
-	public $columns         = array(
-					'id'    =>    array(
-													'type' => 'int',
-													'length' => '11',
-
-													'primary_key' => true,
-													'auto_increment' => true,
-
-												),
-					'title'    =>    array(
-													'type' => 'varchar',
-													'length' => '250',
-
-
-
-
-												),
-					'reference'    =>    array(
-													'type' => 'varchar',
-													'length' => '250',
-
-
-
-
-												),
-					'git_key'    =>    array(
-													'type' => 'text',
-													'length' => '',
-
-
-
-
-												),
-					'type'    =>    array(
-													'type' => 'varchar',
-													'length' => '50',
-
-
-
-
-												),
-					'token'    =>    array(
-													'type' => 'varchar',
-													'length' => '50',
-													'nullable' => true,
-
-
-
-												),
-                                  );
-	public $indexes         = array(
-					'PRIMARY'    =>    array('unique' => true, 'columns' => 'id'),
-                                  );
-	public $foreignKeys     = array(
-                                  );
-
-
-
+	/**
+	* Get the value of Id / id.
+	*
+	* @return int
+	*/
 	public function getId()
 	{
 		$rtn    = $this->_data['id'];
@@ -109,6 +123,11 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
+	/**
+	* Get the value of Title / title.
+	*
+	* @return string
+	*/
 	public function getTitle()
 	{
 		$rtn    = $this->_data['title'];
@@ -117,6 +136,11 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
+	/**
+	* Get the value of Reference / reference.
+	*
+	* @return string
+	*/
 	public function getReference()
 	{
 		$rtn    = $this->_data['reference'];
@@ -125,6 +149,11 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
+	/**
+	* Get the value of GitKey / git_key.
+	*
+	* @return string
+	*/
 	public function getGitKey()
 	{
 		$rtn    = $this->_data['git_key'];
@@ -133,6 +162,11 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
+	/**
+	* Get the value of Type / type.
+	*
+	* @return string
+	*/
 	public function getType()
 	{
 		$rtn    = $this->_data['type'];
@@ -141,6 +175,11 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
+	/**
+	* Get the value of Token / token.
+	*
+	* @return string
+	*/
 	public function getToken()
 	{
 		$rtn    = $this->_data['token'];
@@ -149,13 +188,17 @@ class ProjectBase extends Model
 		return $rtn;
 	}
 
-
-
+	/**
+	* Set the value of Id / id.
+	*
+	* Must not be null.
+	* @param $value int
+	*/	
 	public function setId($value)
 	{
 		$this->_validateNotNull('Id', $value);
 		$this->_validateInt('Id', $value);
-		if($this->_data['id'] == $value)
+		if($this->_data['id'] === $value)
 		{
 			return;
 		}
@@ -165,11 +208,17 @@ class ProjectBase extends Model
 		$this->_setModified('id');
 	}
 
+	/**
+	* Set the value of Title / title.
+	*
+	* Must not be null.
+	* @param $value string
+	*/	
 	public function setTitle($value)
 	{
 		$this->_validateNotNull('Title', $value);
 		$this->_validateString('Title', $value);
-		if($this->_data['title'] == $value)
+		if($this->_data['title'] === $value)
 		{
 			return;
 		}
@@ -179,11 +228,17 @@ class ProjectBase extends Model
 		$this->_setModified('title');
 	}
 
+	/**
+	* Set the value of Reference / reference.
+	*
+	* Must not be null.
+	* @param $value string
+	*/	
 	public function setReference($value)
 	{
 		$this->_validateNotNull('Reference', $value);
 		$this->_validateString('Reference', $value);
-		if($this->_data['reference'] == $value)
+		if($this->_data['reference'] === $value)
 		{
 			return;
 		}
@@ -193,11 +248,17 @@ class ProjectBase extends Model
 		$this->_setModified('reference');
 	}
 
+	/**
+	* Set the value of GitKey / git_key.
+	*
+	* Must not be null.
+	* @param $value string
+	*/	
 	public function setGitKey($value)
 	{
 		$this->_validateNotNull('GitKey', $value);
 		$this->_validateString('GitKey', $value);
-		if($this->_data['git_key'] == $value)
+		if($this->_data['git_key'] === $value)
 		{
 			return;
 		}
@@ -207,11 +268,17 @@ class ProjectBase extends Model
 		$this->_setModified('git_key');
 	}
 
+	/**
+	* Set the value of Type / type.
+	*
+	* Must not be null.
+	* @param $value string
+	*/	
 	public function setType($value)
 	{
 		$this->_validateNotNull('Type', $value);
 		$this->_validateString('Type', $value);
-		if($this->_data['type'] == $value)
+		if($this->_data['type'] === $value)
 		{
 			return;
 		}
@@ -221,11 +288,16 @@ class ProjectBase extends Model
 		$this->_setModified('type');
 	}
 
+	/**
+	* Set the value of Token / token.
+	*
+	* @param $value string
+	*/	
 	public function setToken($value)
 	{
 
 		$this->_validateString('Token', $value);
-		if($this->_data['token'] == $value)
+		if($this->_data['token'] === $value)
 		{
 			return;
 		}
@@ -234,10 +306,6 @@ class ProjectBase extends Model
 
 		$this->_setModified('token');
 	}
-
-
-
-
 
 	/**
 	 * Get Build models by ProjectId for this Project.

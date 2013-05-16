@@ -10,10 +10,10 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 * Allows you to set up and tear down test databases.
 * Installs your project's Composer dependencies.
 * Runs through any combination of the following plugins:
-	* PHP Unit
-	* PHP Mess Detector
-	* PHP Copy/Paste Detector
-	* PHP Code Sniffer
+    * PHP Unit
+    * PHP Mess Detector
+    * PHP Copy/Paste Detector
+    * PHP Code Sniffer
     * PHP Spec
 * You can mark directories for the plugins to ignore.
 * You can mark certain plugins as being allowed to fail (but still run.)
@@ -38,19 +38,19 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 * Step 1: `git clone https://github.com/Block8/PHPCI.git`
 * Step 2: `cd PHPCI`
 * Step 3: `chmod +x ./console && ./console phpci:install`
-	* When prompted, enter your database host, username, password and the database name that PHPCI should use.
-	* The script will attempt to create the database if it does not exist already.
-	* If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
+    * When prompted, enter your database host, username, password and the database name that PHPCI should use.
+    * The script will attempt to create the database if it does not exist already.
+    * If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
 * Add a virtual host to your web server, pointing to the directory you cloned PHPCI into.
 * You'll need to set up rewrite rules to point all non-existant requests to PHPCI.
 
 **Apache Example**:
 
-	RewriteEngine On
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule . index.php [L]
-	
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . index.php [L]
+    
 **Nginx Example**: 
 
 
@@ -71,34 +71,38 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
         ignore:
             - "vendor"
             - "tests"
+        mysql:
+            host: "localhost"
+            user: "root"
+            pass: ""        
 
     setup:
-		mysql:
-    		- "DROP DATABASE IF EXISTS test;"
-    		- "CREATE DATABASE test;"
-    		- "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
-    	composer:
-    		action: "install"
+        mysql:
+            - "DROP DATABASE IF EXISTS test;"
+            - "CREATE DATABASE test;"
+            - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
+        composer:
+            action: "install"
     
     test:
-    	php_unit:
-			config:
-				- "PHPUnit-all.xml"
-				- "PHPUnit-ubuntu-fix.xml"
-			directory:
-				- "tests/"
-			run_from: "phpunit/"
-    	php_mess_detector:
-    		allow_failures: true
-    	php_code_sniffer:
-    		standard: "PSR2"
-    	php_cpd:
-    		allow_failures: true
+        php_unit:
+            config:
+                - "PHPUnit-all.xml"
+                - "PHPUnit-ubuntu-fix.xml"
+            directory:
+                - "tests/"
+            run_from: "phpunit/"
+        php_mess_detector:
+            allow_failures: true
+        php_code_sniffer:
+            standard: "PSR2"
+        php_cpd:
+            allow_failures: true
     
     complete:
-    	mysql:
-    		- "DROP DATABASE IF EXISTS test;"
-    		
+        mysql:
+            - "DROP DATABASE IF EXISTS test;"
+            
 As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
 
 * `setup` - This phase is designed to initialise the build procedure.

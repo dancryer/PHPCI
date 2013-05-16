@@ -161,7 +161,7 @@ class BuildBase extends Model
     */
     public function getId()
     {
-        $rtn    = $this->_data['id'];
+        $rtn    = $this->data['id'];
 
         
         return $rtn;
@@ -174,7 +174,7 @@ class BuildBase extends Model
     */
     public function getProjectId()
     {
-        $rtn    = $this->_data['project_id'];
+        $rtn    = $this->data['project_id'];
 
         
         return $rtn;
@@ -187,7 +187,7 @@ class BuildBase extends Model
     */
     public function getCommitId()
     {
-        $rtn    = $this->_data['commit_id'];
+        $rtn    = $this->data['commit_id'];
 
         
         return $rtn;
@@ -200,7 +200,7 @@ class BuildBase extends Model
     */
     public function getStatus()
     {
-        $rtn    = $this->_data['status'];
+        $rtn    = $this->data['status'];
 
         
         return $rtn;
@@ -213,7 +213,7 @@ class BuildBase extends Model
     */
     public function getLog()
     {
-        $rtn    = $this->_data['log'];
+        $rtn    = $this->data['log'];
 
         
         return $rtn;
@@ -226,7 +226,7 @@ class BuildBase extends Model
     */
     public function getBranch()
     {
-        $rtn    = $this->_data['branch'];
+        $rtn    = $this->data['branch'];
 
         
         return $rtn;
@@ -239,7 +239,7 @@ class BuildBase extends Model
     */
     public function getCreated()
     {
-        $rtn    = $this->_data['created'];
+        $rtn    = $this->data['created'];
 
         
         if (!empty($rtn)) {
@@ -257,7 +257,7 @@ class BuildBase extends Model
     */
     public function getStarted()
     {
-        $rtn    = $this->_data['started'];
+        $rtn    = $this->data['started'];
 
         
         if (!empty($rtn)) {
@@ -275,7 +275,7 @@ class BuildBase extends Model
     */
     public function getFinished()
     {
-        $rtn    = $this->_data['finished'];
+        $rtn    = $this->data['finished'];
 
         
         if (!empty($rtn)) {
@@ -293,7 +293,7 @@ class BuildBase extends Model
     */
     public function getPlugins()
     {
-        $rtn    = $this->_data['plugins'];
+        $rtn    = $this->data['plugins'];
 
         
         return $rtn;
@@ -309,11 +309,11 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->_data['id'] === $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
-        $this->_data['id'] = $value;
+        $this->data['id'] = $value;
 
         $this->_setModified('id');
     }
@@ -328,11 +328,11 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('ProjectId', $value);
         $this->_validateInt('ProjectId', $value);
-        if ($this->_data['project_id'] === $value) {
+        if ($this->data['project_id'] === $value) {
             return;
         }
 
-        $this->_data['project_id'] = $value;
+        $this->data['project_id'] = $value;
 
         $this->_setModified('project_id');
     }
@@ -347,11 +347,11 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('CommitId', $value);
         $this->_validateString('CommitId', $value);
-        if ($this->_data['commit_id'] === $value) {
+        if ($this->data['commit_id'] === $value) {
             return;
         }
 
-        $this->_data['commit_id'] = $value;
+        $this->data['commit_id'] = $value;
 
         $this->_setModified('commit_id');
     }
@@ -366,11 +366,11 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Status', $value);
         $this->_validateInt('Status', $value);
-        if ($this->_data['status'] === $value) {
+        if ($this->data['status'] === $value) {
             return;
         }
 
-        $this->_data['status'] = $value;
+        $this->data['status'] = $value;
 
         $this->_setModified('status');
     }
@@ -384,11 +384,11 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Log', $value);
-        if ($this->_data['log'] === $value) {
+        if ($this->data['log'] === $value) {
             return;
         }
 
-        $this->_data['log'] = $value;
+        $this->data['log'] = $value;
 
         $this->_setModified('log');
     }
@@ -403,11 +403,11 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Branch', $value);
         $this->_validateString('Branch', $value);
-        if ($this->_data['branch'] === $value) {
+        if ($this->data['branch'] === $value) {
             return;
         }
 
-        $this->_data['branch'] = $value;
+        $this->data['branch'] = $value;
 
         $this->_setModified('branch');
     }
@@ -421,11 +421,11 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Created', $value);
-        if ($this->_data['created'] === $value) {
+        if ($this->data['created'] === $value) {
             return;
         }
 
-        $this->_data['created'] = $value;
+        $this->data['created'] = $value;
 
         $this->_setModified('created');
     }
@@ -439,11 +439,11 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Started', $value);
-        if ($this->_data['started'] === $value) {
+        if ($this->data['started'] === $value) {
             return;
         }
 
-        $this->_data['started'] = $value;
+        $this->data['started'] = $value;
 
         $this->_setModified('started');
     }
@@ -457,11 +457,11 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Finished', $value);
-        if ($this->_data['finished'] === $value) {
+        if ($this->data['finished'] === $value) {
             return;
         }
 
-        $this->_data['finished'] = $value;
+        $this->data['finished'] = $value;
 
         $this->_setModified('finished');
     }
@@ -475,11 +475,11 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Plugins', $value);
-        if ($this->_data['plugins'] === $value) {
+        if ($this->data['plugins'] === $value) {
             return;
         }
 
-        $this->_data['plugins'] = $value;
+        $this->data['plugins'] = $value;
 
         $this->_setModified('plugins');
     }

@@ -118,7 +118,7 @@ class ProjectBase extends Model
     */
     public function getId()
     {
-        $rtn    = $this->_data['id'];
+        $rtn    = $this->data['id'];
 
         
         return $rtn;
@@ -131,7 +131,7 @@ class ProjectBase extends Model
     */
     public function getTitle()
     {
-        $rtn    = $this->_data['title'];
+        $rtn    = $this->data['title'];
 
         
         return $rtn;
@@ -144,7 +144,7 @@ class ProjectBase extends Model
     */
     public function getReference()
     {
-        $rtn    = $this->_data['reference'];
+        $rtn    = $this->data['reference'];
 
         
         return $rtn;
@@ -157,7 +157,7 @@ class ProjectBase extends Model
     */
     public function getGitKey()
     {
-        $rtn    = $this->_data['git_key'];
+        $rtn    = $this->data['git_key'];
 
         
         return $rtn;
@@ -170,7 +170,7 @@ class ProjectBase extends Model
     */
     public function getType()
     {
-        $rtn    = $this->_data['type'];
+        $rtn    = $this->data['type'];
 
         
         return $rtn;
@@ -183,7 +183,7 @@ class ProjectBase extends Model
     */
     public function getToken()
     {
-        $rtn    = $this->_data['token'];
+        $rtn    = $this->data['token'];
 
         
         return $rtn;
@@ -199,11 +199,11 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->_data['id'] === $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
-        $this->_data['id'] = $value;
+        $this->data['id'] = $value;
 
         $this->_setModified('id');
     }
@@ -218,11 +218,11 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Title', $value);
         $this->_validateString('Title', $value);
-        if ($this->_data['title'] === $value) {
+        if ($this->data['title'] === $value) {
             return;
         }
 
-        $this->_data['title'] = $value;
+        $this->data['title'] = $value;
 
         $this->_setModified('title');
     }
@@ -237,11 +237,11 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Reference', $value);
         $this->_validateString('Reference', $value);
-        if ($this->_data['reference'] === $value) {
+        if ($this->data['reference'] === $value) {
             return;
         }
 
-        $this->_data['reference'] = $value;
+        $this->data['reference'] = $value;
 
         $this->_setModified('reference');
     }
@@ -256,11 +256,11 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('GitKey', $value);
         $this->_validateString('GitKey', $value);
-        if ($this->_data['git_key'] === $value) {
+        if ($this->data['git_key'] === $value) {
             return;
         }
 
-        $this->_data['git_key'] = $value;
+        $this->data['git_key'] = $value;
 
         $this->_setModified('git_key');
     }
@@ -275,11 +275,11 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Type', $value);
         $this->_validateString('Type', $value);
-        if ($this->_data['type'] === $value) {
+        if ($this->data['type'] === $value) {
             return;
         }
 
-        $this->_data['type'] = $value;
+        $this->data['type'] = $value;
 
         $this->_setModified('type');
     }
@@ -293,11 +293,11 @@ class ProjectBase extends Model
     {
 
         $this->_validateString('Token', $value);
-        if ($this->_data['token'] === $value) {
+        if ($this->data['token'] === $value) {
             return;
         }
 
-        $this->_data['token'] = $value;
+        $this->data['token'] = $value;
 
         $this->_setModified('token');
     }

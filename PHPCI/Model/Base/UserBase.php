@@ -111,7 +111,7 @@ class UserBase extends Model
     */
     public function getId()
     {
-        $rtn    = $this->_data['id'];
+        $rtn    = $this->data['id'];
 
         
         return $rtn;
@@ -124,7 +124,7 @@ class UserBase extends Model
     */
     public function getEmail()
     {
-        $rtn    = $this->_data['email'];
+        $rtn    = $this->data['email'];
 
         
         return $rtn;
@@ -137,7 +137,7 @@ class UserBase extends Model
     */
     public function getHash()
     {
-        $rtn    = $this->_data['hash'];
+        $rtn    = $this->data['hash'];
 
         
         return $rtn;
@@ -150,7 +150,7 @@ class UserBase extends Model
     */
     public function getIsAdmin()
     {
-        $rtn    = $this->_data['is_admin'];
+        $rtn    = $this->data['is_admin'];
 
         
         return $rtn;
@@ -163,7 +163,7 @@ class UserBase extends Model
     */
     public function getName()
     {
-        $rtn    = $this->_data['name'];
+        $rtn    = $this->data['name'];
 
         
         return $rtn;
@@ -179,11 +179,11 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->_data['id'] === $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
-        $this->_data['id'] = $value;
+        $this->data['id'] = $value;
 
         $this->_setModified('id');
     }
@@ -198,11 +198,11 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Email', $value);
         $this->_validateString('Email', $value);
-        if ($this->_data['email'] === $value) {
+        if ($this->data['email'] === $value) {
             return;
         }
 
-        $this->_data['email'] = $value;
+        $this->data['email'] = $value;
 
         $this->_setModified('email');
     }
@@ -217,11 +217,11 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Hash', $value);
         $this->_validateString('Hash', $value);
-        if ($this->_data['hash'] === $value) {
+        if ($this->data['hash'] === $value) {
             return;
         }
 
-        $this->_data['hash'] = $value;
+        $this->data['hash'] = $value;
 
         $this->_setModified('hash');
     }
@@ -236,11 +236,11 @@ class UserBase extends Model
     {
         $this->_validateNotNull('IsAdmin', $value);
         $this->_validateInt('IsAdmin', $value);
-        if ($this->_data['is_admin'] === $value) {
+        if ($this->data['is_admin'] === $value) {
             return;
         }
 
-        $this->_data['is_admin'] = $value;
+        $this->data['is_admin'] = $value;
 
         $this->_setModified('is_admin');
     }
@@ -255,11 +255,11 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Name', $value);
         $this->_validateString('Name', $value);
-        if ($this->_data['name'] === $value) {
+        if ($this->data['name'] === $value) {
             return;
         }
 
-        $this->_data['name'] = $value;
+        $this->data['name'] = $value;
 
         $this->_setModified('name');
     }

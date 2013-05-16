@@ -35,7 +35,7 @@ class InstallCommand extends Command
     /**
     * Installs PHPCI - Can be run more than once as long as you ^C instead of entering an email address.
     */
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Gather initial data from the user:
         $dbHost = $this->ask('Enter your MySQL host: ');

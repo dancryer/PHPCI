@@ -15,8 +15,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
-use PHPCI\Builder,
-    PHPCI\BuildFactory;
+use PHPCI\Builder;
+use PHPCI\BuildFactory;
 
 /**
 * Run console command - Runs any pending builds.
@@ -40,14 +40,12 @@ class RunCommand extends Command
         $store  = Factory::getStore('Build');
         $result = $store->getByStatus(0);
 
-        foreach($result['items'] as $build)
-        {
+        foreach ($result['items'] as $build) {
             $build = BuildFactory::getBuild($build);
             
             if ($input->getOption('verbose')) {
                 $builder = new Builder($build, array($this, 'logCallback'));
-            }
-            else {
+            } else {
                 $builder = new Builder($build);
             }
             

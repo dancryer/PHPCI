@@ -42,7 +42,9 @@ class InstallCommand extends Command
         $ghId = $this->ask('(Optional) Github Application ID: ', true);
         $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
 
-        $cmd    = 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost . ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
+        $cmd    = 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost .
+                    ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
+
         shell_exec($cmd);
 
         $str = "<?php
@@ -59,9 +61,10 @@ b8\Database::setReadServers(array('{$dbHost}'));
 \$registry->set('install_url', '{$ciUrl}');
 ";
 
-        if(!empty($ghId) && !empty($ghSecret))
-        {
-            $str .= PHP_EOL . "\$registry->set('github_app', array('id' => '{$ghId}', 'secret' => '{$ghSecret}'));" . PHP_EOL;
+        if (!empty($ghId) && !empty($ghSecret)) {
+            $str .= PHP_EOL .
+                    "\$registry->set('github_app', array('id' => '{$ghId}', 'secret' => '{$ghSecret}'));" .
+                    PHP_EOL;
         }
 
 
@@ -76,8 +79,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
         $adminPass = $this->ask('Enter your desired admin password: ');
         $adminName = $this->ask('Enter your name: ');
 
-        try
-        {
+        try {
             $user = new \PHPCI\Model\User();
             $user->setEmail($adminEmail);
             $user->setName($adminName);
@@ -88,15 +90,13 @@ b8\Database::setReadServers(array('{$dbHost}'));
             $store->save($user);
 
             print 'User account created!' . PHP_EOL;
-        }
-        catch(\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             print 'There was a problem creating your account. :(' . PHP_EOL;
             print $ex->getMessage();
         }
     }
 
-    function ask($question, $emptyOk = false)
+    protected function ask($question, $emptyOk = false)
     {
         print $question . ' ';
 
@@ -107,8 +107,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
 
         $rtn = trim($rtn);
 
-        if(!$emptyOk && empty($rtn))
-        {
+        if (!$emptyOk && empty($rtn)) {
             $rtn = $this->ask($question, $emptyOk);
         }
 

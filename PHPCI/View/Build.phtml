@@ -64,104 +64,15 @@
 	</div>
 </div>
 
-<?php if($build->getStatus() == 0 || $build->getStatus() == 1 || true): ?>
-<script>
-setInterval(function()
-{
-	$.getJSON('/build/data/<?php print $build->getId(); ?>', updateBuildView);
-}, 10000);
-</script>
-<?php endif; ?>
-
 <script>
 	window.initial = <?php print $data; ?>;
 
-	function updateBuildView(data)
+	<?php if($build->getStatus() == 0 || $build->getStatus() == 1 || true): ?>
+	setInterval(function()
 	{
-		console.log(data);
-		$('#status').attr('class', 'alert');
-
-		var cls;
-		var msg;
-
-		switch(data.status)
-		{
-			case 0:
-				cls = 'alert-info';
-				msg = 'This build has not yet started.';
-			break;
-
-			case 1:
-				cls = 'alert-warning';
-				msg = 'This build is in progress.';
-			break;
-
-			case 2:
-				cls = 'alert-success';
-				msg = 'This build was successful!';
-			break;
-
-			case 3:
-				cls = 'alert-error';
-				msg = 'This build has failed.';
-			break;
-		}
-
-		$('#status').addClass(cls).text(msg);
-
-		if(data.created)
-		{
-			$('#created').text(data.created);
-		}
-		else
-		{
-			$('#created').text('Not created yet.');
-		}
-
-		if(data.started)
-		{
-			$('#started').text(data.started);
-		}
-		else
-		{
-			$('#started').text('Not started yet.');
-		}
-
-		if(data.finished)
-		{
-			$('#finished').text(data.finished);
-		}
-		else
-		{
-			$('#finished').text('Not finished yet.');
-		}
-
-		if(data.plugins)
-		{
-			$('#plugins').empty();
-
-			for(var plugin in data.plugins)
-			{
-				var row = $('<tr>').addClass(data.plugins[plugin] ? 'success' : 'error');
-				var name = $('<td>').html('<strong>' + plugin + '</strong>');
-				var status = $('<td>').text(data.plugins[plugin] ? 'OK' : 'Failed');
-
-				row.append(name);
-				row.append(status);
-				$('#plugins').append(row);
-			}
-		}
-		else
-		{
-			var row = $('<tr>');
-			var col = $('<td>').attr('colspan', 2).text('No plugins have run yet.');
-
-			row.append(col);
-			$('#plugins').empty().append(row);
-		}
-
-		$('#log').html(data.log);
-	}
+		$.getJSON('/build/data/<?php print $build->getId(); ?>', updateBuildView);
+	}, 10000);
+	<?php endif; ?>
 
 	$(document).ready(function()
 	{

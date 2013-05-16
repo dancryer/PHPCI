@@ -1,0 +1,42 @@
+body
+{
+	background: #246;
+	font-family: Roboto, Arial, Sans-Serif;
+	font-style: normal;
+	font-weight: 300;
+	padding-top: 70px;
+}
+
+#content
+{
+	background: #fff;
+	border: 10px solid #369;
+	padding: 10px;
+}
+
+.widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header, .ui-dialog .ui-dialog-titlebar {
+	background-color: #efefef;
+	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
+	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 ); /* IE6-9 */
+    border-bottom: 1px solid #CDCDCD;
+}
+
+#title
+{
+	background: #f8f8f8;
+	border-bottom: 1px solid #ccc;
+	margin: -10px -10px 15px -10px;
+	padding: 10px;
+}
+
+	#title h1
+	{
+		font-size: 2em;
+		margin: 0;
+		padding: 0;
+	}

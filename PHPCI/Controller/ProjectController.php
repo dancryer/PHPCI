@@ -126,6 +126,8 @@ class ProjectController extends b8\Controller
 				{
 					parse_str($resp['body'], $resp);
 					$_SESSION['github_token'] = $resp['access_token'];
+					header('Location: /project/add');
+					die;
 				}
 			}
 

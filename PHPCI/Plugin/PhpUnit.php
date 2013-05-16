@@ -7,6 +7,7 @@ class PhpUnit implements \PHPCI\Plugin
 	protected $directory;
 	protected $args;
 	protected $phpci;
+	protected $runFrom;
 
 /**
  * @var string $xmlConfigFile The path of an xml config for PHPUnit
@@ -18,6 +19,7 @@ class PhpUnit implements \PHPCI\Plugin
 		$this->phpci		= $phpci;
 		$this->directory	= isset($options['directory']) ? $options['directory'] : null;
 		$this->xmlConfigFile = isset($options['config']) ? $options['config'] : null;
+		$this->runFrom = isset($options['run_from']) ? $options['run_from'] : null;
 		$this->args			= isset($options['args']) ? $options['args'] : '';
 	}
 
@@ -48,7 +50,15 @@ class PhpUnit implements \PHPCI\Plugin
 		}
 		else
 		{
-			return  $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' -c ' . $this->phpci->buildPath . $configPath);
+			if ($this->runFrom) {
+				$curdir = getcwd();
+				chdir($this->phpci->buildPath.'/'.$this->runFrom);
+			}
+			$success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpunit ' . $this->args . ' -c ' . $this->phpci->buildPath . $configPath);
+			if ($this->runFrom) {
+				chdir($curdir);
+			}
+			return $success;
 		}
 	}
 

@@ -3,9 +3,9 @@
 /**
 * PHPCI - Continuous Integration for PHP
 *
-* @copyright	Copyright 2013, Block 8 Limited.
-* @license		https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link			http://www.phptesting.org/
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
 */
 
 define('PHPCI_BIN_DIR', dirname(__FILE__) . '/vendor/bin/');
@@ -13,17 +13,17 @@ define('PHPCI_DIR', dirname(__FILE__) . '/');
 
 // If this is the first time ./console has been run, we probably don't have Composer or any of our dependencies yet.
 // So we need to install and run Composer.
-if(!file_exists(PHPCI_DIR . 'vendor/autoload.php') || !file_exists(PHPCI_DIR . 'composer.phar')) {
-	print 'INSTALLING: Composer' . PHP_EOL;
+if (!file_exists(PHPCI_DIR . 'vendor/autoload.php') || !file_exists(PHPCI_DIR . 'composer.phar')) {
+    print 'INSTALLING: Composer' . PHP_EOL;
     file_put_contents(PHPCI_DIR . 'composerinstaller.php', file_get_contents('https://getcomposer.org/installer'));
     shell_exec('php ' . PHPCI_DIR . 'composerinstaller.php');
     unlink(PHPCI_DIR . 'composerinstaller.php');
 
     print 'RUNNING: Composer' . PHP_EOL;
     shell_exec('php '.PHPCI_DIR.'composer.phar install');
-} 
+}
 
-require('bootstrap.php');       
+require('bootstrap.php');
 
 use PHPCI\Command\RunCommand;
 use PHPCI\Command\GenerateCommand;

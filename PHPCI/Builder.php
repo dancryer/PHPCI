@@ -2,283 +2,344 @@
 /**
 * PHPCI - Continuous Integration for PHP
 *
-* @copyright	Copyright 2013, Block 8 Limited.
-* @license		https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link			http://www.phptesting.org/
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
 */
 
 namespace PHPCI;
+
 use PHPCI\Model\Build;
 use b8\Store;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * PHPCI Build Runner
-* @author	Dan Cryer <dan@block8.co.uk>
+* @author   Dan Cryer <dan@block8.co.uk>
 */
 class Builder
 {
-	public $buildPath;
-	public $ignore	= array();
+    /**
+    * @var string
+    */
+    public $buildPath;
 
-	protected $ciDir;
-	protected $directory;
-	protected $success	= true;
-	protected $log		= '';
-	protected $verbose	= false;
-	protected $plugins	= array();
-	protected $build;
-	protected $logCallback;
-	protected $config;
+    /**
+    * @var string[]
+    */
+    public $ignore  = array();
 
-	public function __construct(Build $build, $logCallback = null)
-	{
-		$this->build = $build;
-		$this->store = Store\Factory::getStore('Build');
+    /**
+    * @var string
+    */
+    protected $ciDir;
 
-		if(!is_null($logCallback) && is_callable($logCallback))
-		{
-			$this->logCallback = $logCallback;
-		}
-	}
+    /**
+    * @var string
+    */
+    protected $directory;
 
-	public function setConfigArray(array $config)
-	{
-		$this->config = $config;
-	}
+    /**
+    * @var bool
+    */
+    protected $success  = true;
 
-	public function getConfig($key)
-	{
-		return isset($this->config[$key]) ? $this->config[$key] : null;
-	}
+    /**
+    * @var string
+    */
+    protected $log      = '';
 
-	public function execute()
-	{
-		$this->build->setStatus(1);
-		$this->build->setStarted(new \DateTime());
-		$this->store->save($this->build);
-		$this->build->sendStatusPostback();
+    /**
+    * @var bool
+    */
+    protected $verbose  = false;
 
-		if($this->setupBuild())
-		{
-			$this->executePlugins('setup');
-			$this->executePlugins('test');
+    /**
+    * @var bool[]
+    */
+    protected $plugins  = array();
 
-			$this->log('');
+    /**
+    * @var \PHPCI\Model\Build
+    */
+    protected $build;
 
-			$this->executePlugins('complete');
+    /**
+    * @var callable
+    */
+    protected $logCallback;
 
-			if($this->success)
-			{
-				$this->executePlugins('success');
-				$this->logSuccess('BUILD SUCCESSFUL!');
-				$this->build->setStatus(2);
-			}
-			else
-			{
-				$this->executePlugins('failure');
-				$this->logFailure('BUILD FAILED!');
-				$this->build->setStatus(3);
-			}
+    /**
+    * @var array
+    */
+    protected $config;
 
-			$this->log('');
-		}
-		else
-		{
-			$this->build->setStatus(3);
-		}
+    /**
+    * Set up the builder.
+    * @param \PHPCI\Model\Build
+    * @param callable
+    */
+    public function __construct(Build $build, $logCallback = null)
+    {
+        $this->build = $build;
+        $this->store = Store\Factory::getStore('Build');
 
-		$this->removeBuild();
+        if (!is_null($logCallback) && is_callable($logCallback)) {
+            $this->logCallback = $logCallback;
+        }
+    }
 
-		$this->build->sendStatusPostback();
-		$this->build->setFinished(new \DateTime());
-		$this->build->setLog($this->log);
-		$this->build->setPlugins(json_encode($this->plugins));
-		$this->store->save($this->build);
-	}
+    /**
+    * Set the config array, as read from phpci.yml
+    * @param array
+    */
+    public function setConfigArray(array $config)
+    {
+        $this->config = $config;
+    }
 
-	public function executeCommand()
-	{
-		$command = call_user_func_array('sprintf', func_get_args());
-		
-		$this->log('Executing: ' . $command, '	');
+    /**
+    * Access a variable from the phpci.yml file.
+    * @param string
+    */
+    public function getConfig($key)
+    {
+        return isset($this->config[$key]) ? $this->config[$key] : null;
+    }
 
-		$output	= '';
-		$status	= 0;
-		exec($command, $output, $status);
+    /**
+    * Run the active build.
+    */
+    public function execute()
+    {
+        // Update the build in the database, ping any external services.
+        $this->build->setStatus(1);
+        $this->build->setStarted(new \DateTime());
+        $this->store->save($this->build);
+        $this->build->sendStatusPostback();
 
-		if(!empty($output) && ($this->verbose || $status != 0))
-		{
-			$this->log($output, '		');
-		}
+        try {
+            if ($this->setupBuild()) {
+                // Run setup steps:
+                $this->executePlugins('setup');
 
-		return ($status == 0) ? true : false;
-	}
+                // Run the any tests:
+                $this->executePlugins('test');
+                $this->log('');
 
-	public function log($message, $prefix = '')
-	{
+                // Run build complete steps:
+                $this->executePlugins('complete');
 
-		if(is_array($message))
-		{
-			
-			foreach ($message as $item)
-			{
-				if(is_callable($this->logCallback))
-				{
-					$this->logCallback($prefix . $item);
-				}
-				
-				$this->log .= $prefix . $item . PHP_EOL;
-			}
-			
-		}
-		else
-		{
-			$message = $prefix . $message;
+                // Run success or failure plugins:
+                if ($this->success) {
+                    $this->executePlugins('success');
+                    $this->logSuccess('BUILD SUCCESSFUL!');
+                    $this->build->setStatus(2);
+                } else {
+                    $this->executePlugins('failure');
+                    $this->logFailure('BUILD FAILED!');
+                    $this->build->setStatus(3);
+                }
 
-			$this->log .= $message . PHP_EOL;
+                $this->log('');
+            } else {
+                $this->build->setStatus(3);
+            }
+        } catch (\Exception $ex) {
+            $this->logFailure($ex->getMessage());
+            $this->build->setStatus(3);
+        }
+        
+        // Clean up:
+        $this->removeBuild();
 
-			if(isset($this->logCallback) && is_callable($this->logCallback))
-			{
-				$cb = $this->logCallback;
-				$cb($message);
-			}
-		}
+        // Update the build in the database, ping any external services, etc.
+        $this->build->sendStatusPostback();
+        $this->build->setFinished(new \DateTime());
+        $this->build->setLog($this->log);
+        $this->build->setPlugins(json_encode($this->plugins));
+        $this->store->save($this->build);
+    }
 
-		$this->build->setLog($this->log);
-		$this->build->setPlugins(json_encode($this->plugins));
-		$this->store->save($this->build);
-	}
+    /**
+    * Used by this class, and plugins, to execute shell commands. 
+    */
+    public function executeCommand()
+    {
+        $command = call_user_func_array('sprintf', func_get_args());
+        
+        $this->log('Executing: ' . $command, '  ');
 
-	public function logSuccess($message)
-	{
-		$this->log("\033[0;32m" . $message . "\033[0m");
-	}
+        $output = '';
+        $status = 0;
+        exec($command, $output, $status);
 
-	public function logFailure($message)
-	{
-		$this->log("\033[0;31m" . $message . "\033[0m");
-	}
+        if (!empty($output) && ($this->verbose || $status != 0)) {
+            $this->log($output, '       ');
+        }
 
-	protected function setupBuild()
-	{
-		$commitId			= $this->build->getCommitId();
-		$buildId			= 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
-		$this->ciDir		= realpath(dirname(__FILE__) . '/../') . '/';
-		$this->buildPath	= $this->ciDir . 'build/' . $buildId . '/';
+        return ($status == 0) ? true : false;
+    }
 
-		// Create a working copy of the project:
-		if(!$this->build->createWorkingCopy($this, $this->buildPath)) {
-			return false;
-		}
+    /**
+    * Add an entry to the build log. 
+    * @param string|string[]
+    * @param string
+    */
+    public function log($message, $prefix = '')
+    {
+        if (is_array($message)) {
+            foreach ($message as $item) {
+                if (is_callable($this->logCallback)) {
+                    call_user_func_array($this->logCallback, $prefix . $item);
+                }
+                
+                $this->log .= $prefix . $item . PHP_EOL;
+            }
+        } else {
+            $message = $prefix . $message;
+            $this->log .= $message . PHP_EOL;
 
-		// Does the project's phpci.yml request verbose mode?
-		if(!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose']) {
-			$this->verbose = false;
-		}
-		else {
-			$this->verbose = true;
-		}
+            if (isset($this->logCallback) && is_callable($this->logCallback)) {
+                call_user_func_array($this->logCallback, $prefix . $item);
+            }
+        }
 
-		// Does the project have any paths it wants plugins to ignore?
-		if(isset($this->config['build_settings']['ignore'])) {
-			$this->ignore = $this->config['build_settings']['ignore'];
-		}
+        $this->build->setLog($this->log);
+        $this->build->setPlugins(json_encode($this->plugins));
+        $this->store->save($this->build);
+    }
 
-		$this->logSuccess('Working copy created: ' . $this->buildPath);
-		return true;
-	}
+    /**
+    * Add a success-coloured message to the log. 
+    * @param string
+    */
+    public function logSuccess($message)
+    {
+        $this->log("\033[0;32m" . $message . "\033[0m");
+    }
 
-	protected function removeBuild()
-	{
-		$this->log('Removing build.');
-		shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
-	}
+    /**
+    * Add a failure-coloured message to the log. 
+    * @param string
+    */
+    public function logFailure($message)
+    {
+        $this->log("\033[0;31m" . $message . "\033[0m");
+    }
 
-	protected function executePlugins($stage)
-	{
-		// Ignore any stages for which we don't have plugins set:
-		if(!array_key_exists($stage, $this->config) || !is_array($this->config[$stage]))
-		{
-			return;
-		}
+    /**
+    * Set up a working copy of the project for building.
+    */
+    protected function setupBuild()
+    {
+        $commitId           = $this->build->getCommitId();
+        $buildId            = 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
+        $this->ciDir        = realpath(dirname(__FILE__) . '/../') . '/';
+        $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
 
-		foreach($this->config[$stage] as $plugin => $options)
-		{
-			$this->log('');
-			$this->log('RUNNING PLUGIN: ' . $plugin);
+        // Create a working copy of the project:
+        if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
+            return false;
+        }
 
-			// Is this plugin allowed to fail?
-			if($stage == 'test' && !isset($options['allow_failures']))
-			{
-				$options['allow_failures'] = false;
-			}
+        // Does the project's phpci.yml request verbose mode?
+        if (!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose']) {
+            $this->verbose = false;
+        } else {
+            $this->verbose = true;
+        }
 
-			$class = str_replace('_', ' ', $plugin);
-			$class = ucwords($class);
-			$class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
+        // Does the project have any paths it wants plugins to ignore?
+        if (isset($this->config['build_settings']['ignore'])) {
+            $this->ignore = $this->config['build_settings']['ignore'];
+        }
 
-			if(!class_exists($class))
-			{
-				$this->logFailure('Plugin does not exist: ' . $plugin);
+        $this->logSuccess('Working copy created: ' . $this->buildPath);
+        return true;
+    }
 
-				if($stage == 'test')
-				{
-					$this->plugins[$plugin] = false;
+    /**
+    * Execute a the appropriate set of plugins for a given build stage.
+    */
+    protected function executePlugins($stage)
+    {
+        // Ignore any stages for which we don't have plugins set:
+        if (!array_key_exists($stage, $this->config) || !is_array($this->config[$stage])) {
+            return;
+        }
 
-					if(!$options['allow_failures'])
-					{
-						$this->success = false;
-					}
-				}
+        foreach ($this->config[$stage] as $plugin => $options) {
+            $this->log('');
+            $this->log('RUNNING PLUGIN: ' . $plugin);
 
-				continue;
-			}
+            // Is this plugin allowed to fail?
+            if ($stage == 'test' && !isset($options['allow_failures'])) {
+                $options['allow_failures'] = false;
+            }
 
-			try
-			{
-				$obj = new $class($this, $options);
+            $class = str_replace('_', ' ', $plugin);
+            $class = ucwords($class);
+            $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
 
-				if(!$obj->execute())
-				{
-					if($stage == 'test')
-					{
-						$this->plugins[$plugin] = false;
+            if (!class_exists($class)) {
+                $this->logFailure('Plugin does not exist: ' . $plugin);
 
-						if(!$options['allow_failures'])
-						{
-							$this->success = false;
-						}
-					}
+                if ($stage == 'test') {
+                    $this->plugins[$plugin] = false;
 
-					$this->logFailure('PLUGIN STATUS: FAILED');
-					continue;
-				}
-			}
-			catch(\Exception $ex)
-			{
-				$this->logFailure('EXCEPTION: ' . $ex->getMessage());
+                    if (!$options['allow_failures']) {
+                        $this->success = false;
+                    }
+                }
 
-				if($stage == 'test')
-				{
-					$this->plugins[$plugin] = false;
+                continue;
+            }
 
-					if(!$options['allow_failures'])
-					{
-						$this->success = false;
-					}
-				}
+            try {
+                $obj = new $class($this, $options);
 
-				$this->logFailure('PLUGIN STATUS: FAILED');
-				continue;
-			}
+                if (!$obj->execute()) {
+                    if ($stage == 'test') {
+                        $this->plugins[$plugin] = false;
 
-			if($stage == 'test')
-			{
-				$this->plugins[$plugin] = true;
-			}
+                        if (!$options['allow_failures']) {
+                            $this->success = false;
+                        }
+                    }
 
-			$this->logSuccess('PLUGIN STATUS: SUCCESS!');
-		}
-	}
+                    $this->logFailure('PLUGIN STATUS: FAILED');
+                    continue;
+                }
+            } catch (\Exception $ex) {
+                $this->logFailure('EXCEPTION: ' . $ex->getMessage());
+
+                if ($stage == 'test') {
+                    $this->plugins[$plugin] = false;
+
+                    if (!$options['allow_failures']) {
+                        $this->success = false;
+                    }
+                }
+
+                $this->logFailure('PLUGIN STATUS: FAILED');
+                continue;
+            }
+
+            if ($stage == 'test') {
+                $this->plugins[$plugin] = true;
+            }
+
+            $this->logSuccess('PLUGIN STATUS: SUCCESS!');
+        }
+    }
+
+    /**
+    * Clean up our working copy.
+    */
+    protected function removeBuild()
+    {
+        $this->log('Removing build.');
+        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
+    }
 }

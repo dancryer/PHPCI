@@ -58,13 +58,13 @@ class ProjectController extends b8\Controller
         header('Location: /build/view/' . $build->getId());
     }
 
-    public function delete($id)
+    public function delete($projectId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $project    = $this->_projectStore->getById($id);
+        $project    = $this->_projectStore->getById($projectId);
         $this->_projectStore->delete($project);
 
         header('Location: /');
@@ -109,16 +109,16 @@ class ProjectController extends b8\Controller
                 $tempPath = getenv("SystemRoot") . '/TEMP/';
             }
 
-            $id = $tempPath . md5(microtime(true));
+            $keyFile = $tempPath . md5(microtime(true));
 
             if (!is_dir($tempPath)) {
                 mkdir($tempPath);
             }
 
-            shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$id.' -N "" -C "deploy@phpci"');
+            shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
 
-            $pub = file_get_contents($id . '.pub');
-            $prv = file_get_contents($id);
+            $pub = file_get_contents($keyFile . '.pub');
+            $prv = file_get_contents($keyFile);
 
             $values = array('key' => $prv, 'pubkey' => $pub, 'token' => $_SESSION['github_token']);
         }
@@ -126,22 +126,7 @@ class ProjectController extends b8\Controller
         $form   = $this->projectForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $gh     = \b8\Registry::getInstance()->get('github_app');
-            $code   = $this->getParam('code', null);
-
-            if (!is_null($code)) {
-                $http = new \b8\HttpClient();
-                $url  = 'https://github.com/login/oauth/access_token';
-                $params = array('client_id' => $gh['id'], 'client_secret' => $gh['secret'], 'code' => $code);
-                $resp = $http->post($url, $params);
-                
-                if ($resp['success']) {
-                    parse_str($resp['body'], $resp);
-                    $_SESSION['github_token'] = $resp['access_token'];
-                    header('Location: /project/add');
-                    die;
-                }
-            }
+            $this->handleGithubResponse();
 
             $view           = new b8\View('ProjectForm');
             $view->type     = 'add';
@@ -165,14 +150,34 @@ class ProjectController extends b8\Controller
         die;
     }
 
-    public function edit($id)
+    protected function handleGithubResponse()
+    {
+        $github     = \b8\Registry::getInstance()->get('github_app');
+        $code   = $this->getParam('code', null);
+
+        if (!is_null($code)) {
+            $http = new \b8\HttpClient();
+            $url  = 'https://github.com/login/oauth/access_token';
+            $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
+            $resp = $http->post($url, $params);
+            
+            if ($resp['success']) {
+                parse_str($resp['body'], $resp);
+                $_SESSION['github_token'] = $resp['access_token'];
+                header('Location: /project/add');
+                die;
+            }
+        }
+    }
+
+    public function edit($projectId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
         
         $method     = Registry::getInstance()->get('requestMethod');
-        $project    = $this->_projectStore->getById($id);
+        $project    = $this->_projectStore->getById($projectId);
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -181,7 +186,7 @@ class ProjectController extends b8\Controller
             $values['key']  = $values['git_key'];
         }
 
-        $form   = $this->projectForm($values, 'edit/' . $id);
+        $form   = $this->projectForm($values, 'edit/' . $projectId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('ProjectForm');

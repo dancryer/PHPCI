@@ -74,14 +74,14 @@ class UserController extends b8\Controller
         die;
     }
 
-    public function edit($id)
+    public function edit($userId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
         $method     = Registry::getInstance()->get('requestMethod');
-        $user   = $this->_userStore->getById($id);
+        $user   = $this->_userStore->getById($userId);
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -90,7 +90,7 @@ class UserController extends b8\Controller
             $values['admin']    = $values['is_admin'];
         }
 
-        $form   = $this->userForm($values, 'edit/' . $id);
+        $form   = $this->userForm($values, 'edit/' . $userId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('UserForm');
@@ -155,13 +155,13 @@ class UserController extends b8\Controller
         return $form;
     }
 
-    public function delete($id)
+    public function delete($userId)
     {
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
         
-        $user   = $this->_userStore->getById($id);
+        $user   = $this->_userStore->getById($userId);
         $this->_userStore->delete($user);
 
         header('Location: /user');

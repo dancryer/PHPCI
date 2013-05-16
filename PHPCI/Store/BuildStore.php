@@ -9,8 +9,6 @@
 
 namespace PHPCI\Store;
 
-require_once(APPLICATION_PATH . 'PHPCI/Store/Base/BuildStoreBase.php');
-
 use PHPCI\Store\Base\BuildStoreBase;
 
 /**
@@ -21,5 +19,5 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
-	// This class has been left blank so that you can modify it - changes in this file will not be overwritten.
+    // This class has been left blank so that you can modify it - changes in this file will not be overwritten.
 }

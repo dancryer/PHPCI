@@ -5,6 +5,7 @@
  */
 
 namespace PHPCI\Store\Base;
+
 use b8\Store;
 
 /**
@@ -12,36 +13,33 @@ use b8\Store;
  */
 class ProjectStoreBase extends Store
 {
-	protected $_tableName   = 'project';
-	protected $_modelName   = '\PHPCI\Model\Project';
-	protected $_primaryKey  = 'id';
+    protected $tableName   = 'project';
+    protected $modelName   = '\PHPCI\Model\Project';
+    protected $primaryKey  = 'id';
 
-	public function getByPrimaryKey($value, $useConnection = 'read')
-	{
-		return $this->getById($value, $useConnection);
-	}
+    public function getByPrimaryKey($value, $useConnection = 'read')
+    {
+        return $this->getById($value, $useConnection);
+    }
 
 
 
-	public function getById($value, $useConnection = 'read')
-	{
-		if(is_null($value))
-		{
-			throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-		}
+    public function getById($value, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
 
-		$stmt = \b8\Database::getConnection($useConnection)->prepare('SELECT * FROM project WHERE id = :id LIMIT 1');
-		$stmt->bindValue(':id', $value);
+        $query = 'SELECT * FROM project WHERE id = :id LIMIT 1';
+        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':id', $value);
 
-		if($stmt->execute())
-		{
-			if($data = $stmt->fetch(\PDO::FETCH_ASSOC))
-			{
-				return new \PHPCI\Model\Project($data);
-			}
-		}
+        if ($stmt->execute()) {
+            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                return new \PHPCI\Model\Project($data);
+            }
+        }
 
-		return null;
-	}
-
+        return null;
+    }
 }

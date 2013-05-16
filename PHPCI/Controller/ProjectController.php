@@ -78,8 +78,9 @@ class ProjectController extends b8\Controller
 
     protected function getLatestBuildsHtml($projectId, $start = 0)
     {
-        $criteria       = array('project_id' => $projectId), 10, $start, array(), array('id' => 'DESC');
-        $builds         = $this->_buildStore->getWhere($criteria);
+        $criteria       = array('project_id' => $projectId);
+        $order          = array('id' => 'DESC');
+        $builds         = $this->_buildStore->getWhere($criteria, 10, $start, array(), $order);
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 
@@ -131,7 +132,7 @@ class ProjectController extends b8\Controller
             if (!is_null($code)) {
                 $http = new \b8\HttpClient();
                 $url  = 'https://github.com/login/oauth/access_token';
-                $params = array('client_id' => $gh['id'], 'client_secret' => $gh['secret'], 'code' => $code)
+                $params = array('client_id' => $gh['id'], 'client_secret' => $gh['secret'], 'code' => $code);
                 $resp = $http->post($url, $params);
                 
                 if ($resp['success']) {

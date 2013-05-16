@@ -5,6 +5,7 @@
  */
 
 namespace PHPCI\Store\Base;
+
 use b8\Store;
 
 /**
@@ -12,130 +13,115 @@ use b8\Store;
  */
 class BuildStoreBase extends Store
 {
-	protected $_tableName   = 'build';
-	protected $_modelName   = '\PHPCI\Model\Build';
-	protected $_primaryKey  = 'id';
+    protected $tableName   = 'build';
+    protected $modelName   = '\PHPCI\Model\Build';
+    protected $primaryKey  = 'id';
 
-	public function getByPrimaryKey($value, $useConnection = 'read')
-	{
-		return $this->getById($value, $useConnection);
-	}
+    public function getByPrimaryKey($value, $useConnection = 'read')
+    {
+        return $this->getById($value, $useConnection);
+    }
 
 
 
-	public function getById($value, $useConnection = 'read')
-	{
-		if(is_null($value))
-		{
-			throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-		}
+    public function getById($value, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
 
-		$stmt = \b8\Database::getConnection($useConnection)->prepare('SELECT * FROM build WHERE id = :id LIMIT 1');
-		$stmt->bindValue(':id', $value);
+        $query = 'SELECT * FROM build WHERE id = :id LIMIT 1';
+        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':id', $value);
 
-		if($stmt->execute())
-		{
-			if($data = $stmt->fetch(\PDO::FETCH_ASSOC))
-			{
-				return new \PHPCI\Model\Build($data);
-			}
-		}
+        if ($stmt->execute()) {
+            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                return new \PHPCI\Model\Build($data);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public function getByProjectId($value, $limit = null, $useConnection = 'read')
-	{
-		if(is_null($value))
-		{
-			throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-		}
+    public function getByProjectId($value, $limit = null, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
 
-		$add = '';
+        $add = '';
 
-		if($limit)
-		{
-			$add .= ' LIMIT ' . $limit;
-		}
+        if ($limit) {
+            $add .= ' LIMIT ' . $limit;
+        }
 
-		$stmt = \b8\Database::getConnection($useConnection)->prepare('SELECT COUNT(*) AS cnt FROM build WHERE project_id = :project_id' . $add);
-		$stmt->bindValue(':project_id', $value);
+        $query = 'SELECT COUNT(*) AS cnt FROM build WHERE project_id = :project_id' . $add;
+        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':project_id', $value);
 
-		if($stmt->execute())
-		{
-			$res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$count  = (int)$res['cnt'];
-		}
-		else
-		{
-			$count = 0;
-		}
+        if ($stmt->execute()) {
+            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $count  = (int)$res['cnt'];
+        } else {
+            $count = 0;
+        }
 
-		$stmt = \b8\Database::getConnection('read')->prepare('SELECT * FROM build WHERE project_id = :project_id' . $add);
-		$stmt->bindValue(':project_id', $value);
+        $query = 'SELECT * FROM build WHERE project_id = :project_id' . $add;
+        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':project_id', $value);
 
-		if($stmt->execute())
-		{
-			$res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-			$rtn = array_map(function($item)
-			{
-				return new \PHPCI\Model\Build($item);
-			}, $res);
+            $map = function ($item) {
+                return new \PHPCI\Model\Build($item);
+            };
+            $rtn = array_map($map, $res);
 
-			return array('items' => $rtn, 'count' => $count);
-		}
-		else
-		{
-			return array('items' => array(), 'count' => 0);
-		}
-	}
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
+    }
 
-	public function getByStatus($value, $limit = null, $useConnection = 'read')
-	{
-		if(is_null($value))
-		{
-			throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-		}
+    public function getByStatus($value, $limit = null, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
 
-		$add = '';
+        $add = '';
 
-		if($limit)
-		{
-			$add .= ' LIMIT ' . $limit;
-		}
+        if ($limit) {
+            $add .= ' LIMIT ' . $limit;
+        }
 
-		$stmt = \b8\Database::getConnection($useConnection)->prepare('SELECT COUNT(*) AS cnt FROM build WHERE status = :status' . $add);
-		$stmt->bindValue(':status', $value);
+        $query = 'SELECT COUNT(*) AS cnt FROM build WHERE status = :status' . $add;
+        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':status', $value);
 
-		if($stmt->execute())
-		{
-			$res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$count  = (int)$res['cnt'];
-		}
-		else
-		{
-			$count = 0;
-		}
+        if ($stmt->execute()) {
+            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $count  = (int)$res['cnt'];
+        } else {
+            $count = 0;
+        }
 
-		$stmt = \b8\Database::getConnection('read')->prepare('SELECT * FROM build WHERE status = :status' . $add);
-		$stmt->bindValue(':status', $value);
+        $query = 'SELECT * FROM build WHERE status = :status' . $add;
+        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':status', $value);
 
-		if($stmt->execute())
-		{
-			$res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-			$rtn = array_map(function($item)
-			{
-				return new \PHPCI\Model\Build($item);
-			}, $res);
+            $map = function ($item) {
+                return new \PHPCI\Model\Build($item);
+            };
+            $rtn = array_map($map, $res);
 
-			return array('items' => $rtn, 'count' => $count);
-		}
-		else
-		{
-			return array('items' => array(), 'count' => 0);
-		}
-	}
-
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
+    }
 }

@@ -1,0 +1,80 @@
+<?php
+/**
+* PHPCI - Continuous Integration for PHP
+*
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
+*/
+
+namespace PHPCI\Plugin;
+
+/**
+* Composer Plugin - Provides access to Composer functionality.
+* @author       Dan Cryer <dan@block8.co.uk>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
+class PackageBuild implements \PHPCI\Plugin
+{
+    protected $directory;
+    protected $filename;
+    protected $format;
+    protected $phpci;
+
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    {
+        $path               = $phpci->buildPath;
+        $this->phpci        = $phpci;
+        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
+        $this->format       = isset($options['format']) ?  $options['format'] : 'zip';
+    }
+
+    /**
+    * Executes Composer and runs a specified command (e.g. install / update)
+    */
+    public function execute()
+    {
+        $path = $this->phpci->buildPath;
+        $build = $this->phpci->getBuild();
+
+        if ($this->directory == $path) {
+            return false;
+        }
+
+        $filename = str_replace('%build.commit%', $build->getCommitId(), $this->filename);
+        $filename = str_replace('%build.id%', $build->getId(), $filename);
+        $filename = str_replace('%build.branch%', $build->getBranch(), $filename);
+        $filename = str_replace('%project.title%', $build->getProject()->getTitle(), $filename);
+        $filename = str_replace('%date%', date('Y-m-d'), $filename);
+        $filename = str_replace('%time%', date('Hi'), $filename);
+        $filename = preg_replace('/([^a-zA-Z0-9_-]+)/', '', $filename);
+
+        $curdir = getcwd();
+        chdir($this->phpci->buildPath);
+
+        if (!is_array($this->format)) {
+            $this->format = array($this->format);
+        }
+
+        foreach ($this->format as $format) {
+            switch($format)
+            {
+                case 'tar':
+                    $cmd = 'tar cfz "%s/%s.tar.gz" ./*';
+                    break;
+                default:
+                case 'zip':
+                    $cmd = 'zip -rq "%s/%s.zip" ./*';
+                    break;
+            }
+
+            $success = $this->phpci->executeCommand($cmd, $this->directory, $filename);
+        }
+
+        chdir($curdir);
+
+        return $success;
+    }
+}

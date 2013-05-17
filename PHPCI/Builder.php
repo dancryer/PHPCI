@@ -108,6 +108,15 @@ class Builder
     }
 
     /**
+    * Access the build.
+    * @param Build
+    */
+    public function getBuild()
+    {
+        return $this->build;
+    }
+
+    /**
     * Run the active build.
     */
     public function execute()

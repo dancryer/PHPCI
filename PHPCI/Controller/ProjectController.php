@@ -112,6 +112,7 @@ class ProjectController extends b8\Controller
         }
 
         $method = Registry::getInstance()->get('requestMethod');
+        $this->handleGithubResponse();
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -144,8 +145,6 @@ class ProjectController extends b8\Controller
         $form   = $this->projectForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $this->handleGithubResponse();
-
             $view           = new b8\View('ProjectForm');
             $view->type     = 'add';
             $view->project  = null;

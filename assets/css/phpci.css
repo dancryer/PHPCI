@@ -40,3 +40,23 @@ body
 		margin: 0;
 		padding: 0;
 	}
+
+.icon-build-ok
+{
+	background: url('/assets/img/icon-build-ok.png') no-repeat top left;
+}
+
+.icon-build-failed
+{
+	background: url('/assets/img/icon-build-failed.png') no-repeat top left;
+}
+
+.icon-build-pending
+{
+	background: url('/assets/img/icon-build-pending.png') no-repeat top left;
+}
+
+.icon-build-running
+{
+	background: url('/assets/img/icon-build-running.png') no-repeat top left;
+}

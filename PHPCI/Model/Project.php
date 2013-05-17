@@ -10,6 +10,8 @@
 namespace PHPCI\Model;
 
 use PHPCI\Model\Base\ProjectBase;
+use PHPCI\Model\Build;
+use b8\Store;
 
 /**
 * Project Model
@@ -20,4 +22,25 @@ use PHPCI\Model\Base\ProjectBase;
 */
 class Project extends ProjectBase
 {
+    public function getLatestBuild($branch = 'master', $status = null)
+    {
+        $criteria       = array('branch' => $branch, 'project_id' => $this->getId());
+
+        if (isset($status)) {
+            $criteria['status'] = $status;
+        }
+
+        $order          = array('id' => 'DESC');
+        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, $start, array(), $order);
+
+        if (is_array($builds['items']) && count($builds['items'])) {
+            $latest = array_shift($builds['items']);
+
+            if (isset($latest) && $latest instanceof Build) {
+                return $latest;
+            }
+        }
+
+        return null;
+    }
 }

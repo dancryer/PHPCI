@@ -27,9 +27,9 @@ class Application extends b8\Application
 
         // Validate the user's session unless it is a login/logout action or a web hook:
         $sessionAction = ($controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
-        $webhookAction = in_array($controllerName, array('Bitbucket', 'Github'));
+        $externalAction = in_array($controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
 
-        if (!$webhookAction && !$sessionAction) {
+        if (!$externalAction && !$sessionAction) {
             $this->validateSession();
         }
 

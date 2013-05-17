@@ -35,7 +35,6 @@ class BuildController extends b8\Controller
         $view           = new b8\View('Build');
         $view->build    = $build;
         $view->data     = $this->getBuildData($buildId);
-        $view->plugins  = $build->getPlugins();
 
         return $view->render();
     }

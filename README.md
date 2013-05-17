@@ -5,6 +5,10 @@ PHPCI is a free and open source continuous integration tool specifically designe
 
 _**Please be aware that this is a brand new project, in an alpha state, so there will be bugs and missing features.**_
 
+**Current Build Status**
+
+![Build Status](http://phpci.block8.net/build-status/image/2)
+
 ##What it does:
 * Clones your project from Github, Bitbucket or a local path (support for standard remote Git repositories coming soon.)
 * Allows you to set up and tear down test databases.

@@ -32,7 +32,6 @@ class BuildController extends b8\Controller
     public function view($buildId)
     {
         $build          = $this->_buildStore->getById($buildId);
-
         $view           = new b8\View('Build');
         $view->build    = $build;
         $view->data     = $this->getBuildData($buildId);
@@ -62,6 +61,7 @@ class BuildController extends b8\Controller
         $data['created']    = !is_null($build->getCreated()) ? $build->getCreated()->format('Y-m-d H:i:s') : null;
         $data['started']    = !is_null($build->getStarted()) ? $build->getStarted()->format('Y-m-d H:i:s') : null;
         $data['finished']   = !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : null;
+        $data['plugins']    = $build->getPlugins();
 
         return json_encode($data);
     }

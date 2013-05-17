@@ -39,7 +39,7 @@ class CopyBuild implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd = 'mkdir -p "%s" && cp -Rf "%s" "%s/"';
+        $cmd = 'mkdir -p "%s" && cp -Rf "%s"* "%s/"';
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         if ($this->ignore) {

@@ -22,7 +22,8 @@
 </div>
 
 <script>
-window.return_url = <?php print json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>
+window.return_url = <?php print json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>;
+
 <?php
 $gh = \b8\Registry::getInstance()->get('github_app', null);
 

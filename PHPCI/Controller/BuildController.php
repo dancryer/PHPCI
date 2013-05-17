@@ -81,7 +81,7 @@ class BuildController extends b8\Controller
 
         $build = $this->_buildStore->save($build);
 
-        header('Location: /build/view/' . $build->getId());
+        header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
     }
 
     /**
@@ -96,7 +96,7 @@ class BuildController extends b8\Controller
         $build  = $this->_buildStore->getById($buildId);
         $this->_buildStore->delete($build);
 
-        header('Location: /project/view/' . $build->getProjectId());
+        header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
     }
 
     /**

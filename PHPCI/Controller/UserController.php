@@ -76,7 +76,7 @@ class UserController extends b8\Controller
 
         $user = $this->_userStore->save($user);
 
-        header('Location: /user');
+        header('Location: '.PHPCI_URL.'user');
         die;
     }
 
@@ -120,7 +120,7 @@ class UserController extends b8\Controller
         $user->setValues($values);
         $user = $this->_userStore->save($user);
 
-        header('Location: /user');
+        header('Location: '.PHPCI_URL.'user');
         die;
     }
 
@@ -179,7 +179,7 @@ class UserController extends b8\Controller
         $user   = $this->_userStore->getById($userId);
         $this->_userStore->delete($user);
 
-        header('Location: /user');
+        header('Location: '.PHPCI_URL.'user');
         die;
     }
 }

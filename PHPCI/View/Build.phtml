@@ -7,13 +7,13 @@
 	<div class="span3">
 		<div class="well" style="padding: 8px 0">
 		<ul class="nav nav-list">
-			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="/project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print $build->getProject()->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print $build->getProject()->getTitle(); ?></a></li>
 			<li class="divider"></li>
 			<li class="nav-header">Options</li>
-			<li><a href="/build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
+			<li><a href="<?= PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="javascript:confirmDelete('/build/delete/<?php print $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
+			<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -69,7 +69,7 @@
 	<?php if($build->getStatus() == 0 || $build->getStatus() == 1 || true): ?>
 	setInterval(function()
 	{
-		$.getJSON('/build/data/<?php print $build->getId(); ?>', updateBuildView);
+		$.getJSON('<?= PHPCI_URL ?>build/data/<?php print $build->getId(); ?>', updateBuildView);
 	}, 10000);
 	<?php endif; ?>
 

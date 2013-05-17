@@ -38,6 +38,11 @@ require_once(APPLICATION_PATH . 'vendor/autoload.php');
 // Load configuration if present:
 if (file_exists(APPLICATION_PATH . 'config.php')) {
     require(APPLICATION_PATH . 'config.php');
+
+    // Define our PHPCI_URL, if not already defined:
+    if (!defined('PHPCI_URL')) {
+        define('PHPCI_URL', $registry->get('install_url', '') . '/');
+    }
 }
 
 // Set up the registry:

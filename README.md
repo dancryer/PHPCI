@@ -47,9 +47,10 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 **Apache Example**:
 
     RewriteEngine On
+    RewriteBase /path-to-phpci
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . index.php [L]
+    RewriteRule (.*)? index.php [L,E=PATH_INFO:/$1]
     
 **Nginx Example**: 
 

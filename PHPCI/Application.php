@@ -18,6 +18,15 @@ use b8\Registry;
 */
 class Application extends b8\Application
 {
+    public function __construct()
+    {
+        if (isset($_SERVER['REDIRECT_PATH_INFO'])) {
+            $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_PATH_INFO'];
+        }
+
+        return parent::__construct();
+    }
+
     /**
     * Handle an incoming web request.
     */

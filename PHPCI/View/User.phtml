@@ -6,10 +6,10 @@
 	<div class="span3">
 		<div class="well" style="padding: 8px 0">
 		<ul class="nav nav-list">
-			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="/user"><i class="icon-user"></i> Users</a></li>
+			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="<?= PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="/user/add"><i class="icon-plus-sign"></i> Add User</a></li>
+			<li><a href="<?= PHPCI_URL ?>user/add"><i class="icon-plus-sign"></i> Add User</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -41,18 +41,18 @@
 				}
 				?>
 				<tr class="<?php print $cls; ?>">
-					<td><a href="/user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
+					<td><a href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
 					<td><?php print $user->getName(); ?></td>
 					<td><?php print $status; ?></td>
 					<td>
 						<?php if($this->User()->getIsAdmin()): ?>
 						<div class="btn-group">
-							<a class="btn" href="/user/edit/<?php print $user->getId(); ?>">Edit</a>
+							<a class="btn" href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>">Edit</a>
 							<button class="btn dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="javascript:confirmDelete('/user/delete/<?php print $user->getId(); ?>');">Delete User</a></li>
+								<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>');">Delete User</a></li>
 							</ul>
 						</div>
 						<?php endif; ?>

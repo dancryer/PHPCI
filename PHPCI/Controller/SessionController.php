@@ -34,7 +34,7 @@ class SessionController extends b8\Controller
 
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['user_id']    = $user->getId();
-                header('Location: /');
+                header('Location: ' . PHPCI_URL);
                 die;
             }
         }
@@ -72,7 +72,7 @@ class SessionController extends b8\Controller
     {
         $_SESSION = array();
         session_destroy();
-        header('Location: /');
+        header('Location: ' . PHPCI_URL);
         die;
     }
 }

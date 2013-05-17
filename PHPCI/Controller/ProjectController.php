@@ -61,7 +61,7 @@ class ProjectController extends b8\Controller
 
         $build = $this->_buildStore->save($build);
 
-        header('Location: /build/view/' . $build->getId());
+        header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
     }
 
     /**
@@ -76,7 +76,7 @@ class ProjectController extends b8\Controller
         $project    = $this->_projectStore->getById($projectId);
         $this->_projectStore->delete($project);
 
-        header('Location: /');
+        header('Location: '.PHPCI_URL);
     }
 
     /**
@@ -164,7 +164,7 @@ class ProjectController extends b8\Controller
 
         $project = $this->_projectStore->save($project);
 
-        header('Location: /project/view/' . $project->getId());
+        header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
     }
 
@@ -187,7 +187,7 @@ class ProjectController extends b8\Controller
             if ($resp['success']) {
                 parse_str($resp['body'], $resp);
                 $_SESSION['github_token'] = $resp['access_token'];
-                header('Location: /project/add');
+                header('Location: '.PHPCI_URL.'project/add');
                 die;
             }
         }
@@ -230,7 +230,7 @@ class ProjectController extends b8\Controller
         $project->setValues($values);
         $project = $this->_projectStore->save($project);
 
-        header('Location: /project/view/' . $project->getId());
+        header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
     }
 
@@ -241,7 +241,7 @@ class ProjectController extends b8\Controller
     {
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction('/project/' . $type);
+        $form->setAction(PHPCI_URL.'project/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
         $form->addField(new Form\Element\Hidden('token'));
         $form->addField(new Form\Element\Hidden('pubkey'));

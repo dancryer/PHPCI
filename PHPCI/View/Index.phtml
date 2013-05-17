@@ -5,8 +5,8 @@
 	<div class="span3">
 		<div class="well" style="padding: 8px 0">
 		<ul class="nav nav-list">
-			<li><a href="/"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="/user"><i class="icon-user"></i> Users</a></li>
+			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="<?= PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
 			<li class="divider"></li>
 			<li class="nav-header">Projects</li>
 
@@ -34,7 +34,7 @@
 					}
 				}
 			?>
-			<li><a href="/project/view/<?php print $project->getId(); ?>"><i class="<?= $status; ?>"></i> <?php print $project->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="<?= $status; ?>"></i> <?php print $project->getTitle(); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
 		</div>
@@ -61,6 +61,6 @@
 <script>
 setInterval(function()
 {
-	$('#latest-builds').load('/index/latest');
+	$('#latest-builds').load('<?= PHPCI_URL ?>index/latest');
 }, 10000);
 </script>

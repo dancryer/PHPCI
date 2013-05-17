@@ -31,7 +31,7 @@ class Project extends ProjectBase
         }
 
         $order          = array('id' => 'DESC');
-        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, $start, array(), $order);
+        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, 0, array(), $order);
 
         if (is_array($builds['items']) && count($builds['items'])) {
             $latest = array_shift($builds['items']);

@@ -107,8 +107,6 @@ class ProjectController extends b8\Controller
     */
     public function add()
     {
-        $_SESSION['github_token'] = isset($_SESSION['github_token']) ? $_SESSION['github_token'] : null;
-
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
@@ -175,8 +173,10 @@ class ProjectController extends b8\Controller
     */
     protected function handleGithubResponse()
     {
-        $github     = \b8\Registry::getInstance()->get('github_app');
+        $github = \b8\Registry::getInstance()->get('github_app');
         $code   = $this->getParam('code', null);
+
+        $_SESSION['github_token'] = null;
 
         if (!is_null($code)) {
             $http = new \b8\HttpClient();

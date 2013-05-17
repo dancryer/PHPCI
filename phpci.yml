@@ -16,8 +16,3 @@ test:
         allow_failures: true
     php_code_sniffer:
         standard: "PSR2"
-
-success:
-    copy_build:
-        directory: /www/phpci
-        respect_ignore: false

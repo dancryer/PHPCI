@@ -175,8 +175,6 @@ class ProjectController extends b8\Controller
         $github = \b8\Registry::getInstance()->get('github_app');
         $code   = $this->getParam('code', null);
 
-        $_SESSION['github_token'] = null;
-
         if (!is_null($code)) {
             $http = new \b8\HttpClient();
             $url  = 'https://github.com/login/oauth/access_token';
@@ -189,6 +187,10 @@ class ProjectController extends b8\Controller
                 header('Location: '.PHPCI_URL.'project/add');
                 die;
             }
+        }
+
+        if (!isset($_SESSION['github_token'])) {
+            $_SESSION['github_token'] = null;
         }
     }
 

@@ -91,7 +91,7 @@ class Mysql implements \PHPCI\Plugin
             throw new \Exception("Import statement must contiain an 'file' key");
         }
         
-        $import_file = $this->phpci->buildPath . '/' . $query['file'];
+        $import_file = $this->phpci->buildPath . $query['file'];
         if (!is_readable($import_file)) {
         	throw new \Exception("Cannot open SQL import file: $import_file");
         }

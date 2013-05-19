@@ -246,6 +246,14 @@ class Builder
         $buildId            = 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
         $this->ciDir        = realpath(dirname(__FILE__) . '/../') . '/';
         $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
+        
+        // Setup environment vars that will be accessible during exec()
+        putenv("PHPCI=1");
+        putenv("PHPCI_COMMIT=".$commitId);
+        putenv("PHPCI_PROJECT=".$this->build->getProject()->getId());
+        putenv("PHPCI_BUILD=".$this->build->getId());
+        putenv("PHPCI_PROJECT_TITLE=".$this->build->getProject()->getTitle());
+        putenv("PHPCI_BUILD_PATH=".$this->buildPath);
 
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {

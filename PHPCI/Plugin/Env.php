@@ -32,9 +32,14 @@ class Env implements \PHPCI\Plugin
     public function execute()
     {
         $success = true;
-        foreach ($this->env_vars as $value) {
-            // This allows the developer to specify env vars like " - FOO=bar" or " - FOO: bar"
-            $env_var = is_array($value)? key($value).'='.current($value): $value;
+        foreach ($this->env_vars as $key => $value) {
+            if (is_numeric($key)) {
+                // This allows the developer to specify env vars like " - FOO=bar" or " - FOO: bar"
+                $env_var = is_array($value)? key($value).'='.current($value): $value;
+            } else {
+                // This allows the standard syntax: "FOO: bar"
+                $env_var = "$key=$value";
+            }
             
             if (!putenv($env_var)) {
                 $success = false;

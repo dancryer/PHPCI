@@ -57,7 +57,7 @@ class PhpUnit implements \PHPCI\Plugin
         }
         
         if (isset($options['phpunit_cmd'])) {
-            $this->phpunit_cmd = $this->phpci->buildPath . $options['phpunit_cmd'];
+            $this->phpunit_cmd = 'php ' . escapeshellarg($this->phpci->buildPath . $options['phpunit_cmd']);
         } else {
             $this->phpunit_cmd = PHPCI_BIN_DIR . 'phpunit';
         }

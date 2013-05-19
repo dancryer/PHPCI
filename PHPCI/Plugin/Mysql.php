@@ -72,9 +72,9 @@ class Mysql implements \PHPCI\Plugin
                 if (!is_array($query)) {
                     // Simple query
                     $this->pdo->query($query);
-                } else {
+                } else if (isset($query['import'])) {
                     // SQL file execution
-                    $this->executeFile($query);
+                    $this->executeFile($query['import']);
                 }
             }
         } catch (\Exception $ex) {
@@ -87,11 +87,11 @@ class Mysql implements \PHPCI\Plugin
     
     protected function executeFile($query)
     {
-        if (!isset($query['import'])) {
-            throw new \Exception("Import statement must contiain an 'import' key");
+        if (!isset($query['file'])) {
+            throw new \Exception("Import statement must contiain an 'file' key");
         }
         
-        $import_file = $query['import'];
+        $import_file = $query['file'];
         if (!is_readable($import_file)) {
         	throw new \Exception("Cannot open SQL import file");
         }

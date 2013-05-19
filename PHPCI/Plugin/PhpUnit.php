@@ -92,17 +92,19 @@ class PhpUnit implements \PHPCI\Plugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, "runConfigFile"));
         } else {
+            
+            $curdir = getcwd();
+            
             if ($this->runFrom) {
-                $curdir = getcwd();
                 chdir($this->phpci->buildPath.'/'.$this->runFrom);
+            } else {
+                chdir($this->phpci->buildPath.'/'.dirname($configPath));
             }
 
             $cmd = $this->phpunit_cmd . ' %s -c "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
             
-            if ($this->runFrom) {
-                chdir($curdir);
-            }
+            chdir($curdir);
 
             return $success;
         }

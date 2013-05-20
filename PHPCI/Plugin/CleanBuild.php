@@ -10,7 +10,8 @@
 namespace PHPCI\Plugin;
 
 /**
-* Composer Plugin - Provides access to Composer functionality.
+* Clean build removes Composer related files and allows PHPCI users to clean up their build directory.
+* Useful as a precursor to copy_build.
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Plugins

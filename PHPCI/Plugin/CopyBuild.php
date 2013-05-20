@@ -10,7 +10,7 @@
 namespace PHPCI\Plugin;
 
 /**
-* Composer Plugin - Provides access to Composer functionality.
+* Copy Build Plugin - Copies the entire build to another directory.
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Plugins
@@ -39,7 +39,7 @@ class CopyBuild implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd = 'mkdir -p "%s" && cp -Rf "%s"* "%s/"';
+        $cmd = 'mkdir -p "%s" && ls -1a "%s"* | xargs -r -t "%s/"';
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         if ($this->ignore) {

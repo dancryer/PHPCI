@@ -10,7 +10,7 @@
 namespace PHPCI\Plugin;
 
 /**
-* Composer Plugin - Provides access to Composer functionality.
+* Create a ZIP or TAR.GZ archive of the entire build.
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Plugins

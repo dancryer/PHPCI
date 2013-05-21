@@ -43,6 +43,11 @@ class InstallCommand extends Command
         $dbUser = $this->ask('Enter your MySQL username: ');
         $dbPass = $this->ask('Enter your MySQL password: ', true);
         $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
+        // verify url format and re-ask if wrong
+        while(! $this->controlFormat($ciUrl,array(FILTER_VALIDATE_URL,"/[^\/]$/i"),$status)) {
+            print $status;
+            $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
+        }
         $ghId = $this->ask('(Optional) Github Application ID: ', true);
         $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
 
@@ -51,6 +56,7 @@ class InstallCommand extends Command
                     ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
 
         shell_exec($cmd);
+
 
         $str = "<?php
 
@@ -86,6 +92,13 @@ b8\Database::setReadServers(array('{$dbHost}'));
 
         if (empty($adminEmail)) {
             return;
+        }
+        else {
+            // verify e-mail format and re-ask if wrong
+            while (! $this->controlFormat($adminEmail,FILTER_VALIDATE_EMAIL,$status)) {
+                print $status;
+                $adminEmail = $this->ask('Enter your email address (leave blank if updating): ');
+            }
         }
         
         $adminPass = $this->ask('Enter your desired admin password: ');
@@ -124,5 +137,40 @@ b8\Database::setReadServers(array('{$dbHost}'));
         }
 
         return $rtn;
+    }
+    protected function controlFormat($valueToInspect,$filter,&$statusMessage)
+    {
+        $filters = !(is_array($filter))? array($filter) : $filter;
+        $statusMessage = '';
+        $status = true;
+        $options = array();
+
+        foreach ($filters as $filter) {
+            if (! is_int($filter)) {
+                $regexp = $filter;
+                $filter = FILTER_VALIDATE_REGEXP;
+                $options = array(
+                    'options' => array(
+                        'regexp' => $regexp,
+                    )
+                );
+            }
+            if (! filter_var($valueToInspect,$filter,$options)) {
+                $status = false;
+                switch ($filter)
+                {
+                    case FILTER_VALIDATE_URL :
+                        $statusMessage = 'Incorrect url format.' . PHP_EOL;
+                        break;
+                    case FILTER_VALIDATE_EMAIL :
+                        $statusMessage = 'Incorrect e-mail format.' . PHP_EOL;
+                        break;
+                    case FILTER_VALIDATE_REGEXP :
+                        $statusMessage = 'Incorrect format.' . PHP_EOL;
+                        break;
+                }
+            }
+        }
+        return $status;
     }
 }

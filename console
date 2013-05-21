@@ -16,11 +16,11 @@ define('PHPCI_DIR', dirname(__FILE__) . '/');
 if (!file_exists(PHPCI_DIR . 'vendor/autoload.php') || !file_exists(PHPCI_DIR . 'composer.phar')) {
     print 'INSTALLING: Composer' . PHP_EOL;
     file_put_contents(PHPCI_DIR . 'composerinstaller.php', file_get_contents('https://getcomposer.org/installer'));
-    shell_exec('php ' . PHPCI_DIR . 'composerinstaller.php');
+    shell_exec('php ' . escapeshellarg(PHPCI_DIR . 'composerinstaller.php'));
     unlink(PHPCI_DIR . 'composerinstaller.php');
 
     print 'RUNNING: Composer' . PHP_EOL;
-    shell_exec('php '.PHPCI_DIR.'composer.phar install');
+    shell_exec('php '.escapeshellarg(PHPCI_DIR.'composer.phar').' install');
 }
 
 require('bootstrap.php');

@@ -21,7 +21,7 @@ class BuildStore extends BuildStoreBase
 {
     public function getBuildSummary()
     {
-        $query = 'SELECT COUNT(*) AS cnt FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC';
+        $query = 'SELECT COUNT(*) AS cnt FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC, b.id DESC';
         $stmt = \b8\Database::getConnection('read')->prepare($query);
 
         if ($stmt->execute()) {
@@ -31,7 +31,7 @@ class BuildStore extends BuildStoreBase
             $count = 0;
         }
 
-        $query = 'SELECT * FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC';
+        $query = 'SELECT b.* FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC, b.id DESC';
         $stmt = \b8\Database::getConnection('read')->prepare($query);
 
         if ($stmt->execute()) {

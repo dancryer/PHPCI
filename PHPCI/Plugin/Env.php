@@ -41,7 +41,7 @@ class Env implements \PHPCI\Plugin
                 $env_var = "$key=$value";
             }
             
-            if (!putenv($env_var)) {
+            if (!putenv($this->phpci->interpolate($env_var))) {
                 $success = false;
                 $this->phpci->logFailure("Unable to set environment variable");
             }

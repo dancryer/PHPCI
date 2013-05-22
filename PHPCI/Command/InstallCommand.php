@@ -44,7 +44,7 @@ class InstallCommand extends Command
         $dbPass = $this->ask('Enter your MySQL password: ', true);
         $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
         // verify url format and re-ask if wrong
-        while(! $this->controlFormat($ciUrl,array(FILTER_VALIDATE_URL,"/[^\/]$/i"),$status)) {
+        while (! $this->controlFormat($ciUrl, array(FILTER_VALIDATE_URL,"/[^\/]$/i"), $status) ) {
             print $status;
             $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
         }
@@ -92,15 +92,14 @@ b8\Database::setReadServers(array('{$dbHost}'));
 
         if (empty($adminEmail)) {
             return;
-        }
-        else {
+        } else {
             // verify e-mail format and re-ask if wrong
-            while (! $this->controlFormat($adminEmail,FILTER_VALIDATE_EMAIL,$status)) {
+            while (! $this->controlFormat($adminEmail, FILTER_VALIDATE_EMAIL, $status)) {
                 print $status;
                 $adminEmail = $this->ask('Enter your email address (leave blank if updating): ');
             }
         }
-        
+
         $adminPass = $this->ask('Enter your desired admin password: ');
         $adminName = $this->ask('Enter your name: ');
 
@@ -155,7 +154,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
                     )
                 );
             }
-            if (! filter_var($valueToInspect,$filter,$options)) {
+            if (! filter_var($valueToInspect, $filter, $options)) {
                 $status = false;
                 switch ($filter)
                 {
@@ -171,6 +170,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
                 }
             }
         }
+
         return $status;
     }
 }

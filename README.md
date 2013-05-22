@@ -35,7 +35,8 @@ _**Please be aware that this is a brand new project, in an alpha state, so there
 * PHP 5.3.3+
 * A web server. We prefer nginx.
 * A MySQL server to connect to (doesn't have to be on the same server.)
-* PHPCI needs to be able to run `exec()`, so make sure this is not disabled.
+* PHPCI needs to be able to run `exec()`, so make sure this is not disabled
+* Php-openssl must be available.
 
 
 ####Installing from Github:

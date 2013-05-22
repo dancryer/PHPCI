@@ -65,7 +65,7 @@ class Application extends b8\Application
 
         if ($this->request->isAjax()) {
             $this->response->setResponseCode(401);
-            $this->response->setBody('');
+            $this->response->setContent('');
         } else {
             $this->response = new RedirectResponse($this->response);
             $this->response->setHeader('Location', '/session/login');

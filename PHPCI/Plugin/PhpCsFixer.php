@@ -21,14 +21,14 @@ class PhpCsFixer implements \PHPCI\Plugin
 
     protected $args = '';
 
-	protected $workingDir = '';
-	protected $level      = 'all';
-	protected $dryRun     = true;
-	protected $verbose    = false;
-	protected $diff       = false;
-	protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
+    protected $workingDir = '';
+    protected $level      = 'all';
+    protected $dryRun     = true;
+    protected $verbose    = false;
+    protected $diff       = false;
+    protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
 
-  	public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
         $this->phpci = $phpci;
         $this->workingdir = $this->phpci->buildPath;
@@ -39,7 +39,7 @@ class PhpCsFixer implements \PHPCI\Plugin
     {
         $success = false;
 
-		$curdir = getcwd();
+        $curdir = getcwd();
         chdir($this->workingdir);
 
         $cmd = PHPCI_BIN_DIR . 'php-cs-fixer fix . %s';
@@ -52,38 +52,38 @@ class PhpCsFixer implements \PHPCI\Plugin
 
     public function buildArgs($options)
     {
-    	$argstring = "";
+        $argstring = "";
 
-    	if ( array_key_exists('verbose', $options) && $options['verbose'] )
-    	{
-    		$this->verbose = true;
-    		$this->args .= ' --verbose';
-    	}
+        if ( array_key_exists('verbose', $options) && $options['verbose'] )
+        {
+            $this->verbose = true;
+            $this->args .= ' --verbose';
+        }
 
-    	if ( array_key_exists('diff', $options) && $options['diff'] )
-    	{
-    		$this->diff = true;
-    		$this->args .= ' --diff';
-    	}
+        if ( array_key_exists('diff', $options) && $options['diff'] )
+        {
+            $this->diff = true;
+            $this->args .= ' --diff';
+        }
 
-    	if ( array_key_exists('level', $options) && array_key_exists($options['level'], $this->levels) )
-    	{
-    		$this->level = $options['level'];
-    		$this->args .= ' --level='.$options['level'];
-    	}
+        if ( array_key_exists('level', $options) && array_key_exists($options['level'], $this->levels) )
+        {
+            $this->level = $options['level'];
+            $this->args .= ' --level='.$options['level'];
+        }
 
-    	if ( array_key_exists('dryrun', $options) && $options['dryrun'] )
-    	{
-    		$this->dryRun = true;
-    		$this->args .= ' --dry-run';
-    	}
+        if ( array_key_exists('dryrun', $options) && $options['dryrun'] )
+        {
+            $this->dryRun = true;
+            $this->args .= ' --dry-run';
+        }
 
-    	if ( array_key_exists('workingdir', $options)
-    		&& $options['workingdir']
-    		&& is_dir($this->phpci->buildPath.$options['workingdir']) )
-    	{
-    		$this->workingdir = $this->phpci->buildPath.$options['workingdir'];
-    	}
+        if ( array_key_exists('workingdir', $options)
+            && $options['workingdir']
+            && is_dir($this->phpci->buildPath.$options['workingdir']) )
+        {
+            $this->workingdir = $this->phpci->buildPath.$options['workingdir'];
+        }
 
     }
 }

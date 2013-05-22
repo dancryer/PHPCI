@@ -62,8 +62,8 @@ b8\Database::setDetails('{$dbName}', '{$dbUser}', '{$dbPass}');
 b8\Database::setWriteServers(array('{$dbHost}'));
 b8\Database::setReadServers(array('{$dbHost}'));
 
-\$registry = b8\Registry::getInstance();
-\$registry->set('install_url', '{$ciUrl}');
+\$config = b8\Config::getInstance();
+\$config->set('install_url', '{$ciUrl}');
 ";
 
         // Has the user entered Github app details? If so add those to config:

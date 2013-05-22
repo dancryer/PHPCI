@@ -37,6 +37,8 @@ require_once(APPLICATION_PATH . 'vendor/autoload.php');
 
 // Load configuration if present:
 $config = new b8\Config();
+$request = new b8\Http\Request();
+$registry = new b8\Registry($config, $request);
 
 if (file_exists(APPLICATION_PATH . 'config.php')) {
     require(APPLICATION_PATH . 'config.php');

@@ -14,5 +14,5 @@ ini_set('display_errors', 'on');
 
 require_once('bootstrap.php');
 
-$fc = new PHPCI\Application(b8\Config::getInstance());
+$fc = new PHPCI\Application($config, $request);
 print $fc->handleRequest();

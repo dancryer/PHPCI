@@ -31,8 +31,14 @@ class IndexController extends \PHPCI\Controller
     public function index()
     {
         $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        $summary        = $this->_buildStore->getBuildSummary();
+
+        $summaryView = new b8\View('BuildsTable');
+        $summaryView->builds = $summary['items'];
+
         $this->view->builds   = $this->getLatestBuildsHtml();
         $this->view->projects = $projects['items'];
+        $this->view->summary  = $summaryView->render();
 
         return $this->view->render();
     }
@@ -50,7 +56,7 @@ class IndexController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml()
     {
-        $builds         = $this->_buildStore->getWhere(array(), 10, 0, array(), array('id' => 'DESC'));
+        $builds         = $this->_buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 

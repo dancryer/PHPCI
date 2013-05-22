@@ -51,8 +51,8 @@ class Mysql implements \PHPCI\Plugin
         if (isset($buildSettings['mysql'])) {
             $sql    = $buildSettings['mysql'];
 
-            $this->host = !empty($sql['host']) ? $sql['host'] : $this->host;
-            $this->user = !empty($sql['user']) ? $sql['user'] : $this->user;
+            $this->host = !empty($sql['host']) ? $sql['host'] : $this->phpci->interpolate($this->host);
+            $this->user = !empty($sql['user']) ? $sql['user'] : $this->phpci->interpolate($this->user);
             $this->pass = array_key_exists('pass', $sql) ? $sql['pass'] : $this->pass;
         }
     }
@@ -71,10 +71,12 @@ class Mysql implements \PHPCI\Plugin
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
                     // Simple query
-                    $this->pdo->query($query);
+                    $this->pdo->query($this->phpci->interpolate($query));
                 } else if (isset($query['import'])) {
                     // SQL file execution
                     $this->executeFile($query['import']);
+                } else {
+                    throw new \Exception("Invalid command");
                 }
             }
         } catch (\Exception $ex) {
@@ -88,15 +90,15 @@ class Mysql implements \PHPCI\Plugin
     protected function executeFile($query)
     {
         if (!isset($query['file'])) {
-            throw new \Exception("Import statement must contiain an 'file' key");
+            throw new \Exception("Import statement must contain a 'file' key");
         }
         
-        $import_file = $this->phpci->buildPath . $query['file'];
+        $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
         if (!is_readable($import_file)) {
         	throw new \Exception("Cannot open SQL import file: $import_file");
         }
         
-        $database = isset($query['database'])? $query['database']: null;
+        $database = isset($query['database'])? $this->phpci->interpolate($query['database']): null;
         
         $import_command = $this->getImportCommand($import_file, $database);
     	if (!$this->phpci->executeCommand($import_command)) {

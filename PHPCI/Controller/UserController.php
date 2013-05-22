@@ -20,7 +20,7 @@ use b8\Form;
 * @package      PHPCI
 * @subpackage   Web
 */
-class UserController extends b8\Controller
+class UserController extends  \PHPCI\Controller
 {
     public function init()
     {
@@ -33,10 +33,9 @@ class UserController extends b8\Controller
     public function index()
     {
         $users          = $this->_userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
-        $view           = new b8\View('User');
-        $view->users    = $users;
+        $this->view->users    = $users;
 
-        return $view->render();
+        return $this->view->render();
     }
 
     /**
@@ -44,11 +43,11 @@ class UserController extends b8\Controller
     */
     public function add()
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $method = Registry::getInstance()->get('requestMethod');
+        $method = $this->request->getMethod();
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -85,11 +84,11 @@ class UserController extends b8\Controller
     */
     public function edit($userId)
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $method     = Registry::getInstance()->get('requestMethod');
+        $method     = $this->request->getMethod();
         $user   = $this->_userStore->getById($userId);
 
         if ($method == 'POST') {
@@ -172,7 +171,7 @@ class UserController extends b8\Controller
     */
     public function delete($userId)
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
         

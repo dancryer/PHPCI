@@ -9,9 +9,11 @@
 
 namespace PHPCI\Controller;
 
-use b8;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
+use b8;
+use b8\Controller;
+use b8\Store;
 use b8\Form;
 use b8\Registry;
 
@@ -21,12 +23,12 @@ use b8\Registry;
 * @package      PHPCI
 * @subpackage   Web
 */
-class ProjectController extends b8\Controller
+class ProjectController extends \PHPCI\Controller
 {
     public function init()
     {
-        $this->_buildStore      = b8\Store\Factory::getStore('Build');
-        $this->_projectStore    = b8\Store\Factory::getStore('Project');
+        $this->_buildStore      = Store\Factory::getStore('Build');
+        $this->_projectStore    = Store\Factory::getStore('Project');
     }
 
     /**
@@ -38,13 +40,12 @@ class ProjectController extends b8\Controller
         $page           = $this->getParam('p', 1);
         $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
-        $view           = new b8\View('Project');
-        $view->builds   = $builds[0];
-        $view->total    = $builds[1];
-        $view->project  = $project;
-        $view->page     = $page;
+        $this->view->builds   = $builds[0];
+        $this->view->total    = $builds[1];
+        $this->view->project  = $project;
+        $this->view->page     = $page;
 
-        return $view->render();
+        return $this->view->render();
     }
 
     /**
@@ -69,7 +70,7 @@ class ProjectController extends b8\Controller
     */
     public function delete($projectId)
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
@@ -107,11 +108,11 @@ class ProjectController extends b8\Controller
     */
     public function add()
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $method = Registry::getInstance()->get('requestMethod');
+        $method = $this->request->getMethod();
         $this->handleGithubResponse();
 
         if ($method == 'POST') {
@@ -199,11 +200,11 @@ class ProjectController extends b8\Controller
     */
     public function edit($projectId)
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
         
-        $method     = Registry::getInstance()->get('requestMethod');
+        $method     = $this->request->getMethod();
         $project    = $this->_projectStore->getById($projectId);
 
         if ($method == 'POST') {

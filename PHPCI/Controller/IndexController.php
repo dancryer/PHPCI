@@ -17,7 +17,7 @@ use b8;
 * @package      PHPCI
 * @subpackage   Web
 */
-class IndexController extends b8\Controller
+class IndexController extends \PHPCI\Controller
 {
     public function init()
     {
@@ -31,11 +31,10 @@ class IndexController extends b8\Controller
     public function index()
     {
         $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
-        $view           = new b8\View('Index');
-        $view->builds   = $this->getLatestBuildsHtml();
-        $view->projects = $projects['items'];
+        $this->view->builds   = $this->getLatestBuildsHtml();
+        $this->view->projects = $projects['items'];
 
-        return $view->render();
+        return $this->view->render();
     }
 
     /**

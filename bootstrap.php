@@ -36,16 +36,18 @@ if (!defined('APPLICATION_PATH')) {
 require_once(APPLICATION_PATH . 'vendor/autoload.php');
 
 // Load configuration if present:
+$config = new b8\Config();
+
 if (file_exists(APPLICATION_PATH . 'config.php')) {
     require(APPLICATION_PATH . 'config.php');
 
     // Define our PHPCI_URL, if not already defined:
     if (!defined('PHPCI_URL')) {
-        define('PHPCI_URL', $registry->get('install_url', '') . '/');
+        define('PHPCI_URL', $config->get('install_url', '') . '/');
     }
 }
 
 // Set up the registry:
-b8\Registry::getInstance()->set('app_namespace', 'PHPCI');
-b8\Registry::getInstance()->set('DefaultController', 'Index');
-b8\Registry::getInstance()->set('ViewPath', dirname(__FILE__) . '/PHPCI/View/');
+$config->set('app_namespace', 'PHPCI');
+$config->set('default_controller', 'Index');
+$config->set('view_path', dirname(__FILE__) . '/PHPCI/View/');

@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Web
 */
-class GithubController extends b8\Controller
+class GithubController extends \PHPCI\Controller
 {
     public function init()
     {

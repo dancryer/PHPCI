@@ -34,6 +34,11 @@ class PhpUnit implements \PHPCI\Plugin
      * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
      */
     protected $xmlConfigFile;
+    
+    /**
+     * @var string $phpunit_cmd The command that will be used to invoke PHPUnit
+     */
+    protected $phpunit_cmd;
 
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
@@ -46,9 +51,15 @@ class PhpUnit implements \PHPCI\Plugin
         if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];
         }
-
+        
         if (isset($options['run_from'])) {
             $this->runFrom = $options['run_from'];
+        }
+        
+        if (isset($options['phpunit_cmd'])) {
+            $this->phpunit_cmd = 'php ' . escapeshellarg($this->phpci->buildPath . $options['phpunit_cmd']);
+        } else {
+            $this->phpunit_cmd = PHPCI_BIN_DIR . 'phpunit';
         }
 
         if (isset($options['args'])) {
@@ -81,17 +92,19 @@ class PhpUnit implements \PHPCI\Plugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, "runConfigFile"));
         } else {
-            if ($this->runFrom) {
-                $curdir = getcwd();
-                chdir($this->phpci->buildPath.'/'.$this->runFrom);
-            }
-
-            $cmd = PHPCI_BIN_DIR . 'phpunit %s -c "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
+            
+            $curdir = getcwd();
             
             if ($this->runFrom) {
-                chdir($curdir);
+                chdir($this->phpci->buildPath.'/'.$this->runFrom);
+            } else {
+                chdir($this->phpci->buildPath.'/'.dirname($configPath));
             }
+
+            $cmd = $this->phpunit_cmd . ' %s -c "%s"';
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
+            
+            chdir($curdir);
 
             return $success;
         }
@@ -104,7 +117,7 @@ class PhpUnit implements \PHPCI\Plugin
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
-            $cmd = PHPCI_BIN_DIR . 'phpunit %s "%s"';
+            $cmd = $this->phpunit_cmd . ' %s "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $dirPath);
             chdir($curdir);
             return $success;

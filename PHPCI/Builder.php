@@ -263,10 +263,11 @@ class Builder
      */
     public function interpolate($input)
     {
-        $translations = array_walk($this->getInterpolationVars(), function($value, &$key) {
-            $key = '%'.$key.'%';
-        });
-        return strtr($input, $translations);
+        $trans_table = array();
+        foreach ($this->getInterpolationVars() as $key => $value) {
+            $trans_table['%'.$key.'%'] = $value;
+        }
+        return strtr($input, $trans_table);
     }
 
     /**

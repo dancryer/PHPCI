@@ -122,11 +122,12 @@ b8\Database::setReadServers(array('{$dbHost}'));
         if (!$emptyOk && empty($rtn)) {
             $rtn = $this->ask($question, $emptyOk, $validationFilter);
         } elseif ($validationFilter != null  && ! empty($rtn)) {
-            if(! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
+            if (! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
                 print $statusMessage;
                 $rtn = $this->ask($question, $emptyOk, $validationFilter);
             }
         }
+
         return $rtn;
     }
     protected function controlFormat($valueToInspect,$filter,&$statusMessage)
@@ -148,7 +149,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
             }
             if (! filter_var($valueToInspect, $filter, $options)) {
                 $status = false;
-                
+
                 switch ($filter)
                 {
                     case FILTER_VALIDATE_URL :
@@ -163,6 +164,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
                 }
             }
         }
+
         return $status;
     }
 }

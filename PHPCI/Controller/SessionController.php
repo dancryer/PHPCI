@@ -17,10 +17,11 @@ use b8;
 * @package      PHPCI
 * @subpackage   Web
 */
-class SessionController extends b8\Controller
+class SessionController extends \PHPCI\Controller
 {
     public function init()
     {
+        $this->response->disableLayout();     
         $this->_userStore       = b8\Store\Factory::getStore('User');
     }
 
@@ -28,10 +29,10 @@ class SessionController extends b8\Controller
     * Handles user login (form and processing)
     */
     public function login()
-    {
-        if (b8\Registry::getInstance()->get('requestMethod') == 'POST') {
+    {        
+        if ($this->request->getMethod() == 'POST') {
             $user = $this->_userStore->getByEmail($this->getParam('email'));
-
+            
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['user_id']    = $user->getId();
                 header('Location: ' . PHPCI_URL);
@@ -60,9 +61,9 @@ class SessionController extends b8\Controller
         $pwd->setClass('btn-success');
         $form->addField($pwd);
 
-        $view = new b8\View('Login');
-        $view->form = $form->render();
-        die($view->render());
+        $this->view->form = $form->render();
+        
+        return $this->view->render();
     }
 
     /**

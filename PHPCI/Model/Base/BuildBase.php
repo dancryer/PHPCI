@@ -101,7 +101,7 @@ class BuildBase extends Model
             'length' => '4',
             ),
         'log' => array(
-            'type' => 'text',
+            'type' => 'longtext',
             'length' => '',
             'nullable' => true,
             ),
@@ -500,11 +500,11 @@ class BuildBase extends Model
         }
 
         $cacheKey   = 'Cache.Project.' . $key;
-        $rtn        = $this->registry->get($cacheKey, null);
+        $rtn        = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
             $rtn    = \b8\Store\Factory::getStore('Project')->getById($key);
-            $this->registry->set($cacheKey, $rtn);
+            $this->cache->set($cacheKey, $rtn);
         }
 
         return $rtn;

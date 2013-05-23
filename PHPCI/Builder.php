@@ -73,6 +73,15 @@ class Builder
     * @var array
     */
     protected $config;
+    
+    /**
+     * An array of key => value pairs that will be used for 
+     * interpolation and environment variables
+     * @var array
+     * @see setInterpolationVars()
+     * @see getInterpolationVars()
+     */
+    protected $interpolation_vars = array();
 
     /**
     * Set up the builder.
@@ -236,7 +245,47 @@ class Builder
     {
         $this->log("\033[0;31m" . $message . "\033[0m");
     }
+    
+    /**
+     * Get an array key => value pairs that are used for interpolation
+     * @return array
+     */
+    public function getInterpolationVars()
+    {
+        return $this->interpolation_vars;
+    }
+    
+    /**
+     * Replace every occurance of the interpolation vars in the given string
+     * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
+     * @param string $input
+     * @return string
+     */
+    public function interpolate($input)
+    {
+        $trans_table = array();
+        foreach ($this->getInterpolationVars() as $key => $value) {
+            $trans_table['%'.$key.'%'] = $value;
+        }
+        return strtr($input, $trans_table);
+    }
 
+    /**
+     * Sets the variables that will be used for interpolation. This must be run 
+     * from setupBuild() because prior to that, we don't know the buildPath
+     */
+    protected function setInterpolationVars()
+    {
+        $this->interpolation_vars = array(
+            'PHPCI'               => 1,
+            'PHPCI_COMMIT'        => $this->build->getCommitId(),
+            'PHPCI_PROJECT'       => $this->build->getProject()->getId(),
+            'PHPCI_BUILD'         => $this->build->getId(),
+            'PHPCI_PROJECT_TITLE' => $this->build->getProject()->getTitle(),
+            'PHPCI_BUILD_PATH'    => $this->buildPath,
+        );
+    }
+    
     /**
     * Set up a working copy of the project for building.
     */
@@ -247,14 +296,13 @@ class Builder
         $this->ciDir        = realpath(dirname(__FILE__) . '/../') . '/';
         $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
         
+        $this->setInterpolationVars();
+        
         // Setup environment vars that will be accessible during exec()
-        putenv("PHPCI=1");
-        putenv("PHPCI_COMMIT=".$commitId);
-        putenv("PHPCI_PROJECT=".$this->build->getProject()->getId());
-        putenv("PHPCI_BUILD=".$this->build->getId());
-        putenv("PHPCI_PROJECT_TITLE=".$this->build->getProject()->getTitle());
-        putenv("PHPCI_BUILD_PATH=".$this->buildPath);
-
+        foreach ($this->getInterpolationVars() as $key => $value) {
+            putenv($key.'='.$value);
+        }
+        
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
             return false;

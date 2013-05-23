@@ -60,3 +60,10 @@ body
 {
 	background: url('/assets/img/icon-build-running.png') no-repeat top left;
 }
+
+h3 
+{
+	border-bottom: 1px solid #f0f0f0;
+	margin-top: 0;
+	padding-top: 0;
+}

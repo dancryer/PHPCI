@@ -9,7 +9,10 @@
 
 session_start();
 
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
+
 require_once('bootstrap.php');
 
-$fc = new PHPCI\Application();
+$fc = new PHPCI\Application($config, $request);
 print $fc->handleRequest();

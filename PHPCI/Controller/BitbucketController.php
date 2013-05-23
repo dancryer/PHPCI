@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Web
 */
-class BitbucketController extends b8\Controller
+class BitbucketController extends \PHPCI\Controller
 {
     public function init()
     {

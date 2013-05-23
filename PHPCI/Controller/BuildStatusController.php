@@ -20,7 +20,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Web
 */
-class BuildStatusController extends b8\Controller
+class BuildStatusController extends \PHPCI\Controller
 {
     public function init()
     {

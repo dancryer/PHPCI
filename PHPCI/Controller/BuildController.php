@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Web
 */
-class BuildController extends b8\Controller
+class BuildController extends \PHPCI\Controller
 {
     public function init()
     {
@@ -32,11 +32,8 @@ class BuildController extends b8\Controller
     public function view($buildId)
     {
         $build          = $this->_buildStore->getById($buildId);
-        $view           = new b8\View('Build');
-        $view->build    = $build;
-        $view->data     = $this->getBuildData($buildId);
-
-        return $view->render();
+        $this->view->build    = $build;
+        $this->view->data     = $this->getBuildData($buildId);
     }
 
     /**

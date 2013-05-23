@@ -10,7 +10,8 @@
 namespace PHPCI;
 
 use b8;
-use b8\Registry;
+use b8\Http\Response\RedirectResponse;
+use b8\View;
 
 /**
 * PHPCI Front Controller
@@ -18,35 +19,32 @@ use b8\Registry;
 */
 class Application extends b8\Application
 {
-    public function __construct()
-    {
-        if (isset($_SERVER['REDIRECT_PATH_INFO'])) {
-            $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_PATH_INFO'];
-        }
-
-        return parent::__construct();
-    }
-
     /**
     * Handle an incoming web request.
     */
     public function handleRequest()
     {
-        $controllerName = \b8\Registry::getInstance()->get('ControllerName');
+        // Registry legacy:
+        $registry = new b8\Registry($this->config, $this->request);
+
+        $this->initRequest();
 
         // Validate the user's session unless it is a login/logout action or a web hook:
-        $sessionAction = ($controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
-        $externalAction = in_array($controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
-
-        if (!$externalAction && !$sessionAction) {
-            $this->validateSession();
+        $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
+        $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
+        $skipValidation = ($externalAction || $sessionAction);
+        
+        if($skipValidation || $this->validateSession()) {
+            parent::handleRequest();
         }
 
-        // Render content into layout and return:
-        $view           = new b8\View('Layout');
-        $view->content  = parent::handleRequest();
-
-        return $view->render();
+        if (View::exists('layout') && $this->response->hasLayout()) {
+            $view           = new View('layout');
+            $view->content  = $this->response->getContent();
+            $this->response->setContent($view->render());
+        }
+        
+        return $this->response;
     }
 
     /**
@@ -58,14 +56,21 @@ class Application extends b8\Application
             $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['user_id']);
 
             if ($user) {
-                Registry::getInstance()->set('user', $user);
-                return;
+                $_SESSION['user'] = $user;
+                return true;
             }
 
             unset($_SESSION['user_id']);
         }
 
-        header('Location: /session/login');
-        die;
+        if ($this->request->isAjax()) {
+            $this->response->setResponseCode(401);
+            $this->response->setContent('');
+        } else {
+            $this->response = new RedirectResponse($this->response);
+            $this->response->setHeader('Location', '/session/login');
+        }
+
+        return false;
     }
 }

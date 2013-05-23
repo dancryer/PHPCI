@@ -66,7 +66,7 @@ class PhpCsFixer implements \PHPCI\Plugin
             $this->args .= ' --diff';
         }
 
-        if ( array_key_exists('level', $options) && array_key_exists($options['level'], $this->levels) )
+        if ( array_key_exists('level', $options) && in_array($options['level'], $this->levels) )
         {
             $this->level = $options['level'];
             $this->args .= ' --level='.$options['level'];

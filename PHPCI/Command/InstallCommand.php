@@ -42,12 +42,7 @@ class InstallCommand extends Command
         $dbName = $this->ask('Enter the database name PHPCI should use: ');
         $dbUser = $this->ask('Enter your MySQL username: ');
         $dbPass = $this->ask('Enter your MySQL password: ', true);
-        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
-        // verify url format and re-ask if wrong
-        while (! $this->controlFormat($ciUrl, array(FILTER_VALIDATE_URL,"/[^\/]$/i"), $status) ) {
-            print $status;
-            $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
-        }
+        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ', false, array(FILTER_VALIDATE_URL,"/[^\/]$/i"));
         $ghId = $this->ask('(Optional) Github Application ID: ', true);
         $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
 
@@ -88,18 +83,11 @@ b8\Database::setReadServers(array('{$dbHost}'));
         $gen->generate();
 
         // Try to create a user account:
-        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true);
+        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true, FILTER_VALIDATE_EMAIL);
 
         if (empty($adminEmail)) {
             return;
-        } else {
-            // verify e-mail format and re-ask if wrong
-            while (! $this->controlFormat($adminEmail, FILTER_VALIDATE_EMAIL, $status)) {
-                print $status;
-                $adminEmail = $this->ask('Enter your email address (leave blank if updating): ');
-            }
         }
-
         $adminPass = $this->ask('Enter your desired admin password: ');
         $adminName = $this->ask('Enter your name: ');
 
@@ -120,7 +108,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
         }
     }
 
-    protected function ask($question, $emptyOk = false)
+    protected function ask($question, $emptyOk = false, $validationFilter = null)
     {
         print $question . ' ';
 
@@ -132,9 +120,13 @@ b8\Database::setReadServers(array('{$dbHost}'));
         $rtn = trim($rtn);
 
         if (!$emptyOk && empty($rtn)) {
-            $rtn = $this->ask($question, $emptyOk);
+            $rtn = $this->ask($question, $emptyOk, $validationFilter);
+        } elseif ($validationFilter != null  && ! empty($rtn)) {
+            if(! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
+                print $statusMessage;
+                $rtn = $this->ask($question, $emptyOk, $validationFilter);
+            }
         }
-
         return $rtn;
     }
     protected function controlFormat($valueToInspect,$filter,&$statusMessage)
@@ -156,6 +148,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
             }
             if (! filter_var($valueToInspect, $filter, $options)) {
                 $status = false;
+                
                 switch ($filter)
                 {
                     case FILTER_VALIDATE_URL :
@@ -170,7 +163,6 @@ b8\Database::setReadServers(array('{$dbHost}'));
                 }
             }
         }
-
         return $status;
     }
 }

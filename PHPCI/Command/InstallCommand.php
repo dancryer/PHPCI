@@ -38,13 +38,20 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Gather initial data from the user:
-        $dbHost = $this->ask('Enter your MySQL host: ');
-        $dbName = $this->ask('Enter the database name PHPCI should use: ');
-        $dbUser = $this->ask('Enter your MySQL username: ');
-        $dbPass = $this->ask('Enter your MySQL password: ', true);
-        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
-        $ghId = $this->ask('(Optional) Github Application ID: ', true);
-        $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
+        $conf = array();
+        $conf['b8']['database']['servers']['read']  = $this->ask('Enter your MySQL host: ');
+        $conf['b8']['database']['servers']['write'] = $conf['b8']['database']['servers']['read'];
+        $conf['b8']['database']['name']             = $this->ask('Enter the database name PHPCI should use: ');
+        $conf['b8']['database']['username']         = $this->ask('Enter your MySQL username: ');
+        $conf['b8']['database']['password']         = $this->ask('Enter your MySQL password: ', true);
+        $conf['phpci']['url']                       = $this->ask('Your PHPCI URL (without trailing slash): ');
+        $conf['phpci']['github']['id']              = $this->ask('(Optional) Github Application ID: ', true);
+        $conf['phpci']['github']['secret']          = $this->ask('(Optional) Github Application Secret: ', true);
+
+        $dbUser = $conf['b8']['database']['username'];
+        $dbPass = $conf['b8']['database']['password'];
+        $dbHost = $conf['b8']['database']['servers']['write'];
+        $dbName = $conf['b8']['database']['name'];
 
         // Create the database if it doesn't exist:
         $cmd    = 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost .
@@ -52,29 +59,11 @@ class InstallCommand extends Command
 
         shell_exec($cmd);
 
-        $str = "<?php
+        $dumper = new \Symfony\Component\Yaml\Dumper();
+        $yaml = $dumper->dump($conf);
 
-if(!defined('PHPCI_DB_HOST')) {
-    define('PHPCI_DB_HOST', '{$dbHost}');
-}
+        file_put_contents(PHPCI_DIR . 'PHPCI/config.yml', $yaml);
 
-b8\Database::setDetails('{$dbName}', '{$dbUser}', '{$dbPass}');
-b8\Database::setWriteServers(array('{$dbHost}'));
-b8\Database::setReadServers(array('{$dbHost}'));
-
-\$config = b8\Config::getInstance();
-\$config->set('install_url', '{$ciUrl}');
-";
-
-        // Has the user entered Github app details? If so add those to config:
-        if (!empty($ghId) && !empty($ghSecret)) {
-            $str .= PHP_EOL .
-                    "\$registry->set('github_app', array('id' => '{$ghId}', 'secret' => '{$ghSecret}'));" .
-                    PHP_EOL;
-        }
-
-        // Write the config file and then re-bootstrap:
-        file_put_contents(PHPCI_DIR . 'config.php', $str);
         require(PHPCI_DIR . 'bootstrap.php');
 
         // Update the database:

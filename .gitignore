@@ -8,3 +8,4 @@ config.php
 .project
 .buildpath
 .htaccess
+PHPCI/config.yml

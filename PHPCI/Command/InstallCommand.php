@@ -42,7 +42,7 @@ class InstallCommand extends Command
         $dbName = $this->ask('Enter the database name PHPCI should use: ');
         $dbUser = $this->ask('Enter your MySQL username: ');
         $dbPass = $this->ask('Enter your MySQL password: ', true);
-        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ');
+        $ciUrl = $this->ask('Your PHPCI URL (without trailing slash): ', false, array(FILTER_VALIDATE_URL,"/[^\/]$/i"));
         $ghId = $this->ask('(Optional) Github Application ID: ', true);
         $ghSecret = $this->ask('(Optional) Github Application Secret: ', true);
 
@@ -51,6 +51,7 @@ class InstallCommand extends Command
                     ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
 
         shell_exec($cmd);
+
 
         $str = "<?php
 
@@ -82,12 +83,11 @@ b8\Database::setReadServers(array('{$dbHost}'));
         $gen->generate();
 
         // Try to create a user account:
-        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true);
+        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true, FILTER_VALIDATE_EMAIL);
 
         if (empty($adminEmail)) {
             return;
         }
-        
         $adminPass = $this->ask('Enter your desired admin password: ');
         $adminName = $this->ask('Enter your name: ');
 
@@ -108,7 +108,7 @@ b8\Database::setReadServers(array('{$dbHost}'));
         }
     }
 
-    protected function ask($question, $emptyOk = false)
+    protected function ask($question, $emptyOk = false, $validationFilter = null)
     {
         print $question . ' ';
 
@@ -120,9 +120,51 @@ b8\Database::setReadServers(array('{$dbHost}'));
         $rtn = trim($rtn);
 
         if (!$emptyOk && empty($rtn)) {
-            $rtn = $this->ask($question, $emptyOk);
+            $rtn = $this->ask($question, $emptyOk, $validationFilter);
+        } elseif ($validationFilter != null  && ! empty($rtn)) {
+            if (! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
+                print $statusMessage;
+                $rtn = $this->ask($question, $emptyOk, $validationFilter);
+            }
         }
 
         return $rtn;
+    }
+    protected function controlFormat($valueToInspect,$filter,&$statusMessage)
+    {
+        $filters = !(is_array($filter))? array($filter) : $filter;
+        $statusMessage = '';
+        $status = true;
+        $options = array();
+
+        foreach ($filters as $filter) {
+            if (! is_int($filter)) {
+                $regexp = $filter;
+                $filter = FILTER_VALIDATE_REGEXP;
+                $options = array(
+                    'options' => array(
+                        'regexp' => $regexp,
+                    )
+                );
+            }
+            if (! filter_var($valueToInspect, $filter, $options)) {
+                $status = false;
+
+                switch ($filter)
+                {
+                    case FILTER_VALIDATE_URL :
+                        $statusMessage = 'Incorrect url format.' . PHP_EOL;
+                        break;
+                    case FILTER_VALIDATE_EMAIL :
+                        $statusMessage = 'Incorrect e-mail format.' . PHP_EOL;
+                        break;
+                    case FILTER_VALIDATE_REGEXP :
+                        $statusMessage = 'Incorrect format.' . PHP_EOL;
+                        break;
+                }
+            }
+        }
+
+        return $status;
     }
 }

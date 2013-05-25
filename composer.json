@@ -12,7 +12,7 @@
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
-        "symfony/assetic-bundle": "2.1.*",
+        "symfony/assetic-bundle": "2.3.*",
         "symfony/swiftmailer-bundle": "2.3.*",
         "symfony/monolog-bundle": "2.3.*",
         "sensio/distribution-bundle": "2.3.*",
@@ -39,7 +39,7 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "RC",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",

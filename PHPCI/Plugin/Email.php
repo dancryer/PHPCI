@@ -43,9 +43,10 @@ class Email implements \PHPCI\Plugin
                                 array $options = array(),
                                 \Swift_Mailer $mailer = null)
     {
+        $phpCiSettings      = $phpci->getSystemConfig('phpci');
         $this->phpci        = $phpci;
         $this->options      = $options;
-        $this->emailConfig  = $phpci->getConfig('email_settings');
+        $this->emailConfig  = isset($phpCiSettings['email_settings']) ? $phpCiSettings['email_settings'] : array();
 
         // Either a mailer will have been passed in or we load from the
         // config.
@@ -99,12 +100,16 @@ class Email implements \PHPCI\Plugin
 
     protected function getMailConfig($configName)
     {
-        if (isset($this->emailConfig[$configName])) {
+        if (isset($this->emailConfig[$configName])
+            && $this->emailConfig[$configName] != "")
+        {
             return $this->emailConfig[$configName];
         }
         // Check defaults
         else {
             switch($configName) {
+                case 'smtp_address':
+                    return "localhost";
                 case 'smtp_port':
                     return '25';
                 case 'from_address':

@@ -136,6 +136,15 @@ class Builder
     }
 
     /**
+     * Indicates if the build has passed or failed.
+     * @return bool
+     */
+    public function getSuccessStatus()
+    {
+        return $this->success;
+    }
+
+    /**
     * Run the active build.
     */
     public function execute()

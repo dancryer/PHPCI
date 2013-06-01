@@ -63,8 +63,34 @@ class Email implements \PHPCI\Plugin
     */
     public function execute()
     {
+        // Without some email addresses in the yml file then we
+        // can't do anything.
+        if (!isset($this->options['addresses'])) {
+            return false;
+        }
 
-        return true;
+        $addresses = $this->options['addresses'];
+        $sendFailures = array();
+
+        if($this->phpci->getSuccessStatus()) {
+            $body = "";
+            $sendFailures = $this->sendSeparateEmails(
+                $addresses,
+                "PASSED",
+                $body
+            );
+        }
+        else {
+            $body = "";
+            $sendFailures = $this->sendSeparateEmails(
+                $addresses,
+                "FAILED",
+                $body
+            );
+        }
+
+        // This is a success if we've not failed to send anything.
+        return (count($sendFailures) == 0);
     }
 
     /**
@@ -83,6 +109,18 @@ class Email implements \PHPCI\Plugin
         $this->mailer->send($message, $failedAddresses);
 
         return $failedAddresses;
+    }
+
+    public function sendSeparateEmails(array $toAddresses, $subject, $body)
+    {
+        $failures = array();
+        foreach($toAddresses as $address) {
+            $newFailures = $this->sendEmail($address, $subject, $body);
+            foreach($newFailures as $failure) {
+                $failures[] = $failure;
+            }
+        }
+        return $failures;
     }
 
     protected function loadSwiftMailerFromConfig()

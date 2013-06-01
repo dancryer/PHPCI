@@ -38,17 +38,19 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
 	{
 		$this->mockCiBuilder = $this->getMock(
 			'\PHPCI\Builder',
-			array('getConfig'),
+			array('getSystemConfig'),
 			array(),
 			"mockBuilder",
 			false
 		);
 		$this->mockCiBuilder->buildPath = "/";
         $this->mockCiBuilder->expects($this->any())
-            ->method('getConfig')
-            ->with('email_settings')
+            ->method('getSystemConfig')
+            ->with('phpci')
             ->will($this->returnValue(array(
-                'from_address'  => "test-from-address@example.com"
+                'email_settings' => array(
+                    'from_address'  => "test-from-address@example.com"
+                )
             )));
 
         $this->mockMailer = $this->getMock(

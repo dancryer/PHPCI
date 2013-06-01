@@ -117,6 +117,16 @@ class Builder
     }
 
     /**
+     * Access a variable from the config.yml
+     * @param $key
+     * @return mixed
+     */
+    public function getSystemConfig($key)
+    {
+        return \b8\Registry::getInstance()->get($key);
+    }
+
+    /**
     * Access the build.
     * @param Build
     */

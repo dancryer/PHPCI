@@ -33,7 +33,7 @@ class Application extends b8\Application
         $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
         $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
         $skipValidation = ($externalAction || $sessionAction);
-        
+
         if($skipValidation || $this->validateSession()) {
             parent::handleRequest();
         }
@@ -43,7 +43,7 @@ class Application extends b8\Application
             $view->content  = $this->response->getContent();
             $this->response->setContent($view->render());
         }
-        
+
         return $this->response;
     }
 

@@ -89,7 +89,7 @@ class BuildController extends \PHPCI\Controller
         if (!Registry::getInstance()->get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
-        
+
         $build  = $this->_buildStore->getById($buildId);
         $this->_buildStore->delete($build);
 

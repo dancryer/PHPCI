@@ -76,10 +76,11 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
 	/**
 	 * @covers PHPUnit::execute
 	 */
-	public function testExecute_ReturnsTrueWithoutArgs()
+	public function testExecute_ReturnsFalseWithoutArgs()
 	{
 		$returnValue = $this->testedEmailPlugin->execute();
-		$expectedReturn = true;
+        // As no addresses will have been mailed as non are configured.
+		$expectedReturn = false;
 
 		$this->assertEquals($expectedReturn, $returnValue);
 	}

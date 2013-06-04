@@ -35,7 +35,20 @@ switch($build->getStatus())
 	<td><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProjectId(); ?>"><?php print $build->getProject()->getTitle(); ?></a></td>
 	<td><a href="<?php print $build->getCommitLink(); ?>"><?php print $build->getCommitId(); ?></a></td>
 	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
-	<td><?php print $status; ?></td>
+	<td>
+		<?php
+		$plugins = json_decode($build->getPlugins(), true);
+		if ( !is_array($plugins) ) {
+			$plugins = array();
+		}
+		?>
+		<?php foreach($plugins as $plugin => $pluginstatus): ?>
+			<div class='build-plugin-status <?= $pluginstatus?'success-message':'error-message' ?>'>
+				<?= ucwords(str_replace('_', ' ', $plugin)) ?>
+			</div>
+		<?php endforeach; ?>
+		<br style='clear:both;' />
+	</td>
 	<td>
 		<div class="btn-group">
 			<a class="btn" href="<?= PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>

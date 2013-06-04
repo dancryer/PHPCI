@@ -14,6 +14,27 @@ body
 	padding: 10px;
 }
 
+.build-plugin-status {
+	text-align: center;
+	min-width: 80px;
+	float: left;
+	padding: 5px;
+	margin-right: 5px;
+	border: 1px solid black;
+}
+
+.success-message {
+	background-color: #4F8A10;
+}
+
+.error-message {
+	background-color: #FF4747;
+}
+
+#latest-builds td {
+    vertical-align: middle;
+}
+
 .widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header, .ui-dialog .ui-dialog-titlebar {
 	background-color: #efefef;
 	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
@@ -61,7 +82,7 @@ body
 	background: url('/assets/img/icon-build-running.png') no-repeat top left;
 }
 
-h3 
+h3
 {
 	border-bottom: 1px solid #f0f0f0;
 	margin-top: 0;

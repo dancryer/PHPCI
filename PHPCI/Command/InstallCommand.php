@@ -53,6 +53,7 @@ class InstallCommand extends Command
         $conf['phpci']['email_settings']['smtp_username'] = $this->ask('(Optional) Smtp Username: ', true);
         $conf['phpci']['email_settings']['smtp_password'] = $this->ask('(Optional) Smtp Password: ', true);
         $conf['phpci']['email_settings']['from_address']  = $this->ask('(Optional) Email address to send from: ', true);
+        $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask('(Optional) Default address to email notifications to: ', true);
 
         $dbUser = $conf['b8']['database']['username'];
         $dbPass = $conf['b8']['database']['password'];

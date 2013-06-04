@@ -63,13 +63,14 @@ class Email implements \PHPCI\Plugin
     */
     public function execute()
     {
+        $addresses = $this->getEmailAddresses();
+
         // Without some email addresses in the yml file then we
         // can't do anything.
-        if (!isset($this->options['addresses'])) {
+        if (count($addresses) == 0) {
             return false;
         }
 
-        $addresses = $this->options['addresses'];
         $sendFailures = array();
 
         if($this->phpci->getSuccessStatus()) {
@@ -90,6 +91,14 @@ class Email implements \PHPCI\Plugin
         }
 
         // This is a success if we've not failed to send anything.
+        $this->phpci->log(sprintf(
+                "%d emails sent",
+                (count($addresses) - count($sendFailures)))
+        );
+        $this->phpci->log(sprintf(
+                "%d emails failed to send",
+                count($sendFailures))
+        );
         return (count($sendFailures) == 0);
     }
 
@@ -148,6 +157,8 @@ class Email implements \PHPCI\Plugin
             switch($configName) {
                 case 'smtp_address':
                     return "localhost";
+                case 'default_mailto_address':
+                    return null;
                 case 'smtp_port':
                     return '25';
                 case 'from_address':
@@ -156,5 +167,22 @@ class Email implements \PHPCI\Plugin
                     return "";
             }
         }
+    }
+
+    protected function getEmailAddresses()
+    {
+        $addresses = array();
+
+        if (isset($this->options['addresses'])) {
+            foreach ($this->options['addresses'] as $address) {
+                $addresses[] = $address;
+            }
+        }
+
+        if (isset($this->options['default_mailto_address'])) {
+            $addresses[] = $this->options['default_mailto_address'];
+            return $addresses;
+        }
+        return $addresses;
     }
 }

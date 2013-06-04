@@ -10,7 +10,6 @@
 namespace PHPCI;
 
 use b8;
-use b8\Registry;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
 
@@ -36,9 +35,6 @@ class Application extends b8\Application
         $skipValidation = ($externalAction || $sessionAction);
 
         if($skipValidation || $this->validateSession()) {
-            if ( !empty($_SESSION['user']) ) {
-                Registry::getInstance()->set('user', $_SESSION['user']);
-            }
             parent::handleRequest();
         }
 

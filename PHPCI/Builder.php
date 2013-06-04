@@ -136,6 +136,13 @@ class Builder
     }
 
     /**
+     * @return string   The title of the project being built.
+     */
+    public function getBuildProjectTitle() {
+        return $this->getBuild()->getProject()->getTitle();
+    }
+
+    /**
      * Indicates if the build has passed or failed.
      * @return bool
      */

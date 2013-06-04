@@ -73,20 +73,22 @@ class Email implements \PHPCI\Plugin
 
         $sendFailures = array();
 
+        $subjectTemplate = "PHPCI - %s - %s";
+        $projectName = $this->phpci->getBuildProjectTitle();
+        $logText = $this->phpci->getBuild()->getLog();
+
         if($this->phpci->getSuccessStatus()) {
-            $body = "";
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
-                "PASSED",
-                $body
+                sprintf($subjectTemplate, $projectName, "Passing Build"),
+                sprintf("Log Output: <br><pre>%s</pre>", $logText)
             );
         }
         else {
-            $body = "";
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
-                "FAILED",
-                $body
+                sprintf($subjectTemplate, $projectName, "Failing Build"),
+                sprintf("Log Output: <br><pre>%s</pre>", $logText)
             );
         }
 
@@ -113,7 +115,8 @@ class Email implements \PHPCI\Plugin
         $message = \Swift_Message::newInstance($subject)
             ->setFrom($this->getMailConfig('from_address'))
             ->setTo($toAddresses)
-            ->setBody($body);
+            ->setBody($body)
+            ->setContentType("text/html");
         $failedAddresses = array();
         $this->mailer->send($message, $failedAddresses);
 

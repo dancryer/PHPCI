@@ -15,9 +15,7 @@ body
 }
 
 .build-plugin-status {
-	text-align: center;
-	min-width: 80px;
-	float: left;
+	float: left!important;
 	padding: 5px;
 	margin-right: 5px;
 	border: 1px solid black;

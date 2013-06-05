@@ -43,7 +43,7 @@ switch($build->getStatus())
 		}
 		?>
 		<?php foreach($plugins as $plugin => $pluginstatus): ?>
-			<div class='build-plugin-status <?= $pluginstatus?'success-message':'error-message' ?>'>
+			<div class='label build-plugin-status <?= $pluginstatus?'label-success':'label-important' ?>'>
 				<?= ucwords(str_replace('_', ' ', $plugin)) ?>
 			</div>
 		<?php endforeach; ?>

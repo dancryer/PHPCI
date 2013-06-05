@@ -1,0 +1,61 @@
+<?php
+// echo "<pre>";
+// var_dump($builds);
+// echo "</pre>";
+
+$maxbuildcount = 5;
+$projects      = array();
+$prevBuild     = null;
+$health        = false;
+
+foreach($builds as $build):
+
+	if ( is_null($prevBuild) || $build->getProjectId() !== $prevBuild->getProjectId() ) {
+		$health = false;
+		$projects[$build->getProjectId()]['count'] = 0;
+		$projects[$build->getProjectId()]['health'] = 0;
+	}
+
+	if (
+		$build->getStatus() < 2 ||
+		(
+			!is_null($prevBuild) &&
+			$projects[$build->getProjectId()]['count'] >= $maxbuildcount &&
+			$build->getProjectId() === $prevBuild->getProjectId()
+		)
+	) {
+		continue;
+	}
+	switch ((int)$build->getStatus()) {
+		case 2:
+			$projects[$build->getProjectId()]['health']++;
+			if ( empty($projects[$build->getProjectId()]['lastsuccess']) ) {
+				$projects[$build->getProjectId()]['lastsuccess'] = $build->getStarted();
+			}
+			break;
+		case 3:
+			$projects[$build->getProjectId()]['health']--;
+			if ( empty($projects[$build->getProjectId()]['lastfailure']) ) {
+				$projects[$build->getProjectId()]['lastfailure'] = $build->getStarted();
+			}
+			break;
+	}
+	$projects[$build->getProjectId()]['count']++;
+	$prevBuild = $build;
+endforeach;
+
+// echo "<pre>";
+// var_dump($projects);
+// echo "</pre>";
+
+foreach($projects as $projectId => $project):
+?>
+<tr>
+	<td><?= $project['health'] < 0 ? 'Stormy': ($project['health'] < 5? 'Overcast': 'Sunny') ?></td>
+	<td><?= $projectId ?></td>
+	<td><?= empty($project['lastsuccess']) ? 'Never' :$project['lastsuccess']->format("d-m-Y H:i:s" ) ?></td>
+	<td><?= empty($project['lastfailure']) ? 'Never' :$project['lastfailure']->format("d-m-Y H:i:s" ) ?></td>
+	<td><?= $project['health'] ?></td>
+	<td><?= $project['count'] ?></td>
+</tr>
+<?php endforeach; ?>

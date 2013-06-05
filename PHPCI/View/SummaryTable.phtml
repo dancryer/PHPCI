@@ -66,6 +66,6 @@ foreach($projects as $projectId => $project):
 	<td><?= empty($project['lastsuccess']) ? 'Never' :$project['lastsuccess']->format("Y-m-d H:i:s") ?></td>
 	<td><?= empty($project['lastfailure']) ? 'Never' :$project['lastfailure']->format("Y-m-d H:i:s") ?></td>
 	<td><?= $project['successes'] ?>/<?= $project['failures'] ?></td>
-	<td><?= $project['count'] ?></td>
+	<td><a href='<?= PHPCI_URL ?>project/build/<?= $projectId ?>'>build</a></td>
 </tr>
 <?php endforeach; ?>

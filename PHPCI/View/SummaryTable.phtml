@@ -38,7 +38,7 @@ foreach($builds as $build):
 			$projects[$build->getProjectId()]['successes']++;
 
 			if ( empty($projects[$build->getProjectId()]['lastsuccess']) ) {
-				$projects[$build->getProjectId()]['lastsuccess'] = $build->getStarted();
+				$projects[$build->getProjectId()]['lastsuccess'] = $build;
 			}
 			break;
 		case 3:
@@ -46,7 +46,7 @@ foreach($builds as $build):
 			$projects[$build->getProjectId()]['failures']++;
 
 			if ( empty($projects[$build->getProjectId()]['lastfailure']) ) {
-				$projects[$build->getProjectId()]['lastfailure'] = $build->getStarted();
+				$projects[$build->getProjectId()]['lastfailure'] = $build;
 			}
 			break;
 	}
@@ -86,9 +86,25 @@ foreach($projects as $projectId => $project):
 ?>
 <tr class="<?php print $cls; ?>">
 	<td><?= $project['health'] < 0 ? 'Stormy': ($project['health'] < 5? 'Overcast': 'Sunny') ?></td>
-	<td><?= $project['projectname'] ?></td>
-	<td><?= empty($project['lastsuccess']) ? 'Never' :$project['lastsuccess']->format("Y-m-d H:i:s") ?></td>
-	<td><?= empty($project['lastfailure']) ? 'Never' :$project['lastfailure']->format("Y-m-d H:i:s") ?></td>
+	<td><a href='<?= PHPCI_URL ?>project/view/<?= $projectId ?>'><?= $project['projectname'] ?></a></td>
+	<td>
+		<?php if (empty($project['lastsuccess'])) {
+			echo "Never";
+		} else { ?>
+			<a href='<?= PHPCI_URL ?>build/view/<?= $project['lastsuccess']->getId() ?>'>
+			<?= $project['lastsuccess']->getStarted()->format("Y-m-d H:i:s") ?>
+			</a>
+		<?php } ?>
+	</td>
+	<td>
+		<?php if (empty($project['lastfailure'])) {
+			echo "Never";
+		} else { ?>
+			<a href='<?= PHPCI_URL ?>build/view/<?= $project['lastfailure']->getId() ?>'>
+			<?= $project['lastfailure']->getStarted()->format("Y-m-d H:i:s") ?>
+			</a>
+		<?php } ?>
+	</td>
 	<td><?= $project['successes'] ?>/<?= $project['failures'] ?></td>
 	<td><a href='<?= PHPCI_URL ?>project/build/<?= $projectId ?>'>build</a></td>
 </tr>

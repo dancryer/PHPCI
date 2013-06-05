@@ -10,17 +10,19 @@ $health        = false;
 
 foreach($builds as $build):
 
+	if ($build->getStatus() < 2) {
+		continue;
+	}
+
 	if ( is_null($prevBuild) || $build->getProjectId() !== $prevBuild->getProjectId() ) {
 		$health = false;
 		$projects[$build->getProjectId()]['count'] = 0;
 		$projects[$build->getProjectId()]['health'] = 0;
 		$projects[$build->getProjectId()]['successes'] = 0;
 		$projects[$build->getProjectId()]['failures'] = 0;
+		$projects[$build->getProjectId()]['lastbuildstatus'] = (int)$build->getStatus();
 	}
 
-	if ($build->getStatus() < 2) {
-		continue;
-	}
 	if (
 		!is_null($prevBuild) &&
 		$projects[$build->getProjectId()]['count'] >= $maxbuildcount &&
@@ -59,8 +61,30 @@ endforeach;
 // echo "</pre>";
 
 foreach($projects as $projectId => $project):
+	switch($project['lastbuildstatus'])
+	{
+		case 0:
+			$cls = 'info';
+			$status = 'Pending';
+		break;
+
+		case 1:
+			$cls = 'warning';
+			$status = 'Running';
+		break;
+
+		case 2:
+			$cls = 'success';
+			$status = 'Success';
+		break;
+
+		case 3:
+			$cls = 'error';
+			$status = 'Failed';
+		break;
+	}
 ?>
-<tr>
+<tr class="<?php print $cls; ?>">
 	<td><?= $project['health'] < 0 ? 'Stormy': ($project['health'] < 5? 'Overcast': 'Sunny') ?></td>
 	<td><?= $project['projectname'] ?></td>
 	<td><?= empty($project['lastsuccess']) ? 'Never' :$project['lastsuccess']->format("Y-m-d H:i:s") ?></td>

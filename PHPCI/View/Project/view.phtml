@@ -61,14 +61,14 @@
 	$pages = ceil($total / 10);
 	$pages = $pages == 0 ? 1 : $pages;
 
-	print '<li class="'.($page == 1 ? 'disabled' : '').'"><a href="<?= PHPCI_URL ?>project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo;</a></li>';
+	print '<li class="'.($page == 1 ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo;</a></li>';
 
 	for($i = 1; $i <= $pages; $i++)
 	{
-		print '<li><a href="<?= PHPCI_URL ?>project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
+		print '<li><a href="' . PHPCI_URL . 'project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
 	}
 
-	print '<li class="'.($page == $pages ? 'disabled' : '').'"><a href="<?= PHPCI_URL ?>project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">&raquo;</a></li>';
+	print '<li class="'.($page == $pages ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">&raquo;</a></li>';
 
 	print '</ul></div>';
 

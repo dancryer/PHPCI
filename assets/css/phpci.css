@@ -14,12 +14,7 @@ body
 	padding: 10px;
 }
 
-.build-plugin-status {
-	float: left!important;
-	padding: 5px;
-	margin-right: 5px;
-	border: 1px solid black;
-}
+td .label { margin-right: 5px; }
 
 .success-message {
 	background-color: #4F8A10;

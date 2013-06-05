@@ -11,21 +11,26 @@ switch($build->getStatus())
 {
 	case 0:
 		$cls = 'info';
+		$subcls = 'info';
 		$status = 'Pending';
+
 	break;
 
 	case 1:
 		$cls = 'warning';
+		$subcls = 'warning';
 		$status = 'Running';
 	break;
 
 	case 2:
 		$cls = 'success';
+		$subcls = 'success';
 		$status = 'Success';
 	break;
 
 	case 3:
 		$cls = 'error';
+		$subcls = 'important';
 		$status = 'Failed';
 	break;
 }
@@ -38,14 +43,25 @@ switch($build->getStatus())
 	<td>
 		<?php
 		$plugins = json_decode($build->getPlugins(), true);
+
 		if ( !is_array($plugins) ) {
 			$plugins = array();
 		}
+		if ( 0 === count($plugins) ) {
+			?>
+			<span class='label label-<?= $subcls ?>'>
+				<?= $status ?>
+			</span>
+			<?php
+		}
 		?>
-		<?php foreach($plugins as $plugin => $pluginstatus): ?>
-			<div class='label build-plugin-status <?= $pluginstatus?'label-success':'label-important' ?>'>
+		<?php
+			foreach($plugins as $plugin => $pluginstatus):
+				$subcls = $pluginstatus?'label label-success':'label label-important';
+		?>
+			<span class='<?= $subcls ?>'>
 				<?= ucwords(str_replace('_', ' ', $plugin)) ?>
-			</div>
+			</span>
 		<?php endforeach; ?>
 		<br style='clear:both;' />
 	</td>

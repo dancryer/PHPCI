@@ -48,6 +48,13 @@ class InstallCommand extends Command
         $conf['phpci']['github']['id']              = $this->ask('(Optional) Github Application ID: ', true);
         $conf['phpci']['github']['secret']          = $this->ask('(Optional) Github Application Secret: ', true);
 
+        $conf['phpci']['email_settings']['smtp_address']  = $this->ask('(Optional) Smtp server address: ', true);
+        $conf['phpci']['email_settings']['smtp_port']     = $this->ask('(Optional) Smtp port: ', true);
+        $conf['phpci']['email_settings']['smtp_username'] = $this->ask('(Optional) Smtp Username: ', true);
+        $conf['phpci']['email_settings']['smtp_password'] = $this->ask('(Optional) Smtp Password: ', true);
+        $conf['phpci']['email_settings']['from_address']  = $this->ask('(Optional) Email address to send from: ', true);
+        $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask('(Optional) Default address to email notifications to: ', true);
+
         $dbUser = $conf['b8']['database']['username'];
         $dbPass = $conf['b8']['database']['password'];
         $dbHost = $conf['b8']['database']['servers']['write'];

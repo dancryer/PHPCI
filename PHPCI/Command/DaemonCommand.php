@@ -1,6 +1,7 @@
 <?php
 /**
 * PHPCI - Continuous Integration for PHP
+* nohup PHPCI_DIR/console phpci:start-daemon > /dev/null 2>&1 &
 *
 * @copyright    Copyright 2013, Block 8 Limited.
 * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
@@ -19,46 +20,47 @@ use PHPCI\Builder;
 use PHPCI\BuildFactory;
 
 /**
-* Run console command - Runs any pending builds.
-* @author       Dan Cryer <dan@block8.co.uk>
+* Daemon that loops and call the run-command.
+* @author       Gabriel Baker <gabriel.baker@autonomicpilot.co.uk>
 * @package      PHPCI
 * @subpackage   Console
 */
-class RunCommand extends Command
+class DaemonCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.');
+            ->setName('phpci:start-daemon')
+            ->setDescription('Starts the daemon to run commands.');
     }
 
     /**
-    * Pulls all pending builds from the database and runs them.
+    * Loops through running.
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->output = $output;
 
-        $store  = Factory::getStore('Build');
-        $result = $store->getByStatus(0);
-        $builds = 0;
+        $this->run   = true;
+        $this->sleep = 0;
+        $runner      = new RunCommand;
 
-        foreach ($result['items'] as $build) {
-            $builds++;
+        while ($this->run) {
 
-            $build = BuildFactory::getBuild($build);
-
-            if ($input->getOption('verbose')) {
-                $builder = new Builder($build, array($this, 'logCallback'));
-            } else {
-                $builder = new Builder($build);
+            try {
+                $buildCount = $runner->execute($input, $output);
+            } catch (\Exception $e) {
+                var_dump($e);
             }
 
-            $builder->execute();
+            if (0 == $buildCount && $this->sleep < 15) {
+                $this->sleep++;
+            } else if (1 < $this->sleep) {
+                $this->sleep--;
+            }
+            echo $buildCount . ' ' . $this->sleep . ',';
+            sleep($this->sleep);
         }
 
-        return $builds;
     }
 
     /**

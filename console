@@ -28,10 +28,12 @@ require('bootstrap.php');
 use PHPCI\Command\RunCommand;
 use PHPCI\Command\GenerateCommand;
 use PHPCI\Command\InstallCommand;
+use PHPCI\Command\DaemonCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
 $application->add(new RunCommand);
 $application->add(new InstallCommand);
 $application->add(new GenerateCommand);
+$application->add(new DaemonCommand);
 $application->run();

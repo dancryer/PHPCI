@@ -117,12 +117,38 @@ class Builder
     }
 
     /**
+     * Access a variable from the config.yml
+     * @param $key
+     * @return mixed
+     */
+    public function getSystemConfig($key)
+    {
+        return \b8\Registry::getInstance()->get($key);
+    }
+
+    /**
     * Access the build.
     * @param Build
     */
     public function getBuild()
     {
         return $this->build;
+    }
+
+    /**
+     * @return string   The title of the project being built.
+     */
+    public function getBuildProjectTitle() {
+        return $this->getBuild()->getProject()->getTitle();
+    }
+
+    /**
+     * Indicates if the build has passed or failed.
+     * @return bool
+     */
+    public function getSuccessStatus()
+    {
+        return $this->success;
     }
 
     /**

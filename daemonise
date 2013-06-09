@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+/**
+* PHPCI - Continuous Integration for PHP
+*
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
+*/
+
+define('PHPCI_BIN_DIR', dirname(__FILE__) . '/vendor/bin/');
+define('PHPCI_DIR', dirname(__FILE__) . '/');
+define('ENABLE_SHELL_PLUGIN', false);
+
+require('bootstrap.php');
+
+use PHPCI\Command\DaemoniseCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->add(new DaemoniseCommand);
+$application->run();

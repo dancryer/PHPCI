@@ -30,8 +30,13 @@ class DaemonCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('phpci:start-daemon')
-            ->setDescription('Starts the daemon to run commands.');
+            ->setName('phpci:daemon')
+            ->setDescription('Initiates the daemon to run commands.')
+            ->addArgument(
+                'state',
+                InputArgument::REQUIRED,
+                'start|stop|status'
+            );
     }
 
     /**
@@ -39,28 +44,71 @@ class DaemonCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $state = $input->getArgument('state');
 
-        $this->run   = true;
-        $this->sleep = 0;
-        $runner      = new RunCommand;
-
-        while ($this->run) {
-
-            try {
-                $buildCount = $runner->execute($input, $output);
-            } catch (\Exception $e) {
-                var_dump($e);
-            }
-
-            if (0 == $buildCount && $this->sleep < 15) {
-                $this->sleep++;
-            } else if (1 < $this->sleep) {
-                $this->sleep--;
-            }
-            echo $buildCount . ' ' . $this->sleep . ',';
-            sleep($this->sleep);
+        switch ($state) {
+            case 'start':
+                $this->startDaemon();
+                break;
+            case 'stop':
+                $this->stopDaemon();
+                break;
+            case 'status':
+                $this->statusDaemon();
+                break;
+            default:
+                echo "Not a valid choice, please use start stop or status";
+                break;
         }
 
+    }
+
+    protected function startDaemon()
+    {
+
+        if ( file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+            echo "Already started\n";
+            return "alreadystarted";
+        }
+
+        $logfile = PHPCI_DIR."/daemon/daemon.log";
+        $cmd = "nohup %s/daemonise phpci:daemonise > %s 2>&1 &";
+        $command = sprintf($cmd, PHPCI_DIR, $logfile);
+        exec($command);
+    }
+
+    protected function stopDaemon()
+    {
+
+        if ( !file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+            echo "Not started\n";
+            return "notstarted";
+        }
+
+        $cmd = "kill $(cat %s/daemon/daemon.pid)";
+        $command = sprintf($cmd, PHPCI_DIR);
+        exec($command);
+        unlink(PHPCI_DIR.'/daemon/daemon.pid');
+    }
+
+    protected function statusDaemon()
+    {
+
+        if ( !file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+            echo "Not running\n";
+            return "notrunning";
+        }
+
+        $pid = trim(file_get_contents(PHPCI_DIR.'/daemon/daemon.pid'));
+        $pidcheck = sprintf("/proc/%s", $pid);
+        if ( is_dir($pidcheck) ) {
+            echo "Running\n";
+            return "running";
+        }
+
+        unlink(PHPCI_DIR.'/daemon/daemon.pid');
+        echo "Not running\n";
+        return "notrunning";
     }
 
     /**

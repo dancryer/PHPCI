@@ -10,6 +10,7 @@
 
 define('PHPCI_BIN_DIR', dirname(__FILE__) . '/vendor/bin/');
 define('PHPCI_DIR', dirname(__FILE__) . '/');
+define('ENABLE_SHELL_PLUGIN', false);
 
 // If this is the first time ./console has been run, we probably don't have Composer or any of our dependencies yet.
 // So we need to install and run Composer.

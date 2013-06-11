@@ -42,18 +42,23 @@ class RunCommand extends Command
 
         $store  = Factory::getStore('Build');
         $result = $store->getByStatus(0);
+        $builds = 0;
 
         foreach ($result['items'] as $build) {
+            $builds++;
+
             $build = BuildFactory::getBuild($build);
-            
+
             if ($input->getOption('verbose')) {
                 $builder = new Builder($build, array($this, 'logCallback'));
             } else {
                 $builder = new Builder($build);
             }
-            
+
             $builder->execute();
         }
+
+        return $builds;
     }
 
     /**

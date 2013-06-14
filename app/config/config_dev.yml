@@ -14,15 +14,18 @@ web_profiler:
 monolog:
     handlers:
         main:
-            type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
-            level: debug
+            type:   stream
+            path:   %kernel.logs_dir%/%kernel.environment%.log
+            level:  debug
+        console:
+            type:   console
+            bubble: false
         firephp:
-            type:  firephp
-            level: info
+            type:   firephp
+            level:  info
         chromephp:
-            type:  chromephp
-            level: info
+            type:   chromephp
+            level:  info
 
 assetic:
     use_controller: true

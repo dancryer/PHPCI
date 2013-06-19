@@ -28,6 +28,9 @@ class BuildFactory
     {
         switch($base->getProject()->getType())
         {
+            case 'remote':
+                $type = 'RemoteGitBuild';
+                break;
             case 'local':
                 $type = 'LocalBuild';
                 break;

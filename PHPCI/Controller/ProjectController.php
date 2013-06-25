@@ -282,7 +282,7 @@ class ProjectController extends \PHPCI\Controller
                     break;
                 case 'github':
                 case 'bitbucket':
-                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+$/', $val)) {
+                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/', $val)) {
                         throw new \Exception('Repository name must be in the format "owner/repo".');
                     }
                     break;

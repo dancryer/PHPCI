@@ -19,12 +19,15 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 * @package      PHPCI
 * @subpackage   Core
 */
-abstract class RemoteGitBuild extends Build
+class RemoteGitBuild extends Build
 {
     /**
     * Get the URL to be used to clone this remote repository.
     */
-    abstract protected function getCloneUrl();
+    protected function getCloneUrl()
+    {
+        return $this->getProject()->getReference();
+    }
 
     /**
     * Create a working copy by cloning, copying, or similar.

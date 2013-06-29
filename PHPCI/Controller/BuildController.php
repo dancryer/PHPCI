@@ -84,13 +84,18 @@ class BuildController extends \PHPCI\Controller
     /**
     * Delete a build.
     */
-    public function delete($buildId)
+    public function delete($buildId = false)
     {
         if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
         $build  = $this->_buildStore->getById($buildId);
+
+        if (!$build) {
+            throw new \Exception('Build has not been found.');
+        }
+
         $this->_buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());

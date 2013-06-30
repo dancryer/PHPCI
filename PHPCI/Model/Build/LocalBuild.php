@@ -37,7 +37,7 @@ class LocalBuild extends Build
             if($gitConfig["core"]["bare"]) {
                 // Looks like we're right. We need to extract the archive!
                 $guid = uniqid();
-                $builder->executeCommand('mkdir "/tmp/%s" && git archive master | tar -x -C "/tmp/%s"', $guid, $guid);
+                $builder->executeCommand('mkdir "/tmp/%s" && git --git-dir="%s" archive master | tar -x -C "/tmp/%s"', $guid, $reference, $guid);
                 $reference = '/tmp/'.$guid;
             }
         }

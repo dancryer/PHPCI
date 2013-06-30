@@ -31,9 +31,9 @@ class LocalBuild extends Build
         $buildPath  = substr($buildPath, 0, -1);
         $yamlParser = new YamlParser();
         
-        if(is_file($reference.'config')) {
+        if(is_file($reference.'/config')) {
             //We're probably looing at a bare repository. We'll open the config and check
-            $gitConfig = parse_ini_file($reference.'config');
+            $gitConfig = parse_ini_file($reference.'/config',TRUE);
             if($gitConfig["core"]["bare"]) {
                 // Looks like we're right. We need to extract the archive!
                 $guid = uniqid();

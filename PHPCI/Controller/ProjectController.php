@@ -63,6 +63,7 @@ class ProjectController extends \PHPCI\Controller
         $build = $this->_buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
+        exit;
     }
 
     /**

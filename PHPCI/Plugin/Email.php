@@ -140,7 +140,8 @@ class Email implements \PHPCI\Plugin
         /** @var \Swift_SmtpTransport $transport */
         $transport = \Swift_SmtpTransport::newInstance(
             $this->getMailConfig('smtp_address'),
-            $this->getMailConfig('smtp_port')
+            $this->getMailConfig('smtp_port'),
+            $this->getMailConfig('smtp_encryption')
         );
         $transport->setUsername($this->getMailConfig('smtp_username'));
         $transport->setPassword($this->getMailConfig('smtp_password'));
@@ -164,6 +165,8 @@ class Email implements \PHPCI\Plugin
                     return null;
                 case 'smtp_port':
                     return '25';
+                case 'smtp_encryption':
+                    return null;
                 case 'from_address':
                     return "notifications-ci@phptesting.org";
                 default:

@@ -18,10 +18,16 @@ namespace PHPCI\Plugin;
 class PhpMessDetector implements \PHPCI\Plugin
 {
     protected $directory;
+    /**
+     * Array of PHPMD rules. Possible values: codesize, unusedcode, naming, design, controversial
+     * @var array
+     */
+    protected $rules;
 
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
         $this->phpci        = $phpci;
+        $this->rules        = isset($options['rules']) ? (array)$options['rules'] : array('codesize', 'unusedcode', 'naming');
     }
 
     /**
@@ -35,7 +41,7 @@ class PhpMessDetector implements \PHPCI\Plugin
             $ignore = ' --exclude ' . implode(',', $this->phpci->ignore);
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text codesize,unusedcode,naming %s';
-        return $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $ignore);
+        $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text %s %s';
+        return $this->phpci->executeCommand($cmd, $this->phpci->buildPath, implode(',', $this->rules), $ignore);
     }
 }

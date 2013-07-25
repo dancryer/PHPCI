@@ -19,6 +19,7 @@ class Composer implements \PHPCI\Plugin
 {
     protected $directory;
     protected $action;
+    protected $preferDist;
     protected $phpci;
 
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
@@ -27,6 +28,7 @@ class Composer implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
         $this->action       = isset($options['action']) ? $options['action'] : 'update';
+        $this->preferDist   = isset($options['prefer_dist']) ? $options['prefer_dist'] : true;
     }
 
     /**
@@ -34,7 +36,7 @@ class Composer implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $cmd = PHPCI_DIR . 'composer.phar --prefer-dist --working-dir="%s" %s';
+        $cmd = PHPCI_DIR . 'composer.phar '. ($this->preferDist ? '--prefer-dist' : null) .' --working-dir="%s" %s';
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
     }
 }

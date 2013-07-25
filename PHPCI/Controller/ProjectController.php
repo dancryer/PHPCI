@@ -79,6 +79,7 @@ class ProjectController extends \PHPCI\Controller
         $this->_projectStore->delete($project);
 
         header('Location: '.PHPCI_URL);
+        exit;
     }
 
     /**

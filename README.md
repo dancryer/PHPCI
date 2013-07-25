@@ -3,7 +3,7 @@ PHPCI
 
 PHPCI is a free and open source continuous integration tool specifically designed for PHP. We've  built it with simplicity in mind, so whilst it doesn't do *everything* Jenkins can do, it is a breeze to set up and use.
 
-_**Please be aware that this is a beta-release project, so there will be bugs and missing features.**_
+_**Please be aware that PHPCI is a beta-release project, so whilst it is very stable, there may be bugs and/or missing features.**_
 
 **Current Build Status**
 

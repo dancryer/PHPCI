@@ -79,6 +79,7 @@ class BuildController extends \PHPCI\Controller
         $build = $this->_buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
+        exit;
     }
 
     /**
@@ -94,6 +95,7 @@ class BuildController extends \PHPCI\Controller
         $this->_buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
+        exit;
     }
 
     /**

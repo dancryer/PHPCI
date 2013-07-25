@@ -19,8 +19,10 @@
 		</ul>
 		</div>
 
-		<br>
-		<p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
+        <?php if (in_array($project->getType(), array('github', 'bitbucket'))): ?>
+            <br>
+            <p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
+        <?php endif; ?>
 
 			<?php
 			switch($project->getType())

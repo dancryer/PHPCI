@@ -25,11 +25,22 @@ class LocalBuild extends Build
     * Create a working copy by cloning, copying, or similar.
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
-    {
+    {   
         $reference  = $this->getProject()->getReference();
         $reference  = substr($reference, -1) == '/' ? substr($reference, 0, -1) : $reference;
         $buildPath  = substr($buildPath, 0, -1);
         $yamlParser = new YamlParser();
+        
+        if(is_file($reference.'/config')) {
+            //We're probably looing at a bare repository. We'll open the config and check
+            $gitConfig = parse_ini_file($reference.'/config',TRUE);
+            if($gitConfig["core"]["bare"]) {
+                // Looks like we're right. We need to extract the archive!
+                $guid = uniqid();
+                $builder->executeCommand('mkdir "/tmp/%s" && git --git-dir="%s" archive master | tar -x -C "/tmp/%s"', $guid, $reference, $guid);
+                $reference = '/tmp/'.$guid;
+            }
+        }
 
         if (!is_file($reference . '/phpci.yml')) {
             $builder->logFailure('Project does not contain a phpci.yml file.');

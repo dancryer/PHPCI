@@ -14,7 +14,7 @@
 
 			<?php if($this->User()->getIsAdmin()): ?>
 			<li><a href="<?= PHPCI_URL ?>project/edit/<?php print $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
-			<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>')"><i class="icon-trash"></i> Delete Project</a></li>
+			<li><a href="#" id="delete-project"><i class="icon-trash"></i> Delete Project</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -80,9 +80,16 @@
 
 <?php if($page == 1): ?>
 <script>
-setInterval(function()
-{
-	$('#latest-builds').load('<?= PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>');
-}, 10000);
+    setInterval(function()
+    {
+        $('#latest-builds').load('<?= PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>');
+    }, 10000);
+
+    $(function() {
+        $('#delete-project').on('click', function (e) {
+            e.preventDefault();
+            confirmDelete("<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>");
+        });
+    })
 </script>
 <?php endif; ?>

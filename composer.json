@@ -33,6 +33,7 @@
         "symfony/yaml"             : "2.2.x-dev",
         "symfony/console"          : "2.2.*",
         "fabpot/php-cs-fixer"      : "0.3.*@dev",
-        "swiftmailer/swiftmailer"  : "v5.0.0"
+        "swiftmailer/swiftmailer"  : "v5.0.0",
+        "phploc/phploc": "*"
     }
 }

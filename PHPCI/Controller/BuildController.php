@@ -79,6 +79,7 @@ class BuildController extends \PHPCI\Controller
         $build = $this->_buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
+        exit;
     }
 
     /**
@@ -86,14 +87,15 @@ class BuildController extends \PHPCI\Controller
     */
     public function delete($buildId)
     {
-        if (!Registry::getInstance()->get('user')->getIsAdmin()) {
+        if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
-        
+
         $build  = $this->_buildStore->getById($buildId);
         $this->_buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
+        exit;
     }
 
     /**

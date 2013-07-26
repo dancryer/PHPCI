@@ -14,13 +14,15 @@
 
 			<?php if($this->User()->getIsAdmin()): ?>
 			<li><a href="<?= PHPCI_URL ?>project/edit/<?php print $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
-			<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>')"><i class="icon-trash"></i> Delete Project</a></li>
+			<li><a href="#" id="delete-project"><i class="icon-trash"></i> Delete Project</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
 
-		<br>
-		<p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
+        <?php if (in_array($project->getType(), array('github', 'bitbucket'))): ?>
+            <br>
+            <p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
+        <?php endif; ?>
 
 			<?php
 			switch($project->getType())
@@ -61,14 +63,14 @@
 	$pages = ceil($total / 10);
 	$pages = $pages == 0 ? 1 : $pages;
 
-	print '<li class="'.($page == 1 ? 'disabled' : '').'"><a href="<?= PHPCI_URL ?>project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo;</a></li>';
+	print '<li class="'.($page == 1 ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo;</a></li>';
 
 	for($i = 1; $i <= $pages; $i++)
 	{
-		print '<li><a href="<?= PHPCI_URL ?>project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
+		print '<li><a href="' . PHPCI_URL . 'project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
 	}
 
-	print '<li class="'.($page == $pages ? 'disabled' : '').'"><a href="<?= PHPCI_URL ?>project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">&raquo;</a></li>';
+	print '<li class="'.($page == $pages ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">&raquo;</a></li>';
 
 	print '</ul></div>';
 
@@ -78,9 +80,16 @@
 
 <?php if($page == 1): ?>
 <script>
-setInterval(function()
-{
-	$('#latest-builds').load('<?= PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>');
-}, 10000);
+    setInterval(function()
+    {
+        $('#latest-builds').load('<?= PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>');
+    }, 10000);
+
+    $(function() {
+        $('#delete-project').on('click', function (e) {
+            e.preventDefault();
+            confirmDelete("<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>");
+        });
+    })
 </script>
 <?php endif; ?>

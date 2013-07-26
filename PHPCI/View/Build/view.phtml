@@ -13,7 +13,7 @@
 			<li class="nav-header">Options</li>
 			<li><a href="<?= PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>')"><i class="icon-trash"></i> Delete Build</a></li>
+			<li><a href="#" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
 		</div>
@@ -73,8 +73,12 @@
 	}, 10000);
 	<?php endif; ?>
 
-	$(document).ready(function()
-	{
+	$(function() {
 		updateBuildView(window.initial);
+
+        $('#delete-build').on('click', function (e) {
+            e.preventDefault();
+            confirmDelete("<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>");
+        });
 	});
 </script>

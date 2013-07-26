@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use b8;
+use b8\Registry;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
 
@@ -33,8 +34,11 @@ class Application extends b8\Application
         $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
         $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
         $skipValidation = ($externalAction || $sessionAction);
-        
+
         if($skipValidation || $this->validateSession()) {
+            if ( !empty($_SESSION['user']) ) {
+                Registry::getInstance()->set('user', $_SESSION['user']);
+            }
             parent::handleRequest();
         }
 
@@ -43,7 +47,7 @@ class Application extends b8\Application
             $view->content  = $this->response->getContent();
             $this->response->setContent($view->render());
         }
-        
+
         return $this->response;
     }
 

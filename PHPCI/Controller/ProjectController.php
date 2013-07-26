@@ -63,6 +63,7 @@ class ProjectController extends \PHPCI\Controller
         $build = $this->_buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
+        exit;
     }
 
     /**
@@ -78,6 +79,7 @@ class ProjectController extends \PHPCI\Controller
         $this->_projectStore->delete($project);
 
         header('Location: '.PHPCI_URL);
+        exit;
     }
 
     /**
@@ -252,12 +254,13 @@ class ProjectController extends \PHPCI\Controller
             'choose' => 'Select repository type...',
             'github' => 'Github',
             'bitbucket' => 'Bitbucket',
+            'remote' => 'Remote URL',
             'local' => 'Local Path'
             );
 
         $field = new Form\Element\Select('type');
         $field->setRequired(true);
-        $field->setPattern('^(github|bitbucket|local)');
+        $field->setPattern('^(github|bitbucket|remote|local)');
         $field->setOptions($options);
         $field->setLabel('Where is your project hosted?');
         $field->setClass('span4');
@@ -275,6 +278,11 @@ class ProjectController extends \PHPCI\Controller
             $type = $values['type'];
 
             switch($type) {
+                case 'remote':
+                    if (!preg_match('/^(git|https?):\/\//', $val)) {
+                        throw new \Exception('Repository URL must be start with git://, http:// or https://.');
+                    }
+                    break;
                 case 'local':
                     if (!is_dir($val)) {
                         throw new \Exception('The path you specified does not exist.');
@@ -282,7 +290,7 @@ class ProjectController extends \PHPCI\Controller
                     break;
                 case 'github':
                 case 'bitbucket':
-                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+$/', $val)) {
+                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/', $val)) {
                         throw new \Exception('Repository name must be in the format "owner/repo".');
                     }
                     break;

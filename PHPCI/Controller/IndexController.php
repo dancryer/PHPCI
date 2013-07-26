@@ -33,7 +33,7 @@ class IndexController extends \PHPCI\Controller
         $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
         $summary        = $this->_buildStore->getBuildSummary();
 
-        $summaryView = new b8\View('BuildsTable');
+        $summaryView = new b8\View('SummaryTable');
         $summaryView->builds = $summary['items'];
 
         $this->view->builds   = $this->getLatestBuildsHtml();

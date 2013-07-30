@@ -67,7 +67,7 @@ class GithubBuild extends RemoteGitBuild
                 break;
         }
 
-        $url = \b8\Registry::getInstance()->get('install_url');
+        $url = \b8\Config::getInstance()->get('phpci.url');
         $params = array(    'state' => $status,
                             'target_url' => $url . '/build/view/' . $this->getId());
         $headers = array(

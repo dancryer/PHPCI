@@ -15,7 +15,6 @@ use b8;
 use b8\Controller;
 use b8\Store;
 use b8\Form;
-use b8\Registry;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -175,7 +174,7 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function handleGithubResponse()
     {
-        $github = \b8\Registry::getInstance()->get('github_app');
+        $github = \b8\Config::getInstance()->get('phpci.github');
         $code   = $this->getParam('code', null);
 
         if (!is_null($code)) {

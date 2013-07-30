@@ -199,7 +199,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] === $value) {
+        if ($this->data['id'] == $value) {
             return;
         }
 
@@ -218,7 +218,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Title', $value);
         $this->_validateString('Title', $value);
-        if ($this->data['title'] === $value) {
+        if ($this->data['title'] == $value) {
             return;
         }
 
@@ -237,7 +237,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Reference', $value);
         $this->_validateString('Reference', $value);
-        if ($this->data['reference'] === $value) {
+        if ($this->data['reference'] == $value) {
             return;
         }
 
@@ -256,7 +256,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('GitKey', $value);
         $this->_validateString('GitKey', $value);
-        if ($this->data['git_key'] === $value) {
+        if ($this->data['git_key'] == $value) {
             return;
         }
 
@@ -275,7 +275,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Type', $value);
         $this->_validateString('Type', $value);
-        if ($this->data['type'] === $value) {
+        if ($this->data['type'] == $value) {
             return;
         }
 
@@ -293,7 +293,7 @@ class ProjectBase extends Model
     {
 
         $this->_validateString('Token', $value);
-        if ($this->data['token'] === $value) {
+        if ($this->data['token'] == $value) {
             return;
         }
 

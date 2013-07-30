@@ -42,6 +42,7 @@ class BuildBase extends Model
         'started' => null,
         'finished' => null,
         'plugins' => null,
+        'committer_email' => null,
      );
 
     /**
@@ -58,6 +59,7 @@ class BuildBase extends Model
         'started' => 'getStarted',
         'finished' => 'getFinished',
         'plugins' => 'getPlugins',
+        'committer_email' => 'getCommitterEmail',
         'Project' => 'getProject',
      );
 
@@ -75,6 +77,7 @@ class BuildBase extends Model
         'started' => 'setStarted',
         'finished' => 'setFinished',
         'plugins' => 'setPlugins',
+        'committer_email' => 'setCommitterEmail',
         'Project' => 'setProject',
      );
 
@@ -127,6 +130,11 @@ class BuildBase extends Model
         'plugins' => array(
             'type' => 'text',
             'length' => '',
+            'nullable' => true,
+            ),
+        'committer_email' => array(
+            'type' => 'varchar',
+            'length' => '512',
             'nullable' => true,
             ),
      );
@@ -300,6 +308,19 @@ class BuildBase extends Model
     }
 
     /**
+    * Get the value of CommitterEmail / committer_email.
+    *
+    * @return string
+    */
+    public function getCommitterEmail()
+    {
+        $rtn    = $this->data['committer_email'];
+
+        
+        return $rtn;
+    }
+
+    /**
     * Set the value of Id / id.
     *
     * Must not be null.
@@ -309,7 +330,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] === $value) {
+        if ($this->data['id'] == $value) {
             return;
         }
 
@@ -328,7 +349,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('ProjectId', $value);
         $this->_validateInt('ProjectId', $value);
-        if ($this->data['project_id'] === $value) {
+        if ($this->data['project_id'] == $value) {
             return;
         }
 
@@ -347,7 +368,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('CommitId', $value);
         $this->_validateString('CommitId', $value);
-        if ($this->data['commit_id'] === $value) {
+        if ($this->data['commit_id'] == $value) {
             return;
         }
 
@@ -366,7 +387,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Status', $value);
         $this->_validateInt('Status', $value);
-        if ($this->data['status'] === $value) {
+        if ($this->data['status'] == $value) {
             return;
         }
 
@@ -384,7 +405,7 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Log', $value);
-        if ($this->data['log'] === $value) {
+        if ($this->data['log'] == $value) {
             return;
         }
 
@@ -403,7 +424,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Branch', $value);
         $this->_validateString('Branch', $value);
-        if ($this->data['branch'] === $value) {
+        if ($this->data['branch'] == $value) {
             return;
         }
 
@@ -421,7 +442,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Created', $value);
-        if ($this->data['created'] === $value) {
+        if ($this->data['created'] == $value) {
             return;
         }
 
@@ -439,7 +460,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Started', $value);
-        if ($this->data['started'] === $value) {
+        if ($this->data['started'] == $value) {
             return;
         }
 
@@ -457,7 +478,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Finished', $value);
-        if ($this->data['finished'] === $value) {
+        if ($this->data['finished'] == $value) {
             return;
         }
 
@@ -475,13 +496,31 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Plugins', $value);
-        if ($this->data['plugins'] === $value) {
+        if ($this->data['plugins'] == $value) {
             return;
         }
 
         $this->data['plugins'] = $value;
 
         $this->_setModified('plugins');
+    }
+
+    /**
+    * Set the value of CommitterEmail / committer_email.
+    *
+    * @param $value string
+    */
+    public function setCommitterEmail($value)
+    {
+
+        $this->_validateString('CommitterEmail', $value);
+        if ($this->data['committer_email'] == $value) {
+            return;
+        }
+
+        $this->data['committer_email'] = $value;
+
+        $this->_setModified('committer_email');
     }
 
     /**

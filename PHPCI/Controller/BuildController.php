@@ -10,7 +10,6 @@
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Registry;
 use PHPCI\Model\Build;
 
 /**

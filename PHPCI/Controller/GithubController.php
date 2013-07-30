@@ -41,6 +41,11 @@ class GithubController extends \PHPCI\Controller
             $build->setLog('');
             $build->setCreated(new \DateTime());
             $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
+
+            if (!empty($payload['pusher']['email'])) {
+                $build->setCommitterEmail($payload['pusher']['email']);
+            }
+
         } catch (\Exception $ex) {
             header('HTTP/1.1 400 Bad Request');
             header('Ex: ' . $ex->getMessage());

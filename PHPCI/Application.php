@@ -10,7 +10,6 @@
 namespace PHPCI;
 
 use b8;
-use b8\Registry;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
 
@@ -25,9 +24,6 @@ class Application extends b8\Application
     */
     public function handleRequest()
     {
-        // Registry legacy:
-        $registry = new b8\Registry($this->config, $this->request);
-
         $this->initRequest();
 
         // Validate the user's session unless it is a login/logout action or a web hook:
@@ -36,9 +32,6 @@ class Application extends b8\Application
         $skipValidation = ($externalAction || $sessionAction);
 
         if($skipValidation || $this->validateSession()) {
-            if ( !empty($_SESSION['user']) ) {
-                Registry::getInstance()->set('user', $_SESSION['user']);
-            }
             parent::handleRequest();
         }
 

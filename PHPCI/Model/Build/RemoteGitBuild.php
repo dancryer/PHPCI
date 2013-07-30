@@ -74,7 +74,14 @@ class RemoteGitBuild extends Build
     protected function cloneBySsh(Builder $builder, $to)
     {
         // Copy the project's keyfile to disk:
-        $keyFile = realpath($to) . '.key';
+        $keyPath = realpath($to);
+
+        if ($keyPath === false) {
+            $keyPath = dirname($to);
+        }
+
+        $keyFile = $keyPath . '.key';
+
         file_put_contents($keyFile, $this->getProject()->getGitKey());
         chmod($keyFile, 0600);
 

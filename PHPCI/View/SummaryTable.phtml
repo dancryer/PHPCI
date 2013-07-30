@@ -80,8 +80,8 @@ foreach($projects as $projectId => $project):
         break;
     }
 
-    $health = ($project['health'] < 0 ? 'Stormy': ($project['health'] < 5? 'Overcast': 'Sunny'));
-    $subcls = ($project['health'] < 0 ? 'important': ($project['health'] < 5? 'warning': 'success'));
+    $health = ($project['health'] <= 0 ? 'Stormy': ($project['successes'] < $project['count']? 'Overcast': 'Sunny'));
+    $subcls = ($project['health'] <= 0 ? 'important': ($project['successes'] < $project['count']? 'warning': 'success'));
 ?>
 <tr class="<?php print $cls; ?>">
     <td>

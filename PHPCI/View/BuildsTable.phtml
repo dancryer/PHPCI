@@ -49,9 +49,7 @@ switch($build->getStatus())
 		}
 		if ( 0 === count($plugins) ) {
 			?>
-			<span class='label label-<?= $subcls ?>'>
-				<?= $status ?>
-			</span>
+			<span class='label label-<?= $subcls ?>'><?= $status ?></span>
 			<?php
 		}
 		?>
@@ -59,9 +57,7 @@ switch($build->getStatus())
 			foreach($plugins as $plugin => $pluginstatus):
 				$subcls = $pluginstatus?'label label-success':'label label-important';
 		?>
-			<span class='<?= $subcls ?>'>
-				<?= ucwords(str_replace('_', ' ', $plugin)) ?>
-			</span>
+			<span class='<?= $subcls ?>'><?= ucwords(str_replace('_', ' ', $plugin)) ?></span>
 		<?php endforeach; ?>
 		<br style='clear:both;' />
 	</td>

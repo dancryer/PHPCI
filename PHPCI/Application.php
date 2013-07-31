@@ -65,7 +65,7 @@ class Application extends b8\Application
             $this->response->setContent('');
         } else {
             $this->response = new RedirectResponse($this->response);
-            $this->response->setHeader('Location', '/session/login');
+            $this->response->setHeader('Location', PHPCI_URL.'session/login');
         }
 
         return false;

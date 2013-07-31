@@ -41,7 +41,8 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 ####Installing from Github:
 * Step 1: `git clone https://github.com/Block8/PHPCI.git`
 * Step 2: `cd PHPCI`
-* Step 3: `chmod +x ./console && ./console phpci:install`
+* Step 3: `composer install`
+* Step 4: `chmod +x ./console && ./console phpci:install`
     * When prompted, enter your database host, username, password and the database name that PHPCI should use.
     * The script will attempt to create the database if it does not exist already.
     * If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
@@ -103,6 +104,8 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
             standard: "PSR2"
         php_cpd:
             allow_failures: true
+        grunt:
+            task: "build"
     
     complete:
         mysql:

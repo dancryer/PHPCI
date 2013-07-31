@@ -104,6 +104,8 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
             standard: "PSR2"
         php_cpd:
             allow_failures: true
+        grunt:
+            task: "build"
     
     complete:
         mysql:

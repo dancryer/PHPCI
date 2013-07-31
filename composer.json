@@ -24,16 +24,19 @@
 
     "require": {
         "block8/b8framework"       : "dev-master",
+        "symfony/yaml"             : "2.2.x-dev",
+        "symfony/console"          : "2.2.*",
+        "fabpot/php-cs-fixer"      : "0.3.*@dev",
+        "swiftmailer/swiftmailer"  : "v5.0.0"
+        "ircmaxell/password-compat": "1.x",
+    },
+    
+    "suggest": {
         "phpunit/phpunit"          : "3.*",
         "phpmd/phpmd"              : "1.*",
         "sebastian/phpcpd"         : "1.*",
         "squizlabs/php_codesniffer": "1.*",
-        "ircmaxell/password-compat": "1.x",
         "phpspec/phpspec"          : "2.*",
-        "symfony/yaml"             : "2.2.x-dev",
-        "symfony/console"          : "2.2.*",
-        "fabpot/php-cs-fixer"      : "0.3.*@dev",
-        "swiftmailer/swiftmailer"  : "v5.0.0",
         "phploc/phploc": "*"
     }
 }

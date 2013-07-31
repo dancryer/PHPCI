@@ -52,7 +52,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 **Apache Example**:
 
     RewriteEngine On
-    RewriteBase /path-to-phpci
+    RewriteBase /path-to-phpci/public
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule (.*)? index.php [L,E=PATH_INFO:/$1]

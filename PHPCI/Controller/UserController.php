@@ -129,7 +129,7 @@ class UserController extends  \PHPCI\Controller
     {
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction('/user/' . $type);
+        $form->setAction(PHPCI_URL.'user/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
 
         $field = new Form\Element\Email('email');

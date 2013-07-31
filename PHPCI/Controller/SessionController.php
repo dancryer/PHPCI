@@ -48,12 +48,14 @@ class SessionController extends \PHPCI\Controller
         $email->setLabel('Email Address');
         $email->setRequired(true);
         $email->setContainerClass('form-group');
+        $email->setClass('form-control');
         $form->addField($email);
 
         $pwd = new b8\Form\Element\Password('password');
         $pwd->setLabel('Password');
         $pwd->setRequired(true);
         $pwd->setContainerClass('form-group');
+        $pwd->setClass('form-control');
         $form->addField($pwd);
 
         $pwd = new b8\Form\Element\Submit();

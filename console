@@ -14,14 +14,9 @@ define('ENABLE_SHELL_PLUGIN', false);
 
 // If this is the first time ./console has been run, we probably don't have Composer or any of our dependencies yet.
 // So we need to install and run Composer.
-if (!file_exists(PHPCI_DIR . 'vendor/autoload.php') || !file_exists(PHPCI_DIR . 'composer.phar')) {
-    print 'INSTALLING: Composer' . PHP_EOL;
-    file_put_contents(PHPCI_DIR . 'composerinstaller.php', file_get_contents('https://getcomposer.org/installer'));
-    shell_exec('php ' . escapeshellarg(PHPCI_DIR . 'composerinstaller.php'));
-    unlink(PHPCI_DIR . 'composerinstaller.php');
-
-    print 'RUNNING: Composer' . PHP_EOL;
-    shell_exec('php '.escapeshellarg(PHPCI_DIR.'composer.phar').' install');
+if (!file_exists(PHPCI_DIR . 'vendor/autoload.php')) {
+    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
+    exit( 1 );
 }
 
 require('bootstrap.php');

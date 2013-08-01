@@ -82,7 +82,7 @@ function updateBuildView(data)
 		for(var plugin in data.plugins)
 		{
 			var row = $('<tr>').addClass(data.plugins[plugin] ? 'success' : 'error');
-			var name = $('<td>').html('<strong>' + plugin + '</strong>');
+			var name = $('<td>').html('<strong>' + formatPluginName(plugin) + '</strong>');
 			var status = $('<td>').text(data.plugins[plugin] ? 'OK' : 'Failed');
 
 			row.append(name);
@@ -168,4 +168,19 @@ function setupProjectForm()
 			$('#element-token').val('');
 		}
 	});
+}
+
+
+function formatPluginName (name) {
+    name = name.replace(new RegExp('_', 'g'), ' ');
+    name = ucwords(name);
+    name = name.replace(new RegExp('Php', 'g'), 'PHP');
+
+    return name;
+}
+
+function ucwords (str) {
+    return (str + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
+        return $1.toUpperCase();
+    });
 }

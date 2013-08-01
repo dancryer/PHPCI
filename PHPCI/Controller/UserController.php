@@ -135,25 +135,29 @@ class UserController extends  \PHPCI\Controller
         $field = new Form\Element\Email('email');
         $field->setRequired(true);
         $field->setLabel('Email Address');
-        $field->setClass('span4');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Text('name');
         $field->setRequired(true);
         $field->setLabel('Name');
-        $field->setClass('span4');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Password('password');
         $field->setRequired(true);
         $field->setLabel('Password' . ($type == 'edit' ? ' (leave blank to keep current password)' : ''));
-        $field->setClass('span4');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Checkbox('admin');
         $field->setRequired(false);
         $field->setCheckedValue(1);
         $field->setLabel('Is this user an administrator?');
+        $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Submit();

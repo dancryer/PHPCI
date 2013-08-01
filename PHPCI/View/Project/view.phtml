@@ -3,13 +3,13 @@
 </div>
 
 <div class="row">
-	<div class="span3">
-		<div class="well" style="padding: 8px 0">
-		<ul class="nav nav-list">
+	<div class="col-lg-3">
+        <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
 			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="icon-folder-open"></i> <?php print $project->getTitle(); ?></a></li>
-			<li class="divider"></li>
-			<li class="nav-header">Options</li>
+		</ul>
+			<h5>Options</h5>
+        <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>project/build/<?php print $project->getId(); ?>"><i class="icon-cog"></i> Build Now</a></li>
 
 			<?php if($this->User()->getIsAdmin()): ?>
@@ -17,7 +17,6 @@
 			<li><a href="#" id="delete-project"><i class="icon-trash"></i> Delete Project</a></li>
 			<?php endif; ?>
 		</ul>
-		</div>
 
         <?php if (in_array($project->getType(), array('github', 'bitbucket'))): ?>
             <br>
@@ -40,7 +39,7 @@
 			?>
 		</p>
 	</div>
-	<div class="span9">
+	<div class="col-lg-9">
 		<table class="table table-striped table-bordered">
 			<thead>
 			<tr>
@@ -49,7 +48,7 @@
 				<th>Commit</th>
 				<th>Branch</th>
 				<th>Status</th>
-				<th style="width: 1%"></th>
+				<th style="width: 100px"></th>
 			</tr>
 			</thead>
 			<tbody id="latest-builds">
@@ -59,7 +58,7 @@
 
 <?php
 
-	print '<div class="pagination"><ul>';
+	print '<div><ul class="pagination">';
 	$pages = ceil($total / 10);
 	$pages = $pages == 0 ? 1 : $pages;
 

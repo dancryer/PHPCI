@@ -4,21 +4,20 @@
 </div>
 
 <div class="row">
-	<div class="span3">
-		<div class="well" style="padding: 8px 0">
-		<ul class="nav nav-list">
+	<div class="col-lg-3">
+        <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
 			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print $build->getProject()->getTitle(); ?></a></li>
-			<li class="divider"></li>
-			<li class="nav-header">Options</li>
+		</ul>
+			<h5>Options</h5>
+        <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
 			<li><a href="#" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
-		</div>
 
-		<table class="table table-striped table-bordered">
+		<table class="table table-striped table-bordered" style="margin-top: 20px">
 			<thead>
 			<tr>
 				<th colspan="2">Plugin Status</th>
@@ -28,7 +27,7 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="span9">
+	<div class="col-lg-9">
 		<div id="status"></div>
 
 		<table class="table table-striped table-bordered">

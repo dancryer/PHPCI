@@ -10,7 +10,7 @@
 switch($build->getStatus())
 {
 	case 0:
-		$cls = 'info';
+		$cls = 'active';
 		$subcls = 'info';
 		$status = 'Pending';
 
@@ -29,8 +29,8 @@ switch($build->getStatus())
 	break;
 
 	case 3:
-		$cls = 'error';
-		$subcls = 'important';
+		$cls = 'danger';
+		$subcls = 'danger';
 		$status = 'Failed';
 	break;
 }
@@ -53,7 +53,7 @@ switch($build->getStatus())
 		?>
 		<?php
 			foreach($plugins as $plugin => $pluginstatus):
-				$subcls = $pluginstatus?'label label-success':'label label-important';
+				$subcls = $pluginstatus?'label label-success':'label label-danger';
 		?> <span class='<?= $subcls ?>'><?php print $this->Build()->formatPluginName($plugin); ?></span> <?php endforeach; ?>
 		<br style='clear:both;' />
 	</td>

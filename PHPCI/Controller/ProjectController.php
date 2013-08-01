@@ -262,13 +262,13 @@ class ProjectController extends \PHPCI\Controller
         $field->setPattern('^(github|bitbucket|remote|local)');
         $field->setOptions($options);
         $field->setLabel('Where is your project hosted?');
-        $field->setClass('span4');
+        $field->setClass('col-lg-4 form-control');
         $form->addField($field);
 
         if (isset($_SESSION['github_token'])) {
             $field = new Form\Element\Select('github');
             $field->setLabel('Choose a Github repository:');
-            $field->setClass('span4');
+            $field->setClass('col-lg-4 form-control');
             $field->setOptions($this->getGithubRepositories());
             $form->addField($field);
         }
@@ -302,24 +302,25 @@ class ProjectController extends \PHPCI\Controller
         $field->setRequired(true);
         $field->setValidator($referenceValidator);
         $field->setLabel('Repository Name / URL (Remote) or Path (Local)');
-        $field->setClass('span4');
+        $field->setClass('col-lg-4 form-control');
         $form->addField($field);
 
         $field = new Form\Element\Text('title');
         $field->setRequired(true);
         $field->setLabel('Project Title');
-        $field->setClass('span4');
+        $field->setClass('col-lg-4 form-control');
         $form->addField($field);
         
         $field = new Form\Element\TextArea('key');
         $field->setRequired(false);
         $field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
-        $field->setClass('span7');
+        $field->setClass('col-lg-7 form-control');
         $field->setRows(6);
         $form->addField($field);
 
         $field = new Form\Element\Submit();
         $field->setValue('Save Project');
+        $field->setContainerClass('form-group');
         $field->setClass('btn-success');
         $form->addField($field);
 

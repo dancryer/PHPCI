@@ -81,3 +81,7 @@ h3
 	margin-top: 0;
 	padding-top: 0;
 }
+
+.navbar-brand {
+    padding: 10px 15px;
+}

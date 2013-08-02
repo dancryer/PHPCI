@@ -14,8 +14,7 @@ class Atoum implements \PHPCI\Plugin
 
         if (isset($options['executable'])) {
             $this->executable = $options['executable'];
-        }
-        else {
+        } else {
             $this->executable = PHPCI_BIN_DIR.'atoum';
         }
 
@@ -51,7 +50,7 @@ class Atoum implements \PHPCI\Plugin
         $status = true;
         exec($cmd, $output);
 
-        if (!empty($output) &&  count(preg_grep("/error/i",$output)) > 0) {
+        if (!empty($output) && count(preg_grep("/error/i", $output)) > 0) {
             $status = false;
             $this->phpci->log($output, '       ');
         }

@@ -59,7 +59,7 @@ class SessionController extends \PHPCI\Controller
         $form->addField($pwd);
 
         $pwd = new b8\Form\Element\Submit();
-        $pwd->setValue('Login &raquo;');
+        $pwd->setValue('Log in &raquo;');
         $pwd->setClass('btn-success');
         $form->addField($pwd);
 

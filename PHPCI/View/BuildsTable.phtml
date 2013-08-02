@@ -10,7 +10,7 @@
 switch($build->getStatus())
 {
 	case 0:
-		$cls = 'info';
+		$cls = 'active';
 		$subcls = 'info';
 		$status = 'Pending';
 
@@ -29,8 +29,8 @@ switch($build->getStatus())
 	break;
 
 	case 3:
-		$cls = 'error';
-		$subcls = 'important';
+		$cls = 'danger';
+		$subcls = 'danger';
 		$status = 'Failed';
 	break;
 }
@@ -48,28 +48,20 @@ switch($build->getStatus())
 			$plugins = array();
 		}
 		if ( 0 === count($plugins) ) {
-			?>
-			<span class='label label-<?= $subcls ?>'>
-				<?= $status ?>
-			</span>
-			<?php
+			?> <span class='label label-<?= $subcls ?>'><?= $status ?></span> <?php
 		}
 		?>
 		<?php
 			foreach($plugins as $plugin => $pluginstatus):
-				$subcls = $pluginstatus?'label label-success':'label label-important';
-		?>
-			<span class='<?= $subcls ?>'>
-				<?= ucwords(str_replace('_', ' ', $plugin)) ?>
-			</span>
-		<?php endforeach; ?>
+				$subcls = $pluginstatus?'label label-success':'label label-danger';
+		?> <span class='<?= $subcls ?>'><?php print $this->Build()->formatPluginName($plugin); ?></span> <?php endforeach; ?>
 		<br style='clear:both;' />
 	</td>
 	<td>
 		<div class="btn-group">
-			<a class="btn" href="<?= PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>
+			<a class="btn btn-default btn-small" href="<?= PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<button class="btn dropdown-toggle" data-toggle="dropdown">
+			<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">

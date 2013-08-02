@@ -60,12 +60,12 @@ foreach($projects as $projectId => $project):
     switch($project['lastbuildstatus'])
     {
         case 0:
-            $cls = 'info';
+            $cls = 'active';
             $status = 'Pending';
         break;
 
         case 1:
-            $cls = 'warning';
+            $cls = 'danger';
             $status = 'Running';
         break;
 
@@ -80,8 +80,8 @@ foreach($projects as $projectId => $project):
         break;
     }
 
-    $health = ($project['health'] < 0 ? 'Stormy': ($project['health'] < 5? 'Overcast': 'Sunny'));
-    $subcls = ($project['health'] < 0 ? 'important': ($project['health'] < 5? 'warning': 'success'));
+    $health = ($project['health'] <= 0 ? 'Stormy': ($project['successes'] < $project['count']? 'Overcast': 'Sunny'));
+    $subcls = ($project['health'] <= 0 ? 'danger': ($project['successes'] < $project['count']? 'warning': 'success'));
 ?>
 <tr class="<?php print $cls; ?>">
     <td>
@@ -109,6 +109,6 @@ foreach($projects as $projectId => $project):
         <?php } ?>
     </td>
     <td><?= $project['successes'] ?>/<?= $project['failures'] ?></td>
-    <td><a class="btn" href='<?= PHPCI_URL ?>project/build/<?= $projectId ?>'>build</a></td>
+    <td><a class="btn btn-default btn-small" href='<?= PHPCI_URL ?>project/build/<?= $projectId ?>'>build now &raquo;</a></td>
 </tr>
 <?php endforeach; ?>

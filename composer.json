@@ -34,6 +34,7 @@
         "symfony/console"          : "2.2.*",
         "fabpot/php-cs-fixer"      : "0.3.*@dev",
         "swiftmailer/swiftmailer"  : "v5.0.0",
-	 "atoum/atoum":"*"
+        "phploc/phploc": "*",
+	    "atoum/atoum":"*"
     }
 }

@@ -14,38 +14,33 @@ use b8\Store;
 use PHPCI\Model\Build;
 
 /**
-* Github Controller - Processes webhook pings from Github.
-* @author       Dan Cryer <dan@block8.co.uk>
+* Gitlab Controller - Processes webhook pings from Gitlab.
+* @author       Alex Russell <alex@clevercherry.com>, Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Web
 */
-class GithubController extends \PHPCI\Controller
+class GitlabController extends \PHPCI\Controller
 {
     public function init()
     {
-        $this->_buildStore      = Store\Factory::getStore('Build');
+        $this->_buildStore = Store\Factory::getStore('Build');
     }
 
     /**
-    * Called by Github Webhooks:
+    * Called by Gitlab Webhooks:
     */
     public function webhook($project)
     {
-        $payload    = json_decode($this->getParam('payload'), true);
+        $payload = json_decode(file_get_contents("php://input"), true);
 
         try {
-            $build      = new Build();
+            $build = new Build();
             $build->setProjectId($project);
             $build->setCommitId($payload['after']);
             $build->setStatus(0);
             $build->setLog('');
             $build->setCreated(new \DateTime());
             $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
-
-            if (!empty($payload['pusher']['email'])) {
-                $build->setCommitterEmail($payload['pusher']['email']);
-            }
-
         } catch (\Exception $ex) {
             header('HTTP/1.1 400 Bad Request');
             header('Ex: ' . $ex->getMessage());
@@ -60,7 +55,7 @@ class GithubController extends \PHPCI\Controller
             header('Ex: ' . $ex->getMessage());
             die('FAIL');
         }
-        
+
         die('OK');
     }
 }

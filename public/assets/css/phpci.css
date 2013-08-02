@@ -57,22 +57,22 @@ td .label { margin-right: 5px; }
 
 .icon-build-ok
 {
-	background: url('/assets/img/icon-build-ok.png') no-repeat top left;
+	background: url('../img/icon-build-ok.png') no-repeat top left;
 }
 
 .icon-build-failed
 {
-	background: url('/assets/img/icon-build-failed.png') no-repeat top left;
+	background: url('../img/icon-build-failed.png') no-repeat top left;
 }
 
 .icon-build-pending
 {
-	background: url('/assets/img/icon-build-pending.png') no-repeat top left;
+	background: url('../img/icon-build-pending.png') no-repeat top left;
 }
 
 .icon-build-running
 {
-	background: url('/assets/img/icon-build-running.png') no-repeat top left;
+	background: url('../img/icon-build-running.png') no-repeat top left;
 }
 
 h3
@@ -80,4 +80,8 @@ h3
 	border-bottom: 1px solid #f0f0f0;
 	margin-top: 0;
 	padding-top: 0;
+}
+
+.navbar-brand {
+    padding: 10px 15px;
 }

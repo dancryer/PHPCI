@@ -11,7 +11,7 @@ namespace PHPCI;
 
 use PHPCI\Model\Build;
 use b8\Store;
-use Symfony\Component\Yaml\Parser as YamlParser;
+use b8\Config;
 
 /**
 * PHPCI Build Runner
@@ -123,7 +123,7 @@ class Builder
      */
     public function getSystemConfig($key)
     {
-        return \b8\Registry::getInstance()->get($key);
+        return Config::getInstance()->get($key);
     }
 
     /**
@@ -319,7 +319,7 @@ class Builder
     {
         $commitId           = $this->build->getCommitId();
         $buildId            = 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
-        $this->ciDir        = realpath(dirname(__FILE__) . '/../') . '/';
+        $this->ciDir        = dirname(__FILE__) . '/../';
         $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
         
         $this->setInterpolationVars();

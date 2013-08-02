@@ -42,31 +42,6 @@ $conf['b8']['app']['default_controller'] = 'Index';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
 
 $config = new b8\Config($conf);
-$request = new b8\Http\Request();
-$registry = new b8\Registry($config, $request);
-
-if (file_exists(APPLICATION_PATH . 'config.php')) {
-    require(APPLICATION_PATH . 'config.php');
-
-    $conf = $config->get(null);
-    unset($conf['b8']['app']);
-    unset($conf['b8']['view']);
-
-    $conf['phpci']['url'] = $conf['install_url'];
-
-    if (isset($conf['github_app'])) {
-        $conf['phpci']['github'] = $conf['github_app'];
-    }
-    
-    unset($conf['install_url']);
-    unset($conf['github_app']);
-
-    $dumper = new Symfony\Component\Yaml\Dumper();
-    $yaml = $dumper->dump($conf);
-
-    file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
-    unlink(APPLICATION_PATH . 'config.php');
-}
 
 if (file_exists(APPLICATION_PATH . 'PHPCI/config.yml')) {
     $config->loadYaml(APPLICATION_PATH . 'PHPCI/config.yml');

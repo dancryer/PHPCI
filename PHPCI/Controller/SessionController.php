@@ -21,7 +21,7 @@ class SessionController extends \PHPCI\Controller
 {
     public function init()
     {
-        $this->response->disableLayout();     
+        $this->response->disableLayout();
         $this->_userStore       = b8\Store\Factory::getStore('User');
     }
 
@@ -29,7 +29,7 @@ class SessionController extends \PHPCI\Controller
     * Handles user login (form and processing)
     */
     public function login()
-    {        
+    {
         if ($this->request->getMethod() == 'POST') {
             $user = $this->_userStore->getByEmail($this->getParam('email'));
             
@@ -42,22 +42,24 @@ class SessionController extends \PHPCI\Controller
 
         $form = new b8\Form();
         $form->setMethod('POST');
-        $form->setAction('/session/login');
+        $form->setAction(PHPCI_URL.'session/login');
 
         $email = new b8\Form\Element\Email('email');
         $email->setLabel('Email Address');
         $email->setRequired(true);
-        $email->setClass('span3');
+        $email->setContainerClass('form-group');
+        $email->setClass('form-control');
         $form->addField($email);
 
         $pwd = new b8\Form\Element\Password('password');
         $pwd->setLabel('Password');
         $pwd->setRequired(true);
-        $pwd->setClass('span3');
+        $pwd->setContainerClass('form-group');
+        $pwd->setClass('form-control');
         $form->addField($pwd);
 
         $pwd = new b8\Form\Element\Submit();
-        $pwd->setValue('Login &raquo;');
+        $pwd->setValue('Log in &raquo;');
         $pwd->setClass('btn-success');
         $form->addField($pwd);
 

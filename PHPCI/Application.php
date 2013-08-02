@@ -10,7 +10,6 @@
 namespace PHPCI;
 
 use b8;
-use b8\Registry;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
 
@@ -25,20 +24,14 @@ class Application extends b8\Application
     */
     public function handleRequest()
     {
-        // Registry legacy:
-        $registry = new b8\Registry($this->config, $this->request);
-
         $this->initRequest();
 
         // Validate the user's session unless it is a login/logout action or a web hook:
         $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
-        $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'BuildStatus'));
+        $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'Gitlab', 'BuildStatus'));
         $skipValidation = ($externalAction || $sessionAction);
 
         if($skipValidation || $this->validateSession()) {
-            if ( !empty($_SESSION['user']) ) {
-                Registry::getInstance()->set('user', $_SESSION['user']);
-            }
             parent::handleRequest();
         }
 
@@ -72,7 +65,7 @@ class Application extends b8\Application
             $this->response->setContent('');
         } else {
             $this->response = new RedirectResponse($this->response);
-            $this->response->setHeader('Location', '/session/login');
+            $this->response->setHeader('Location', PHPCI_URL.'session/login');
         }
 
         return false;

@@ -26,6 +26,8 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
         $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
+        $this->tab_width    = isset($options['tab_width']) ? $options['tab_width'] : '';
+        $this->encoding     = isset($options['encoding']) ? $options['encoding'] : '';
     }
 
     /**
@@ -39,7 +41,27 @@ class PhpCodeSniffer implements \PHPCI\Plugin
             $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpcs --standard=%s %s "%s"';
-        return $this->phpci->executeCommand($cmd, $this->standard, $ignore, $this->phpci->buildPath);
+        $standard = '';
+
+        if (strpos($this->standard, '/') !== false) {
+            $standard = ' --standard='.$this->directory.$this->standard;
+        } else {
+            $standard = ' --standard='.$this->standard;
+        }
+
+        $tab_width = '';
+
+        if (strlen($this->tab_width)) {
+            $tab_width = ' --tab-width='.$this->tab_width;
+        }
+
+        $encoding = '';
+
+        if (strlen($this->encoding)) {
+            $encoding = ' --encoding='.$this->encoding;
+        }
+
+        $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s "%s"';
+        return $this->phpci->executeCommand($cmd, $standard, $ignore, $tab_width, $encoding, $this->phpci->buildPath);
     }
 }

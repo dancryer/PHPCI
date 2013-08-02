@@ -179,7 +179,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] === $value) {
+        if ($this->data['id'] == $value) {
             return;
         }
 
@@ -198,7 +198,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Email', $value);
         $this->_validateString('Email', $value);
-        if ($this->data['email'] === $value) {
+        if ($this->data['email'] == $value) {
             return;
         }
 
@@ -217,7 +217,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Hash', $value);
         $this->_validateString('Hash', $value);
-        if ($this->data['hash'] === $value) {
+        if ($this->data['hash'] == $value) {
             return;
         }
 
@@ -236,7 +236,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('IsAdmin', $value);
         $this->_validateInt('IsAdmin', $value);
-        if ($this->data['is_admin'] === $value) {
+        if ($this->data['is_admin'] == $value) {
             return;
         }
 
@@ -255,7 +255,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Name', $value);
         $this->_validateString('Name', $value);
-        if ($this->data['name'] === $value) {
+        if ($this->data['name'] == $value) {
             return;
         }
 

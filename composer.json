@@ -38,7 +38,6 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "alpha",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",

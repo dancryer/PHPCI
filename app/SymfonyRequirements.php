@@ -554,6 +554,12 @@ class SymfonyRequirements extends RequirementCollection
             'Your project might not work properly due to the PHP bug #61453 ("Cannot dump definitions which have method calls"). Install PHP 5.4.1 or newer.'
         );
 
+        $this->addRecommendation(
+            version_compare($installedPhpVersion, '5.4.11', '>='),
+            'When using the logout handler from the Symfony Security Component, you should have at least PHP 5.4.11 due to PHP bug #63379 (as a workaround, you can also set invalidate_session to false in the security logout handler configuration)',
+            'Install PHP 5.4.11 or newer if your project the logout handler from the Symfony Security Component.'
+        );
+
         if (null !== $pcreVersion) {
             $this->addRecommendation(
                 $pcreVersion >= 8.0,

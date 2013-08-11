@@ -66,7 +66,7 @@ class Pdepend implements \PHPCI\Plugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $cmd = PHPCI_BIN_DIR . 'pdepend --summary-xml=%s --jdepend-chart=%s --overview-pyramid=%s "%s"';
+        $cmd = PHPCI_BIN_DIR . 'pdepend --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" "%s"';
 
         //Remove the created files first
         unlink($this->location . DIRECTORY_SEPARATOR . $this->summary);

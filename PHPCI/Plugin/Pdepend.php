@@ -68,11 +68,7 @@ class Pdepend implements \PHPCI\Plugin
 
         $cmd = PHPCI_BIN_DIR . 'pdepend --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" "%s"';
 
-        //Remove the created files first
-        unlink($this->location . DIRECTORY_SEPARATOR . $this->summary);
-        unlink($this->location . DIRECTORY_SEPARATOR . $this->chart);
-        unlink($this->location . DIRECTORY_SEPARATOR . $this->pyramid);
-
+        $this->removeBuildArtifacts();
         $success = $this->phpci->executeCommand(
             $cmd,
             $this->location . DIRECTORY_SEPARATOR . $this->summary,
@@ -100,5 +96,18 @@ class Pdepend implements \PHPCI\Plugin
 
 
         return $success;
+    }
+
+    /**
+     * Remove files created from previous builds
+     */
+    protected function removeBuildArtifacts()
+    {
+        //Remove the created files first
+        foreach (array($this->summary, $this->chart, $this->pyramid) as $file) {
+            if (file_exists($this->location . DIRECTORY_SEPARATOR . $file)) {
+                unlink($this->location . DIRECTORY_SEPARATOR . $file);
+            }
+        }
     }
 }

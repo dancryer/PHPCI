@@ -36,7 +36,7 @@ class Composer implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $cmd = PHPCI_DIR . 'composer.phar '. ($this->preferDist ? '--prefer-dist' : null) .' --working-dir="%s" %s';
+        $cmd = PHPCI_DIR . 'composer.phar --no-ansi --no-interaction '. ($this->preferDist ? '--prefer-dist' : null) .' --working-dir="%s" %s';
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
     }
 }

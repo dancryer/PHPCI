@@ -17,13 +17,44 @@ namespace PHPCI\Plugin;
 */
 class PhpCodeSniffer implements \PHPCI\Plugin
 {
-    protected $directory;
-    protected $args;
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
 
+    /**
+     * @var array
+     */
+    protected $suffixes;
+
+    /**
+     * @var string
+     */
+    protected $directory;
+
+    /**
+     * @var string
+     */
+    protected $standard;
+
+    /**
+     * @var string
+     */
+    protected $tab_width;
+
+    /**
+     * @var string
+     */
+    protected $encoding;
+
+    /**
+     * @param \PHPCI\Builder $phpci
+     * @param array $options
+     */
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
         $this->phpci        = $phpci;
+        $this->suffixes     = isset($options['suffixes']) ? (array)$options['suffixes'] : array('php');
         $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
         $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
         $this->tab_width    = isset($options['tab_width']) ? $options['tab_width'] : '';
@@ -36,12 +67,9 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-
         if (count($this->phpci->ignore)) {
             $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
         }
-
-        $standard = '';
 
         if (strpos($this->standard, '/') !== false) {
             $standard = ' --standard='.$this->directory.$this->standard;
@@ -49,19 +77,22 @@ class PhpCodeSniffer implements \PHPCI\Plugin
             $standard = ' --standard='.$this->standard;
         }
 
-        $tab_width = '';
+        $suffixes = '';
+        if (count($this->suffixes)) {
+            $suffixes = ' --extensions=' . implode(',', $this->suffixes);
+        }
 
+        $tab_width = '';
         if (strlen($this->tab_width)) {
             $tab_width = ' --tab-width='.$this->tab_width;
         }
 
         $encoding = '';
-
         if (strlen($this->encoding)) {
             $encoding = ' --encoding='.$this->encoding;
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s "%s"';
-        return $this->phpci->executeCommand($cmd, $standard, $ignore, $tab_width, $encoding, $this->phpci->buildPath);
+        $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s %s "%s"';
+        return $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath);
     }
 }

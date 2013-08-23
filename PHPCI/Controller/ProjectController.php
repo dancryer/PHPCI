@@ -158,6 +158,16 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $values             = $form->getValues();
+
+        if ($values['type'] == "gitlab") {
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            $info = array();
+            $info["user"] = $matches[1];
+            $info["domain"] = $matches[2];
+            $values['access_information'] = serialize($info);
+            $values['reference'] = $matches[3]."/".$matches[4];
+        }
+
         $values['git_key']  = $values['key'];
 
         $project = new Project();
@@ -213,7 +223,12 @@ class ProjectController extends \PHPCI\Controller
         } else {
             $values         = $project->getDataArray();
             $values['key']  = $values['git_key'];
+            if ($values['type'] == "gitlab") {
+                $accessInfo = $project->getAccessInformation();
+                $values['reference'] = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+            }
         }
+
 
         $form   = $this->projectForm($values, 'edit/' . $projectId);
 
@@ -229,6 +244,15 @@ class ProjectController extends \PHPCI\Controller
 
         $values             = $form->getValues();
         $values['git_key']  = $values['key'];
+
+        if ($values['type'] == "gitlab") {
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            $info = array();
+            $info["user"] = $matches[1];
+            $info["domain"] = $matches[2];
+            $values['access_information'] = serialize($info);
+            $values['reference'] = $matches[3]."/".$matches[4];
+        }
 
         $project->setValues($values);
         $project = $this->_projectStore->save($project);
@@ -253,13 +277,14 @@ class ProjectController extends \PHPCI\Controller
             'choose' => 'Select repository type...',
             'github' => 'Github',
             'bitbucket' => 'Bitbucket',
+            'gitlab' => 'Gitlab',
             'remote' => 'Remote URL',
             'local' => 'Local Path'
             );
 
         $field = new Form\Element\Select('type');
         $field->setRequired(true);
-        $field->setPattern('^(github|bitbucket|remote|local)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local)');
         $field->setOptions($options);
         $field->setLabel('Where is your project hosted?');
         $field->setClass('form-control');
@@ -287,6 +312,11 @@ class ProjectController extends \PHPCI\Controller
                 case 'local':
                     if (!is_dir($val)) {
                         throw new \Exception('The path you specified does not exist.');
+                    }
+                    break;
+                case 'gitlab':
+                    if (!preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $val)) {
+                        throw new \Exception('GitLab Repository name must be in the format "user@domain.tld:owner/repo.git".');
                     }
                     break;
                 case 'github':

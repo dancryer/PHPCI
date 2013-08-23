@@ -34,6 +34,7 @@ class ProjectBase extends Model
     protected $data = array(
         'id' => null,
         'title' => null,
+        'access_information' => null,
         'reference' => null,
         'git_key' => null,
         'type' => null,
@@ -49,6 +50,7 @@ class ProjectBase extends Model
         'reference' => 'getReference',
         'git_key' => 'getGitKey',
         'type' => 'getType',
+        'access_information' => 'getAccessInformation',
         'token' => 'getToken',
      );
 
@@ -61,6 +63,7 @@ class ProjectBase extends Model
         'reference' => 'setReference',
         'git_key' => 'setGitKey',
         'type' => 'setType',
+        'access_information' => 'setAccessInformation',
         'token' => 'setToken',
      );
 
@@ -82,6 +85,10 @@ class ProjectBase extends Model
             'type' => 'varchar',
             'length' => '250',
             ),
+        'access_information' => array(
+            'type' => 'varchar',
+            'length' => '250',
+        ),
         'git_key' => array(
             'type' => 'text',
             'length' => '',
@@ -147,6 +154,19 @@ class ProjectBase extends Model
         $rtn    = $this->data['reference'];
 
         
+        return $rtn;
+    }
+
+    /**
+     * Get the value of Domain / domain.
+     *
+     * @return string
+     */
+    public function getAccessInformation()
+    {
+        $rtn    = unserialize($this->data['access_information']);
+
+
         return $rtn;
     }
 
@@ -244,6 +264,25 @@ class ProjectBase extends Model
         $this->data['reference'] = $value;
 
         $this->_setModified('reference');
+    }
+
+    /**
+     * Set the value of Domain / domain.
+     *
+     * Must not be null.
+     * @param $value string
+     */
+    public function setAccessInformation($value)
+    {
+        $this->_validateNotNull('AccessInformation', $value);
+        $this->_validateString('AccessInformation', $value);
+        if ($this->data['access_information'] == $value) {
+            return;
+        }
+
+        $this->data['access_information'] = $value;
+
+        $this->_setModified('access_information');
     }
 
     /**

@@ -13,7 +13,7 @@ class Atoum implements \PHPCI\Plugin
         $this->phpci = $phpci;
 
         if (isset($options['executable'])) {
-            $this->executable = $options['executable'];
+            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
         } else {
             $this->executable = PHPCI_BIN_DIR.'atoum';
         }
@@ -50,11 +50,15 @@ class Atoum implements \PHPCI\Plugin
         $status = true;
         exec($cmd, $output);
 
-        if (!empty($output) && count(preg_grep("/error/i", $output)) > 0) {
+        if (count(preg_grep("/Success \(/", $output)) == 0 ) {
             $status = false;
             $this->phpci->log($output, '       ');
         }
-
+        if (count($output) == 0) {
+            $status = false;
+            $this->phpci->log("No test have been performed!", '       ');
+        }
+        
         return $status;
     }
 }

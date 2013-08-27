@@ -7,17 +7,15 @@ class Atoum implements \PHPCI\Plugin
     private $args;
     private $config;
     private $directory;
-    private $executable;
 
     public function __construct(\PHPCI\Builder $phpci, array $options = array())
     {
         $this->phpci = $phpci;
 
         if (isset($options['executable'])) {
-            $this->executable = $options['executable'];
-        }
-        else {
-            $this->executable = './vendor/bin/atoum';
+            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
+        } else {
+            $this->executable = PHPCI_BIN_DIR.'atoum';
         }
 
         if (isset($options['args'])) {
@@ -35,7 +33,7 @@ class Atoum implements \PHPCI\Plugin
 
     public function execute()
     {
-        $cmd = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->executable;
+        $cmd = $this->executable;
 
         if ($this->args !== null) {
             $cmd .= " {$this->args}";
@@ -44,8 +42,23 @@ class Atoum implements \PHPCI\Plugin
             $cmd .= " -c '{$this->config}'";
         }
         if ($this->directory !== null) {
-            $cmd .= " -d '{$this->directory}'";
+            $dirPath = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->directory;
+            $cmd .= " -d '{$dirPath}'";
         }
-        return $this->phpci->executeCommand($cmd);
+
+        $output = '';
+        $status = true;
+        exec($cmd, $output);
+
+        if (count(preg_grep("/Success \(/", $output)) == 0 ) {
+            $status = false;
+            $this->phpci->log($output, '       ');
+        }
+        if (count($output) == 0) {
+            $status = false;
+            $this->phpci->log("No test have been performed!", '       ');
+        }
+        
+        return $status;
     }
 }

@@ -19,6 +19,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
     * PHP Copy/Paste Detector
     * PHP Code Sniffer
     * PHP Spec
+    * Atoum
 * You can mark directories for the plugins to ignore.
 * You can mark certain plugins as being allowed to fail (but still run.)
 
@@ -80,8 +81,11 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
         mysql:
             host: "localhost"
             user: "root"
-            pass: ""        
-
+            pass: ""
+        campfire:
+            url: "https://youraccount.campfirenow.com"
+            authToken: "605b32dd"
+            roomId: "570102"
     setup:
         mysql:
             - "DROP DATABASE IF EXISTS test;"
@@ -110,6 +114,9 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
     complete:
         mysql:
             - "DROP DATABASE IF EXISTS test;"
+    failure:
+        campfire:
+            message: "Phpci : build failed."
             
 As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
 

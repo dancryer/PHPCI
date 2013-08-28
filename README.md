@@ -116,7 +116,7 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
             - "DROP DATABASE IF EXISTS test;"
     failure:
         campfire:
-            message: "Phpci : build failed."
+            message: "Phpci : build %buildurl% failed."
             
 As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
 

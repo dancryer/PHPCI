@@ -43,8 +43,11 @@ class Campfire implements \PHPCI\Plugin
 
     public function execute()
     {
+
+        $url = "<a href='".PHPCI_URL."build/view/".$this->phpci->getBuild()->getId()."'>";
+        $message = str_replace("%buildurl%", $url, $this->message);
         $this->joinRoom($this->roomId);
-        $status = $this->speak($this->message,$this->roomId);
+        $status = $this->speak($message,$this->roomId);
         $this->leaveRoom($this->roomId);
         return $status;
 

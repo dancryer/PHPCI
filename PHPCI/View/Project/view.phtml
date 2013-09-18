@@ -1,5 +1,5 @@
 <div id="title">
-	<h1>Project: <?php print $project->getTitle(); ?></h1>
+	<h1>Project: <?php print (is_object($project)) ? $project->getTitle() : ' - '; ?></h1>
 </div>
 
 <div class="row">

@@ -47,17 +47,21 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
     * When prompted, enter your database host, username, password and the database name that PHPCI should use.
     * The script will attempt to create the database if it does not exist already.
     * If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
-* Add a virtual host to your web server, pointing to the directory you cloned PHPCI into.
+* Add a virtual host to your web server, pointing to the directory "public" where you cloned PHPCI into.
 * You'll need to set up rewrite rules to point all non-existant requests to PHPCI.
 
-**Apache Example**:
+**Apache Example (require mod_rewrite installed)**:
 
-    RewriteEngine On
-    RewriteBase /path-to-phpci/public
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule (.*)? index.php [L,E=PATH_INFO:/$1]
-    
+```sh
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /path/to/phpci/public
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.php [L]
+</IfModule>
+```
+
 **Nginx Example**: 
 
 

@@ -28,6 +28,17 @@ class PhpMessDetector implements \PHPCI\Plugin
     protected $suffixes;
 
     /**
+     * @var string, based on the assumption the root may not hold the code to be
+     * tested, exteds the base path
+     */
+    protected $path;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
+
+    /**
      * Array of PHPMD rules. Can be one of the builtins (codesize, unusedcode, naming, design, controversial)
      * or a filenname (detected by checking for a / in it), either absolute or relative to the project root.
      * @var array
@@ -44,6 +55,10 @@ class PhpMessDetector implements \PHPCI\Plugin
 
         $this->suffixes = isset($options['suffixes']) ? (array)$options['suffixes'] : array('php');
 
+        $this->ignore = (isset($options['ignore'])) ? (array)$options['ignore'] : $this->phpci->ignore;
+
+        $this->path = (isset($options['path'])) ? $options['path'] : '';
+
         $this->rules = isset($options['rules']) ? (array)$options['rules'] : array('codesize', 'unusedcode', 'naming');
         foreach ($this->rules as &$rule) {
             if ($rule[0] !== '/' && strpos($rule, '/') !== FALSE) {
@@ -58,8 +73,8 @@ class PhpMessDetector implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --exclude ' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --exclude ' . implode(',', $this->ignore);
         }
 
         $suffixes = '';
@@ -68,6 +83,6 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
 
         $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text %s %s %s';
-        return $this->phpci->executeCommand($cmd, $this->phpci->buildPath, implode(',', $this->rules), $ignore, $suffixes);
+        return $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $this->path, implode(',', $this->rules), $ignore, $suffixes);
     }
 }

@@ -43,9 +43,12 @@ class Campfire implements \PHPCI\Plugin
 
     public function execute()
     {
+        $url = PHPCI_URL."build/view/".$this->phpci->getBuild()->getId();
+        $message = str_replace("%buildurl%", $url, $this->message);
         $this->joinRoom($this->roomId);
-        $status = $this->speak($this->message,$this->roomId);
+        $status = $this->speak($message, $this->roomId);
         $this->leaveRoom($this->roomId);
+
         return $status;
 
     }
@@ -72,6 +75,7 @@ class Campfire implements \PHPCI\Plugin
         } else {
             $type = 'TextMessage';
         }
+
         return $this->_getPageByPost($page,
             array('message' => array('type' => $type, 'body' => $message)));
 
@@ -88,7 +92,7 @@ class Campfire implements \PHPCI\Plugin
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
         curl_setopt($ch, CURLOPT_VERBOSE, $this->verbose);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -96,7 +100,7 @@ class Campfire implements \PHPCI\Plugin
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: application/json"));
         curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookie);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,$json);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         $output = curl_exec($ch);
 
         curl_close($ch);

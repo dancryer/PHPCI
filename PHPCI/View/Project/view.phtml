@@ -17,7 +17,7 @@
 			<li><a href="#" id="delete-project"><i class="icon-trash"></i> Delete Project</a></li>
 			<?php endif; ?>
 		</ul>
-        
+
         <?php if (in_array($project->getType(), array('github', 'gitlab','bitbucket'))): ?>
             <br>
             <p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
@@ -31,10 +31,10 @@
 					print ' as a "WebHook URL" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Service Hooks</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
 				break;
 
-                case 'gitlab':
-                    $url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/gitlab/webhook/' . $project->getId();
-                    print ' as a "WebHook URL" in the Web Hooks section of your Gitlab repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
-                    break;
+				case 'gitlab':
+					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/gitlab/webhook/' . $project->getId();
+					print ' as a "WebHook URL" in the Web Hooks section of your Gitlab repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+				break;
 
 				case 'bitbucket':
 					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/bitbucket/webhook/' . $project->getId();

@@ -52,11 +52,14 @@ class ProjectController extends \PHPCI\Controller
     */
     public function build($projectId)
     {
+        /* @var \PHPCI\Model\Project $project */
+        $project = $this->_projectStore->getById($projectId);
+
         $build = new Build();
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
         $build->setStatus(0);
-        $build->setBranch('master');
+        $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
 
         $build = $this->_buildStore->save($build);
@@ -192,7 +195,7 @@ class ProjectController extends \PHPCI\Controller
             $url  = 'https://github.com/login/oauth/access_token';
             $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
             $resp = $http->post($url, $params);
-            
+
             if ($resp['success']) {
                 parse_str($resp['body'], $resp);
                 $_SESSION['github_token'] = $resp['access_token'];
@@ -207,14 +210,14 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Edit a project. Handles both the form and processing. 
+    * Edit a project. Handles both the form and processing.
     */
     public function edit($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
-        
+
         $method     = $this->request->getMethod();
         $project    = $this->_projectStore->getById($projectId);
 
@@ -262,7 +265,7 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Create add / edit project form. 
+    * Create add / edit project form.
     */
     protected function projectForm($values, $type = 'add')
     {
@@ -279,12 +282,13 @@ class ProjectController extends \PHPCI\Controller
             'bitbucket' => 'Bitbucket',
             'gitlab' => 'Gitlab',
             'remote' => 'Remote URL',
-            'local' => 'Local Path'
+            'local' => 'Local Path',
+            'hg'    => 'Mercurial',
             );
 
         $field = new Form\Element\Select('type');
         $field->setRequired(true);
-        $field->setPattern('^(github|bitbucket|gitlab|remote|local)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
         $field->setOptions($options);
         $field->setLabel('Where is your project hosted?');
         $field->setClass('form-control');
@@ -304,6 +308,11 @@ class ProjectController extends \PHPCI\Controller
             $type = $values['type'];
 
             switch($type) {
+                case 'hg':
+                    if (!preg_match('/^(https?):\/\//', $val)) {
+                        throw new \Exception('Mercurial repository URL must be start with http:// or https://.');
+                    }
+                    break;
                 case 'remote':
                     if (!preg_match('/^(git|https?):\/\//', $val)) {
                         throw new \Exception('Repository URL must be start with git://, http:// or https://.');
@@ -344,7 +353,7 @@ class ProjectController extends \PHPCI\Controller
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
-        
+
         $field = new Form\Element\TextArea('key');
         $field->setRequired(false);
         $field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');

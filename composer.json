@@ -35,6 +35,7 @@
         "fabpot/php-cs-fixer"      : "0.3.*@dev",
         "swiftmailer/swiftmailer"  : "v5.0.0",
         "phploc/phploc": "*",
-	    "atoum/atoum":"*"
+        "atoum/atoum":"*",
+        "jakub-onderka/php-parallel-lint": "dev-master"
     }
 }

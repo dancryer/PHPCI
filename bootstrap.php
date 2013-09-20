@@ -38,7 +38,7 @@ require_once(APPLICATION_PATH . 'vendor/autoload.php');
 // Load configuration if present:
 $conf = array();
 $conf['b8']['app']['namespace'] = 'PHPCI';
-$conf['b8']['app']['default_controller'] = 'Index';
+$conf['b8']['app']['default_controller'] = 'Home';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
 
 $config = new b8\Config($conf);

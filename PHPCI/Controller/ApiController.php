@@ -46,8 +46,9 @@ class ApiController extends \PHPCI\Controller
 		$projects = $this->_projectStore->getWhere(array(), null, null, array(), array('title' => 'ASC'));
 		$res = array();
 		foreach ($projects["items"] as $project) {
-			$res[]["title"]  = $project->getTitle();
-			$res[]["access_information"] = $this->getUrl($project);
+			$entry = array("title"=>$project->getTitle(), "access_information" => $this->getUrl($project));
+			$res[] = $entry;
+
 		}
 		echo json_encode($res);
 	}

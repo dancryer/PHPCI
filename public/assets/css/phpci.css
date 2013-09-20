@@ -14,7 +14,13 @@ body
 	padding: 10px;
 }
 
-td .label { margin-right: 5px; }
+td .label {
+	margin-right: 5px;
+	line-height: 2;
+}
+#project-overview td .label {
+	margin-right: 0;
+}
 
 .success-message {
 	background-color: #4F8A10;
@@ -24,7 +30,9 @@ td .label { margin-right: 5px; }
 	background-color: #FF4747;
 }
 
-#latest-builds td {
+#latest-builds td,
+#project-overview td,
+#users td {
     vertical-align: middle;
 }
 

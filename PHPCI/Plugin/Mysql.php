@@ -20,7 +20,7 @@ use PDO;
 */
 class Mysql implements \PHPCI\Plugin
 {
-    
+
     /**
      * @var \PHPCI\Builder
      */
@@ -30,7 +30,7 @@ class Mysql implements \PHPCI\Plugin
     protected $host;
     protected $user;
     protected $pass;
-    
+
     /**
      * Database Connection
      * @var PDO
@@ -43,7 +43,8 @@ class Mysql implements \PHPCI\Plugin
         $this->queries      = $options;
 
         $config     = \b8\Database::getConnection('write')->getDetails();
-        $this->host = PHPCI_DB_HOST;
+
+        $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
         $this->user = $config['user'];
         $this->pass = $config['pass'];
 
@@ -63,11 +64,11 @@ class Mysql implements \PHPCI\Plugin
     public function execute()
     {
         $success = true;
-        
+
         try {
             $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
             $this->pdo = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
-            
+
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
                     // Simple query
@@ -86,28 +87,28 @@ class Mysql implements \PHPCI\Plugin
 
         return $success;
     }
-    
+
     protected function executeFile($query)
     {
         if (!isset($query['file'])) {
             throw new \Exception("Import statement must contain a 'file' key");
         }
-        
+
         $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
         if (!is_readable($import_file)) {
         	throw new \Exception("Cannot open SQL import file: $import_file");
         }
-        
+
         $database = isset($query['database'])? $this->phpci->interpolate($query['database']): null;
-        
+
         $import_command = $this->getImportCommand($import_file, $database);
     	if (!$this->phpci->executeCommand($import_command)) {
     	    throw new \Exception("Unable to execute SQL file");
     	}
-    	
+
         return true;
     }
-    
+
     /**
      * Builds the MySQL import command required to import/execute the specified file
      * @param string $import_file Path to file, relative to the build root
@@ -119,7 +120,7 @@ class Mysql implements \PHPCI\Plugin
             'bz2' => '| bzip2 --decompress',
             'gz' => '| gzip --decompress',
         );
-        
+
         $extension = strtolower(pathinfo($import_file, PATHINFO_EXTENSION));
         $decomp_cmd = '';
         if (array_key_exists($extension, $decompression)) {

@@ -24,11 +24,19 @@ class PhpUnit implements \PHPCI\Plugin
      * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
      */
     protected $directory;
-    
+
     /**
      * @var string $runFrom When running PHPUnit with an XML config, the command is run from this directory
      */
     protected $runFrom;
+
+    /**
+     * @var string, in cases where tests files are in a sub path of the /tests path,
+     * allows this path to be set in the config.
+     */
+    protected $path;
+
+    protected $coverage = "";
 
     /**
      * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
@@ -54,6 +62,14 @@ class PhpUnit implements \PHPCI\Plugin
         if (isset($options['args'])) {
             $this->args = $options['args'];
         }
+
+        if (isset($options['path'])) {
+            $this->path = $options['path'];
+        }
+
+        if (isset($options['coverage'])) {
+            $this->coverage = " --coverage-html {$options['coverage']} ";
+        }
     }
 
     /**
@@ -72,7 +88,7 @@ class PhpUnit implements \PHPCI\Plugin
         if ($this->directory !== null) {
             $success &= $this->runDir($this->directory);
         }
-        
+
         return $success;
     }
 
@@ -86,9 +102,9 @@ class PhpUnit implements \PHPCI\Plugin
                 chdir($this->phpci->buildPath.'/'.$this->runFrom);
             }
 
-            $cmd = PHPCI_BIN_DIR . 'phpunit %s -c "%s"';
+            $cmd = PHPCI_BIN_DIR . 'phpunit %s -c "%s" ' . $this->coverage . $this->path;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
-            
+
             if ($this->runFrom) {
                 chdir($curdir);
             }

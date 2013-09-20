@@ -48,6 +48,17 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     protected $encoding;
 
     /**
+     * @var string, based on the assumption the root may not hold the code to be
+     * tested, exteds the base path
+     */
+    protected $path;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
+
+    /**
      * @param \PHPCI\Builder $phpci
      * @param array $options
      */
@@ -59,6 +70,8 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
         $this->tab_width    = isset($options['tab_width']) ? $options['tab_width'] : '';
         $this->encoding     = isset($options['encoding']) ? $options['encoding'] : '';
+        $this->path         = (isset($options['path'])) ? $options['path'] : '';
+        $this->ignore       = (isset($options['ignore'])) ? (array)$options['ignore'] : $this->phpci->ignore;
     }
 
     /**
@@ -67,8 +80,8 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --ignore=' . implode(',', $this->ignore);
         }
 
         if (strpos($this->standard, '/') !== false) {
@@ -93,6 +106,6 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         }
 
         $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s %s "%s"';
-        return $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath);
+        return $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath . $this->path);
     }
 }

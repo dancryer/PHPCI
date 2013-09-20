@@ -12,12 +12,12 @@ namespace PHPCI\Controller;
 use b8;
 
 /**
-* Index Controller - Displays the PHPCI Dashboard.
+* Home Controller - Displays the PHPCI Dashboard.
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Web
 */
-class IndexController extends \PHPCI\Controller
+class HomeController extends \PHPCI\Controller
 {
     public function init()
     {

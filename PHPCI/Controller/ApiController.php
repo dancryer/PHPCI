@@ -21,7 +21,6 @@ use PHPCI\Model\Build;
  */
 class ApiController extends \PHPCI\Controller
 {
-	var $wsMethods = array("getProjects");
 
 	public function init()
 	{

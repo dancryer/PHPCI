@@ -31,18 +31,10 @@ class ApiController extends \PHPCI\Controller
 	/**
 	 * Called by other apps:
 	 */
-	public function webhook()
+	public function projects()
 	{
-		if ($this->request->getMethod() == "GET") {
-			die('Get method not allowed here');
-		}
-		$method = $this->getParam('method');
-		if (method_exists ( $this , $method ) && in_array($method, $this->wsMethods)) {
-			$this->$method();
-		}
-		die();
-	}
-	public function getProjects() {
+		$this -> checkMethod(array("GET"));
+
 		$projects = $this->_projectStore->getWhere(array(), null, null, array(), array('title' => 'ASC'));
 		$res = array();
 		foreach ($projects["items"] as $project) {
@@ -51,8 +43,15 @@ class ApiController extends \PHPCI\Controller
 
 		}
 		echo json_encode($res);
+		die();
 	}
 
+	protected function checkMethod($allowed) {
+		$method = $this->request->getMethod();
+		if (! in_array($method, $allowed)) {
+			die($method.' bad method according action to perform');
+		}
+	}
 	protected function getUrl($project) {
 		$key = trim($project->getGitKey());
 

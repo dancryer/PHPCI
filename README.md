@@ -66,7 +66,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 
 
     location / {
-        try-files $uri $uri/ index.php
+        try_files $uri $uri/ index.php
     }
 
 Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:

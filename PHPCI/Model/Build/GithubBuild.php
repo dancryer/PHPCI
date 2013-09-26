@@ -82,7 +82,7 @@ class GithubBuild extends RemoteGitBuild
     /**
     * Get the URL to be used to clone this remote repository.
     */
-    protected function getCloneUrl()
+	public function getCloneUrl()
     {
         $key = trim($this->getProject()->getGitKey());
 

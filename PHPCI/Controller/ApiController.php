@@ -39,7 +39,6 @@ class ApiController extends \PHPCI\Controller
 		foreach ($projects["items"] as $project) {
 			$entry = array("id"=>$project->getId(), "title"=>$project->getTitle(), "type"=>$project->getType(), "access_information" => $this->getUrl($project));
 			$res[] = $entry;
-
 		}
 		echo json_encode($res);
 		die();
@@ -52,32 +51,14 @@ class ApiController extends \PHPCI\Controller
 		}
 	}
 	protected function getUrl($project) {
-		$key = trim($project->getGitKey());
+		$buildBase = new Build();
+		$buildBase->setProjectId($project->getId());
+		$buildFactory = \PHPCI\BuildFactory::getBuild($buildBase);
 
-		switch($project->getType())
-		{
-			case 'github':
-				if (!empty($key)) {
-					return 'git@github.com:' . $project->getReference() . '.git';
-				} else {
-					return 'https://github.com/' . $project->getReference() . '.git';
-				}
-				break;
-			case 'bitbucket':
-				if (!empty($key)) {
-					return 'git@bitbucket.org:' . $this->getProject()->getReference() . '.git';
-				} else {
-					return 'https://bitbucket.org/' . $this->getProject()->getReference() . '.git';
-				}
-				break;
-			case 'gitlab':
-				if (!empty($key)) {
-					return $project->getAccessInformation()["user"].'@'.$project->getAccessInformation()["domain"].':' . $project->getReference() . '.git';
-				}
-				break;
-			default :
-				return $project->getReference();
-				break;
+		if ($project->getType() == "local") {
+			return $this->getProject()->getReference();
 		}
+		
+		return $buildFactory -> getCloneUrl();
 	}
 }

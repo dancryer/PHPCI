@@ -32,6 +32,13 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', dirname(__FILE__) . '/');
 }
 
+
+if (!file_exists(APPLICATION_PATH . 'PHPCI/config.yml')) {
+    header('Location: install.php');
+    die;
+}
+
+
 // Load Composer autoloader:
 require_once(APPLICATION_PATH . 'vendor/autoload.php');
 
@@ -42,12 +49,9 @@ $conf['b8']['app']['default_controller'] = 'Home';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
 
 $config = new b8\Config($conf);
+$config->loadYaml(APPLICATION_PATH . 'PHPCI/config.yml');
 
-if (file_exists(APPLICATION_PATH . 'PHPCI/config.yml')) {
-    $config->loadYaml(APPLICATION_PATH . 'PHPCI/config.yml');
-
-    // Define our PHPCI_URL, if not already defined:
-    if (!defined('PHPCI_URL')) {
-        define('PHPCI_URL', $config->get('phpci.url', '') . '/');
-    }
+// Define our PHPCI_URL, if not already defined:
+if (!defined('PHPCI_URL')) {
+    define('PHPCI_URL', $config->get('phpci.url', '') . '/');
 }

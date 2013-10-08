@@ -1,7 +1,7 @@
 {
     "name"             : "block8/phpci",
     "description"      : "Simple continuous integration for PHP projects.",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "type"             : "library",
     "keywords"         : ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
     "homepage"         : "http://www.phptesting.org/",
@@ -23,12 +23,11 @@
     },
 
     "require": {
-        "block8/b8framework"       : "dev-master",
-        "ircmaxell/password-compat": "1.x",
-        "swiftmailer/swiftmailer"  : "v5.0.0",
-        "symfony/yaml"             : "2.2.x-dev",
-        "symfony/console"          : "2.2.*",
-        "behat/behat": "*"
+        "block8/b8framework"       : "1.*",
+        "ircmaxell/password-compat": "1.*",
+        "swiftmailer/swiftmailer"  : "5.0.*",
+        "symfony/yaml"             : "2.*",
+        "symfony/console"          : "2.*"
     },
 
     "suggest": {

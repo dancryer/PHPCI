@@ -73,7 +73,12 @@ class Builder
     * @var array
     */
     protected $config;
-    
+
+    /**
+     * @var string
+     */
+    protected $lastOutput;
+
     /**
      * An array of key => value pairs that will be used for 
      * interpolation and environment variables
@@ -82,6 +87,11 @@ class Builder
      * @see getInterpolationVars()
      */
     protected $interpolation_vars = array();
+
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $store;
 
     /**
     * Set up the builder.
@@ -214,15 +224,22 @@ class Builder
         
         $this->log('Executing: ' . $command, '  ');
 
-        $output = '';
         $status = 0;
-        exec($command, $output, $status);
+        exec($command, $this->lastOutput, $status);
 
-        if (!empty($output) && ($this->verbose || $status != 0)) {
-            $this->log($output, '       ');
+        if (!empty($this->lastOutput) && ($this->verbose || $status != 0)) {
+            $this->log($this->lastOutput, '       ');
         }
 
         return ($status == 0) ? true : false;
+    }
+
+    /**
+     * Returns the output from the last command run.
+     */
+    public function getLastOutput()
+    {
+        return implode(PHP_EOL, $this->lastOutput);
     }
 
     /**
@@ -432,5 +449,14 @@ class Builder
     {
         $this->log('Removing build.');
         shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
+    }
+
+    /**
+     * Store build meta data
+     */
+    public function storeBuildMeta($key, $value)
+    {
+        $value = json_encode($value);
+        $this->store->setMeta($this->build->getProjectId(), $this->build->getId(), $key, $value);
     }
 }

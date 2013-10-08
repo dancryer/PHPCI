@@ -9,9 +9,16 @@
 		<link href='//fonts.googleapis.com/css?family=Roboto:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/phpci.css">
+
+        <script>window.PHPCI_URL = <?php print json_encode(PHPCI_URL) ?></script>
+
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="<?= PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
-		<script src="<?= PHPCI_URL ?>assets/js/phpci.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+        <script src="<?= PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
+        <script src="<?= PHPCI_URL ?>assets/js/jqueryui.js"></script>
+        <script src="<?= PHPCI_URL ?>assets/js/class.js"></script>
+        <script src="<?= PHPCI_URL ?>assets/js/phpci.js"></script>
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top">

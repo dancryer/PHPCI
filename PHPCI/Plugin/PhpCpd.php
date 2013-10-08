@@ -57,6 +57,10 @@ class PhpCpd implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
+        $success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
+
+        print $this->phpci->getLastOutput();
+
+        return $success;
     }
 }

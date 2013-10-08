@@ -47,6 +47,18 @@ class PhpLoc implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phploc %s "%s"', $ignore, $this->phpci->buildPath);
+        $success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phploc %s "%s"', $ignore, $this->phpci->buildPath);
+        $output = $this->phpci->getLastOutput();
+
+        if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
+            $data = array();
+            foreach ($matches[1] as $k => $v) {
+                $data[$v] = (int)$matches[2][$k];
+            }
+
+            $this->phpci->storeBuildMeta('phploc', $data);
+        }
+
+        return $success;
     }
 }

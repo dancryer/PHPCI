@@ -14,95 +14,6 @@ function confirmDelete(url)
 }
 
 /**
-* Updates the build screen. Called at regular intervals on /build/view/X
-*/
-function updateBuildView(data)
-{
-	$('#status').attr('class', 'alert');
-
-	var cls;
-	var msg;
-
-	switch(data.status)
-	{
-		case 0:
-			cls = 'alert-info';
-			msg = 'This build has not yet started.';
-		break;
-
-		case 1:
-			cls = 'alert-warning';
-			msg = 'This build is in progress.';
-		break;
-
-		case 2:
-			cls = 'alert-success';
-			msg = 'This build was successful!';
-		break;
-
-		case 3:
-			cls = 'alert-error';
-			msg = 'This build has failed.';
-		break;
-	}
-
-	$('#status').addClass(cls).text(msg);
-
-	if(data.created)
-	{
-		$('#created').text(data.created);
-	}
-	else
-	{
-		$('#created').text('Not created yet.');
-	}
-
-	if(data.started)
-	{
-		$('#started').text(data.started);
-	}
-	else
-	{
-		$('#started').text('Not started yet.');
-	}
-
-	if(data.finished)
-	{
-		$('#finished').text(data.finished);
-	}
-	else
-	{
-		$('#finished').text('Not finished yet.');
-	}
-
-	if(data.plugins)
-	{
-		$('#plugins').empty();
-
-		for(var plugin in data.plugins)
-		{
-			var row = $('<tr>').addClass(data.plugins[plugin] ? 'success' : 'error');
-			var name = $('<td>').html('<strong>' + formatPluginName(plugin) + '</strong>');
-			var status = $('<td>').text(data.plugins[plugin] ? 'OK' : 'Failed');
-
-			row.append(name);
-			row.append(status);
-			$('#plugins').append(row);
-		}
-	}
-	else
-	{
-		var row = $('<tr>');
-		var col = $('<td>').attr('colspan', 2).text('No plugins have run yet.');
-
-		row.append(col);
-		$('#plugins').empty().append(row);
-	}
-
-	$('#log').html(data.log);
-}
-
-/**
 * Used to initialise the project form:
 */
 function setupProjectForm()
@@ -170,17 +81,129 @@ function setupProjectForm()
 	});
 }
 
+var PHPCIObject = Class.extend({
+    buildId: null,
+    plugins: {},
+    observers: {},
+    buildData: {},
+    queries: {},
+    updateInterval: null,
 
-function formatPluginName (name) {
-    name = name.replace(new RegExp('_', 'g'), ' ');
-    name = ucwords(name);
-    name = name.replace(new RegExp('Php', 'g'), 'PHP');
+    init: function(build) {
+        this.buildId = build;
+        this.registerQuery('build-updated', 10);
+    },
 
-    return name;
-}
+    registerQuery: function(name, seconds, query) {
+        var self = this;
+        var uri = 'build/meta/' + self.buildId;
+        var query = query || {};
 
-function ucwords (str) {
-    return (str + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
-        return $1.toUpperCase();
-    });
-}
+        if (name == 'build-updated') {
+            uri = 'build/data/' + self.buildId;
+        }
+
+        var cb = function() {
+            $.getJSON(window.PHPCI_URL + uri, query, function(data) {
+                $(window).trigger({type: name, queryData: data});
+            });
+        };
+
+        if (seconds != -1) {
+            setInterval(cb, seconds * 1000);
+        }
+
+        return cb;
+    },
+
+    registerPlugin: function(plugin) {
+        this.plugins[plugin.id] = plugin;
+        plugin.register();
+    },
+
+    storePluginOrder: function () {
+        var renderOrder = [];
+
+        $('.ui-plugin > div').each(function() {
+            renderOrder.push($(this).attr('id'));
+        });
+
+        localStorage.setItem('phpci-plugin-order', JSON.stringify(renderOrder));
+    },
+
+    renderPlugins: function() {
+        var self = this;
+        var rendered = [];
+        var renderOrder = localStorage.getItem('phpci-plugin-order');
+
+        if (renderOrder) {
+            renderOrder = JSON.parse(renderOrder);
+        } else {
+            renderOrder = ['build-time', 'build-lines-chart', 'build-warnings-chart', 'build-log'];
+        }
+
+        for (var idx in renderOrder) {
+            var key = renderOrder[idx];
+            self.renderPlugin(self.plugins[key]);
+            rendered.push(key);
+        }
+
+        for (var key in this.plugins) {
+            if (rendered.indexOf(key) == -1) {
+                self.renderPlugin(self.plugins[key]);
+            }
+        }
+
+        $('#plugins').sortable({
+            handle: '.title',
+            connectWith: '#plugins',
+            update: self.storePluginOrder
+        });
+
+        $(window).trigger({type: 'build-updated', queryData: self.buildData});
+    },
+
+    renderPlugin: function(plugin) {
+        var output = $('<div></div>').addClass('box-content').append(plugin.render());
+        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
+        var content = $('<div></div>').attr('id', plugin.id).append(output);
+
+        if (plugin.box) {
+            content.addClass('box');
+        }
+
+        if (plugin.title) {
+            content.prepend('<h3 class="title">'+plugin.title+'</h3>');
+        }
+
+        content.append(output);
+        container.append(content);
+
+        $('#plugins').append(container);
+    },
+
+    UiPlugin: Class.extend({
+        id: null,
+        css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
+        box: true,
+
+        init: function(){
+        },
+
+        register: function() {
+            var self = this;
+
+            $(window).on('build-updated', function(data) {
+                self.onUpdate(data);
+            });
+        },
+
+        render: function () {
+            return '';
+        },
+
+        onUpdate: function (build) {
+
+        }
+    })
+});

@@ -106,6 +106,20 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         }
 
         $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s %s "%s"';
-        return $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath . $this->path);
+        $success = $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath . $this->path);
+
+        $output = $this->phpci->getLastOutput();
+
+        $matches = array();
+        if (preg_match_all('/WARNING/', $output, $matches)) {
+            $this->phpci->storeBuildMeta('phpcs-warnings', count($matches[0]));
+        }
+
+        $matches = array();
+        if (preg_match_all('/ERROR/', $output, $matches)) {
+            $this->phpci->storeBuildMeta('phpcs-errors', count($matches[0]));
+        }
+
+        return $success;
     }
 }

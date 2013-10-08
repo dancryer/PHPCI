@@ -34,11 +34,11 @@ class ProjectBase extends Model
     protected $data = array(
         'id' => null,
         'title' => null,
-        'access_information' => null,
         'reference' => null,
         'git_key' => null,
         'type' => null,
         'token' => null,
+        'access_information' => null,
      );
 
     /**
@@ -50,8 +50,8 @@ class ProjectBase extends Model
         'reference' => 'getReference',
         'git_key' => 'getGitKey',
         'type' => 'getType',
-        'access_information' => 'getAccessInformation',
         'token' => 'getToken',
+        'access_information' => 'getAccessInformation',
      );
 
     /**
@@ -63,8 +63,8 @@ class ProjectBase extends Model
         'reference' => 'setReference',
         'git_key' => 'setGitKey',
         'type' => 'setType',
-        'access_information' => 'setAccessInformation',
         'token' => 'setToken',
+        'access_information' => 'setAccessInformation',
      );
 
     /**
@@ -85,10 +85,6 @@ class ProjectBase extends Model
             'type' => 'varchar',
             'length' => '250',
             ),
-        'access_information' => array(
-            'type' => 'varchar',
-            'length' => '250',
-        ),
         'git_key' => array(
             'type' => 'text',
             'length' => '',
@@ -101,6 +97,10 @@ class ProjectBase extends Model
             'type' => 'varchar',
             'length' => '50',
             'nullable' => true,
+            ),
+        'access_information' => array(
+            'type' => 'varchar',
+            'length' => '250',
             ),
      );
 
@@ -158,19 +158,6 @@ class ProjectBase extends Model
     }
 
     /**
-     * Get the value of Domain / domain.
-     *
-     * @return string
-     */
-    public function getAccessInformation()
-    {
-        $rtn    = unserialize($this->data['access_information']);
-
-
-        return $rtn;
-    }
-
-    /**
     * Get the value of GitKey / git_key.
     *
     * @return string
@@ -204,6 +191,19 @@ class ProjectBase extends Model
     public function getToken()
     {
         $rtn    = $this->data['token'];
+
+        
+        return $rtn;
+    }
+
+    /**
+    * Get the value of AccessInformation / access_information.
+    *
+    * @return string
+    */
+    public function getAccessInformation()
+    {
+        $rtn    = $this->data['access_information'];
 
         
         return $rtn;
@@ -267,25 +267,6 @@ class ProjectBase extends Model
     }
 
     /**
-     * Set the value of Domain / domain.
-     *
-     * Must not be null.
-     * @param $value string
-     */
-    public function setAccessInformation($value)
-    {
-        $this->_validateNotNull('AccessInformation', $value);
-        $this->_validateString('AccessInformation', $value);
-        if ($this->data['access_information'] == $value) {
-            return;
-        }
-
-        $this->data['access_information'] = $value;
-
-        $this->_setModified('access_information');
-    }
-
-    /**
     * Set the value of GitKey / git_key.
     *
     * Must not be null.
@@ -339,6 +320,25 @@ class ProjectBase extends Model
         $this->data['token'] = $value;
 
         $this->_setModified('token');
+    }
+
+    /**
+    * Set the value of AccessInformation / access_information.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setAccessInformation($value)
+    {
+        $this->_validateNotNull('AccessInformation', $value);
+        $this->_validateString('AccessInformation', $value);
+        if ($this->data['access_information'] == $value) {
+            return;
+        }
+
+        $this->data['access_information'] = $value;
+
+        $this->_setModified('access_information');
     }
 
     /**

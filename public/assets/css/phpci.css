@@ -1,6 +1,6 @@
 body
 {
-	background: #246;
+    background: #f9f9f9;
 	font-family: Roboto, Arial, Sans-Serif;
 	font-style: normal;
 	font-weight: 300;
@@ -9,8 +9,7 @@ body
 
 #content
 {
-	background: #fff;
-	border: 10px solid #369;
+	-border: 10px solid #369;
 	padding: 10px;
 }
 
@@ -50,7 +49,6 @@ td .label {
 
 #title
 {
-	background: #f8f8f8;
 	border-bottom: 1px solid #ccc;
 	margin: -10px -10px 15px -10px;
 	padding: 10px;
@@ -93,3 +91,40 @@ h3
 .navbar-brand {
     padding: 10px 15px;
 }
+
+.box {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    padding: 10px;
+}
+    .box .title {
+        border-bottom: 1px solid #eee;
+        cursor: move;
+        font-size: 1.2em;
+        padding: 8px;
+    }
+
+    .box .box-content {
+    }
+
+        .box .box-content table, .box .box-content pre {
+            margin-bottom: 0;
+        }
+
+        .box .box-content pre {
+            background: #fff;
+            border: 0;
+        }
+
+.ui-sortable-placeholder {
+    border: 1px dashed #ccc;
+    background: #ffe;
+    height: 100px;
+    margin-bottom: 15px;
+    visibility: visible !important;
+}
+
+.ui-sortable-placeholder * { visibility: hidden; }
+
+.ui-plugin { padding-top: 15px; }

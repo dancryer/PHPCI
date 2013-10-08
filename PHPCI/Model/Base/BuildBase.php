@@ -579,4 +579,16 @@ class BuildBase extends Model
     {
         return $this->setProjectId($value->getId());
     }
+
+    /**
+     * Get BuildMeta models by BuildId for this Build.
+     *
+     * @uses \PHPCI\Store\BuildMetaStore::getByBuildId()
+     * @uses \PHPCI\Model\BuildMeta
+     * @return \PHPCI\Model\BuildMeta[]
+     */
+    public function getBuildBuildMetas()
+    {
+        return \b8\Store\Factory::getStore('BuildMeta')->getByBuildId($this->getId());
+    }
 }

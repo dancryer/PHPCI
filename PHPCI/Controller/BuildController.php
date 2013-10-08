@@ -31,8 +31,26 @@ class BuildController extends \PHPCI\Controller
     public function view($buildId)
     {
         $build          = $this->_buildStore->getById($buildId);
+        $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($buildId);
+    }
+
+    protected function getUiPlugins()
+    {
+        $rtn = array();
+        $path = APPLICATION_PATH . 'public/assets/js/build-plugins/';
+        $dir = opendir($path);
+
+        while ($item = readdir($dir)) {
+            if (substr($item, 0, 1) == '.' || substr($item, -3) != '.js') {
+                continue;
+            }
+
+            $rtn[] = $item;
+        }
+
+        return $rtn;
     }
 
     /**
@@ -41,6 +59,23 @@ class BuildController extends \PHPCI\Controller
     public function data($buildId)
     {
         die($this->getBuildData($buildId));
+    }
+
+    /**
+     * AJAX call to get build meta:
+     */
+    public function meta($buildId)
+    {
+        $build  = $this->_buildStore->getById($buildId);
+        $key = $this->getParam('key', null);
+        $numBuilds = $this->getParam('num_builds', 1);
+        $data = null;
+
+        if ($key && $build) {
+            $data = $this->_buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+        }
+
+        die(json_encode($data));
     }
 
     /**

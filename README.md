@@ -114,6 +114,11 @@ Similar to Travis CI, to support PHPCI in your project, you simply need to add a
             allow_failures: true
         grunt:
             task: "build"
+        merge_conflict_find:
+            ignore_file_formats:
+                - "css"
+                - "md"
+                - "js"
     
     complete:
         mysql:

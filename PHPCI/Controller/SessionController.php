@@ -19,10 +19,15 @@ use b8;
 */
 class SessionController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\UserStore
+     */
+    protected $userStore;
+
     public function init()
     {
         $this->response->disableLayout();
-        $this->_userStore       = b8\Store\Factory::getStore('User');
+        $this->userStore       = b8\Store\Factory::getStore('User');
     }
 
     /**
@@ -33,7 +38,7 @@ class SessionController extends \PHPCI\Controller
         $isLoginFailure = false;
 
         if ($this->request->getMethod() == 'POST') {
-            $user = $this->_userStore->getByEmail($this->getParam('email'));
+            $user = $this->userStore->getByEmail($this->getParam('email'));
             
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['user_id']    = $user->getId();

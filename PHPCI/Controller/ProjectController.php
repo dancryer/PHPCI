@@ -24,10 +24,20 @@ use b8\Form;
 */
 class ProjectController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
     public function init()
     {
-        $this->_buildStore      = Store\Factory::getStore('Build');
-        $this->_projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore      = Store\Factory::getStore('Build');
+        $this->projectStore    = Store\Factory::getStore('Project');
     }
 
     /**
@@ -35,7 +45,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function view($projectId)
     {
-        $project        = $this->_projectStore->getById($projectId);
+        $project        = $this->projectStore->getById($projectId);
         $page           = $this->getParam('p', 1);
         $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
@@ -53,7 +63,7 @@ class ProjectController extends \PHPCI\Controller
     public function build($projectId)
     {
         /* @var \PHPCI\Model\Project $project */
-        $project = $this->_projectStore->getById($projectId);
+        $project = $this->projectStore->getById($projectId);
 
         $build = new Build();
         $build->setProjectId($projectId);
@@ -62,7 +72,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
 
-        $build = $this->_buildStore->save($build);
+        $build = $this->buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -77,8 +87,8 @@ class ProjectController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $project    = $this->_projectStore->getById($projectId);
-        $this->_projectStore->delete($project);
+        $project    = $this->projectStore->getById($projectId);
+        $this->projectStore->delete($project);
 
         header('Location: '.PHPCI_URL);
         exit;
@@ -100,7 +110,7 @@ class ProjectController extends \PHPCI\Controller
     {
         $criteria       = array('project_id' => $projectId);
         $order          = array('id' => 'DESC');
-        $builds         = $this->_buildStore->getWhere($criteria, 10, $start, array(), $order);
+        $builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 
@@ -176,7 +186,7 @@ class ProjectController extends \PHPCI\Controller
         $project = new Project();
         $project->setValues($values);
 
-        $project = $this->_projectStore->save($project);
+        $project = $this->projectStore->save($project);
 
         header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
@@ -219,7 +229,7 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $method     = $this->request->getMethod();
-        $project    = $this->_projectStore->getById($projectId);
+        $project    = $this->projectStore->getById($projectId);
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -258,7 +268,7 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $project->setValues($values);
-        $project = $this->_projectStore->save($project);
+        $project = $this->projectStore->save($project);
 
         header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;

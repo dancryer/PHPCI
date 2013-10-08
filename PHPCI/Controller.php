@@ -9,6 +9,16 @@ use b8\View;
 
 class Controller extends \b8\Controller
 {
+    /**
+    * @var \b8\View
+    */
+    protected $controllerView;
+
+    /**
+     * @var \b8\View
+     */
+    protected $view;
+
 	public function init() {}
 
 	public function __construct(Config $config, Request $request, Response $response)

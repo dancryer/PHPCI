@@ -22,17 +22,17 @@ class HomeController extends \PHPCI\Controller
     /**
      * @var \b8\Store\BuildStore
      */
-    protected $_buildStore;
+    protected $buildStore;
 
     /**
      * @var \b8\Store\ProjectStore
      */
-    protected $_projectStore;
+    protected $projectStore;
 
     public function init()
     {
-        $this->_buildStore      = b8\Store\Factory::getStore('Build');
-        $this->_projectStore    = b8\Store\Factory::getStore('Project');
+        $this->buildStore      = b8\Store\Factory::getStore('Build');
+        $this->projectStore    = b8\Store\Factory::getStore('Project');
     }
 
     /**
@@ -40,11 +40,11 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
-        $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        $projects       = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
         $summaryBuilds = array();
         foreach ($projects['items'] as $project) {
-            $summaryBuilds[$project->getId()] = $this->_buildStore->getLatestBuilds($project->getId());
+            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
         }
 
         $summaryView = new b8\View('SummaryTable');
@@ -71,7 +71,7 @@ class HomeController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml()
     {
-        $builds         = $this->_buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
+        $builds         = $this->buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 

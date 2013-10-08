@@ -20,9 +20,14 @@ use PHPCI\Model\Build;
 */
 class BuildController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+    
     public function init()
     {
-        $this->_buildStore      = b8\Store\Factory::getStore('Build');
+        $this->buildStore      = b8\Store\Factory::getStore('Build');
     }
 
     /**
@@ -30,7 +35,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function view($buildId)
     {
-        $build          = $this->_buildStore->getById($buildId);
+        $build          = $this->buildStore->getById($buildId);
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($buildId);
@@ -66,13 +71,13 @@ class BuildController extends \PHPCI\Controller
      */
     public function meta($buildId)
     {
-        $build  = $this->_buildStore->getById($buildId);
+        $build  = $this->buildStore->getById($buildId);
         $key = $this->getParam('key', null);
         $numBuilds = $this->getParam('num_builds', 1);
         $data = null;
 
         if ($key && $build) {
-            $data = $this->_buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
         }
 
         die(json_encode($data));
@@ -83,7 +88,7 @@ class BuildController extends \PHPCI\Controller
     */
     protected function getBuildData($buildId)
     {
-        $build  = $this->_buildStore->getById($buildId);
+        $build  = $this->buildStore->getById($buildId);
 
         $data               = array();
         $data['status']     = (int)$build->getStatus();
@@ -101,7 +106,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function rebuild($buildId)
     {
-        $copy   = $this->_buildStore->getById($buildId);
+        $copy   = $this->buildStore->getById($buildId);
 
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
@@ -110,7 +115,7 @@ class BuildController extends \PHPCI\Controller
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
 
-        $build = $this->_buildStore->save($build);
+        $build = $this->buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -125,8 +130,8 @@ class BuildController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $build  = $this->_buildStore->getById($buildId);
-        $this->_buildStore->delete($build);
+        $build  = $this->buildStore->getById($buildId);
+        $this->buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
         exit;

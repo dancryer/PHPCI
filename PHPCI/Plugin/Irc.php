@@ -51,6 +51,11 @@ class Irc implements \PHPCI\Plugin
         fputs($sock, 'USER ' . $this->nick . ' phptesting.org ' . $this->nick . ' :' . $this->nick . "\r\n");
         fputs($sock, 'NICK ' . $this->nick . "\r\n");
         fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
+
+        while ($res = fgets($sock)) {
+            $this->phpci->log($res);
+        }
+
         fclose($sock);
 
         return true;

@@ -178,6 +178,11 @@ class Email implements \PHPCI\Plugin
     protected function getEmailAddresses()
     {
         $addresses = array();
+        $committer = $this->phpci->getBuild()->getCommitterEmail();
+
+        if (isset($this->options['committer']) && !empty($committer)) {
+            $addresses[] = $committer;
+        }
 
         if (isset($this->options['addresses'])) {
             foreach ($this->options['addresses'] as $address) {

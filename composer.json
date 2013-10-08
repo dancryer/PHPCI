@@ -27,18 +27,20 @@
         "ircmaxell/password-compat": "1.x",
         "swiftmailer/swiftmailer"  : "v5.0.0",
         "symfony/yaml"             : "2.2.x-dev",
-        "symfony/console"          : "2.2.*"
+        "symfony/console"          : "2.2.*",
+        "behat/behat": "*"
     },
 
     "suggest": {
-        "phpunit/phpunit"          : "3.*",
-        "phpmd/phpmd"              : "1.*",
-        "sebastian/phpcpd"         : "1.*",
-        "squizlabs/php_codesniffer": "1.*",
-        "phpspec/phpspec"          : "2.*",
-        "fabpot/php-cs-fixer"      : "0.3.*@dev",
-        "phploc/phploc": "*",
-        "atoum/atoum":"*",
-        "jakub-onderka/php-parallel-lint": "dev-master"
+        "phpunit/phpunit": "PHP unit testing framework",
+        "phpmd/phpmd": "PHP Mess Detector",
+        "sebastian/phpcpd": "PHP Copy/Paste Detector",
+        "squizlabs/php_codesniffer": "PHP Code Sniffer",
+        "phpspec/phpspec": "PHP Spec",
+        "fabpot/php-cs-fixer": "PHP Code Sniffer Fixer",
+        "phploc/phploc": "PHP Lines of Code",
+        "atoum/atoum": "Atoum",
+        "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
+        "behat/behat": "Behat BDD Testing"
     }
 }

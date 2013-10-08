@@ -91,12 +91,13 @@ class ProjectBase extends Model
         'git_key' => array(
             'type' => 'text',
             'length' => '',
+            'nullable' => true,
             'default' => null,
             ),
         'type' => array(
             'type' => 'varchar',
             'length' => '50',
-            'default' => '',
+            'default' => '1',
             ),
         'token' => array(
             'type' => 'varchar',
@@ -107,6 +108,7 @@ class ProjectBase extends Model
         'access_information' => array(
             'type' => 'varchar',
             'length' => '250',
+            'nullable' => true,
             'default' => null,
             ),
      );
@@ -276,12 +278,11 @@ class ProjectBase extends Model
     /**
     * Set the value of GitKey / git_key.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setGitKey($value)
     {
-        $this->_validateNotNull('GitKey', $value);
+
         $this->_validateString('GitKey', $value);
         if ($this->data['git_key'] === $value) {
             return;
@@ -332,12 +333,11 @@ class ProjectBase extends Model
     /**
     * Set the value of AccessInformation / access_information.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setAccessInformation($value)
     {
-        $this->_validateNotNull('AccessInformation', $value);
+
         $this->_validateString('AccessInformation', $value);
         if ($this->data['access_information'] === $value) {
             return;

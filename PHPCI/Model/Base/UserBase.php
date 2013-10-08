@@ -90,7 +90,8 @@ class UserBase extends Model
         'name' => array(
             'type' => 'varchar',
             'length' => '250',
-            'default' => '',
+            'nullable' => true,
+            'default' => null,
             ),
      );
 
@@ -253,12 +254,11 @@ class UserBase extends Model
     /**
     * Set the value of Name / name.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setName($value)
     {
-        $this->_validateNotNull('Name', $value);
+
         $this->_validateString('Name', $value);
         if ($this->data['name'] === $value) {
             return;

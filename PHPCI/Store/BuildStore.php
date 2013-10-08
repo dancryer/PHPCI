@@ -19,6 +19,26 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
+    public function getLatestBuilds($projectId)
+    {
+        $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
+        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return new \PHPCI\Model\Build($item);
+            };
+            $rtn = array_map($map, $res);
+
+            return $rtn;
+        } else {
+            return array();
+        }
+    }
+
     public function getBuildSummary()
     {
         $query = 'SELECT COUNT(*) AS cnt FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC, b.id DESC';

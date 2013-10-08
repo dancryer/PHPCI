@@ -19,6 +19,16 @@ use b8;
 */
 class HomeController extends \PHPCI\Controller
 {
+    /**
+     * @var \b8\Store\BuildStore
+     */
+    protected $_buildStore;
+
+    /**
+     * @var \b8\Store\ProjectStore
+     */
+    protected $_projectStore;
+
     public function init()
     {
         $this->_buildStore      = b8\Store\Factory::getStore('Build');
@@ -31,10 +41,15 @@ class HomeController extends \PHPCI\Controller
     public function index()
     {
         $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
-        $summary        = $this->_buildStore->getBuildSummary();
+
+        $summaryBuilds = array();
+        foreach ($projects['items'] as $project) {
+            $summaryBuilds[$project->getId()] = $this->_buildStore->getLatestBuilds($project->getId());
+        }
 
         $summaryView = new b8\View('SummaryTable');
-        $summaryView->builds = $summary['items'];
+        $summaryView->projects = $projects['items'];
+        $summaryView->builds = $summaryBuilds;
 
         $this->view->builds   = $this->getLatestBuildsHtml();
         $this->view->projects = $projects['items'];

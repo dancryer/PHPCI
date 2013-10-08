@@ -26,8 +26,8 @@ test:
 
 success:
     irc:
-        message: "Build Success! %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
+        message: "Build Success. %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
 
 failure:
     irc:
-        message: "Build Failed :( %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
+        message: "Build Failed. %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"

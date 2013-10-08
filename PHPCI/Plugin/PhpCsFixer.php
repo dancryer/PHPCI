@@ -42,7 +42,14 @@ class PhpCsFixer implements \PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->workingdir);
 
-        $cmd = PHPCI_BIN_DIR . 'php-cs-fixer fix . %s';
+        $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
+
+        if (!$phpcsfixer) {
+            $this->phpci->logFailure('Could not find php-cs-fixer.');
+            return false;
+        }
+
+        $cmd = $phpcsfixer . ' fix . %s';
         $success = $this->phpci->executeCommand($cmd, $this->args);
 
         chdir($curdir);

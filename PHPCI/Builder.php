@@ -459,4 +459,37 @@ class Builder
         $value = json_encode($value);
         $this->store->setMeta($this->build->getProjectId(), $this->build->getId(), $key, $value);
     }
+
+    /**
+     * Find a binary required by a plugin.
+     * @param $binary
+     * @return null|string
+     */
+    public function findBinary($binary)
+    {
+        if (is_string($binary)) {
+            $binary = array($binary);
+        }
+
+        foreach ($binary as $bin) {
+            // Check project root directory:
+            if (is_file(PHPCI_DIR . $bin)) {
+                return PHPCI_DIR . $bin;
+            }
+
+            // Check Composer bin dir:
+            if (is_file(PHPCI_DIR . 'vendor/bin/' . $bin)) {
+                return PHPCI_DIR . 'vendor/bin/' . $bin;
+            }
+
+            // Use "which"
+            $which = trim(shell_exec('which ' . $bin));
+
+            if (!empty($which)) {
+                return $which;
+            }
+        }
+
+        return null;
+    }
 }

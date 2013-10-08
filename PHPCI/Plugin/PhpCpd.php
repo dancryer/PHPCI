@@ -57,7 +57,14 @@ class PhpCpd implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        $success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
+        $phpcpd = $this->phpci->findBinary('phpcpd');
+
+        if (!$phpcpd) {
+            $this->phpci->logFailure('Could not find phpcpd.');
+            return false;
+        }
+
+        $success = $this->phpci->executeCommand($phpcpd . ' %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
 
         print $this->phpci->getLastOutput();
 

@@ -102,7 +102,16 @@ class PhpUnit implements \PHPCI\Plugin
                 chdir($this->phpci->buildPath.'/'.$this->runFrom);
             }
 
-            $cmd = PHPCI_BIN_DIR . 'phpunit %s -c "%s" ' . $this->coverage . $this->path;
+
+            $phpunit = $this->phpci->findBinary('phpunit');
+
+            if (!$phpunit) {
+                $this->phpci->logFailure('Could not find phpunit.');
+                return false;
+            }
+
+
+            $cmd = $phpunit . ' %s -c "%s" ' . $this->coverage . $this->path;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
 
             if ($this->runFrom) {
@@ -120,7 +129,15 @@ class PhpUnit implements \PHPCI\Plugin
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
-            $cmd = PHPCI_BIN_DIR . 'phpunit %s "%s"';
+
+            $phpunit = $this->phpci->findBinary('phpunit');
+
+            if (!$phpunit) {
+                $this->phpci->logFailure('Could not find phpunit.');
+                return false;
+            }
+
+            $cmd = $phpunit . ' %s "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $dirPath);
             chdir($curdir);
             return $success;

@@ -36,7 +36,7 @@ class Composer implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $composerLocation = $this->whereIsComposer();
+        $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
 
         if (!$composerLocation) {
             $this->phpci->logFailure('Could not find Composer.');
@@ -46,26 +46,5 @@ class Composer implements \PHPCI\Plugin
         $cmd = $composerLocation . ' --no-ansi --no-interaction '. ($this->preferDist ? '--prefer-dist' : null) .' --working-dir="%s" %s';
 
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
-    }
-
-    protected function whereIsComposer()
-    {
-        if (is_file(PHPCI_DIR . 'composer.phar')) {
-            return PHPCI_DIR . 'composer.phar';
-        }
-
-        $which = trim(shell_exec('which composer'));
-
-        if (!empty($which)) {
-            return $which;
-        }
-
-        $which = trim(shell_exec('which composer.phar'));
-
-        if (!empty($which)) {
-            return $which;
-        }
-
-        return null;
     }
 }

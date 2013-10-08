@@ -82,7 +82,14 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text %s %s %s';
+        $phpmd = $this->phpci->findBinary('phpmd');
+
+        if (!$phpmd) {
+            $this->phpci->logFailure('Could not find phpmd.');
+            return false;
+        }
+
+        $cmd = $phpmd . ' "%s" text %s %s %s';
         $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $this->path, implode(',', $this->rules), $ignore, $suffixes);
         $errors = count(array_filter(explode(PHP_EOL, $this->phpci->getLastOutput())));
         $this->phpci->storeBuildMeta('phpmd-warnings', $errors);

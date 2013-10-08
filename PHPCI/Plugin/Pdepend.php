@@ -66,7 +66,14 @@ class Pdepend implements \PHPCI\Plugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $cmd = PHPCI_BIN_DIR . 'pdepend --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
+        $pdepend = $this->phpci->findBinary('pdepend');
+
+        if (!$pdepend) {
+            $this->phpci->logFailure('Could not find pdepend.');
+            return false;
+        }
+
+        $cmd = $pdepend . ' --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
 
         $this->removeBuildArtifacts();
        

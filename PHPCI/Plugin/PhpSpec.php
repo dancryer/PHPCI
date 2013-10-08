@@ -31,7 +31,15 @@ class PhpSpec implements \PHPCI\Plugin
     {
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
-        $success = $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpspec');
+
+        $phpspec = $this->phpci->findBinary('phpspec');
+
+        if (!$phpspec) {
+            $this->phpci->logFailure('Could not find phpspec.');
+            return false;
+        }
+
+        $success = $this->phpci->executeCommand($phpspec);
         chdir($curdir);
         
         return $success;

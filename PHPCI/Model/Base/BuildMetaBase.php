@@ -35,8 +35,8 @@ class BuildMetaBase extends Model
         'id' => null,
         'project_id' => null,
         'build_id' => null,
-        'key' => null,
-        'value' => null,
+        'meta_key' => null,
+        'meta_value' => null,
      );
 
     /**
@@ -46,8 +46,8 @@ class BuildMetaBase extends Model
         'id' => 'getId',
         'project_id' => 'getProjectId',
         'build_id' => 'getBuildId',
-        'key' => 'getKey',
-        'value' => 'getValue',
+        'meta_key' => 'getMetaKey',
+        'meta_value' => 'getMetaValue',
         'Build' => 'getBuild',
      );
 
@@ -58,8 +58,8 @@ class BuildMetaBase extends Model
         'id' => 'setId',
         'project_id' => 'setProjectId',
         'build_id' => 'setBuildId',
-        'key' => 'setKey',
-        'value' => 'setValue',
+        'meta_key' => 'setMetaKey',
+        'meta_value' => 'setMetaValue',
         'Build' => 'setBuild',
      );
 
@@ -85,12 +85,12 @@ class BuildMetaBase extends Model
             'nullable' => true,
             'default' => null,
             ),
-        'key' => array(
+        'meta_key' => array(
             'type' => 'varchar',
             'length' => '255',
             'default' => '',
             ),
-        'value' => array(
+        'meta_value' => array(
             'type' => 'text',
             'length' => '',
             'nullable' => true,
@@ -103,7 +103,7 @@ class BuildMetaBase extends Model
     */
     public $indexes = array(
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_meta_id' => array('unique' => true, 'columns' => 'build_id, key'),
+            'idx_meta_id' => array('unique' => true, 'columns' => 'build_id, meta_key'),
      );
 
     /**
@@ -160,26 +160,26 @@ class BuildMetaBase extends Model
     }
 
     /**
-    * Get the value of Key / key.
+    * Get the value of MetaKey / meta_key.
     *
     * @return string
     */
-    public function getKey()
+    public function getMetaKey()
     {
-        $rtn    = $this->data['key'];
+        $rtn    = $this->data['meta_key'];
 
         
         return $rtn;
     }
 
     /**
-    * Get the value of Value / value.
+    * Get the value of MetaValue / meta_value.
     *
     * @return string
     */
-    public function getValue()
+    public function getMetaValue()
     {
-        $rtn    = $this->data['value'];
+        $rtn    = $this->data['meta_value'];
 
         
         return $rtn;
@@ -242,40 +242,40 @@ class BuildMetaBase extends Model
     }
 
     /**
-    * Set the value of Key / key.
+    * Set the value of MetaKey / meta_key.
     *
     * Must not be null.
     * @param $value string
     */
-    public function setKey($value)
+    public function setMetaKey($value)
     {
-        $this->_validateNotNull('Key', $value);
-        $this->_validateString('Key', $value);
-        if ($this->data['key'] === $value) {
+        $this->_validateNotNull('MetaKey', $value);
+        $this->_validateString('MetaKey', $value);
+        if ($this->data['meta_key'] === $value) {
             return;
         }
 
-        $this->data['key'] = $value;
+        $this->data['meta_key'] = $value;
 
-        $this->_setModified('key');
+        $this->_setModified('meta_key');
     }
 
     /**
-    * Set the value of Value / value.
+    * Set the value of MetaValue / meta_value.
     *
     * @param $value string
     */
-    public function setValue($value)
+    public function setMetaValue($value)
     {
 
-        $this->_validateString('Value', $value);
-        if ($this->data['value'] === $value) {
+        $this->_validateString('MetaValue', $value);
+        if ($this->data['meta_value'] === $value) {
             return;
         }
 
-        $this->data['value'] = $value;
+        $this->data['meta_value'] = $value;
 
-        $this->_setModified('value');
+        $this->_setModified('meta_value');
     }
 
     /**

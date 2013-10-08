@@ -42,8 +42,8 @@ var plugin = PHPCI.UiPlugin.extend({
 
         for (var i in build) {
             var buildId = build[i]['build_id'];
-            var metaKey = build[i]['key'];
-            var metaVal = build[i]['value'];
+            var metaKey = build[i]['meta_key'];
+            var metaVal = build[i]['meta_value'];
 
             if (!self.data[buildId]) {
                 self.data[buildId] = {};

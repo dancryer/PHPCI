@@ -186,13 +186,15 @@ class Builder
 
                 // Run success or failure plugins:
                 if ($this->success) {
+                    $this->build->setStatus(2);
+
                     $this->executePlugins('success');
                     $this->logSuccess('BUILD SUCCESSFUL!');
-                    $this->build->setStatus(2);
                 } else {
+                    $this->build->setStatus(3);
+
                     $this->executePlugins('failure');
                     $this->logFailure('BUILD FAILED!');
-                    $this->build->setStatus(3);
                 }
 
                 $this->log('');
@@ -309,6 +311,7 @@ class Builder
         $trans_table = array();
         foreach ($this->getInterpolationVars() as $key => $value) {
             $trans_table['%'.$key.'%'] = $value;
+            $trans_table['%PHPCI_'.$key.'%'] = $value;
         }
         return strtr($input, $trans_table);
     }
@@ -321,11 +324,12 @@ class Builder
     {
         $this->interpolation_vars = array(
             'PHPCI'               => 1,
-            'PHPCI_COMMIT'        => $this->build->getCommitId(),
-            'PHPCI_PROJECT'       => $this->build->getProject()->getId(),
-            'PHPCI_BUILD'         => $this->build->getId(),
-            'PHPCI_PROJECT_TITLE' => $this->build->getProject()->getTitle(),
-            'PHPCI_BUILD_PATH'    => $this->buildPath,
+            'COMMIT'        => $this->build->getCommitId(),
+            'PROJECT'       => $this->build->getProject()->getId(),
+            'BUILD'         => $this->build->getId(),
+            'PROJECT_TITLE' => $this->build->getProject()->getTitle(),
+            'BUILD_PATH'    => $this->buildPath,
+            'BUILD_URI'     => PHPCI_URL . "build/view/" . $this->build->getId(),
         );
     }
     

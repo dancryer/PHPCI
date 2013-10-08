@@ -6,6 +6,11 @@ build_settings:
         - "build"
         - "Tests"
         - "composer.phar"
+    irc:
+        server: "irc.freenode.net"
+        port: 6667
+        room: "#phpci"
+        nick: "phpcidev"
 
 setup:
     composer:
@@ -18,3 +23,11 @@ test:
         standard: "PSR2"
     php_loc:
         allow_failures: true
+
+success:
+    irc:
+        message: "Build Success! %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
+
+failure:
+    irc:
+        message: "Build Failed :( %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"

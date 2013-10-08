@@ -128,3 +128,17 @@ h3
 .ui-sortable-placeholder * { visibility: hidden; }
 
 .ui-plugin { padding-top: 15px; }
+
+
+#loading {
+    font-family: Roboto, Arial, Sans-Serif;
+
+    background: #369;
+    color: #fff;
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    font-size: 2em;
+    right: 20px;
+    padding: 15px 50px;
+}

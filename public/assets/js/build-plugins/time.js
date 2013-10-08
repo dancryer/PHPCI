@@ -27,7 +27,9 @@ var timePlugin = PHPCI.UiPlugin.extend({
         '</table>';
     },
 
-    onUpdate: function(build) {
+    onUpdate: function(e) {
+        var build = e.queryData;
+
         $('#created').text(build.created);
         $('#started').text(build.started);
         $('#finished').text(build.finished);

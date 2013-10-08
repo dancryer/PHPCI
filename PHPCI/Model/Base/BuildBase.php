@@ -90,52 +90,64 @@ class BuildBase extends Model
             'length' => '11',
             'primary_key' => true,
             'auto_increment' => true,
+            'default' => null,
             ),
         'project_id' => array(
             'type' => 'int',
             'length' => '11',
+            'default' => null,
             ),
         'commit_id' => array(
             'type' => 'varchar',
             'length' => '50',
+            'nullable' => true,
+            'default' => null,
             ),
         'status' => array(
             'type' => 'tinyint',
             'length' => '4',
+            'default' => '0',
             ),
         'log' => array(
             'type' => 'longtext',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
         'branch' => array(
             'type' => 'varchar',
             'length' => '50',
+            'default' => 'master',
             ),
         'created' => array(
             'type' => 'datetime',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
         'started' => array(
             'type' => 'datetime',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
         'finished' => array(
             'type' => 'datetime',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
         'plugins' => array(
             'type' => 'text',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
         'committer_email' => array(
             'type' => 'varchar',
             'length' => '512',
             'nullable' => true,
+            'default' => null,
             ),
      );
 
@@ -330,7 +342,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] == $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
@@ -349,7 +361,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('ProjectId', $value);
         $this->_validateInt('ProjectId', $value);
-        if ($this->data['project_id'] == $value) {
+        if ($this->data['project_id'] === $value) {
             return;
         }
 
@@ -361,14 +373,13 @@ class BuildBase extends Model
     /**
     * Set the value of CommitId / commit_id.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setCommitId($value)
     {
-        $this->_validateNotNull('CommitId', $value);
+
         $this->_validateString('CommitId', $value);
-        if ($this->data['commit_id'] == $value) {
+        if ($this->data['commit_id'] === $value) {
             return;
         }
 
@@ -387,7 +398,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Status', $value);
         $this->_validateInt('Status', $value);
-        if ($this->data['status'] == $value) {
+        if ($this->data['status'] === $value) {
             return;
         }
 
@@ -405,7 +416,7 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Log', $value);
-        if ($this->data['log'] == $value) {
+        if ($this->data['log'] === $value) {
             return;
         }
 
@@ -424,7 +435,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Branch', $value);
         $this->_validateString('Branch', $value);
-        if ($this->data['branch'] == $value) {
+        if ($this->data['branch'] === $value) {
             return;
         }
 
@@ -442,7 +453,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Created', $value);
-        if ($this->data['created'] == $value) {
+        if ($this->data['created'] === $value) {
             return;
         }
 
@@ -460,7 +471,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Started', $value);
-        if ($this->data['started'] == $value) {
+        if ($this->data['started'] === $value) {
             return;
         }
 
@@ -478,7 +489,7 @@ class BuildBase extends Model
     {
 
         $this->_validateDate('Finished', $value);
-        if ($this->data['finished'] == $value) {
+        if ($this->data['finished'] === $value) {
             return;
         }
 
@@ -496,7 +507,7 @@ class BuildBase extends Model
     {
 
         $this->_validateString('Plugins', $value);
-        if ($this->data['plugins'] == $value) {
+        if ($this->data['plugins'] === $value) {
             return;
         }
 
@@ -514,7 +525,7 @@ class BuildBase extends Model
     {
 
         $this->_validateString('CommitterEmail', $value);
-        if ($this->data['committer_email'] == $value) {
+        if ($this->data['committer_email'] === $value) {
             return;
         }
 

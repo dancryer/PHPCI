@@ -45,6 +45,6 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         header('Content-Type: image/png');
-        die(file_get_contents(APPLICATION_PATH . 'assets/img/build-' . $status . '.png'));
+        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
     }
 }

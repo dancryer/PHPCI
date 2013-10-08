@@ -17,3 +17,4 @@ test:
     php_code_sniffer:
         standard: "PSR2"
     php_loc:
+        allow_failures: true

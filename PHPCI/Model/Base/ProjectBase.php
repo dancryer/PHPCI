@@ -76,31 +76,40 @@ class ProjectBase extends Model
             'length' => '11',
             'primary_key' => true,
             'auto_increment' => true,
+            'default' => null,
             ),
         'title' => array(
             'type' => 'varchar',
             'length' => '250',
+            'default' => '',
             ),
         'reference' => array(
             'type' => 'varchar',
             'length' => '250',
+            'default' => '',
             ),
         'git_key' => array(
             'type' => 'text',
             'length' => '',
+            'nullable' => true,
+            'default' => null,
             ),
         'type' => array(
             'type' => 'varchar',
             'length' => '50',
+            'default' => '1',
             ),
         'token' => array(
             'type' => 'varchar',
             'length' => '50',
             'nullable' => true,
+            'default' => null,
             ),
         'access_information' => array(
             'type' => 'varchar',
             'length' => '250',
+            'nullable' => true,
+            'default' => null,
             ),
      );
 
@@ -219,7 +228,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] == $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
@@ -238,7 +247,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Title', $value);
         $this->_validateString('Title', $value);
-        if ($this->data['title'] == $value) {
+        if ($this->data['title'] === $value) {
             return;
         }
 
@@ -257,7 +266,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Reference', $value);
         $this->_validateString('Reference', $value);
-        if ($this->data['reference'] == $value) {
+        if ($this->data['reference'] === $value) {
             return;
         }
 
@@ -269,14 +278,13 @@ class ProjectBase extends Model
     /**
     * Set the value of GitKey / git_key.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setGitKey($value)
     {
-        $this->_validateNotNull('GitKey', $value);
+
         $this->_validateString('GitKey', $value);
-        if ($this->data['git_key'] == $value) {
+        if ($this->data['git_key'] === $value) {
             return;
         }
 
@@ -295,7 +303,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Type', $value);
         $this->_validateString('Type', $value);
-        if ($this->data['type'] == $value) {
+        if ($this->data['type'] === $value) {
             return;
         }
 
@@ -313,7 +321,7 @@ class ProjectBase extends Model
     {
 
         $this->_validateString('Token', $value);
-        if ($this->data['token'] == $value) {
+        if ($this->data['token'] === $value) {
             return;
         }
 
@@ -325,14 +333,13 @@ class ProjectBase extends Model
     /**
     * Set the value of AccessInformation / access_information.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setAccessInformation($value)
     {
-        $this->_validateNotNull('AccessInformation', $value);
+
         $this->_validateString('AccessInformation', $value);
-        if ($this->data['access_information'] == $value) {
+        if ($this->data['access_information'] === $value) {
             return;
         }
 

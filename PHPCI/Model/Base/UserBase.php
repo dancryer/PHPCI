@@ -70,22 +70,28 @@ class UserBase extends Model
             'length' => '11',
             'primary_key' => true,
             'auto_increment' => true,
+            'default' => null,
             ),
         'email' => array(
             'type' => 'varchar',
             'length' => '250',
+            'default' => '',
             ),
         'hash' => array(
             'type' => 'varchar',
             'length' => '250',
+            'default' => '',
             ),
         'is_admin' => array(
             'type' => 'tinyint',
             'length' => '1',
+            'default' => '0',
             ),
         'name' => array(
             'type' => 'varchar',
             'length' => '250',
+            'nullable' => true,
+            'default' => null,
             ),
      );
 
@@ -179,7 +185,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] == $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
@@ -198,7 +204,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Email', $value);
         $this->_validateString('Email', $value);
-        if ($this->data['email'] == $value) {
+        if ($this->data['email'] === $value) {
             return;
         }
 
@@ -217,7 +223,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Hash', $value);
         $this->_validateString('Hash', $value);
-        if ($this->data['hash'] == $value) {
+        if ($this->data['hash'] === $value) {
             return;
         }
 
@@ -236,7 +242,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('IsAdmin', $value);
         $this->_validateInt('IsAdmin', $value);
-        if ($this->data['is_admin'] == $value) {
+        if ($this->data['is_admin'] === $value) {
             return;
         }
 
@@ -248,14 +254,13 @@ class UserBase extends Model
     /**
     * Set the value of Name / name.
     *
-    * Must not be null.
     * @param $value string
     */
     public function setName($value)
     {
-        $this->_validateNotNull('Name', $value);
+
         $this->_validateString('Name', $value);
-        if ($this->data['name'] == $value) {
+        if ($this->data['name'] === $value) {
             return;
         }
 

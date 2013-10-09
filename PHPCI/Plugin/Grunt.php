@@ -30,7 +30,7 @@ class Grunt implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
         $this->task         = isset($options['task']) ? $options['task'] : null;
-        $this->grunt        = isset($options['grunt']) ? $options['grunt'] : 'grunt';
+        $this->grunt        = isset($options['grunt']) ? $options['grunt'] : $this->phpci->findBinary('grunt');
         $this->gruntfile    = isset($options['gruntfile']) ? $options['gruntfile'] : 'Gruntfile.js';
     }
 

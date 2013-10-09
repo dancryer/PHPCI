@@ -30,6 +30,8 @@ class SessionController extends \PHPCI\Controller
     */
     public function login()
     {
+        $isLoginFailure = false;
+
         if ($this->request->getMethod() == 'POST') {
             $user = $this->_userStore->getByEmail($this->getParam('email'));
             
@@ -37,6 +39,8 @@ class SessionController extends \PHPCI\Controller
                 $_SESSION['user_id']    = $user->getId();
                 header('Location: ' . PHPCI_URL);
                 die;
+            } else {
+                $isLoginFailure = true;
             }
         }
 
@@ -64,6 +68,7 @@ class SessionController extends \PHPCI\Controller
         $form->addField($pwd);
 
         $this->view->form = $form->render();
+        $this->view->failed = $isLoginFailure;
         
         return $this->view->render();
     }

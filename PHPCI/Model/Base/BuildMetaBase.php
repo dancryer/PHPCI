@@ -33,6 +33,7 @@ class BuildMetaBase extends Model
     */
     protected $data = array(
         'id' => null,
+        'project_id' => null,
         'build_id' => null,
         'key' => null,
         'value' => null,
@@ -43,6 +44,7 @@ class BuildMetaBase extends Model
     */
     protected $getters = array(
         'id' => 'getId',
+        'project_id' => 'getProjectId',
         'build_id' => 'getBuildId',
         'key' => 'getKey',
         'value' => 'getValue',
@@ -54,6 +56,7 @@ class BuildMetaBase extends Model
     */
     protected $setters = array(
         'id' => 'setId',
+        'project_id' => 'setProjectId',
         'build_id' => 'setBuildId',
         'key' => 'setKey',
         'value' => 'setValue',
@@ -69,19 +72,29 @@ class BuildMetaBase extends Model
             'length' => '10',
             'primary_key' => true,
             'auto_increment' => true,
+            'default' => null,
+            ),
+        'project_id' => array(
+            'type' => 'int',
+            'length' => '11',
+            'default' => null,
             ),
         'build_id' => array(
             'type' => 'int',
             'length' => '11',
+            'nullable' => true,
+            'default' => null,
             ),
         'key' => array(
             'type' => 'varchar',
             'length' => '255',
+            'default' => '',
             ),
         'value' => array(
             'type' => 'text',
             'length' => '',
             'nullable' => true,
+            'default' => null,
             ),
      );
 
@@ -115,6 +128,19 @@ class BuildMetaBase extends Model
     public function getId()
     {
         $rtn    = $this->data['id'];
+
+        
+        return $rtn;
+    }
+
+    /**
+    * Get the value of ProjectId / project_id.
+    *
+    * @return int
+    */
+    public function getProjectId()
+    {
+        $rtn    = $this->data['project_id'];
 
         
         return $rtn;
@@ -169,7 +195,7 @@ class BuildMetaBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
-        if ($this->data['id'] == $value) {
+        if ($this->data['id'] === $value) {
             return;
         }
 
@@ -179,16 +205,34 @@ class BuildMetaBase extends Model
     }
 
     /**
-    * Set the value of BuildId / build_id.
+    * Set the value of ProjectId / project_id.
     *
     * Must not be null.
     * @param $value int
     */
+    public function setProjectId($value)
+    {
+        $this->_validateNotNull('ProjectId', $value);
+        $this->_validateInt('ProjectId', $value);
+        if ($this->data['project_id'] === $value) {
+            return;
+        }
+
+        $this->data['project_id'] = $value;
+
+        $this->_setModified('project_id');
+    }
+
+    /**
+    * Set the value of BuildId / build_id.
+    *
+    * @param $value int
+    */
     public function setBuildId($value)
     {
-        $this->_validateNotNull('BuildId', $value);
+
         $this->_validateInt('BuildId', $value);
-        if ($this->data['build_id'] == $value) {
+        if ($this->data['build_id'] === $value) {
             return;
         }
 
@@ -207,7 +251,7 @@ class BuildMetaBase extends Model
     {
         $this->_validateNotNull('Key', $value);
         $this->_validateString('Key', $value);
-        if ($this->data['key'] == $value) {
+        if ($this->data['key'] === $value) {
             return;
         }
 
@@ -225,7 +269,7 @@ class BuildMetaBase extends Model
     {
 
         $this->_validateString('Value', $value);
-        if ($this->data['value'] == $value) {
+        if ($this->data['value'] === $value) {
             return;
         }
 

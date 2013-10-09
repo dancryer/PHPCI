@@ -1,21 +1,21 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
 /**
-* PHP Spec Plugin - Allows PHP Spec testing.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
-class PhpSpec implements \PHPCI\Plugin
+ * Behat BDD Plugin
+ * @author       Dan Cryer <dan@block8.co.uk>
+ * @package      PHPCI
+ * @subpackage   Plugins
+ */
+class Behat implements \PHPCI\Plugin
 {
     protected $phpci;
 
@@ -25,8 +25,8 @@ class PhpSpec implements \PHPCI\Plugin
     }
 
     /**
-    * Runs PHP Spec tests.
-    */
+     * Runs Behat tests.
+     */
     public function execute()
     {
         $curdir = getcwd();
@@ -41,7 +41,7 @@ class PhpSpec implements \PHPCI\Plugin
 
         $success = $this->phpci->executeCommand($phpspec);
         chdir($curdir);
-        
+
         return $success;
     }
 }

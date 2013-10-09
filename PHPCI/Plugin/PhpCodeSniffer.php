@@ -105,7 +105,14 @@ class PhpCodeSniffer implements \PHPCI\Plugin
             $encoding = ' --encoding='.$this->encoding;
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s %s "%s"';
+        $phpcs = $this->phpci->findBinary('phpcs');
+
+        if (!$phpcs) {
+            $this->phpci->logFailure('Could not find phpcs.');
+            return false;
+        }
+
+        $cmd = $phpcs . ' %s %s %s %s %s "%s"';
         $success = $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath . $this->path);
 
         $output = $this->phpci->getLastOutput();

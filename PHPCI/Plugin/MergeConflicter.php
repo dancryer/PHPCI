@@ -55,7 +55,7 @@ class MergeConflicter implements \PHPCI\Plugin
             }
         }
         
-        $cmd = 'echo "#############################"; echo "# Git Conflict Merge Finder #"; echo "#############################"; grep -R -E "^<<<<<<<$|^>>>>>>>$|^=======$" %s %s --line-number "%s"; test $? -ne 0 && echo "ALL OK. No merge conflicts found.";';
+        $cmd = 'grep -R -E "^<<<<<<<$|^>>>>>>>$|^=======$" %s %s --line-number "%s"; test $? -ne 0;';
         return $this->phpci->executeCommand($cmd, $ignore_file_formats, $ignore_dirs, $this->phpci->buildPath.$this->path);
     }
 }

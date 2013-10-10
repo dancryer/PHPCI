@@ -67,19 +67,16 @@ class GithubBuild extends RemoteGitBuild
                 break;
         }
 
-        $url = \b8\Config::getInstance()->get('phpci.url');
+        $phpciUrl = \b8\Config::getInstance()->get('phpci.url');
         $params = array(    'state' => $status,
-                            'target_url' => $url . '/build/view/' . $this->getId());
+                            'target_url' => $phpciUrl . '/build/view/' . $this->getId());
         $headers = array(
             'Authorization: token ' . $project->getToken(),
             'Content-Type: application/x-www-form-urlencoded'
             );
 
         $http->setHeaders($headers);
-        $res = $http->request('POST', $url, json_encode($params));
-
-        var_dump($res);
-
+        $http->request('POST', $url, json_encode($params));
     }
 
     /**

@@ -141,7 +141,8 @@ class Builder
     /**
      * @return string   The title of the project being built.
      */
-    public function getBuildProjectTitle() {
+    public function getBuildProjectTitle()
+    {
         return $this->build->getProject()->getTitle();
     }
 

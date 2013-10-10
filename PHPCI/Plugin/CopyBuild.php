@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+
 /**
 * Copy Build Plugin - Copies the entire build to another directory.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -22,7 +23,7 @@ class CopyBuild implements \PHPCI\Plugin
     protected $directory;
     protected $phpci;
 
-    public function __construct(Builder $phpci, Build $build,  array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;

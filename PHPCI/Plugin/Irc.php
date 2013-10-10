@@ -55,7 +55,7 @@ class Irc implements \PHPCI\Plugin
         fputs($sock, 'NICK ' . $this->nick . "\r\n");
         fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
 
-        while ($res = fgets($sock)) {
+        while (fgets($sock)) {
             // We don't need to do anything,
             // but the IRC server doesn't appear to post the message
             // unless we wait for responses.

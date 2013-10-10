@@ -76,7 +76,9 @@ class GithubBuild extends RemoteGitBuild
             );
 
         $http->setHeaders($headers);
-        $http->request('POST', $url, json_encode($params));
+        $res = $http->request('POST', $url, json_encode($params));
+
+        
     }
 
     /**

@@ -38,6 +38,12 @@ class GithubController extends \PHPCI\Controller
     {
         $payload    = json_decode($this->getParam('payload'), true);
 
+        // Github sends a payload when you close a pull request with a
+        // non-existant commit. We don't want this.
+        if ($payload['after'] === '0000000000000000000000000000000000000000') {
+            die('OK');
+        }
+
         try {
             $build      = new Build();
             $build->setProjectId($project);

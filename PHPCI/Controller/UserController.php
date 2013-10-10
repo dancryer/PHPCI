@@ -10,8 +10,9 @@
 namespace PHPCI\Controller;
 
 use b8;
-use PHPCI\Model\User;
 use b8\Form;
+use PHPCI\Controller;
+use PHPCI\Model\User;
 
 /**
 * User Controller - Allows an administrator to view, add, edit and delete users.
@@ -19,7 +20,7 @@ use b8\Form;
 * @package      PHPCI
 * @subpackage   Web
 */
-class UserController extends  \PHPCI\Controller
+class UserController extends Controller
 {
     /**
      * @var \PHPCI\Store\UserStore

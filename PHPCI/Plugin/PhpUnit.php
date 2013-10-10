@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Unit Plugin - Allows PHP Unit testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -43,7 +46,7 @@ class PhpUnit implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
 

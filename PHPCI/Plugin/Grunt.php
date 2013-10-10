@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * Grunt Plugin - Provides access to grunt functionality.
 * @author       Tobias Tom <t.tom@succont.de>
@@ -24,14 +27,31 @@ class Grunt implements \PHPCI\Plugin
     protected $grunt;
     protected $gruntfile;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path               = $phpci->buildPath;
-        $this->phpci        = $phpci;
-        $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
-        $this->task         = isset($options['task']) ? $options['task'] : null;
-        $this->grunt        = isset($options['grunt']) ? $options['grunt'] : $this->phpci->findBinary('grunt');
-        $this->gruntfile    = isset($options['gruntfile']) ? $options['gruntfile'] : 'Gruntfile.js';
+        $path = $phpci->buildPath;
+        $this->phpci = $phpci;
+        $this->directory = $path;
+        $this->task = null;
+        $this->grunt = $this->phpci->findBinary('grunt');
+        $this->gruntfile = 'Gruntfile.js';
+
+        // Handle options:
+        if (isset($options['directory'])) {
+            $this->directory = $path . '/' . $options['directory'];
+        }
+
+        if (isset($options['task'])) {
+            $this->task = $options['task'];
+        }
+
+        if (isset($options['grunt'])) {
+            $this->grunt = $options['grunt'];
+        }
+
+        if (isset($options['gruntfile'])) {
+            $this->gruntfile = $options['gruntfile'];
+        }
     }
 
     /**
@@ -40,7 +60,7 @@ class Grunt implements \PHPCI\Plugin
     public function execute()
     {
         // if npm does not work, we cannot use grunt, so we return false
-        if ( !$this->phpci->executeCommand( 'cd %s && npm install', $this->directory ) ) {
+        if (!$this->phpci->executeCommand('cd %s && npm install', $this->directory)) {
             return false;
         }
 

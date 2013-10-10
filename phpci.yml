@@ -2,27 +2,20 @@ build_settings:
     verbose: false
     ignore: 
         - "vendor"
-        - "assets"
-        - "build"
         - "Tests"
-        - "composer.phar"
+        - "PHPCI/Command" # PHPMD complains about un-used parameters, but they are required.
+        - "public/install.php" # PHPCS really doesn't like PHP mixed with HTML (and so it shouldn't)
     irc:
         server: "irc.freenode.net"
         port: 6667
         room: "#phpci"
         nick: "phpcidev"
 
-setup:
-    composer:
-        action: "install"
-
 test:
     php_mess_detector:
-        allow_failures: true
     php_code_sniffer:
         standard: "PSR2"
     php_loc:
-        allow_failures: true
 
 success:
     irc:

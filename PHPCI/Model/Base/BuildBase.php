@@ -7,6 +7,7 @@
 namespace PHPCI\Model\Base;
 
 use b8\Model;
+use b8\Store\Factory;
 
 /**
  * Build Base Model
@@ -43,12 +44,13 @@ class BuildBase extends Model
         'finished' => null,
         'plugins' => null,
         'committer_email' => null,
-     );
+    );
 
     /**
     * @var array
     */
     protected $getters = array(
+        // Direct property getters:
         'id' => 'getId',
         'project_id' => 'getProjectId',
         'commit_id' => 'getCommitId',
@@ -60,13 +62,16 @@ class BuildBase extends Model
         'finished' => 'getFinished',
         'plugins' => 'getPlugins',
         'committer_email' => 'getCommitterEmail',
+
+        // Foreign key getters:
         'Project' => 'getProject',
-     );
+    );
 
     /**
     * @var array
     */
     protected $setters = array(
+        // Direct property setters:
         'id' => 'setId',
         'project_id' => 'setProjectId',
         'commit_id' => 'setCommitId',
@@ -78,8 +83,10 @@ class BuildBase extends Model
         'finished' => 'setFinished',
         'plugins' => 'setPlugins',
         'committer_email' => 'setCommitterEmail',
+
+        // Foreign key setters:
         'Project' => 'setProject',
-     );
+    );
 
     /**
     * @var array
@@ -87,69 +94,63 @@ class BuildBase extends Model
     public $columns = array(
         'id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'primary_key' => true,
             'auto_increment' => true,
             'default' => null,
-            ),
+        ),
         'project_id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'default' => null,
-            ),
+        ),
         'commit_id' => array(
             'type' => 'varchar',
-            'length' => '50',
+            'length' => 50,
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'status' => array(
             'type' => 'tinyint',
-            'length' => '4',
-            'default' => '0',
-            ),
+            'length' => 4,
+        ),
         'log' => array(
             'type' => 'longtext',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'branch' => array(
             'type' => 'varchar',
-            'length' => '50',
+            'length' => 50,
             'default' => 'master',
-            ),
+        ),
         'created' => array(
             'type' => 'datetime',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'started' => array(
             'type' => 'datetime',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'finished' => array(
             'type' => 'datetime',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'plugins' => array(
             'type' => 'text',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'committer_email' => array(
             'type' => 'varchar',
-            'length' => '512',
+            'length' => 512,
             'nullable' => true,
             'default' => null,
-            ),
-     );
+        ),
+    );
 
     /**
     * @var array
@@ -158,7 +159,7 @@ class BuildBase extends Model
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'project_id' => array('columns' => 'project_id'),
             'idx_status' => array('columns' => 'status'),
-     );
+    );
 
     /**
     * @var array
@@ -171,8 +172,7 @@ class BuildBase extends Model
                 'table' => 'project',
                 'col' => 'id'
                 ),
-     );
-
+    );
 
     /**
     * Get the value of Id / id.
@@ -183,7 +183,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['id'];
 
-        
         return $rtn;
     }
 
@@ -196,7 +195,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['project_id'];
 
-        
         return $rtn;
     }
 
@@ -209,7 +207,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['commit_id'];
 
-        
         return $rtn;
     }
 
@@ -222,7 +219,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['status'];
 
-        
         return $rtn;
     }
 
@@ -235,7 +231,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['log'];
 
-        
         return $rtn;
     }
 
@@ -248,7 +243,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['branch'];
 
-        
         return $rtn;
     }
 
@@ -261,11 +255,9 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['created'];
 
-        
         if (!empty($rtn)) {
             $rtn    = new \DateTime($rtn);
         }
-
         
         return $rtn;
     }
@@ -279,11 +271,9 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['started'];
 
-        
         if (!empty($rtn)) {
             $rtn    = new \DateTime($rtn);
         }
-
         
         return $rtn;
     }
@@ -297,11 +287,9 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['finished'];
 
-        
         if (!empty($rtn)) {
             $rtn    = new \DateTime($rtn);
         }
-
         
         return $rtn;
     }
@@ -315,7 +303,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['plugins'];
 
-        
         return $rtn;
     }
 
@@ -328,7 +315,6 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['committer_email'];
 
-        
         return $rtn;
     }
 
@@ -342,6 +328,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
+
         if ($this->data['id'] === $value) {
             return;
         }
@@ -361,6 +348,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('ProjectId', $value);
         $this->_validateInt('ProjectId', $value);
+
         if ($this->data['project_id'] === $value) {
             return;
         }
@@ -377,8 +365,8 @@ class BuildBase extends Model
     */
     public function setCommitId($value)
     {
-
         $this->_validateString('CommitId', $value);
+
         if ($this->data['commit_id'] === $value) {
             return;
         }
@@ -398,6 +386,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Status', $value);
         $this->_validateInt('Status', $value);
+
         if ($this->data['status'] === $value) {
             return;
         }
@@ -414,8 +403,8 @@ class BuildBase extends Model
     */
     public function setLog($value)
     {
-
         $this->_validateString('Log', $value);
+
         if ($this->data['log'] === $value) {
             return;
         }
@@ -435,6 +424,7 @@ class BuildBase extends Model
     {
         $this->_validateNotNull('Branch', $value);
         $this->_validateString('Branch', $value);
+
         if ($this->data['branch'] === $value) {
             return;
         }
@@ -451,8 +441,8 @@ class BuildBase extends Model
     */
     public function setCreated($value)
     {
-
         $this->_validateDate('Created', $value);
+
         if ($this->data['created'] === $value) {
             return;
         }
@@ -469,8 +459,8 @@ class BuildBase extends Model
     */
     public function setStarted($value)
     {
-
         $this->_validateDate('Started', $value);
+
         if ($this->data['started'] === $value) {
             return;
         }
@@ -487,8 +477,8 @@ class BuildBase extends Model
     */
     public function setFinished($value)
     {
-
         $this->_validateDate('Finished', $value);
+
         if ($this->data['finished'] === $value) {
             return;
         }
@@ -505,8 +495,8 @@ class BuildBase extends Model
     */
     public function setPlugins($value)
     {
-
         $this->_validateString('Plugins', $value);
+
         if ($this->data['plugins'] === $value) {
             return;
         }
@@ -523,8 +513,8 @@ class BuildBase extends Model
     */
     public function setCommitterEmail($value)
     {
-
         $this->_validateString('CommitterEmail', $value);
+
         if ($this->data['committer_email'] === $value) {
             return;
         }
@@ -553,7 +543,7 @@ class BuildBase extends Model
         $rtn        = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
-            $rtn    = \b8\Store\Factory::getStore('Project')->getById($key);
+            $rtn    = Factory::getStore('Project')->getById($key);
             $this->cache->set($cacheKey, $rtn);
         }
 
@@ -600,6 +590,6 @@ class BuildBase extends Model
      */
     public function getBuildBuildMetas()
     {
-        return \b8\Store\Factory::getStore('BuildMeta')->getByBuildId($this->getId());
+        return Factory::getStore('BuildMeta')->getByBuildId($this->getId());
     }
 }

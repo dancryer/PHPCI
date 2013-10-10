@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * Php Parallel Lint Plugin - Provides access to PHP lint functionality.
 * @author       Vaclav Makes <vaclav@makes.cz>
@@ -21,7 +24,7 @@ class PhpParallelLint implements \PHPCI\Plugin
     protected $preferDist;
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;

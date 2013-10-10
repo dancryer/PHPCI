@@ -52,7 +52,9 @@ class RunCommand extends Command
             if ($input->getOption('verbose')) {
                 $builder = new Builder($build, array($this, 'logCallback'));
             } else {
-                $builder = new Builder($build);
+                $builder = new Builder($build, function () {
+                    // Empty stub function.
+                });
             }
 
             $builder->execute();

@@ -10,6 +10,8 @@
 namespace PHPCI\Plugin;
 
 use PDO;
+use PHPCI\Builder;
+use PHPCI\Model\Build;
 
 /**
 * PgSQL Plugin - Provides access to a PgSQL database.
@@ -26,7 +28,7 @@ class Pgsql implements \PHPCI\Plugin
     protected $user;
     protected $pass;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
         $this->queries      = $options;

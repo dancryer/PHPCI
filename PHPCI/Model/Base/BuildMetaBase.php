@@ -7,6 +7,7 @@
 namespace PHPCI\Model\Base;
 
 use b8\Model;
+use b8\Store\Factory;
 
 /**
  * BuildMeta Base Model
@@ -37,31 +38,37 @@ class BuildMetaBase extends Model
         'build_id' => null,
         'meta_key' => null,
         'meta_value' => null,
-     );
+    );
 
     /**
     * @var array
     */
     protected $getters = array(
+        // Direct property getters:
         'id' => 'getId',
         'project_id' => 'getProjectId',
         'build_id' => 'getBuildId',
         'meta_key' => 'getMetaKey',
         'meta_value' => 'getMetaValue',
+
+        // Foreign key getters:
         'Build' => 'getBuild',
-     );
+    );
 
     /**
     * @var array
     */
     protected $setters = array(
+        // Direct property setters:
         'id' => 'setId',
         'project_id' => 'setProjectId',
         'build_id' => 'setBuildId',
         'meta_key' => 'setMetaKey',
         'meta_value' => 'setMetaValue',
+
+        // Foreign key setters:
         'Build' => 'setBuild',
-     );
+    );
 
     /**
     * @var array
@@ -69,34 +76,32 @@ class BuildMetaBase extends Model
     public $columns = array(
         'id' => array(
             'type' => 'int',
-            'length' => '10',
+            'length' => 10,
             'primary_key' => true,
             'auto_increment' => true,
             'default' => null,
-            ),
+        ),
         'project_id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'default' => null,
-            ),
+        ),
         'build_id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'meta_key' => array(
             'type' => 'varchar',
-            'length' => '255',
-            'default' => '',
-            ),
+            'length' => 255,
+        ),
         'meta_value' => array(
             'type' => 'text',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
-     );
+        ),
+    );
 
     /**
     * @var array
@@ -104,7 +109,7 @@ class BuildMetaBase extends Model
     public $indexes = array(
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'idx_meta_id' => array('unique' => true, 'columns' => 'build_id, meta_key'),
-     );
+    );
 
     /**
     * @var array
@@ -117,8 +122,7 @@ class BuildMetaBase extends Model
                 'table' => 'build',
                 'col' => 'id'
                 ),
-     );
-
+    );
 
     /**
     * Get the value of Id / id.
@@ -129,7 +133,6 @@ class BuildMetaBase extends Model
     {
         $rtn    = $this->data['id'];
 
-        
         return $rtn;
     }
 
@@ -142,7 +145,6 @@ class BuildMetaBase extends Model
     {
         $rtn    = $this->data['project_id'];
 
-        
         return $rtn;
     }
 
@@ -155,7 +157,6 @@ class BuildMetaBase extends Model
     {
         $rtn    = $this->data['build_id'];
 
-        
         return $rtn;
     }
 
@@ -168,7 +169,6 @@ class BuildMetaBase extends Model
     {
         $rtn    = $this->data['meta_key'];
 
-        
         return $rtn;
     }
 
@@ -181,7 +181,6 @@ class BuildMetaBase extends Model
     {
         $rtn    = $this->data['meta_value'];
 
-        
         return $rtn;
     }
 
@@ -195,6 +194,7 @@ class BuildMetaBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
+
         if ($this->data['id'] === $value) {
             return;
         }
@@ -214,6 +214,7 @@ class BuildMetaBase extends Model
     {
         $this->_validateNotNull('ProjectId', $value);
         $this->_validateInt('ProjectId', $value);
+
         if ($this->data['project_id'] === $value) {
             return;
         }
@@ -230,8 +231,8 @@ class BuildMetaBase extends Model
     */
     public function setBuildId($value)
     {
-
         $this->_validateInt('BuildId', $value);
+
         if ($this->data['build_id'] === $value) {
             return;
         }
@@ -251,6 +252,7 @@ class BuildMetaBase extends Model
     {
         $this->_validateNotNull('MetaKey', $value);
         $this->_validateString('MetaKey', $value);
+
         if ($this->data['meta_key'] === $value) {
             return;
         }
@@ -267,8 +269,8 @@ class BuildMetaBase extends Model
     */
     public function setMetaValue($value)
     {
-
         $this->_validateString('MetaValue', $value);
+
         if ($this->data['meta_value'] === $value) {
             return;
         }
@@ -297,7 +299,7 @@ class BuildMetaBase extends Model
         $rtn        = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
-            $rtn    = \b8\Store\Factory::getStore('Build')->getById($key);
+            $rtn    = Factory::getStore('Build')->getById($key);
             $this->cache->set($cacheKey, $rtn);
         }
 

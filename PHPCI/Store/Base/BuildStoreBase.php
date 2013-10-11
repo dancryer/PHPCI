@@ -6,7 +6,10 @@
 
 namespace PHPCI\Store\Base;
 
+use b8\Database;
+use b8\Exception\HttpException;
 use b8\Store;
+use PHPCI\Model\Build;
 
 /**
  * Build Base Store
@@ -22,21 +25,19 @@ class BuildStoreBase extends Store
         return $this->getById($value, $useConnection);
     }
 
-
-
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $query = 'SELECT * FROM build WHERE id = :id LIMIT 1';
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new \PHPCI\Model\Build($data);
+                return new Build($data);
             }
         }
 
@@ -46,7 +47,7 @@ class BuildStoreBase extends Store
     public function getByProjectId($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $add = '';
@@ -55,26 +56,17 @@ class BuildStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $query = 'SELECT COUNT(*) AS cnt FROM build WHERE project_id = :project_id' . $add;
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':project_id', $value);
-
-        if ($stmt->execute()) {
-            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $count  = (int)$res['cnt'];
-        } else {
-            $count = 0;
-        }
+        $count = null;
 
         $query = 'SELECT * FROM build WHERE project_id = :project_id' . $add;
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':project_id', $value);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             $map = function ($item) {
-                return new \PHPCI\Model\Build($item);
+                return new Build($item);
             };
             $rtn = array_map($map, $res);
 
@@ -87,7 +79,7 @@ class BuildStoreBase extends Store
     public function getByStatus($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $add = '';
@@ -96,26 +88,17 @@ class BuildStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $query = 'SELECT COUNT(*) AS cnt FROM build WHERE status = :status' . $add;
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':status', $value);
-
-        if ($stmt->execute()) {
-            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $count  = (int)$res['cnt'];
-        } else {
-            $count = 0;
-        }
+        $count = null;
 
         $query = 'SELECT * FROM build WHERE status = :status' . $add;
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':status', $value);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             $map = function ($item) {
-                return new \PHPCI\Model\Build($item);
+                return new Build($item);
             };
             $rtn = array_map($map, $res);
 

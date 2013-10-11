@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * PHP Loc - Allows PHP Copy / Lines of Code testing.
  * @author       Johan van der Heide <info@japaveh.nl>
@@ -26,9 +29,10 @@ class PhpLoc implements \PHPCI\Plugin
      */
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci     = $phpci;
+        $this->build     = $build;
         $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
     }
 
@@ -63,7 +67,7 @@ class PhpLoc implements \PHPCI\Plugin
                 $data[$v] = (int)$matches[2][$k];
             }
 
-            $this->phpci->storeBuildMeta('phploc', $data);
+            $this->build->storeMeta('phploc', $data);
         }
 
         return $success;

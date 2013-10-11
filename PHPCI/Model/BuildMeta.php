@@ -6,8 +6,6 @@
 
 namespace PHPCI\Model;
 
-require_once(APPLICATION_PATH . 'PHPCI/Model/Base/BuildMetaBase.php');
-
 use PHPCI\Model\Base\BuildMetaBase;
 
 /**
@@ -16,5 +14,5 @@ use PHPCI\Model\Base\BuildMetaBase;
  */
 class BuildMeta extends BuildMetaBase
 {
-	// This class has been left blank so that you can modify it - changes in this file will not be overwritten.
+    // This class has been left blank so that you can modify it - changes in this file will not be overwritten.
 }

@@ -66,7 +66,7 @@ class DaemonCommand extends Command
     protected function startDaemon()
     {
 
-        if ( file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+        if (file_exists(PHPCI_DIR.'/daemon/daemon.pid')) {
             echo "Already started\n";
             return "alreadystarted";
         }
@@ -80,7 +80,7 @@ class DaemonCommand extends Command
     protected function stopDaemon()
     {
 
-        if ( !file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+        if (!file_exists(PHPCI_DIR.'/daemon/daemon.pid')) {
             echo "Not started\n";
             return "notstarted";
         }
@@ -94,14 +94,14 @@ class DaemonCommand extends Command
     protected function statusDaemon()
     {
 
-        if ( !file_exists(PHPCI_DIR.'/daemon/daemon.pid') ) {
+        if (!file_exists(PHPCI_DIR.'/daemon/daemon.pid')) {
             echo "Not running\n";
             return "notrunning";
         }
 
         $pid = trim(file_get_contents(PHPCI_DIR.'/daemon/daemon.pid'));
         $pidcheck = sprintf("/proc/%s", $pid);
-        if ( is_dir($pidcheck) ) {
+        if (is_dir($pidcheck)) {
             echo "Running\n";
             return "running";
         }

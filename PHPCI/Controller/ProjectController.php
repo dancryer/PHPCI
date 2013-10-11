@@ -173,7 +173,7 @@ class ProjectController extends \PHPCI\Controller
         $values             = $form->getValues();
 
         if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
             $info = array();
             $info["user"] = $matches[1];
             $info["domain"] = $matches[2];
@@ -238,7 +238,8 @@ class ProjectController extends \PHPCI\Controller
             $values['key']  = $values['git_key'];
             if ($values['type'] == "gitlab") {
                 $accessInfo = $project->getAccessInformation();
-                $values['reference'] = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+                $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+                $values['reference'] = $reference;
             }
         }
 
@@ -259,12 +260,12 @@ class ProjectController extends \PHPCI\Controller
         $values['git_key']  = $values['key'];
 
         if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
             $info = array();
             $info["user"] = $matches[1];
             $info["domain"] = $matches[2];
             $values['access_information'] = serialize($info);
-            $values['reference'] = $matches[3]."/".$matches[4];
+            $values['reference'] = $matches[3] . "/" . $matches[4];
         }
 
         $project->setValues($values);
@@ -314,44 +315,9 @@ class ProjectController extends \PHPCI\Controller
             $form->addField($field);
         }
 
-        $referenceValidator = function ($val) use ($values) {
-            $type = $values['type'];
-
-            switch($type) {
-                case 'hg':
-                    if (!preg_match('/^(https?):\/\//', $val)) {
-                        throw new \Exception('Mercurial repository URL must be start with http:// or https://.');
-                    }
-                    break;
-                case 'remote':
-                    if (!preg_match('/^(git|https?):\/\//', $val)) {
-                        throw new \Exception('Repository URL must be start with git://, http:// or https://.');
-                    }
-                    break;
-                case 'local':
-                    if (!is_dir($val)) {
-                        throw new \Exception('The path you specified does not exist.');
-                    }
-                    break;
-                case 'gitlab':
-                    if (!preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $val)) {
-                        throw new \Exception('GitLab Repository name must be in the format "user@domain.tld:owner/repo.git".');
-                    }
-                    break;
-                case 'github':
-                case 'bitbucket':
-                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/', $val)) {
-                        throw new \Exception('Repository name must be in the format "owner/repo".');
-                    }
-                    break;
-            }
-
-            return true;
-        };
-
         $field = new Form\Element\Text('reference');
         $field->setRequired(true);
-        $field->setValidator($referenceValidator);
+        $field->setValidator($this->getReferenceValidator($values));
         $field->setLabel('Repository Name / URL (Remote) or Path (Local)');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
@@ -400,5 +366,43 @@ class ProjectController extends \PHPCI\Controller
         }
 
         return $rtn;
+    }
+
+    protected function getReferenceValidator($values)
+    {
+        return function ($val) use ($values) {
+            $type = $values['type'];
+
+            $validators = array(
+                'hg' => array(
+                    'regex' => '/^(https?):\/\//',
+                    'message' => 'Mercurial repository URL must be start with http:// or https://'
+                ),
+                'remote' => array(
+                    'regex' => '/^(git|https?):\/\//',
+                    'message' => 'Repository URL must be start with git://, http:// or https://'
+                ),
+                'gitlab' => array(
+                    'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
+                    'message' => 'GitLab Repository name must be in the format "user@domain.tld:owner/repo.git"'
+                ),
+                'github' => array(
+                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => 'Repository name must be in the format "owner/repo"'
+                ),
+                'bitbucket' => array(
+                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => 'Repository name must be in the format "owner/repo"'
+                ),
+            );
+
+            if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
+                throw new \Exception($validators[$type]['message']);
+            } elseif ($type == 'local' && !is_dir($val)) {
+                throw new \Exception('The path you specified does not exist.');
+            }
+
+            return true;
+        };
     }
 }

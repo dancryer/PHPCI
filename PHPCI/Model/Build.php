@@ -9,8 +9,8 @@
 
 namespace PHPCI\Model;
 
+use b8\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
-use PHPCI\Builder;
 
 /**
 * Build Model
@@ -21,6 +21,11 @@ use PHPCI\Builder;
 */
 class Build extends BuildBase
 {
+    const STATUS_NEW = 0;
+    const STATUS_RUNNING = 1;
+    const STATUS_SUCCESS = 2;
+    const STATUS_FAILED = 3;
+
     /**
     * Get link to commit from another source (i.e. Github)
     */
@@ -46,9 +51,19 @@ class Build extends BuildBase
     }
 
     /**
-    * Create a working copy by cloning, copying, or similar.
-    */
-    public function createWorkingCopy(Builder $builder, $buildPath)
+     * Store build metadata
+     */
+    public function storeMeta($key, $value)
     {
+        $value = json_encode($value);
+        Factory::getStore('Build')->setMeta($this->getProjectId(), $this->getId(), $key, $value);
+    }
+
+    /**
+     * Is this build successful?
+     */
+    public function isSuccessful()
+    {
+        return ($this->getStatus() === self::STATUS_SUCCESS);
     }
 }

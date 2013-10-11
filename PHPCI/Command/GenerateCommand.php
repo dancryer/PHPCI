@@ -14,6 +14,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use b8\Database;
+use b8\Database\CodeGenerator;
 
 /**
 * Generate console command - Reads the database and generates models and stores.
@@ -35,7 +37,7 @@ class GenerateCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $gen = new \b8\Database\CodeGenerator(\b8\Database::getConnection(), 'PHPCI', PHPCI_DIR . '/PHPCI/');
+        $gen = new CodeGenerator(Database::getConnection(), 'PHPCI', PHPCI_DIR . '/PHPCI/', false);
         $gen->generateModels();
         $gen->generateStores();
     }

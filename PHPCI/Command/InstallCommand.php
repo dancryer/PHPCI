@@ -44,7 +44,8 @@ class InstallCommand extends Command
         $conf['b8']['database']['name']             = $this->ask('Enter the database name PHPCI should use: ');
         $conf['b8']['database']['username']         = $this->ask('Enter your MySQL username: ');
         $conf['b8']['database']['password']         = $this->ask('Enter your MySQL password: ', true);
-        $conf['phpci']['url']                       = $this->ask('Your PHPCI URL (without trailing slash): ', false, array(FILTER_VALIDATE_URL,"/[^\/]$/i"));
+        $ask = 'Your PHPCI URL (without trailing slash): ';
+        $conf['phpci']['url']                       = $this->ask($ask, false, array(FILTER_VALIDATE_URL,"/[^\/]$/i"));
         $conf['phpci']['github']['id']              = $this->ask('(Optional) Github Application ID: ', true);
         $conf['phpci']['github']['secret']          = $this->ask('(Optional) Github Application Secret: ', true);
 
@@ -54,7 +55,9 @@ class InstallCommand extends Command
         $conf['phpci']['email_settings']['smtp_username'] = $this->ask('(Optional) Smtp Username: ', true);
         $conf['phpci']['email_settings']['smtp_password'] = $this->ask('(Optional) Smtp Password: ', true);
         $conf['phpci']['email_settings']['from_address']  = $this->ask('(Optional) Email address to send from: ', true);
-        $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask('(Optional) Default address to email notifications to: ', true);
+
+        $ask = '(Optional) Default address to email notifications to: ';
+        $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask($ask, true);
 
         $dbUser = $conf['b8']['database']['username'];
         $dbPass = $conf['b8']['database']['password'];
@@ -126,7 +129,7 @@ class InstallCommand extends Command
 
         return $rtn;
     }
-    protected function controlFormat($valueToInspect,$filter,&$statusMessage)
+    protected function controlFormat($valueToInspect, $filter, &$statusMessage)
     {
         $filters = !(is_array($filter))? array($filter) : $filter;
         $statusMessage = '';
@@ -148,13 +151,13 @@ class InstallCommand extends Command
 
                 switch ($filter)
                 {
-                    case FILTER_VALIDATE_URL :
+                    case FILTER_VALIDATE_URL:
                         $statusMessage = 'Incorrect url format.' . PHP_EOL;
                         break;
-                    case FILTER_VALIDATE_EMAIL :
+                    case FILTER_VALIDATE_EMAIL:
                         $statusMessage = 'Incorrect e-mail format.' . PHP_EOL;
                         break;
-                    case FILTER_VALIDATE_REGEXP :
+                    case FILTER_VALIDATE_REGEXP:
                         $statusMessage = 'Incorrect format.' . PHP_EOL;
                         break;
                 }

@@ -38,7 +38,7 @@ class BuildController extends \PHPCI\Controller
         $build          = $this->buildStore->getById($buildId);
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
-        $this->view->data     = $this->getBuildData($buildId);
+        $this->view->data     = $this->getBuildData($build);
     }
 
     protected function getUiPlugins()
@@ -63,7 +63,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function data($buildId)
     {
-        die($this->getBuildData($buildId));
+        die($this->getBuildData($this->buildStore->getById($buildId)));
     }
 
     /**
@@ -86,10 +86,8 @@ class BuildController extends \PHPCI\Controller
     /**
     * Get build data from database and json encode it:
     */
-    protected function getBuildData($buildId)
+    protected function getBuildData($build)
     {
-        $build  = $this->buildStore->getById($buildId);
-
         $data               = array();
         $data['status']     = (int)$build->getStatus();
         $data['log']        = $this->cleanLog($build->getLog());

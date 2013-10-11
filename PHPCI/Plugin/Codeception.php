@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * Codeception Plugin - Enables full acceptance, unit, and functional testing.
  * @author       Don Gilbert <don@dongilbert.net>
@@ -25,7 +28,7 @@ class Codeception implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
 

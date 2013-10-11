@@ -1,6 +1,10 @@
 <?php
 
 namespace PHPCI\Plugin;
+
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * IRC Plugin - Sends a notification to an IRC channel
  * @author       Dan Cryer <dan@block8.co.uk>
@@ -16,8 +20,7 @@ class Irc implements \PHPCI\Plugin
     private $room;
     private $nick;
 
-
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
         $this->message = $options['message'];
@@ -52,8 +55,10 @@ class Irc implements \PHPCI\Plugin
         fputs($sock, 'NICK ' . $this->nick . "\r\n");
         fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
 
-        while ($res = fgets($sock)) {
-            $this->phpci->log($res);
+        while (fgets($sock)) {
+            // We don't need to do anything,
+            // but the IRC server doesn't appear to post the message
+            // unless we wait for responses.
         }
 
         fclose($sock);

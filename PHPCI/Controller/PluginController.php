@@ -68,7 +68,7 @@ class PluginController extends \PHPCI\Controller
             $this->setComposerJson($json);
 
             if ($this->canInstall) {
-                $res = shell_exec($this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /dev/null 2>&1 &');
+                shell_exec($this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /dev/null 2>&1 &');
             }
 
             header('Location: ' . PHPCI_URL . 'plugin?r=' . $package);
@@ -89,7 +89,7 @@ class PluginController extends \PHPCI\Controller
         $this->setComposerJson($json);
 
         if ($this->canInstall) {
-            $res = shell_exec($this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /dev/null 2>&1 &');
+            shell_exec($this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /dev/null 2>&1 &');
 
             header('Location: ' . PHPCI_URL . 'plugin?i=' . $package);
             die;
@@ -141,10 +141,10 @@ class PluginController extends \PHPCI\Controller
 
     public function packagistSearch()
     {
-        $q = $this->getParam('q', '');
+        $searchQuery = $this->getParam('q', '');
         $http = new \b8\HttpClient();
         $http->setHeaders(array('User-Agent: PHPCI/1.0 (+http://www.phptesting.org)'));
-        $res = $http->get('https://packagist.org/search.json', array('q' => $q));
+        $res = $http->get('https://packagist.org/search.json', array('q' => $searchQuery));
 
         die(json_encode($res['body']));
     }

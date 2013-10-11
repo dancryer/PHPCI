@@ -6,7 +6,10 @@
 
 namespace PHPCI\Store\Base;
 
+use b8\Database;
+use b8\Exception\HttpException;
 use b8\Store;
+use PHPCI\Model\BuildMeta;
 
 /**
  * BuildMeta Base Store
@@ -22,21 +25,19 @@ class BuildMetaStoreBase extends Store
         return $this->getById($value, $useConnection);
     }
 
-
-
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $query = 'SELECT * FROM build_meta WHERE id = :id LIMIT 1';
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new \PHPCI\Model\BuildMeta($data);
+                return new BuildMeta($data);
             }
         }
 
@@ -46,7 +47,7 @@ class BuildMetaStoreBase extends Store
     public function getByBuildId($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $add = '';
@@ -55,26 +56,17 @@ class BuildMetaStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $query = 'SELECT COUNT(*) AS cnt FROM build_meta WHERE build_id = :build_id' . $add;
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':build_id', $value);
-
-        if ($stmt->execute()) {
-            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $count  = (int)$res['cnt'];
-        } else {
-            $count = 0;
-        }
+        $count = null;
 
         $query = 'SELECT * FROM build_meta WHERE build_id = :build_id' . $add;
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':build_id', $value);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             $map = function ($item) {
-                return new \PHPCI\Model\BuildMeta($item);
+                return new BuildMeta($item);
             };
             $rtn = array_map($map, $res);
 

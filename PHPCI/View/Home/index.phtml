@@ -12,31 +12,8 @@
         <?php if (count($projects)): ?>
         <h5>Projects</h5>
         <ul class="nav nav-pills nav-stacked">
-			<?php
-			foreach($projects as $project):
-				$status = 'icon-build-ok';
-				$build = $project->getLatestBuild('master');
-
-				if (isset($build)) {
-					switch($build->getStatus())
-					{
-						case 0:
-							$status = 'icon-build-pending';
-							break;
-						case 1:
-							$status = 'icon-build-running';
-							break;
-						case 3:
-							$status = 'icon-build-failed';
-							break;
-						case 2:
-						default:
-							$status = 'icon-build-ok';
-							break;
-					}
-				}
-			?>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="<?= $status; ?>"></i> <?php print $project->getTitle(); ?></a></li>
+			<?php foreach($projects as $project): ?>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print $project->getTitle(); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
         <?php endif; ?>

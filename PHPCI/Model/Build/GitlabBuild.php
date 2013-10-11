@@ -25,7 +25,8 @@ class GitlabBuild extends RemoteGitBuild
     */
     public function getCommitLink()
     {
-        return 'http://'.$this->getProject()->getAccessInformation()["domain"].'/' . $this->getProject()->getReference() . '/commit/' . $this->getCommitId();
+        $domain = $this->getProject()->getAccessInformation()["domain"];
+        return 'http://' . $domain . '/' . $this->getProject()->getReference() . '/commit/' . $this->getCommitId();
     }
 
     /**
@@ -33,7 +34,8 @@ class GitlabBuild extends RemoteGitBuild
     */
     public function getBranchLink()
     {
-        return 'http://'.$this->getProject()->getAccessInformation()["domain"].'/' . $this->getProject()->getReference() . '/tree/' . $this->getBranch();
+        $domain = $this->getProject()->getAccessInformation()["domain"];
+        return 'http://' . $domain . '/' . $this->getProject()->getReference() . '/tree/' . $this->getBranch();
     }
 
     /**
@@ -44,7 +46,9 @@ class GitlabBuild extends RemoteGitBuild
         $key = trim($this->getProject()->getGitKey());
 
         if (!empty($key)) {
-            return $this->getProject()->getAccessInformation()["user"].'@'.$this->getProject()->getAccessInformation()["domain"].':' . $this->getProject()->getReference() . '.git';
+            $user = $this->getProject()->getAccessInformation()["user"];
+            $domain = $this->getProject()->getAccessInformation()["domain"];
+            return $user . '@' . $domain . ':' . $this->getProject()->getReference() . '.git';
         }
     }
 }

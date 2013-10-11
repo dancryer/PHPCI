@@ -1,15 +1,10 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+require_once(dirname(__FILE__) . '/../vars.php');
 
 $installStage = 'start';
 $formAction = '';
-
 $config = array();
-
-define('PHPCI_DIR', realpath('../') . '/');
-
 $ciUrl = ($_SERVER['HTTPS'] == "on" ? 'https' : 'http') . '://';
 $ciUrl .= $_SERVER['HTTP_HOST'];
 $ciUrl .= str_replace('/install.php', '', $_SERVER['REQUEST_URI']);
@@ -22,12 +17,37 @@ $composerInstalled = true;
 $isWriteable = true;
 $phpOK = true;
 
+$checkWriteable = function ($path) {
+    if ($path{strlen($path)-1}=='/') {
+        return is__writable($path.uniqid(mt_rand()).'.tmp');
+    } elseif (is_dir($path)) {
+        return is__writable($path.'/'.uniqid(mt_rand()).'.tmp');
+    }
+
+    // check tmp file for read/write capabilities
+    $remove = file_exists($path);
+    $file = @fopen($path, 'a');
+
+    if ($file === false) {
+        return false;
+    }
+
+    fclose($file);
+
+    if (!$remove) {
+        unlink($path);
+    }
+
+    return true;
+};
+
+
 if (!file_exists(PHPCI_DIR . 'vendor/autoload.php')) {
     $composerInstalled = false;
     $installOK = false;
 }
 
-if (!is__writable(PHPCI_DIR . 'PHPCI/config.yml')) {
+if (!$checkWriteable(PHPCI_DIR . 'PHPCI/config.yml')) {
     $isWriteable = false;
     $installOK = false;
 }
@@ -160,16 +180,8 @@ switch ($installStage) {
         body
         {
             background: #224466; /* Old browsers */
-            background: -moz-radial-gradient(center, ellipse cover, #224466 0%, #112233 100%); /* FF3.6+ */
-            background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#224466), color-stop(100%,#112233)); /* Chrome,Safari4+ */
-            background: -webkit-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Chrome10+,Safari5.1+ */
-            background: -o-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Opera 12+ */
-            background: -ms-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* IE10+ */
-            background: radial-gradient(ellipse at center, #224466 0%,#112233 100%); /* W3C */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#224466', endColorstr='#112233',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
+            background: radial-gradient(ellipse at center, #224466 0%,#112233 100%);
             min-height: 100%;
-
             font-family: Roboto, Arial, Sans-Serif;
             font-style: normal;
             font-weight: 300;
@@ -178,15 +190,7 @@ switch ($installStage) {
 
         #form-box
         {
-            background: #fcfcfc; /* Old browsers */
-            background: -moz-linear-gradient(top, #fcfcfc 50%, #e0e0e0 100%); /* FF3.6+ */
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#fcfcfc), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
-            background: -webkit-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
-            background: -o-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Opera 11.10+ */
-            background: -ms-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* IE10+ */
-            background: linear-gradient(to bottom, #fcfcfc 50%,#e0e0e0 100%); /* W3C */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
-
+            background: linear-gradient(to bottom, #fcfcfc 50%,#e0e0e0 100%);
             border-radius: 5px;
             box-shadow: 0 0 30px rgba(0,0,0, 0.3);
             margin: 0 auto;
@@ -235,12 +239,18 @@ switch ($installStage) {
                     <?php endif; ?>
 
                     <?php if (!$composerInstalled): ?>
-                        <p class="alert alert-danger"><strong>Important!</strong> You need to run composer to install dependencies before running the installer.</p>
+                        <p class="alert alert-danger">
+                            <strong>Important!</strong>
+                            You need to run composer to install dependencies before running the installer.
+                        </p>
                     <?php endif; ?>
 
 
                     <?php if (!$isWriteable): ?>
-                        <p class="alert alert-danger"><strong>Important!</strong> ./PHPCI/config.yml needs to be writeable to continue.</p>
+                        <p class="alert alert-danger">
+                            <strong>Important!</strong>
+                            ./PHPCI/config.yml needs to be writeable to continue.
+                        </p>
                     <?php endif; ?>
 
                     <?php if (!$phpOK): ?>
@@ -391,30 +401,3 @@ switch ($installStage) {
 </div>
 </body>
 </html>
-
-<?php
-/** Supporting functions */
-
-function is__writable($path) {
-    if ($path{strlen($path)-1}=='/') {
-        return is__writable($path.uniqid(mt_rand()).'.tmp');
-    } elseif (is_dir($path)) {
-        return is__writable($path.'/'.uniqid(mt_rand()).'.tmp');
-    }
-
-    // check tmp file for read/write capabilities
-    $rm = file_exists($path);
-    $f = @fopen($path, 'a');
-
-    if ($f === false) {
-        return false;
-    }
-
-    fclose($f);
-
-    if (!$rm) {
-        unlink($path);
-    }
-
-    return true;
-}

@@ -7,6 +7,7 @@
 namespace PHPCI\Model\Base;
 
 use b8\Model;
+use b8\Store\Factory;
 
 /**
  * Project Base Model
@@ -39,12 +40,13 @@ class ProjectBase extends Model
         'type' => null,
         'token' => null,
         'access_information' => null,
-     );
+    );
 
     /**
     * @var array
     */
     protected $getters = array(
+        // Direct property getters:
         'id' => 'getId',
         'title' => 'getTitle',
         'reference' => 'getReference',
@@ -52,12 +54,15 @@ class ProjectBase extends Model
         'type' => 'getType',
         'token' => 'getToken',
         'access_information' => 'getAccessInformation',
-     );
+
+        // Foreign key getters:
+    );
 
     /**
     * @var array
     */
     protected $setters = array(
+        // Direct property setters:
         'id' => 'setId',
         'title' => 'setTitle',
         'reference' => 'setReference',
@@ -65,7 +70,9 @@ class ProjectBase extends Model
         'type' => 'setType',
         'token' => 'setToken',
         'access_information' => 'setAccessInformation',
-     );
+
+        // Foreign key setters:
+    );
 
     /**
     * @var array
@@ -73,59 +80,56 @@ class ProjectBase extends Model
     public $columns = array(
         'id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'primary_key' => true,
             'auto_increment' => true,
             'default' => null,
-            ),
+        ),
         'title' => array(
             'type' => 'varchar',
-            'length' => '250',
-            'default' => '',
-            ),
+            'length' => 250,
+        ),
         'reference' => array(
             'type' => 'varchar',
-            'length' => '250',
-            'default' => '',
-            ),
+            'length' => 250,
+        ),
         'git_key' => array(
             'type' => 'text',
-            'length' => '',
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'type' => array(
             'type' => 'varchar',
-            'length' => '50',
-            'default' => '1',
-            ),
+            'length' => 50,
+            'default' => 1,
+        ),
         'token' => array(
             'type' => 'varchar',
-            'length' => '50',
+            'length' => 50,
             'nullable' => true,
             'default' => null,
-            ),
+        ),
         'access_information' => array(
             'type' => 'varchar',
-            'length' => '250',
+            'length' => 250,
             'nullable' => true,
             'default' => null,
-            ),
-     );
+        ),
+    );
 
     /**
     * @var array
     */
     public $indexes = array(
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-     );
+            'idx_project_title' => array('columns' => 'title'),
+    );
 
     /**
     * @var array
     */
     public $foreignKeys = array(
-     );
-
+    );
 
     /**
     * Get the value of Id / id.
@@ -136,7 +140,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['id'];
 
-        
         return $rtn;
     }
 
@@ -149,7 +152,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['title'];
 
-        
         return $rtn;
     }
 
@@ -162,7 +164,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['reference'];
 
-        
         return $rtn;
     }
 
@@ -175,7 +176,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['git_key'];
 
-        
         return $rtn;
     }
 
@@ -188,7 +188,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['type'];
 
-        
         return $rtn;
     }
 
@@ -201,7 +200,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['token'];
 
-        
         return $rtn;
     }
 
@@ -214,7 +212,6 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['access_information'];
 
-        
         return $rtn;
     }
 
@@ -228,6 +225,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
+
         if ($this->data['id'] === $value) {
             return;
         }
@@ -247,6 +245,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Title', $value);
         $this->_validateString('Title', $value);
+
         if ($this->data['title'] === $value) {
             return;
         }
@@ -266,6 +265,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Reference', $value);
         $this->_validateString('Reference', $value);
+
         if ($this->data['reference'] === $value) {
             return;
         }
@@ -282,8 +282,8 @@ class ProjectBase extends Model
     */
     public function setGitKey($value)
     {
-
         $this->_validateString('GitKey', $value);
+
         if ($this->data['git_key'] === $value) {
             return;
         }
@@ -303,6 +303,7 @@ class ProjectBase extends Model
     {
         $this->_validateNotNull('Type', $value);
         $this->_validateString('Type', $value);
+
         if ($this->data['type'] === $value) {
             return;
         }
@@ -319,8 +320,8 @@ class ProjectBase extends Model
     */
     public function setToken($value)
     {
-
         $this->_validateString('Token', $value);
+
         if ($this->data['token'] === $value) {
             return;
         }
@@ -337,8 +338,8 @@ class ProjectBase extends Model
     */
     public function setAccessInformation($value)
     {
-
         $this->_validateString('AccessInformation', $value);
+
         if ($this->data['access_information'] === $value) {
             return;
         }
@@ -357,6 +358,6 @@ class ProjectBase extends Model
      */
     public function getProjectBuilds()
     {
-        return \b8\Store\Factory::getStore('Build')->getByProjectId($this->getId());
+        return Factory::getStore('Build')->getByProjectId($this->getId());
     }
 }

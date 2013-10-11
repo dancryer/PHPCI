@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -32,14 +35,24 @@ class PhpCpd implements \PHPCI\Plugin
      */
     protected $ignore;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-        $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
-        $this->path         = (isset($options['path'])) ? $options['path'] : '';
-        $this->ignore       = (isset($options['ignore'])) ? (array)$options['ignore'] : $this->phpci->ignore;
+        $this->phpci = $phpci;
+        $this->path = $phpci->buildPath;
+        $this->standard = 'PSR1';
+        $this->ignore = $phpci->ignore;
 
+        if (!empty($options['path'])) {
+            $this->path = $phpci->buildPath . $options['path'];
+        }
+
+        if (!empty($options['standard'])) {
+            $this->standard = $options['standard'];
+        }
+
+        if (!empty($options['ignore'])) {
+            $this->ignore = $this->phpci->ignore;
+        }
     }
 
     /**

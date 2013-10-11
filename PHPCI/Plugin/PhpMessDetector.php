@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Mess Detector Plugin - Allows PHP Mess Detector testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -49,21 +52,21 @@ class PhpMessDetector implements \PHPCI\Plugin
      * @param \PHPCI\Builder $phpci
      * @param array $options
      */
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+        $this->suffixes = array('php');
+        $this->ignore = $phpci->ignore;
+        $this->path = '';
+        $this->rules = array('codesize', 'unusedcode', 'naming');
 
-        $this->suffixes = isset($options['suffixes']) ? (array)$options['suffixes'] : array('php');
+        if (!empty($options['path'])) {
+            $this->path = $options['path'];
+        }
 
-        $this->ignore = (isset($options['ignore'])) ? (array)$options['ignore'] : $this->phpci->ignore;
-
-        $this->path = (isset($options['path'])) ? $options['path'] : '';
-
-        $this->rules = isset($options['rules']) ? (array)$options['rules'] : array('codesize', 'unusedcode', 'naming');
-        foreach ($this->rules as &$rule) {
-            if ($rule[0] !== '/' && strpos($rule, '/') !== FALSE) {
-                $rule = $this->phpci->buildPath . $rule;
-            }
+        foreach (array('rules', 'ignore', 'suffixes') as $key) {
+            $this->overrideSetting($options, $key);
         }
     }
 
@@ -82,6 +85,12 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
         }
 
+        foreach ($this->rules as &$rule) {
+            if ($rule[0] !== '/' && strpos($rule, '/') !== false) {
+                $rule = $this->phpci->buildPath . $rule;
+            }
+        }
+
         $phpmd = $this->phpci->findBinary('phpmd');
 
         if (!$phpmd) {
@@ -90,10 +99,24 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
 
         $cmd = $phpmd . ' "%s" text %s %s %s';
-        $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $this->path, implode(',', $this->rules), $ignore, $suffixes);
+        $success = $this->phpci->executeCommand(
+            $cmd,
+            $this->phpci->buildPath . $this->path,
+            implode(',', $this->rules),
+            $ignore,
+            $suffixes
+        );
+
         $errors = count(array_filter(explode(PHP_EOL, $this->phpci->getLastOutput())));
-        $this->phpci->storeBuildMeta('phpmd-warnings', $errors);
+        $this->build->storeMeta('phpmd-warnings', $errors);
 
         return $success;
+    }
+
+    protected function overrideSetting($options, $key)
+    {
+        if (isset($options[$key]) && is_array($options['key'])) {
+            $this->{$key} = $options[$key];
+        }
     }
 }

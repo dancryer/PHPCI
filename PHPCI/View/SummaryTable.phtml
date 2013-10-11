@@ -53,12 +53,12 @@ foreach($projects as $project):
                 case 2:
                     $successes++;
                     $statuses[] = 'ok';
-                    $success = is_null($success) ? $build->getFinished()->format('Y-m-d H:i:s') : $success;
+                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $success;
                     break;
                 case 3:
                     $failures++;
                     $statuses[] = 'failed';
-                    $failure = is_null($failure) ? $build->getFinished()->format('Y-m-d H:i:s') : $failure;
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $failure;
                     break;
             }
         }

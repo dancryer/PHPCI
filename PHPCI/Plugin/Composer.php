@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * Composer Plugin - Provides access to Composer functionality.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -22,7 +25,7 @@ class Composer implements \PHPCI\Plugin
     protected $preferDist;
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
@@ -43,7 +46,8 @@ class Composer implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd = $composerLocation . ' --no-ansi --no-interaction '. ($this->preferDist ? '--prefer-dist' : null) .' --working-dir="%s" %s';
+        $cmd = $composerLocation . ' --no-ansi --no-interaction ';
+        $cmd .= ($this->preferDist ? '--prefer-dist' : null) . ' --working-dir="%s" %s';
 
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
     }

@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Spec Plugin - Allows PHP Spec testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -18,10 +21,15 @@ namespace PHPCI\Plugin;
 class PhpSpec implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $bootstrap;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
+
+        if (!empty($options['bootstrap'])) {
+            $this->bootstrap = $this->buildPath . $options['bootstrap'];
+        }
     }
 
     /**
@@ -32,14 +40,19 @@ class PhpSpec implements \PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
 
-        $phpspec = $this->phpci->findBinary('phpspec');
+        $phpspec = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
 
         if (!$phpspec) {
             $this->phpci->logFailure('Could not find phpspec.');
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpspec);
+        if ($this->bootstrap) {
+            $success = $this->phpci->executeCommand($phpspec . ' -f d');
+        } else {
+            $success = $this->phpci->executeCommand($phpspec . ' -f d --bootstrap "%s"', $this->bootstrap);
+        }
+
         chdir($curdir);
         
         return $success;

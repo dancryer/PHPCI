@@ -57,7 +57,7 @@ class DaemoniseCommand extends Command
 
             if (0 == $buildCount && $this->sleep < 15) {
                 $this->sleep++;
-            } else if (1 < $this->sleep) {
+            } elseif (1 < $this->sleep) {
                 $this->sleep--;
             }
             echo '.'.(0 === $buildCount?'':'build');

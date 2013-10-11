@@ -7,6 +7,7 @@
 namespace PHPCI\Model\Base;
 
 use b8\Model;
+use b8\Store\Factory;
 
 /**
  * User Base Model
@@ -37,29 +38,35 @@ class UserBase extends Model
         'hash' => null,
         'is_admin' => null,
         'name' => null,
-     );
+    );
 
     /**
     * @var array
     */
     protected $getters = array(
+        // Direct property getters:
         'id' => 'getId',
         'email' => 'getEmail',
         'hash' => 'getHash',
         'is_admin' => 'getIsAdmin',
         'name' => 'getName',
-     );
+
+        // Foreign key getters:
+    );
 
     /**
     * @var array
     */
     protected $setters = array(
+        // Direct property setters:
         'id' => 'setId',
         'email' => 'setEmail',
         'hash' => 'setHash',
         'is_admin' => 'setIsAdmin',
         'name' => 'setName',
-     );
+
+        // Foreign key setters:
+    );
 
     /**
     * @var array
@@ -67,33 +74,30 @@ class UserBase extends Model
     public $columns = array(
         'id' => array(
             'type' => 'int',
-            'length' => '11',
+            'length' => 11,
             'primary_key' => true,
             'auto_increment' => true,
             'default' => null,
-            ),
+        ),
         'email' => array(
             'type' => 'varchar',
-            'length' => '250',
-            'default' => '',
-            ),
+            'length' => 250,
+        ),
         'hash' => array(
             'type' => 'varchar',
-            'length' => '250',
-            'default' => '',
-            ),
+            'length' => 250,
+        ),
         'is_admin' => array(
             'type' => 'tinyint',
-            'length' => '1',
-            'default' => '0',
-            ),
+            'length' => 1,
+        ),
         'name' => array(
             'type' => 'varchar',
-            'length' => '250',
+            'length' => 250,
             'nullable' => true,
             'default' => null,
-            ),
-     );
+        ),
+    );
 
     /**
     * @var array
@@ -101,14 +105,13 @@ class UserBase extends Model
     public $indexes = array(
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'idx_email' => array('unique' => true, 'columns' => 'email'),
-     );
+    );
 
     /**
     * @var array
     */
     public $foreignKeys = array(
-     );
-
+    );
 
     /**
     * Get the value of Id / id.
@@ -119,7 +122,6 @@ class UserBase extends Model
     {
         $rtn    = $this->data['id'];
 
-        
         return $rtn;
     }
 
@@ -132,7 +134,6 @@ class UserBase extends Model
     {
         $rtn    = $this->data['email'];
 
-        
         return $rtn;
     }
 
@@ -145,7 +146,6 @@ class UserBase extends Model
     {
         $rtn    = $this->data['hash'];
 
-        
         return $rtn;
     }
 
@@ -158,7 +158,6 @@ class UserBase extends Model
     {
         $rtn    = $this->data['is_admin'];
 
-        
         return $rtn;
     }
 
@@ -171,7 +170,6 @@ class UserBase extends Model
     {
         $rtn    = $this->data['name'];
 
-        
         return $rtn;
     }
 
@@ -185,6 +183,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Id', $value);
         $this->_validateInt('Id', $value);
+
         if ($this->data['id'] === $value) {
             return;
         }
@@ -204,6 +203,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Email', $value);
         $this->_validateString('Email', $value);
+
         if ($this->data['email'] === $value) {
             return;
         }
@@ -223,6 +223,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('Hash', $value);
         $this->_validateString('Hash', $value);
+
         if ($this->data['hash'] === $value) {
             return;
         }
@@ -242,6 +243,7 @@ class UserBase extends Model
     {
         $this->_validateNotNull('IsAdmin', $value);
         $this->_validateInt('IsAdmin', $value);
+
         if ($this->data['is_admin'] === $value) {
             return;
         }
@@ -258,8 +260,8 @@ class UserBase extends Model
     */
     public function setName($value)
     {
-
         $this->_validateString('Name', $value);
+
         if ($this->data['name'] === $value) {
             return;
         }

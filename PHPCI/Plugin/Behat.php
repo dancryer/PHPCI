@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * Behat BDD Plugin
  * @author       Dan Cryer <dan@block8.co.uk>
@@ -18,10 +21,16 @@ namespace PHPCI\Plugin;
 class Behat implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $features;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
+        $this->features = '';
+
+        if (!empty($options['features'])) {
+            $this->features = $options['features'];
+        }
     }
 
     /**
@@ -32,14 +41,14 @@ class Behat implements \PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
 
-        $phpspec = $this->phpci->findBinary('phpspec');
+        $behat = $this->phpci->findBinary('behat');
 
-        if (!$phpspec) {
-            $this->phpci->logFailure('Could not find phpspec.');
+        if (!$behat) {
+            $this->phpci->logFailure('Could not find behat.');
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpspec);
+        $success = $this->phpci->executeCommand($behat . ' --no-time --format="failed" %s', $this->features);
         chdir($curdir);
 
         return $success;

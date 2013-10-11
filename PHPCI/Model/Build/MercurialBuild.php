@@ -52,8 +52,8 @@ class MercurialBuild extends Build
     /**
     * Use an mercurial clone.
     */
-    protected function cloneByHttp(Builder $builder, $to)
+    protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        return $builder->executeCommand('hg clone %s "%s" -r %s', $this->getCloneUrl(), $to, $this->getBranch());
+        return $builder->executeCommand('hg clone %s "%s" -r %s', $this->getCloneUrl(), $cloneTo, $this->getBranch());
     }
 }

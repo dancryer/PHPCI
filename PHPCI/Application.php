@@ -32,11 +32,14 @@ class Application extends b8\Application
             $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'Gitlab', 'BuildStatus'));
             $skipValidation = ($externalAction || $sessionAction);
 
-            if($skipValidation || $this->validateSession()) {
+            if ($skipValidation || $this->validateSession()) {
                 parent::handleRequest();
             }
         } catch (\Exception $ex) {
-            $content = '<h1>There was a problem with this request</h1><p>Please paste the details below into a <a href="https://github.com/Block8/PHPCI/issues/new">new bug report</a> so that we can investigate and fix it.</p>';
+            $content = '<h1>There was a problem with this request</h1>
+            <p>Please paste the details below into a
+            <a href="https://github.com/Block8/PHPCI/issues/new">new bug report</a>
+            so that we can investigate and fix it.</p>';
 
             ob_start();
             var_dump(array(

@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+
 /**
  * PHP Lint Plugin - Provides access to PHP lint functionality.
  * @author       Dan Cryer <dan@block8.co.uk>
@@ -24,7 +25,7 @@ class Lint implements \PHPCI\Plugin
     protected $ignore;
     protected $phpci;
 
-    public function __construct(Builder $phpci, Build $build,  array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
         $this->directories    = array('');
@@ -64,6 +65,19 @@ class Lint implements \PHPCI\Plugin
         return $success;
     }
 
+    protected function lintItem($php, $item, $itemPath)
+    {
+        $success = true;
+
+        if ($item->isFile() && $item->getExtension() == 'php' && !$this->lintFile($php, $itemPath)) {
+            $success = false;
+        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . '/')) {
+            $success = false;
+        }
+
+        return $success;
+    }
+
     protected function lintDirectory($php, $path)
     {
         $success = true;
@@ -80,9 +94,7 @@ class Lint implements \PHPCI\Plugin
                 continue;
             }
 
-            if ($item->isFile() && $item->getExtension() == 'php' && !$this->lintFile($php, $itemPath)) {
-                $success = false;
-            } else if ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . '/')) {
+            if (!$this->lintItem($php, $item, $itemPath)) {
                 $success = false;
             }
         }

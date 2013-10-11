@@ -18,6 +18,8 @@ function confirmDelete(url)
 */
 function setupProjectForm()
 {
+    $('.github-container').hide();
+
 	$('#element-reference').change(function()
 	{
 		var el	= $(this);
@@ -41,18 +43,26 @@ function setupProjectForm()
 
 	$('#element-type').change(function()
 	{
-		if(!window.github_app_id || $(this).val() != 'github' || window.github_token) {
-			return;
-		}
-		
-		// Show sign in with Github button.
-		var el = $('#element-reference');
-		var rtn = window.return_url;
-		var url = 'https://github.com/login/oauth/authorize?client_id=' + window.github_app_id + '&scope=repo&redirect_uri=' + rtn;
-		var btn = $('<a>').addClass('btn btn-inverse').text('Sign in with Github').attr('href', url);
+        if ($(this).val() == 'github') {
+            $('#loading').show();
 
-		el.after(btn);
-		el.remove();
+            $.getJSON(window.PHPCI_URL + 'project/github-repositories', function (data) {
+                $('#loading').hide();
+
+                if (data.repos) {
+                    $('#element-github').empty();
+
+                    for (var i in data.repos) {
+                        var name = data.repos[i];
+                        $('#element-github').append($('<option></option>').text(name).val(name));
+                    }
+
+                    $('.github-container').slideDown();
+                }
+            });
+        } else {
+            $('.github-container').slideUp();
+        }
 	});
 
 	$('#element-github').change(function()

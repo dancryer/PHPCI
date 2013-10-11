@@ -7,6 +7,14 @@ body
 	padding-top: 70px;
 }
 
+    strong, th, .control-label {
+        font-weight: 500;
+    }
+
+    .btn, .dropdown-menu>li>a, .controls, .controls input, .controls label {
+        font-weight: 300;
+    }
+
 #content
 {
 	-border: 10px solid #369;
@@ -61,6 +69,11 @@ td .label {
 		padding: 0;
 	}
 
+    h2 {
+        color: #246;
+        font-size: 1.8em;
+    }
+
 .icon-build-ok
 {
 	background: url('../img/icon-build-ok.png') no-repeat top left;
@@ -81,13 +94,6 @@ td .label {
 	background: url('../img/icon-build-running.png') no-repeat top left;
 }
 
-h3
-{
-	border-bottom: 1px solid #f0f0f0;
-	margin-top: 0;
-	padding-top: 0;
-}
-
 .navbar-brand {
     padding: 10px 15px;
 }
@@ -102,7 +108,9 @@ h3
         border-bottom: 1px solid #eee;
         cursor: move;
         font-size: 1.2em;
-        padding: 8px;
+        margin: 0;
+        margin-bottom: 20px;
+        padding: 8px 0;
     }
 
     .box .box-content {

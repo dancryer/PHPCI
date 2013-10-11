@@ -12,6 +12,7 @@ namespace PHPCI\Controller;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use b8;
+use b8\Config;
 use b8\Controller;
 use b8\Store;
 use b8\Form;
@@ -87,7 +88,7 @@ class ProjectController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $project    = $this->projectStore->getById($projectId);
+        $project = $this->projectStore->getById($projectId);
         $this->projectStore->delete($project);
 
         header('Location: '.PHPCI_URL);
@@ -127,7 +128,6 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $method = $this->request->getMethod();
-        $this->handleGithubResponse();
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -154,10 +154,10 @@ class ProjectController extends \PHPCI\Controller
             $pub = file_get_contents($keyFile . '.pub');
             $prv = file_get_contents($keyFile);
 
-            $values = array('key' => $prv, 'pubkey' => $pub, 'token' => $_SESSION['github_token']);
+            $values = array('key' => $prv, 'pubkey' => $pub);
         }
 
-        $form   = $this->projectForm($values);
+        $form = $this->projectForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('ProjectForm');
@@ -165,12 +165,11 @@ class ProjectController extends \PHPCI\Controller
             $view->project  = null;
             $view->form     = $form;
             $view->key      = $pub;
-            $view->token    = $_SESSION['github_token'];
 
             return $view->render();
         }
 
-        $values             = $form->getValues();
+        $values = $form->getValues();
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
@@ -193,33 +192,6 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Handles log in with Github
-    */
-    protected function handleGithubResponse()
-    {
-        $github = \b8\Config::getInstance()->get('phpci.github');
-        $code   = $this->getParam('code', null);
-
-        if (!is_null($code)) {
-            $http = new \b8\HttpClient();
-            $url  = 'https://github.com/login/oauth/access_token';
-            $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
-            $resp = $http->post($url, $params);
-
-            if ($resp['success']) {
-                parse_str($resp['body'], $resp);
-                $_SESSION['github_token'] = $resp['access_token'];
-                header('Location: '.PHPCI_URL.'project/add');
-                die;
-            }
-        }
-
-        if (!isset($_SESSION['github_token'])) {
-            $_SESSION['github_token'] = null;
-        }
-    }
-
-    /**
     * Edit a project. Handles both the form and processing.
     */
     public function edit($projectId)
@@ -236,6 +208,7 @@ class ProjectController extends \PHPCI\Controller
         } else {
             $values         = $project->getDataArray();
             $values['key']  = $values['git_key'];
+
             if ($values['type'] == "gitlab") {
                 $accessInfo = $project->getAccessInformation();
                 $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
@@ -284,7 +257,6 @@ class ProjectController extends \PHPCI\Controller
         $form->setMethod('POST');
         $form->setAction(PHPCI_URL.'project/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
-        $form->addField(new Form\Element\Hidden('token'));
         $form->addField(new Form\Element\Hidden('pubkey'));
 
         $options = array(
@@ -306,14 +278,16 @@ class ProjectController extends \PHPCI\Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        if (isset($_SESSION['github_token'])) {
-            $field = new Form\Element\Select('github');
-            $field->setLabel('Choose a Github repository:');
-            $field->setClass('form-control');
-            $field->setContainerClass('form-group');
-            $field->setOptions($this->getGithubRepositories());
-            $form->addField($field);
-        }
+
+        $container = new Form\ControlGroup('github-container');
+        $container->setClass('github-container');
+
+        $field = new Form\Element\Select('github');
+        $field->setLabel('Choose a Github repository:');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $container->addField($field);
+        $form->addField($container);
 
         $field = new Form\Element\Text('reference');
         $field->setRequired(true);
@@ -351,21 +325,48 @@ class ProjectController extends \PHPCI\Controller
     /**
     * Get an array of repositories from Github's API.
     */
-    protected function getGithubRepositories()
+    protected function githubRepositories()
     {
-        $http = new \b8\HttpClient();
-        $url = 'https://api.github.com/user/repos';
-        $res = $http->get($url, array('type' => 'all', 'access_token' => $_SESSION['github_token']));
+        $token = Config::getInstance()->get('phpci.github.token');
 
-        $rtn = array();
-        $rtn['choose'] = 'Select a repository...';
-        if ($res['success']) {
-            foreach ($res['body'] as $repo) {
-                $rtn[$repo['full_name']] = $repo['full_name'];
-            }
+        if (!$token) {
+            die(json_encode(null));
         }
 
-        return $rtn;
+        $cache = \b8\Cache::getCache(\b8\Cache::TYPE_APC);
+        $rtn = $cache->get('phpci_github_repos');
+
+        if (!$rtn) {
+            $orgs = $this->doGithubApiRequest('/user/orgs', array('access_token' => $token));
+
+            $params = array('type' => 'all', 'access_token' => $token);
+            $repos = array();
+            $repos['user'] = $this->doGithubApiRequest('/user/repos', $params);
+
+
+            foreach ($orgs as $org) {
+                $repos[$org['login']] = $this->doGithubApiRequest('/orgs/'.$org['login'].'/repos', $params);
+            }
+
+            $rtn = array();
+            foreach ($repos as $repoGroup) {
+                foreach ($repoGroup as $repo) {
+                    $rtn['repos'][] = $repo['full_name'];
+                }
+            }
+
+            $cache->set('phpci_github_repos', $rtn);
+        }
+
+        die(json_encode($rtn));
+    }
+
+    protected function doGithubApiRequest($url, $params)
+    {
+        $http = new \b8\HttpClient('https://api.github.com');
+        $res = $http->get($url, $params);
+
+        return $res['body'];
     }
 
     protected function getReferenceValidator($values)

@@ -107,7 +107,7 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes
         );
 
-        $errors = count(array_filter(explode(PHP_EOL, $this->phpci->getLastOutput())));
+        $errors = count(array_filter(explode(PHP_EOL, trim($this->phpci->getLastOutput()))));
         $this->build->storeMeta('phpmd-warnings', $errors);
 
         return $success;

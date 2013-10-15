@@ -50,7 +50,9 @@ class RunCommand extends Command
             $build = BuildFactory::getBuild($build);
 
             if ($input->getOption('verbose')) {
-                $builder = new Builder($build, array($this, 'logCallback'));
+                $builder = new Builder($build, function ($log) {
+                    $this->output->writeln($log);
+                });
             } else {
                 $builder = new Builder($build, function () {
                     // Empty stub function.
@@ -61,14 +63,5 @@ class RunCommand extends Command
         }
 
         return $builds;
-    }
-
-    /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
-    public function logCallback($log)
-    {
-        $this->output->writeln($log);
     }
 }

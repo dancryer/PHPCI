@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link href='//fonts.googleapis.com/css?family=Roboto:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='//fonts.googleapis.com/css?family=Roboto:300,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/phpci.css">
 
@@ -36,12 +36,25 @@
 
                 <div class="nav-collapse collapse navbar-responsive-collapse">
                     <ul class="nav navbar-nav pull-right">
-                        <li><a href="<?= PHPCI_URL ?>session/logout">Log out</a></li>
-                    </ul>
+                        <li><p class="navbar-text"><strong><?php print $this->User()->getName(); ?></strong></p></li>
+                        <li><a href="<?php print PHPCI_URL ?>session/logout">Log out</a></li>
+                        <?php if ($this->User()->getIsAdmin()): ?>
+                        <li>
+                            <div class="btn-group">
+                                <a class="btn btn-success navbar-btn" href="<?= PHPCI_URL ?>project/add">Add Project</a>
 
-                    <?php if($this->User()->getIsAdmin()): ?>
-                        <a class="btn btn-success navbar-btn pull-right" href="<?= PHPCI_URL ?>project/add">Add Project</a>
-                    <?php endif; ?>
+                                <button type="button" class="btn navbar-btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Admin <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="/settings">Settings</a></li>
+                                    <li><a href="/plugin">Manage Plugins</a></li>
+                                    <li><a href="/user">Manage Users</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
 
 
@@ -52,5 +65,7 @@
 		<div id="content" class="container">
 			<?php print $content; ?>
 		</div>
+
+        <div id="loading">Loading...</div>
 	</body>
 </html>

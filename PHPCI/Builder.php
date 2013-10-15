@@ -97,7 +97,7 @@ class Builder
     * @param \PHPCI\Model\Build
     * @param callable
     */
-    public function __construct(Build $build, Closure $logCallback)
+    public function __construct(Build $build, \Closure $logCallback)
     {
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');

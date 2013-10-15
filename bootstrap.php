@@ -27,17 +27,14 @@ $autoload = function ($class) {
 
 spl_autoload_register($autoload, true, true);
 
+if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml') && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
+    header('Location: install.php');
+    die;
+}
 
-
-
-if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml')) {
-    if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-        file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
-        exit(1);
-    } else {
-        header('Location: install.php');
-        die;
-    }
+if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
+    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
+    exit(1);
 }
 
 

@@ -63,6 +63,14 @@
 		</div>
 
 		<div id="content" class="container">
+
+            <?php if (file_exists(PHPCI_DIR . 'public/install.php')): ?>
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Warning!</strong> install.php detected, for security purposes please delete it immediately.
+            </div>
+            <?php endif; ?>
+
 			<?php print $content; ?>
 		</div>
 

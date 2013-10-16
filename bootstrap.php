@@ -51,3 +51,5 @@ if (file_exists(APPLICATION_PATH . 'PHPCI/config.yml')) {
         define('PHPCI_URL', $config->get('phpci.url', '') . '/');
     }
 }
+
+define('ENABLE_SHELL_PLUGIN', 1);

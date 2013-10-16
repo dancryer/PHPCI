@@ -64,10 +64,11 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 
 **Nginx Example**: 
 
-
-    location / {
-        try_files $uri $uri/ index.php
-    }
+```
+location / {
+    try_files $uri $uri/ index.php
+}
+```
 
 Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:
 
@@ -78,50 +79,52 @@ Obviously, make sure you change the `/path/to/phpci` to the directory in which y
 ##Adding support for PHPCI to your projects:
 Similar to Travis CI, to support PHPCI in your project, you simply need to add a `phpci.yml` file to the root of your repository. The file should look something like this:
 
-    build_settings:
-        ignore:
-            - "vendor"
-            - "tests"
-        mysql:
-            host: "localhost"
-            user: "root"
-            pass: ""
-        campfire:
-            url: "https://youraccount.campfirenow.com"
-            authToken: "605b32dd"
-            roomId: "570102"
-    setup:
-        mysql:
-            - "DROP DATABASE IF EXISTS test;"
-            - "CREATE DATABASE test;"
-            - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
-        composer:
-            action: "install"
-    
-    test:
-        php_unit:
-            config:
-                - "PHPUnit-all.xml"
-                - "PHPUnit-ubuntu-fix.xml"
-            directory:
-                - "tests/"
-            run_from: "phpunit/"
-        php_mess_detector:
-            allow_failures: true
-        php_code_sniffer:
-            standard: "PSR2"
-        php_cpd:
-            allow_failures: true
-        grunt:
-            task: "build"
-    
-    complete:
-        mysql:
-            - "DROP DATABASE IF EXISTS test;"
-    failure:
-        campfire:
-            message: "Phpci : build %buildurl% failed."
-            
+```yml
+build_settings:
+    ignore:
+        - "vendor"
+        - "tests"
+    mysql:
+        host: "localhost"
+        user: "root"
+        pass: ""
+    campfire:
+        url: "https://youraccount.campfirenow.com"
+        authToken: "605b32dd"
+        roomId: "570102"
+setup:
+    mysql:
+        - "DROP DATABASE IF EXISTS test;"
+        - "CREATE DATABASE test;"
+        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
+    composer:
+        action: "install"
+
+test:
+    php_unit:
+        config:
+            - "PHPUnit-all.xml"
+            - "PHPUnit-ubuntu-fix.xml"
+        directory:
+            - "tests/"
+        run_from: "phpunit/"
+    php_mess_detector:
+        allow_failures: true
+    php_code_sniffer:
+        standard: "PSR2"
+    php_cpd:
+        allow_failures: true
+    grunt:
+        task: "build"
+
+complete:
+    mysql:
+        - "DROP DATABASE IF EXISTS test;"
+failure:
+    campfire:
+        message: "Phpci : build %buildurl% failed."
+```
+
 As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
 
 * `setup` - This phase is designed to initialise the build procedure.

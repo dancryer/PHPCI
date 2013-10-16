@@ -58,7 +58,6 @@ class Phing implements \PHPCI\Plugin
             return false;
         }
 
-//        $cmd[] = 'cd ' . $this->getDirectory() . ' &&';
         $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFile();
 
         if ($this->getPropertyFile()) {

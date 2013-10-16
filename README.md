@@ -116,6 +116,15 @@ test:
         allow_failures: true
     grunt:
         task: "build"
+    phing:
+      directory: '' # Relative path to a directory where to run phing (default [project build directory])
+      build_file: 'build.xml' # Relative path to a build file to use (default "build.xml")
+      targets: # A targets to execute (default "build")
+        - "build:all"
+      properties: # Custom properties (optional)
+        someProperty: "someValue"
+        someProperty2: "someValue2"
+      property_file: "build.properties" # Relative path to a property file to use (optional)
 
 complete:
     mysql:

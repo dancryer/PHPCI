@@ -23,23 +23,42 @@ class Phing implements \PHPCI\Plugin
 {
 
     private $directory;
-    private $buildFile;
-    private $targets;
-    private $properties;
+    private $buildFile = 'build.xml';
+    private $targets = array('build');
+    private $properties = array();
     private $propertyFile;
 
     protected $phpci;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this
-            ->setDirectory(
-                isset($options['directory']) ? $phpci->buildPath . '/' . $options['directory'] : $phpci->buildPath
-            )
-            ->setPhpci($phpci)
-            ->setBuildFile(isset($options['build_file']) ? $options['build_file'] : 'build.xml')
-            ->setTargets(isset($options['targets']) ? $options['targets'] : 'build')
-            ->setProperties(isset($options['properties']) ? $options['properties'] : []);
+        $this->setPhpci($phpci);
+
+        /*
+         * Set working directory
+         */
+        if (isset($options['directory'])) {
+            $directory = $phpci->buildPath . '/' . $options['directory'];
+        } else {
+            $directory = $phpci->buildPath;
+        }
+
+        $this->setDirectory($directory);
+
+        /*
+         * Sen name of a non default build file
+         */
+        if (isset($options['build_file'])) {
+            $this->setBuildFile($options['build_file']);
+        }
+
+        if (isset($options['targets'])) {
+            $this->setTargets($options['targets']);
+        }
+
+        if (isset($options['properties'])) {
+            $this->setProperties($options['properties']);
+        }
 
         if (isset($options['property_file'])) {
             $this->setPropertyFile($options['property_file']);
@@ -58,7 +77,7 @@ class Phing implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFile();
+        $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFilePath();
 
         if ($this->getPropertyFile()) {
             $cmd[] = '-propertyfile ' . $this->getPropertyFile();
@@ -89,7 +108,6 @@ class Phing implements \PHPCI\Plugin
     public function setPhpci($phpci)
     {
         $this->phpci = $phpci;
-        return $this;
     }
 
     /**
@@ -108,7 +126,6 @@ class Phing implements \PHPCI\Plugin
     public function setDirectory($directory)
     {
         $this->directory = $directory;
-        return $this;
     }
 
     /**
@@ -136,7 +153,6 @@ class Phing implements \PHPCI\Plugin
         }
 
         $this->targets = $targets;
-        return $this;
     }
 
     /**
@@ -155,13 +171,16 @@ class Phing implements \PHPCI\Plugin
      */
     public function setBuildFile($buildFile)
     {
-        $buildFile = $this->getDirectory() . $buildFile;
-        if (!file_exists($buildFile)) {
+        if (!file_exists($this->getDirectory() . $buildFile)) {
             throw new \Exception('Specified build file does not exists.');
         }
 
         $this->buildFile = $buildFile;
-        return $this;
+    }
+
+    public function getBuildFilePath()
+    {
+        return $this->getDirectory() . $this->buildFile;
     }
 
     /**
@@ -202,7 +221,6 @@ class Phing implements \PHPCI\Plugin
         }
 
         $this->properties = $properties;
-        return $this;
     }
 
     /**
@@ -226,6 +244,5 @@ class Phing implements \PHPCI\Plugin
         }
 
         $this->propertyFile = $propertyFile;
-        return $this;
     }
 }

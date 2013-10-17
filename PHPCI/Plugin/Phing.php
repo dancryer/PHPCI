@@ -222,7 +222,7 @@ class Phing implements \PHPCI\Plugin
     public function setPropertyFile($propertyFile)
     {
         if (!file_exists($this->getDirectory() . '/' . $propertyFile)) {
-            throw new \Exception('Specified property file file does not exists.');
+            throw new \Exception('Specified property file does not exists.');
         }
 
         $this->propertyFile = $propertyFile;

@@ -50,8 +50,17 @@ class GitController extends \PHPCI\Controller
             $build->setStatus(0);
             $build->setLog('');
             $build->setCreated(new \DateTime());
-            $this->_buildStore->save($build);
         } catch (\Exception $ex) {
+            header('HTTP/1.1 400 Bad Request');
+            header('Ex: ' . $ex->getMessage());
+            die('FAIL');
+        }
+
+        try {
+           $this->_buildStore->save($build);
+        } catch (\Exception $ex) {
+            header('HTTP/1.1 500 Internal Server Error');
+            header('Ex: ' . $ex->getMessage());
             die('FAIL');
         }
 

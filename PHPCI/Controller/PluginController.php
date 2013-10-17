@@ -76,7 +76,7 @@ class PluginController extends \PHPCI\Controller
             $this->setComposerJson($json);
 
             if ($this->canInstall) {
-                shell_exec($this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /' . APPLICATION_PATH . '/phpci_composer_remove.log  2>&1 &');
+                shell_exec('COMPOSER_HOME='.APPLICATION_PATH . ' ' . $this->composerPath . ' update --working-dir=' . APPLICATION_PATH . ' > /' . APPLICATION_PATH . '/phpci_composer_remove.log  2>&1 &');
             }
 
             header('Location: ' . PHPCI_URL . 'plugin?r=' . $package);

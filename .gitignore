@@ -8,3 +8,4 @@ config.php
 .buildpath
 .htaccess
 PHPCI/config.yml
+cache

@@ -21,9 +21,14 @@ use PHPCI\Model\Build;
 */
 class GithubController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+
     public function init()
     {
-        $this->_buildStore      = Store\Factory::getStore('Build');
+        $this->buildStore = Store\Factory::getStore('Build');
     }
 
     /**
@@ -32,6 +37,12 @@ class GithubController extends \PHPCI\Controller
     public function webhook($project)
     {
         $payload    = json_decode($this->getParam('payload'), true);
+
+        // Github sends a payload when you close a pull request with a
+        // non-existant commit. We don't want this.
+        if ($payload['after'] === '0000000000000000000000000000000000000000') {
+            die('OK');
+        }
 
         try {
             $build      = new Build();
@@ -53,7 +64,7 @@ class GithubController extends \PHPCI\Controller
         }
 
         try {
-            $build = $this->_buildStore->save($build);
+            $build = $this->buildStore->save($build);
             $build->sendStatusPostback();
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');

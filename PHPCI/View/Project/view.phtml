@@ -1,5 +1,5 @@
 <div id="title">
-	<h1>Project: <?php print $project->getTitle(); ?></h1>
+	<h1>Project: <?php print (is_object($project)) ? $project->getTitle() : ' - '; ?></h1>
 </div>
 
 <div class="row">
@@ -18,7 +18,7 @@
 			<?php endif; ?>
 		</ul>
 
-        <?php if (in_array($project->getType(), array('github', 'bitbucket'))): ?>
+        <?php if (in_array($project->getType(), array('github', 'gitlab','bitbucket'))): ?>
             <br>
             <p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
         <?php endif; ?>
@@ -29,6 +29,11 @@
 				case 'github':
 					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/github/webhook/' . $project->getId();
 					print ' as a "WebHook URL" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Service Hooks</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+				break;
+
+				case 'gitlab':
+					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/gitlab/webhook/' . $project->getId();
+					print ' as a "WebHook URL" in the Web Hooks section of your Gitlab repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
 				break;
 
 				case 'bitbucket':

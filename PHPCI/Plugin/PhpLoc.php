@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * PHP Loc - Allows PHP Copy / Lines of Code testing.
  * @author       Johan van der Heide <info@japaveh.nl>
@@ -26,9 +29,10 @@ class PhpLoc implements \PHPCI\Plugin
      */
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci     = $phpci;
+        $this->build     = $build;
         $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
     }
 
@@ -47,6 +51,25 @@ class PhpLoc implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phploc %s "%s"', $ignore, $this->phpci->buildPath);
+        $phploc = $this->phpci->findBinary('phploc');
+
+        if (!$phploc) {
+            $this->phpci->logFailure('Could not find phploc.');
+            return false;
+        }
+
+        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->phpci->buildPath);
+        $output = $this->phpci->getLastOutput();
+
+        if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
+            $data = array();
+            foreach ($matches[1] as $k => $v) {
+                $data[$v] = (int)$matches[2][$k];
+            }
+
+            $this->build->storeMeta('phploc', $data);
+        }
+
+        return $success;
     }
 }

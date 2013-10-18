@@ -13,13 +13,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 * Clones your project from Github, Bitbucket or a local path
 * Allows you to set up and tear down test databases.
 * Installs your project's Composer dependencies.
-* Runs through any combination of the following plugins:
-    * PHP Unit
-    * PHP Mess Detector
-    * PHP Copy/Paste Detector
-    * PHP Code Sniffer
-    * PHP Spec
-    * Atoum
+* Runs through any combination of the [supported plugins](https://github.com/Block8/PHPCI/wiki#plugins).
 * You can mark directories for the plugins to ignore.
 * You can mark certain plugins as being allowed to fail (but still run.)
 
@@ -30,107 +24,8 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 * Install PEAR or PECL extensions.
 * Deployments.
 
-##Installing PHPCI:
-####Pre-requisites:
-* PHP 5.3.3+
-* A web server. We prefer nginx.
-* A MySQL server to connect to (doesn't have to be on the same server.)
-* PHPCI needs to be able to run `exec()`, so make sure this is not disabled
-* Php-openssl must be available.
-
-
-####Installing from Github:
-* Step 1: `git clone https://github.com/Block8/PHPCI.git`
-* Step 2: `cd PHPCI`
-* Step 3: `composer install`
-* Step 4: `chmod +x ./console && ./console phpci:install`
-    * When prompted, enter your database host, username, password and the database name that PHPCI should use.
-    * The script will attempt to create the database if it does not exist already.
-    * If you intend to use the MySQL plugin to create / destroy databases, the user you entered above will need CREATE / DELETE permissions on the server.
-* Add a virtual host to your web server, pointing to the directory "public" where you cloned PHPCI into.
-* You'll need to set up rewrite rules to point all non-existant requests to PHPCI.
-
-**Apache Example (require mod_rewrite installed)**:
-
-```sh
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /path/to/phpci/public
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.php [L]
-</IfModule>
-```
-
-**Nginx Example**: 
-
-
-    location / {
-        try-files $uri $uri/ index.php
-    }
-
-Finally, you'll want to set up PHPCI to run as a regular cronjob, so run `crontab -e` and enter the following:
-
-    * * * * * /usr/bin/php /path/to/phpci/console phpci:run-builds
-    
-Obviously, make sure you change the `/path/to/phpci` to the directory in which you installed PHPCI, and update the PHP path if necessary.
-
-##Adding support for PHPCI to your projects:
-Similar to Travis CI, to support PHPCI in your project, you simply need to add a `phpci.yml` file to the root of your repository. The file should look something like this:
-
-    build_settings:
-        ignore:
-            - "vendor"
-            - "tests"
-        mysql:
-            host: "localhost"
-            user: "root"
-            pass: ""
-        campfire:
-            url: "https://youraccount.campfirenow.com"
-            authToken: "605b32dd"
-            roomId: "570102"
-    setup:
-        mysql:
-            - "DROP DATABASE IF EXISTS test;"
-            - "CREATE DATABASE test;"
-            - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
-        composer:
-            action: "install"
-    
-    test:
-        php_unit:
-            config:
-                - "PHPUnit-all.xml"
-                - "PHPUnit-ubuntu-fix.xml"
-            directory:
-                - "tests/"
-            run_from: "phpunit/"
-        php_mess_detector:
-            allow_failures: true
-        php_code_sniffer:
-            standard: "PSR2"
-        php_cpd:
-            allow_failures: true
-        grunt:
-            task: "build"
-    
-    complete:
-        mysql:
-            - "DROP DATABASE IF EXISTS test;"
-    failure:
-        campfire:
-            message: "Phpci : build failed."
-            
-As mentioned earlier, PHPCI is powered by plugins, there are several phases in which plugins can be run:
-
-* `setup` - This phase is designed to initialise the build procedure.
-* `test` - The tests that should be run during the build. Plugins run during this phase will contribute to the success or failure of the build.
-* `complete` - Always called when the `test` phase completes, regardless of success or failure.
-* `success` - Called upon success of the `test` phase.
-* `failure` - Called upon the failure of the `test` phase.
-
-The `ignore` section is merely an array of paths that should be ignored in all tests (where possible.)
+## Getting Started:
+We've got documentation on our wiki on [installing PHPCI](https://github.com/Block8/PHPCI/wiki/Installing-PHPCI) and [adding support for PHPCI to your projects](https://github.com/Block8/PHPCI/wiki/Adding-PHPCI-Support-to-Your-Projects).
 
 ##Contributing
 Contributions from others would be very much appreciated! If you just want to make a simple change, simply fork the repository, and send us a pull request when you're ready. 

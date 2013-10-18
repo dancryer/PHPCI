@@ -21,9 +21,14 @@ use PHPCI\Model\Build;
 */
 class BitbucketController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+    
     public function init()
     {
-        $this->_buildStore      = Store\Factory::getStore('Build');
+        $this->buildStore = Store\Factory::getStore('Build');
     }
 
     /**
@@ -31,9 +36,9 @@ class BitbucketController extends \PHPCI\Controller
     */
     public function webhook($project)
     {
-        $payload    = json_decode($this->getParam('payload'), true);
-        $branches   = array();
-        $commits    = array();
+        $payload = json_decode($this->getParam('payload'), true);
+        $branches = array();
+        $commits = array();
 
         foreach ($payload['commits'] as $commit) {
             if (!in_array($commit['branch'], $branches)) {
@@ -45,14 +50,14 @@ class BitbucketController extends \PHPCI\Controller
         foreach ($branches as $branch) {
             try {
 
-                $build      = new Build();
+                $build = new Build();
                 $build->setProjectId($project);
                 $build->setCommitId($commits[$branch]);
                 $build->setStatus(0);
                 $build->setLog('');
                 $build->setCreated(new \DateTime());
                 $build->setBranch($branch);
-                $this->_buildStore->save($build);
+                $this->buildStore->save($build);
             } catch (\Exception $ex) {
             }
         }

@@ -12,17 +12,27 @@ namespace PHPCI\Controller;
 use b8;
 
 /**
-* Index Controller - Displays the PHPCI Dashboard.
+* Home Controller - Displays the PHPCI Dashboard.
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Web
 */
-class IndexController extends \PHPCI\Controller
+class HomeController extends \PHPCI\Controller
 {
+    /**
+     * @var \b8\Store\BuildStore
+     */
+    protected $buildStore;
+
+    /**
+     * @var \b8\Store\ProjectStore
+     */
+    protected $projectStore;
+
     public function init()
     {
-        $this->_buildStore      = b8\Store\Factory::getStore('Build');
-        $this->_projectStore    = b8\Store\Factory::getStore('Project');
+        $this->buildStore      = b8\Store\Factory::getStore('Build');
+        $this->projectStore    = b8\Store\Factory::getStore('Project');
     }
 
     /**
@@ -30,11 +40,16 @@ class IndexController extends \PHPCI\Controller
     */
     public function index()
     {
-        $projects       = $this->_projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
-        $summary        = $this->_buildStore->getBuildSummary();
+        $projects       = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+
+        $summaryBuilds = array();
+        foreach ($projects['items'] as $project) {
+            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+        }
 
         $summaryView = new b8\View('SummaryTable');
-        $summaryView->builds = $summary['items'];
+        $summaryView->projects = $projects['items'];
+        $summaryView->builds = $summaryBuilds;
 
         $this->view->builds   = $this->getLatestBuildsHtml();
         $this->view->projects = $projects['items'];
@@ -56,7 +71,7 @@ class IndexController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml()
     {
-        $builds         = $this->_buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
+        $builds         = $this->buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 

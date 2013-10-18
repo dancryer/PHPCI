@@ -2,20 +2,24 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 class Atoum implements \PHPCI\Plugin
 {
     private $args;
     private $config;
     private $directory;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
 
         if (isset($options['executable'])) {
             $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
         } else {
-            $this->executable = PHPCI_BIN_DIR.'atoum';
+            $this->executable = $this->phpci->findBinary('atoum');
         }
 
         if (isset($options['args'])) {
@@ -50,7 +54,7 @@ class Atoum implements \PHPCI\Plugin
         $status = true;
         exec($cmd, $output);
 
-        if (count(preg_grep("/Success \(/", $output)) == 0 ) {
+        if (count(preg_grep("/Success \(/", $output)) == 0) {
             $status = false;
             $this->phpci->log($output, '       ');
         }

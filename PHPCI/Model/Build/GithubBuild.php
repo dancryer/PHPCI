@@ -40,12 +40,13 @@ class GithubBuild extends RemoteGitBuild
     */
     public function sendStatusPostback()
     {
-        $project    = $this->getProject();
+        $token = \b8\Config::getInstance()->get('phpci.github.token');
 
-        // The postback will only work if we have an access token.
-        if (!$project->getToken()) {
+        if (empty($token)) {
             return;
         }
+
+        $project    = $this->getProject();
 
         $url    = 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
         $http   = new \b8\HttpClient();
@@ -67,11 +68,11 @@ class GithubBuild extends RemoteGitBuild
                 break;
         }
 
-        $url = \b8\Config::getInstance()->get('phpci.url');
+        $phpciUrl = \b8\Config::getInstance()->get('phpci.url');
         $params = array(    'state' => $status,
-                            'target_url' => $url . '/build/view/' . $this->getId());
+                            'target_url' => $phpciUrl . '/build/view/' . $this->getId());
         $headers = array(
-            'Authorization: token ' . $project->getToken(),
+            'Authorization: token ' . $token,
             'Content-Type: application/x-www-form-urlencoded'
             );
 

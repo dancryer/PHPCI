@@ -10,8 +10,9 @@
 namespace PHPCI\Controller;
 
 use b8;
-use PHPCI\Model\User;
 use b8\Form;
+use PHPCI\Controller;
+use PHPCI\Model\User;
 
 /**
 * User Controller - Allows an administrator to view, add, edit and delete users.
@@ -19,11 +20,16 @@ use b8\Form;
 * @package      PHPCI
 * @subpackage   Web
 */
-class UserController extends  \PHPCI\Controller
+class UserController extends Controller
 {
+    /**
+     * @var \PHPCI\Store\UserStore
+     */
+    protected $userStore;
+
     public function init()
     {
-        $this->_userStore       = b8\Store\Factory::getStore('User');
+        $this->userStore       = b8\Store\Factory::getStore('User');
     }
 
     /**
@@ -31,7 +37,7 @@ class UserController extends  \PHPCI\Controller
     */
     public function index()
     {
-        $users          = $this->_userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
+        $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
         $this->view->users    = $users;
 
         return $this->view->render();
@@ -72,7 +78,7 @@ class UserController extends  \PHPCI\Controller
         $user = new User();
         $user->setValues($values);
 
-        $user = $this->_userStore->save($user);
+        $user = $this->userStore->save($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -88,7 +94,7 @@ class UserController extends  \PHPCI\Controller
         }
 
         $method     = $this->request->getMethod();
-        $user   = $this->_userStore->getById($userId);
+        $user   = $this->userStore->getById($userId);
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -116,7 +122,7 @@ class UserController extends  \PHPCI\Controller
         }
 
         $user->setValues($values);
-        $user = $this->_userStore->save($user);
+        $user = $this->userStore->save($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -178,8 +184,8 @@ class UserController extends  \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
         
-        $user   = $this->_userStore->getById($userId);
-        $this->_userStore->delete($user);
+        $user   = $this->userStore->getById($userId);
+        $this->userStore->delete($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;

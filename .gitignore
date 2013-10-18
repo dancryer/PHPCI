@@ -1,6 +1,5 @@
 .idea
 vendor/
-composer.lock
 composer.phar
 config.php
 .DS_Store
@@ -9,3 +8,4 @@ config.php
 .buildpath
 .htaccess
 PHPCI/config.yml
+cache

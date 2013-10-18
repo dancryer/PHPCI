@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -21,11 +24,35 @@ class PhpCpd implements \PHPCI\Plugin
     protected $args;
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    /**
+     * @var string, based on the assumption the root may not hold the code to be
+     * tested, exteds the base path
+     */
+    protected $path;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
+
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-        $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
+        $this->phpci = $phpci;
+        $this->path = $phpci->buildPath;
+        $this->standard = 'PSR1';
+        $this->ignore = $phpci->ignore;
+
+        if (!empty($options['path'])) {
+            $this->path = $phpci->buildPath . $options['path'];
+        }
+
+        if (!empty($options['standard'])) {
+            $this->standard = $options['standard'];
+        }
+
+        if (!empty($options['ignore'])) {
+            $this->ignore = $this->phpci->ignore;
+        }
     }
 
     /**
@@ -34,15 +61,26 @@ class PhpCpd implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
+        if (count($this->ignore)) {
             $map = function ($item) {
                 return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
             };
-            $ignore = array_map($map, $this->phpci->ignore);
+            $ignore = array_map($map, $this->ignore);
 
             $ignore = implode('', $ignore);
         }
 
-        return $this->phpci->executeCommand(PHPCI_BIN_DIR . 'phpcpd %s "%s"', $ignore, $this->phpci->buildPath);
+        $phpcpd = $this->phpci->findBinary('phpcpd');
+
+        if (!$phpcpd) {
+            $this->phpci->logFailure('Could not find phpcpd.');
+            return false;
+        }
+
+        $success = $this->phpci->executeCommand($phpcpd . ' %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
+
+        print $this->phpci->getLastOutput();
+
+        return $success;
     }
 }

@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
  * Pdepend Plugin - Allows Pdepend report
  * @author       Johan van der Heide <info@japaveh.nl>
@@ -44,16 +47,17 @@ class Pdepend implements \PHPCI\Plugin
      */
     protected $location;
 
-
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
 
         $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
 
-        $this->summary  = $phpci->getBuildProjectTitle() . '-summary.xml';
-        $this->pyramid  = $phpci->getBuildProjectTitle() . '-pyramid.svg';
-        $this->chart    = $phpci->getBuildProjectTitle() . '-chart.svg';
+        $title = $phpci->getBuildProjectTitle();
+        $this->summary  = $title . '-summary.xml';
+        $this->pyramid  = $title . '-pyramid.svg';
+        $this->chart    = $title . '-chart.svg';
         $this->location = $this->phpci->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
     }
 
@@ -66,7 +70,14 @@ class Pdepend implements \PHPCI\Plugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $cmd = PHPCI_BIN_DIR . 'pdepend --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
+        $pdepend = $this->phpci->findBinary('pdepend');
+
+        if (!$pdepend) {
+            $this->phpci->logFailure('Could not find pdepend.');
+            return false;
+        }
+
+        $cmd = $pdepend . ' --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
 
         $this->removeBuildArtifacts();
        

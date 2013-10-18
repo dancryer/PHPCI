@@ -1,0 +1,177 @@
+<h1 id="title">Plugins</h1>
+<?php if (!$canInstall): ?>
+    <p class="alert alert-danger">PHPCI cannot automatically install/remove plugins for you, as the <strong>shell_exec()</strong>
+        function is disabled. PHPCI will update composer.json for you, but you will need to run Composer manually to make the changes.</p>
+<?php endif; ?>
+
+<?php if (!$canWrite): ?>
+    <p class="alert alert-danger">PHPCI cannot update composer.json for you as it is not writable.</p>
+<?php endif; ?>
+
+<?php if (isset($_GET['r'])): ?>
+    <p class="alert alert-success"><strong><?= $_GET['r']; ?></strong> has been removed.</p>
+<?php endif; ?>
+
+<?php if (isset($_GET['i'])): ?>
+    <p class="alert alert-success"><strong><?= $_GET['i']; ?></strong> has been installed.</p>
+<?php endif; ?>
+
+<?php if (isset($_GET['w'])): ?>
+    <p class="alert alert-success"><strong><?= $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
+<?php endif; ?>
+
+<div class="box">
+    <h3 class="title">Installed Plugins</h3>
+
+    <table class="table-striped table-bordered table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Version</th>
+                <th width="1"></th>
+            </tr>
+        </thead>
+        <tbody>
+<?php foreach ($installed as $package => $version): ?>
+            <tr>
+                <td><?= $package; ?></td>
+                <td><?= $version; ?></td>
+                <td>
+                <?php if (!in_array($package, $required) && $canWrite): ?>
+                    <a class="btn btn-danger btn-small" href="<?= PHPCI_URL ?>plugin/remove?package=<?= $package; ?>">Remove &raquo;</a>
+                <?php endif; ?>
+                </td>
+            </tr>
+<?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h3 class="title">Suggested Plugins</h3>
+
+    <table class="table-striped table-bordered table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th width="1"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($suggested as $package => $version): ?>
+            <?php if (in_array($package, array_keys($installed))) { continue; } ?>
+            <tr>
+                <td><?= $package; ?></td>
+                <td><?= $version; ?></td>
+                <td>
+                    <?php if ($canWrite): ?>
+                        <button data-name="<?= $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h3 class="title">Search Packagist for More Plugins</h3>
+
+    <div class="input-group">
+        <input id="search-query" type="text" class="form-control">
+      <span class="input-group-btn">
+        <button id="search-button" class="btn btn-success" type="button">Search</button>
+      </span>
+    </div>
+
+    <div id="results" style="margin-top: 15px; display: none;">
+        <table class="table-striped table-bordered table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th width="1"></th>
+            </tr>
+            </thead>
+            <tbody id="search-results">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    var canWrite = <?php print $canWrite ? 'true' : 'false'; ?>;
+
+    $('#search-button').on('click', function() {
+
+        $('#loading').show();
+
+        $.getJSON('<?php print PHPCI_URL; ?>plugin/packagist-search', {q: $('#search-query').val()}, function(data) {
+            $('#loading').hide();
+            $('#results').show();
+            var results = $('#search-results').empty();
+
+            for (var i in data.results) {
+                var thisRes = data.results[i];
+                var thisRow = $('<tr></tr>');
+                thisRow.append($('<td></td>').text(thisRes.name));
+                thisRow.append($('<td></td>').text(thisRes.description));
+
+                var inst = $('<button></button>').data('name', thisRes.name).addClass('btn btn-small btn-success').html('Install &raquo;');
+
+                inst.on('click', versionChooser);
+
+                thisRow.append($('<td></td>').append(inst));
+                results.append(thisRow);
+            }
+        });
+
+    });
+
+    $('.install-package').on('click', versionChooser);
+
+
+    function versionChooser()
+    {
+        $('#loading').show();
+
+        var thisName = $(this).data('name');
+
+        $.getJSON('<?php print PHPCI_URL; ?>plugin/packagist-versions', {p: thisName}, function(data) {
+
+            var versions = data.package.versions;
+            var vkeys = Object.keys(versions).sort().reverse();
+
+            $('#version-list ul').empty();
+
+            for (var i in vkeys) {
+                var url = '<?php print PHPCI_URL; ?>plugin/install?package=' + thisName + '&version=' + vkeys[i];
+                var li = $('<li></li>');
+                var a = $('<a></a>').attr('href', url).text(vkeys[i]);
+
+                li.append(a);
+
+                $('#version-list ul').append(li);
+            }
+
+            $('#version-list').modal('show');
+            $('#loading').hide();
+        });
+    }
+</script>
+
+<div class="modal fade" id="version-list">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Choose a version...</h4>
+            </div>
+            <div class="modal-body">
+                <ul></ul>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

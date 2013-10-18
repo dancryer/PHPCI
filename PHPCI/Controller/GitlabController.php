@@ -21,9 +21,14 @@ use PHPCI\Model\Build;
 */
 class GitlabController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+
     public function init()
     {
-        $this->_buildStore = Store\Factory::getStore('Build');
+        $this->buildStore = Store\Factory::getStore('Build');
     }
 
     /**
@@ -48,7 +53,7 @@ class GitlabController extends \PHPCI\Controller
         }
 
         try {
-            $build = $this->_buildStore->save($build);
+            $build = $this->buildStore->save($build);
             $build->sendStatusPostback();
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');

@@ -9,6 +9,8 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
 
 /**
 * Email Plugin - Provides simple email capability to PHPCI.
@@ -18,7 +20,6 @@ namespace PHPCI\Plugin;
 */
 class Email implements \PHPCI\Plugin
 {
-    
     /**
      * @var \PHPCI\Builder
      */
@@ -39,23 +40,15 @@ class Email implements \PHPCI\Plugin
      */
     protected $mailer;
 
-    public function __construct(\PHPCI\Builder $phpci,
-                                array $options = array(),
-                                \Swift_Mailer $mailer = null)
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $phpCiSettings      = $phpci->getSystemConfig('phpci');
         $this->phpci        = $phpci;
+        $this->build        = $build;
         $this->options      = $options;
         $this->emailConfig  = isset($phpCiSettings['email_settings']) ? $phpCiSettings['email_settings'] : array();
 
-        // Either a mailer will have been passed in or we load from the
-        // config.
-        if ($mailer === null) {
-            $this->loadSwiftMailerFromConfig();
-        }
-        else {
-            $this->mailer = $mailer;
-        }
+        $this->loadSwiftMailerFromConfig();
     }
 
     /**
@@ -71,20 +64,17 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $sendFailures = array();
-
         $subjectTemplate = "PHPCI - %s - %s";
         $projectName = $this->phpci->getBuildProjectTitle();
-        $logText = $this->phpci->getBuild()->getLog();
+        $logText = $this->build->getLog();
 
-        if($this->phpci->getSuccessStatus()) {
+        if ($this->build->isSuccessful()) {
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
                 sprintf($subjectTemplate, $projectName, "Passing Build"),
                 sprintf("Log Output: <br><pre>%s</pre>", $logText)
             );
-        }
-        else {
+        } else {
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
                 sprintf($subjectTemplate, $projectName, "Failing Build"),
@@ -93,14 +83,9 @@ class Email implements \PHPCI\Plugin
         }
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf(
-                "%d emails sent",
-                (count($addresses) - count($sendFailures)))
-        );
-        $this->phpci->log(sprintf(
-                "%d emails failed to send",
-                count($sendFailures))
-        );
+        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - count($sendFailures))));
+        $this->phpci->log(sprintf("%d emails failed to send", count($sendFailures)));
+
         return (count($sendFailures) == 0);
     }
 
@@ -126,9 +111,9 @@ class Email implements \PHPCI\Plugin
     public function sendSeparateEmails(array $toAddresses, $subject, $body)
     {
         $failures = array();
-        foreach($toAddresses as $address) {
+        foreach ($toAddresses as $address) {
             $newFailures = $this->sendEmail($address, $subject, $body);
-            foreach($newFailures as $failure) {
+            foreach ($newFailures as $failure) {
                 $failures[] = $failure;
             }
         }
@@ -151,13 +136,11 @@ class Email implements \PHPCI\Plugin
 
     protected function getMailConfig($configName)
     {
-        if (isset($this->emailConfig[$configName])
-            && $this->emailConfig[$configName] != "")
-        {
+        if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];
-        }
-        // Check defaults
-        else {
+        } else {
+            // Check defaults
+
             switch($configName) {
                 case 'smtp_address':
                     return "localhost";
@@ -178,6 +161,11 @@ class Email implements \PHPCI\Plugin
     protected function getEmailAddresses()
     {
         $addresses = array();
+        $committer = $this->build->getCommitterEmail();
+
+        if (isset($this->options['committer']) && !empty($committer)) {
+            $addresses[] = $committer;
+        }
 
         if (isset($this->options['addresses'])) {
             foreach ($this->options['addresses'] as $address) {

@@ -22,9 +22,14 @@ use PHPCI\Model\Build;
 */
 class BuildStatusController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
     public function init()
     {
-        $this->_projectStore      = Store\Factory::getStore('Project');
+        $this->projectStore = Store\Factory::getStore('Project');
     }
 
     /**
@@ -32,9 +37,9 @@ class BuildStatusController extends \PHPCI\Controller
     */
     public function image($projectId)
     {
-        $branch         = $this->getParam('branch', 'master');
-        $project        = $this->_projectStore->getById($projectId);
-        $status         = 'ok';
+        $branch = $this->getParam('branch', 'master');
+        $project = $this->projectStore->getById($projectId);
+        $status = 'ok';
 
         if (isset($project) && $project instanceof Project) {
             $build = $project->getLatestBuild($branch, array(2,3));
@@ -45,6 +50,6 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         header('Content-Type: image/png');
-        die(file_get_contents(APPLICATION_PATH . 'assets/img/build-' . $status . '.png'));
+        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
     }
 }

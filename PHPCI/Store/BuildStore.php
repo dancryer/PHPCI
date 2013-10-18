@@ -19,20 +19,11 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
-    public function getBuildSummary()
+    public function getLatestBuilds($projectId)
     {
-        $query = 'SELECT COUNT(*) AS cnt FROM build b LEFT JOIN project p on p.id = b.project_id GROUP BY b.project_id ORDER BY p.title ASC, b.id DESC';
+        $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
         $stmt = \b8\Database::getConnection('read')->prepare($query);
-
-        if ($stmt->execute()) {
-            $res    = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $count  = (int)$res['cnt'];
-        } else {
-            $count = 0;
-        }
-
-        $query = 'SELECT b.* FROM build b LEFT JOIN project p on p.id = b.project_id ORDER BY p.title ASC, b.id DESC';
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -42,9 +33,60 @@ class BuildStore extends BuildStoreBase
             };
             $rtn = array_map($map, $res);
 
-            return array('items' => $rtn, 'count' => $count);
+            return $rtn;
         } else {
-            return array('items' => array(), 'count' => 0);
+            return array();
+        }
+    }
+
+    public function getMeta($key, $projectId, $buildId = null, $numResults = 1)
+    {
+        $select = '`build_id`, `meta_key`, `meta_value`';
+        $and = $numResults > 1 ? ' AND (`build_id` <= :buildId) ' : ' AND (`build_id` = :buildId) ';
+        $where = '`meta_key` = :key AND `project_id` = :projectId ' . $and;
+        $query = 'SELECT '.$select.' FROM `build_meta` WHERE '.$where.' ORDER BY id DESC LIMIT :numResults';
+
+        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
+        $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
+        $stmt->bindValue(':numResults', (int)$numResults, \PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            $rtn = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $rtn = array_reverse($rtn);
+            $rtn = array_map(function ($item) {
+                $item['meta_value'] = json_decode($item['meta_value'], true);
+                return $item;
+            }, $rtn);
+
+            if (!count($rtn)) {
+                return null;
+            } else {
+                return $rtn;
+            }
+
+        } else {
+            return null;
+        }
+    }
+
+    public function setMeta($projectId, $buildId, $key, $value)
+    {
+        $cols = '`project_id`, `build_id`, `meta_key`, `meta_value`';
+        $query = 'REPLACE INTO build_meta ('.$cols.') VALUES (:projectId, :buildId, :key, :value)';
+
+        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
+        $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
+        $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

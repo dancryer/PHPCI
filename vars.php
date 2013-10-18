@@ -18,7 +18,7 @@ if (!defined('PHPCI_BIN_DIR')) {
 
 // Should PHPCI run the Shell plugin?
 if (!defined('ENABLE_SHELL_PLUGIN')) {
-    define('ENABLE_SHELL_PLUGIN', false);
+    define('ENABLE_SHELL_PLUGIN', true);
 }
 
 // If this is not already defined, we're not running in the console:

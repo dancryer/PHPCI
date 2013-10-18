@@ -44,7 +44,7 @@ class Shell implements \PHPCI\Plugin
     */
     public function execute()
     {
-        if (!defined('ENABLE_SHELL_PLUGIN') && !ENABLE_SHELL_PLUGIN) {
+        if (!defined('ENABLE_SHELL_PLUGIN') || !ENABLE_SHELL_PLUGIN) {
             throw new \Exception('The shell plugin is not enabled.');
         }
 

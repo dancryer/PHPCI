@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
 
 namespace PHPCI;
 
@@ -17,54 +17,54 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
-* PHPCI Build Runner
-* @author   Dan Cryer <dan@block8.co.uk>
-*/
+ * PHPCI Build Runner
+ * @author   Dan Cryer <dan@block8.co.uk>
+ */
 class Builder implements LoggerAwareInterface
 {
     /**
-    * @var string
-    */
+     * @var string
+     */
     public $buildPath;
 
     /**
-    * @var string[]
-    */
-    public $ignore  = array();
+     * @var string[]
+     */
+    public $ignore = array();
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $ciDir;
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $directory;
 
     /**
-    * @var bool
-    */
-    protected $success  = true;
+     * @var bool
+     */
+    protected $success = true;
 
     /**
-    * @var bool
-    */
-    protected $verbose  = true;
+     * @var bool
+     */
+    protected $verbose = true;
 
     /**
-    * @var \PHPCI\Model\Build
-    */
+     * @var \PHPCI\Model\Build
+     */
     protected $build;
 
-	/**
-	 * @var LoggerInterface
-	 */
-	protected $logger;
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     protected $config;
 
     /**
@@ -73,7 +73,7 @@ class Builder implements LoggerAwareInterface
     protected $lastOutput;
 
     /**
-     * An array of key => value pairs that will be used for 
+     * An array of key => value pairs that will be used for
      * interpolation and environment variables
      * @var array
      * @see setInterpolationVars()
@@ -91,32 +91,32 @@ class Builder implements LoggerAwareInterface
     public $quiet = false;
 
     /**
-    * Set up the builder.
-    * @param \PHPCI\Model\Build $build
-    * @param LoggerInterface $logger
-    */
+     * Set up the builder.
+     * @param \PHPCI\Model\Build $build
+     * @param LoggerInterface $logger
+     */
     public function __construct(Build $build, $logger = null)
     {
-		if ($logger) {
-			$this->setLogger($logger);
-		}
+        if ($logger) {
+            $this->setLogger($logger);
+        }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
     }
 
     /**
-    * Set the config array, as read from phpci.yml
-    * @param array
-    */
+     * Set the config array, as read from phpci.yml
+     * @param array
+     */
     public function setConfigArray(array $config)
     {
         $this->config = $config;
     }
 
     /**
-    * Access a variable from the phpci.yml file.
-    * @param string
-    */
+     * Access a variable from the phpci.yml file.
+     * @param string
+     */
     public function getConfig($key)
     {
         $rtn = null;
@@ -147,8 +147,8 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-    * Run the active build.
-    */
+     * Run the active build.
+     */
     public function execute()
     {
         // Update the build in the database, ping any external services.
@@ -183,7 +183,7 @@ class Builder implements LoggerAwareInterface
             $this->logFailure($ex->getMessage());
             $this->build->setStatus(3);
         }
-        
+
         // Clean up:
         $this->log('Removing build.');
         shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
@@ -195,8 +195,8 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-    * Used by this class, and plugins, to execute shell commands. 
-    */
+     * Used by this class, and plugins, to execute shell commands.
+     */
     public function executeCommand()
     {
         $command = call_user_func_array('sprintf', func_get_args());
@@ -230,45 +230,45 @@ class Builder implements LoggerAwareInterface
         return implode(PHP_EOL, $this->lastOutput);
     }
 
-	/**
-	 * Add an entry to the build log.
-	 * @param string|string[] $message
-	 * @param string $level
-	 * @param mixed[] $context
-	 */
+    /**
+     * Add an entry to the build log.
+     * @param string|string[] $message
+     * @param string $level
+     * @param mixed[] $context
+     */
     public function log($message, $level = LogLevel::INFO, $context = array())
     {
-		// Skip if no logger has been loaded.
-		if (!$this->logger) {
-			return;
-		}
+        // Skip if no logger has been loaded.
+        if (!$this->logger) {
+            return;
+        }
 
         if (!is_array($message)) {
             $message = array($message);
         }
         foreach ($message as $item) {
-			$this->logger->log($level, $item, $context);
+            $this->logger->log($level, $item, $context);
         }
     }
 
     /**
-    * Add a success-coloured message to the log. 
-    * @param string
-    */
+     * Add a success-coloured message to the log.
+     * @param string
+     */
     public function logSuccess($message)
     {
         $this->log("\033[0;32m" . $message . "\033[0m");
     }
 
     /**
-    * Add a failure-coloured message to the log. 
-    * @param string
-    */
+     * Add a failure-coloured message to the log.
+     * @param string
+     */
     public function logFailure($message)
     {
         $this->log("\033[0;31m" . $message . "\033[0m");
     }
-    
+
     /**
      * Replace every occurance of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
@@ -283,7 +283,7 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-     * Sets the variables that will be used for interpolation. This must be run 
+     * Sets the variables that will be used for interpolation. This must be run
      * from setupBuild() because prior to that, we don't know the buildPath
      */
     protected function setInterpolationVars()
@@ -293,9 +293,11 @@ class Builder implements LoggerAwareInterface
         $this->interpolation_vars['%COMMIT%'] = $this->build->getCommitId();
         $this->interpolation_vars['%PROJECT%'] = $this->build->getProjectId();
         $this->interpolation_vars['%BUILD%'] = $this->build->getId();
-        $this->interpolation_vars['%PROJECT_TITLE%'] = $this->getBuildProjectTitle();
+        $this->interpolation_vars['%PROJECT_TITLE%'] = $this->getBuildProjectTitle(
+        );
         $this->interpolation_vars['%BUILD_PATH%'] = $this->buildPath;
-        $this->interpolation_vars['%BUILD_URI%'] = PHPCI_URL . "build/view/" . $this->build->getId();
+        $this->interpolation_vars['%BUILD_URI%'] = PHPCI_URL . "build/view/" . $this->build->getId(
+            );
         $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
         $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
         $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
@@ -304,25 +306,28 @@ class Builder implements LoggerAwareInterface
         $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
 
         putenv('PHPCI=1');
-        putenv('PHPCI_COMMIT='.$this->interpolation_vars['%COMMIT%']);
-        putenv('PHPCI_PROJECT='.$this->interpolation_vars['%PROJECT%']);
-        putenv('PHPCI_BUILD='.$this->interpolation_vars['%BUILD%']);
-        putenv('PHPCI_PROJECT_TITLE='.$this->interpolation_vars['%PROJECT_TITLE%']);
-        putenv('PHPCI_BUILD_PATH='.$this->interpolation_vars['%BUILD_PATH%']);
-        putenv('PHPCI_BUILD_URI='.$this->interpolation_vars['%BUILD_URI%']);
+        putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
+        putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
+        putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
+        putenv(
+            'PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']
+        );
+        putenv('PHPCI_BUILD_PATH=' . $this->interpolation_vars['%BUILD_PATH%']);
+        putenv('PHPCI_BUILD_URI=' . $this->interpolation_vars['%BUILD_URI%']);
     }
-    
+
     /**
-    * Set up a working copy of the project for building.
-    */
+     * Set up a working copy of the project for building.
+     */
     protected function setupBuild()
     {
-        $buildId            = 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
-        $this->ciDir        = dirname(__FILE__) . '/../';
-        $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
-        
+        $buildId = 'project' . $this->build->getProject()->getId(
+            ) . '-build' . $this->build->getId();
+        $this->ciDir = dirname(__FILE__) . '/../';
+        $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
+
         $this->setInterpolationVars();
-        
+
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
             throw new \Exception('Could not create a working copy.');
@@ -343,12 +348,16 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-    * Execute a the appropriate set of plugins for a given build stage.
-    */
+     * Execute a the appropriate set of plugins for a given build stage.
+     */
     protected function executePlugins($stage)
     {
         // Ignore any stages for which we don't have plugins set:
-        if (!array_key_exists($stage, $this->config) || !is_array($this->config[$stage])) {
+        if (!array_key_exists(
+                $stage,
+                $this->config
+            ) || !is_array($this->config[$stage])
+        ) {
             return;
         }
 
@@ -444,22 +453,24 @@ class Builder implements LoggerAwareInterface
         return null;
     }
 
-	/**
-	 * Sets a logger instance on the object
-	 *
-	 * @param LoggerInterface $logger
-	 * @return null
-	 */
-	public function setLogger(LoggerInterface $logger) {
-		$this->logger = $logger;
-	}
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param LoggerInterface $logger
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	/**
-	 * returns the logger attached to this builder.
-	 *
-	 * @return LoggerInterface
-	 */
-	public function getLogger() {
-		return $this->logger;
-	}
+    /**
+     * returns the logger attached to this builder.
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 }

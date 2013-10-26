@@ -9,24 +9,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 class OutputLogHandler extends AbstractProcessingHandler
 {
 
-	/**
-	 * @var OutputInterface
-	 */
-	protected $output;
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
 
-	function __construct(OutputInterface $output,
-						 $level = LogLevel::INFO,
-						 $bubble = true)
-	{
-		parent::__construct($level, $bubble);
-		$this->output = $output;
-	}
+    function __construct(
+        OutputInterface $output,
+        $level = LogLevel::INFO,
+        $bubble = true
+    ) {
+        parent::__construct($level, $bubble);
+        $this->output = $output;
+    }
 
 
-	protected function write(array $record)
-	{
-		$this->output->writeln((string) $record['formatted']);
-	}
+    protected function write(array $record)
+    {
+        $this->output->writeln((string)$record['formatted']);
+    }
 
 
 } 

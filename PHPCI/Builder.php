@@ -12,12 +12,15 @@ namespace PHPCI;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
 * PHPCI Build Runner
 * @author   Dan Cryer <dan@block8.co.uk>
 */
-class Builder
+class Builder implements LoggerAwareInterface
 {
     /**
     * @var string
@@ -45,11 +48,6 @@ class Builder
     protected $success  = true;
 
     /**
-    * @var string
-    */
-    protected $log      = '';
-
-    /**
     * @var bool
     */
     protected $verbose  = true;
@@ -59,10 +57,10 @@ class Builder
     */
     protected $build;
 
-    /**
-    * @var callable
-    */
-    protected $logCallback;
+	/**
+	 * @var LoggerInterface
+	 */
+	protected $logger;
 
     /**
     * @var array
@@ -94,14 +92,16 @@ class Builder
 
     /**
     * Set up the builder.
-    * @param \PHPCI\Model\Build
-    * @param callable
+    * @param \PHPCI\Model\Build $build
+    * @param LoggerInterface $logger
     */
-    public function __construct(Build $build, \Closure $logCallback)
+    public function __construct(Build $build, $logger = null)
     {
+		if ($logger) {
+			$this->setLogger($logger);
+		}
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
-        $this->logCallback = $logCallback;
     }
 
     /**
@@ -164,7 +164,6 @@ class Builder
             // Run the core plugin stages:
             foreach (array('setup', 'test', 'complete') as $stage) {
                 $this->executePlugins($stage);
-                $this->log('');
             }
 
             // Failed build? Execute failure plugins and then mark the build as failed.
@@ -192,7 +191,6 @@ class Builder
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
         $this->build->setFinished(new \DateTime());
-        $this->build->setLog($this->log);
         $this->store->save($this->build);
     }
 
@@ -204,14 +202,14 @@ class Builder
         $command = call_user_func_array('sprintf', func_get_args());
 
         if (!$this->quiet) {
-            $this->log('Executing: ' . $command, '  ');
+            $this->log('Executing: ' . $command);
         }
 
         $status = 0;
         exec($command, $this->lastOutput, $status);
 
         if (!empty($this->lastOutput) && ($this->verbose || $status != 0)) {
-            $this->log($this->lastOutput, '       ');
+            $this->log($this->lastOutput);
         }
 
 
@@ -232,24 +230,25 @@ class Builder
         return implode(PHP_EOL, $this->lastOutput);
     }
 
-    /**
-    * Add an entry to the build log. 
-    * @param string|string[]
-    * @param string
-    */
-    public function log($message, $prefix = '')
+	/**
+	 * Add an entry to the build log.
+	 * @param string|string[] $message
+	 * @param string $level
+	 * @param mixed[] $context
+	 */
+    public function log($message, $level = LogLevel::INFO, $context = array())
     {
+		// Skip if no logger has been loaded.
+		if (!$this->logger) {
+			return;
+		}
+
         if (!is_array($message)) {
             $message = array($message);
         }
-
         foreach ($message as $item) {
-            call_user_func_array($this->logCallback, array($prefix . $item));
-            $this->log .= $prefix . $item . PHP_EOL;
+			$this->logger->log($level, $item, $context);
         }
-
-        $this->build->setLog($this->log);
-        $this->store->save($this->build);
     }
 
     /**
@@ -354,7 +353,6 @@ class Builder
         }
 
         foreach ($this->config[$stage] as $plugin => $options) {
-            $this->log('');
             $this->log('RUNNING PLUGIN: ' . $plugin);
 
             // Is this plugin allowed to fail?
@@ -445,4 +443,23 @@ class Builder
 
         return null;
     }
+
+	/**
+	 * Sets a logger instance on the object
+	 *
+	 * @param LoggerInterface $logger
+	 * @return null
+	 */
+	public function setLogger(LoggerInterface $logger) {
+		$this->logger = $logger;
+	}
+
+	/**
+	 * returns the logger attached to this builder.
+	 *
+	 * @return LoggerInterface
+	 */
+	public function getLogger() {
+		return $this->logger;
+	}
 }

@@ -27,7 +27,9 @@
         "ircmaxell/password-compat": "1.*",
         "swiftmailer/swiftmailer"  : "5.0.*",
         "symfony/yaml"             : "2.*",
-        "symfony/console"          : "2.*"
+        "symfony/console"          : "2.*",
+        "psr/log": "1.0.0",
+        "monolog/monolog": "1.6.0"
     },
 
     "suggest": {

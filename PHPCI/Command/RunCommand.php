@@ -11,6 +11,7 @@ namespace PHPCI\Command;
 
 use Monolog\Logger;
 use PHPCI\Helper\BuildDBLogHandler;
+use PHPCI\Helper\LoggedBuildContextTidier;
 use PHPCI\Helper\OutputLogHandler;
 use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
@@ -62,6 +63,8 @@ class RunCommand extends Command
 				new OutputLogHandler($this->output, Logger::INFO)
 			);
 		}
+
+        $logger->pushProcessor(new LoggedBuildContextTidier());
 
         foreach ($result['items'] as $build) {
             $builds++;

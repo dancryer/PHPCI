@@ -31,10 +31,10 @@ use PHPCI\BuildFactory;
 */
 class RunCommand extends Command
 {
-	/**
-	 * @var OutputInterface
-	 */
-	protected $output;
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
 
     protected function configure()
     {
@@ -44,25 +44,25 @@ class RunCommand extends Command
     }
 
     /**
-    * Pulls all pending builds from the database and runs them.
-    */
+     * Pulls all pending builds from the database and runs them.
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
 
-		$logger = new Logger("BuildLog");
+        $logger = new Logger("BuildLog");
 
-        $store  = Factory::getStore('Build');
+        $store = Factory::getStore('Build');
         $result = $store->getByStatus(0);
         $builds = 0;
 
-		// For verbose mode we want to output all informational and above
-		// messages to the symphony output interface.
-		if ($input->getOption('verbose')) {
-			$logger->pushHandler(
-				new OutputLogHandler($this->output, Logger::INFO)
-			);
-		}
+        // For verbose mode we want to output all informational and above
+        // messages to the symphony output interface.
+        if ($input->getOption('verbose')) {
+            $logger->pushHandler(
+                new OutputLogHandler($this->output, Logger::INFO)
+            );
+        }
 
         $logger->pushProcessor(new LoggedBuildContextTidier());
 
@@ -71,17 +71,17 @@ class RunCommand extends Command
 
             $build = BuildFactory::getBuild($build);
 
-			// Logging relevant to this build should be stored
-			// against the build itself.
-			$buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
-			$logger->pushHandler($buildDbLog);
+            // Logging relevant to this build should be stored
+            // against the build itself.
+            $buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
+            $logger->pushHandler($buildDbLog);
 
-			$builder = new Builder($build, $logger);
+            $builder = new Builder($build, $logger);
             $builder->execute();
 
-			// After execution we no longer want to record the information
-			// back to this specific build so the handler should be removed.
-			$logger->popHandler($buildDbLog);
+            // After execution we no longer want to record the information
+            // back to this specific build so the handler should be removed.
+            $logger->popHandler($buildDbLog);
         }
 
         return $builds;

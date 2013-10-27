@@ -180,7 +180,7 @@ class Builder implements LoggerAwareInterface
             }
 
         } catch (\Exception $ex) {
-            $this->logFailure($ex->getMessage());
+            $this->logFailure($ex->getMessage(), $ex);
             $this->build->setStatus(3);
         }
 
@@ -262,11 +262,24 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Add a failure-coloured message to the log.
-     * @param string
+     * @param string $message
+     * @param \Exception $exception The exception that caused the error.
      */
-    public function logFailure($message)
+    public function logFailure($message, \Exception $exception = null)
     {
-        $this->log("\033[0;31m" . $message . "\033[0m");
+        $context = array();
+
+        // The psr3 log interface stipulates that exceptions should be passed
+        // as the exception key in the context array.
+        if ($exception) {
+            $context['exception'] = $exception;
+        }
+
+        $this->log(
+            "\033[0;31m" . $message . "\033[0m",
+            LogLevel::ERROR,
+            $context
+        );
     }
 
     /**
@@ -399,7 +412,7 @@ class Builder implements LoggerAwareInterface
         $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
 
         if (!class_exists($class)) {
-            $this->logFailure('Plugin does not exist: ' . $plugin);
+            $this->logFailure('Plugin does not exist: ' . $plugin, $ex);
             return false;
         }
 
@@ -413,7 +426,7 @@ class Builder implements LoggerAwareInterface
                 $rtn = false;
             }
         } catch (\Exception $ex) {
-            $this->logFailure('EXCEPTION: ' . $ex->getMessage());
+            $this->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
             $rtn = false;
         }
 

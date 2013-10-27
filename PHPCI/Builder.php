@@ -246,6 +246,11 @@ class Builder implements LoggerAwareInterface
         if (!is_array($message)) {
             $message = array($message);
         }
+
+        // The build is added to the context so the logger can use
+        // details from it if required.
+        $context['build'] = $this;
+
         foreach ($message as $item) {
             $this->logger->log($level, $item, $context);
         }

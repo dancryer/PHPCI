@@ -77,7 +77,7 @@ class PhpCpd implements \PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpcpd . ' %s "%s"', $ignore, $this->phpci->buildPath.$this->path);
+        $success = $this->phpci->executeCommand($phpcpd . ' %s "%s"', $ignore, $this->path);
 
         print $this->phpci->getLastOutput();
 

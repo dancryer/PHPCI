@@ -49,7 +49,7 @@ class Atoum implements \PHPCI\Plugin
             $dirPath = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->directory;
             $cmd .= " -d '{$dirPath}'";
         }
-
+        chdir($this->phpci->buildPath);
         $output = '';
         $status = true;
         exec($cmd, $output);

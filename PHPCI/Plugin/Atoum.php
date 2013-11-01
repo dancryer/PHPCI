@@ -56,11 +56,11 @@ class Atoum implements \PHPCI\Plugin
 
         if (count(preg_grep("/Success \(/", $output)) == 0) {
             $status = false;
-            $this->phpci->log($output, '       ');
+            $this->phpci->log($output);
         }
         if (count($output) == 0) {
             $status = false;
-            $this->phpci->log("No test have been performed!", '       ');
+            $this->phpci->log("No test have been performed!");
         }
         
         return $status;

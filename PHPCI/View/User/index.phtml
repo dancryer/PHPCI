@@ -40,7 +40,7 @@
 				?>
 				<tr class="<?php print $cls; ?>">
 					<td><a href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
-					<td><?php print $user->getName(); ?></td>
+					<td><?php print htmlspecialchars($user->getName()); ?></td>
 					<td><?php print $status; ?></td>
 					<td>
 						<?php if($this->User()->getIsAdmin()): ?>

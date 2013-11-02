@@ -82,7 +82,7 @@ foreach($projects as $project):
             <?= $health ?>
         </span>
     </td>
-    <td><a href='<?= PHPCI_URL ?>project/view/<?= $project->getId() ?>'><?= $project->getTitle() ?></a></td>
+    <td><a href='<?= PHPCI_URL ?>project/view/<?= $project->getId() ?>'><?= htmlspecialchars($project->getTitle()) ?></a></td>
     <td><?php print is_null($success) ? 'Never' : $success; ?></td>
     <td><?php print is_null($failure) ? 'Never' : $failure; ?></td>
     <td>

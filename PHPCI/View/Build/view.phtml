@@ -7,7 +7,7 @@
 	<div class="col-lg-3">
         <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print $build->getProject()->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($build->getProject()->getTitle()); ?></a></li>
 		</ul>
 			<h5>Options</h5>
         <ul class="nav nav-pills nav-stacked">

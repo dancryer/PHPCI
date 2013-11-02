@@ -8,6 +8,8 @@ use Monolog\Logger;
 
 class LoggerConfig {
 
+    const KEY_AlwaysLoaded = "_";
+
     private $config;
 
     /**
@@ -32,20 +34,25 @@ class LoggerConfig {
      * @return Logger
      */
     public function GetFor($name) {
+        $handlers = $this->getHandlers(self::KEY_AlwaysLoaded);
+        $handlers = array_merge($handlers, $this->getHandlers($name));
+        return new Logger($name, $handlers);
+    }
+
+    protected function getHandlers($key) {
         $handlers = array();
 
         // They key is expected to either be an array or
         // a callable function that returns an array
-        if (isset($this->config[$name])) {
-            if (is_callable($this->config[$name])) {
-                $handlers = call_user_func($this->config[$name]);
+        if (isset($this->config[$key])) {
+            if (is_callable($this->config[$key])) {
+                $handlers = call_user_func($this->config[$key]);
             }
-            elseif(is_array($this->config[$name])) {
-                $handlers = $this->config[$name];
+            elseif(is_array($this->config[$key])) {
+                $handlers = $this->config[$key];
             }
         }
-
-        return new Logger($name, $handlers);
+        return $handlers;
     }
 
 }

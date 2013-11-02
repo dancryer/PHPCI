@@ -1,9 +1,16 @@
 <?php
 return array(
+    /** Loggers attached to every command */
+    "_" => function() {
+        return array(
+            new \Monolog\Handler\StreamHandler('c:\temp\errors.log', \Monolog\Logger::ERROR),
+        );
+    },
+
+    /** Loggers for the RunCommand */
     'RunCommand' => function() {
         return array(
-            new \Monolog\Handler\StreamHandler('path/to/logs/errors', \Monolog\Logger::ERROR),
-            new \Monolog\Handler\RotatingFileHandler('path/to/logs/everything',3, \Monolog\Logger::INFO),
+            new \Monolog\Handler\RotatingFileHandler('c:\temp\everything',3, \Monolog\Logger::INFO),
         );
     }
 );

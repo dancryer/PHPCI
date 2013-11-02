@@ -25,8 +25,8 @@ $application = new Application();
 
 $application->add(new RunCommand($loggerConfig->GetFor('RunCommand')));
 $application->add(new InstallCommand);
-$application->add(new UpdateCommand);
+$application->add(new UpdateCommand($loggerConfig->GetFor('UpdateCommand')));
 $application->add(new GenerateCommand);
-$application->add(new DaemonCommand);
+$application->add(new DaemonCommand($loggerConfig->GetFor('DaemonCommand')));
 
 $application->run();

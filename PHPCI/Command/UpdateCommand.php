@@ -9,8 +9,10 @@
 
 namespace PHPCI\Command;
 
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,6 +25,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class UpdateCommand extends Command
 {
+    /**
+     * @var \Monolog\Logger
+     */
+    protected $logger;
+
+    public function __construct(Logger $logger, $name = null)
+    {
+        parent::__construct($name);
+        $this->logger = $logger;
+    }
+
     protected function configure()
     {
         $this

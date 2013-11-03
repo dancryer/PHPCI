@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin\Tests;
 use PHPCI\Plugin\PHPUnit;
 
-define('PHPCI_BIN_DIR', "FAKEPHPCIBIN");
-
 /**
 * Unit test for the PHPUnit plugin.
 * @author meadsteve
@@ -29,6 +27,11 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 	 */
 	protected $mockCiBuilder;
 
+    /**
+	 * @var \PHPUnit_Framework_MockObject_MockObject $mockCiBuilder
+	 */
+	protected $mockBuild;
+
 	public function setUp()
 	{
 		$this->mockCiBuilder = $this->getMock(
@@ -40,12 +43,20 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 		);
 		$this->mockCiBuilder->buildPath = "/";
 
+        $this->mockBuild = $this->getMock(
+			'\PHPCI\Model\Build',
+			array(),
+			array(),
+			"MockBuild",
+			false
+		);
+
 		$this->loadPhpUnitWithOptions();
 	}
 
 	protected function loadPhpUnitWithOptions($arrOptions = array())
 	{
-		$this->testedPhpUnit = new PHPUnit($this->mockCiBuilder, $arrOptions);
+		$this->testedPhpUnit = new PHPUnit($this->mockCiBuilder,$this->mockBuild, $arrOptions);
 	}
 
 	/**

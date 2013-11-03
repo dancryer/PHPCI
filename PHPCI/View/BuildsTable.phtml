@@ -41,7 +41,7 @@ switch($build->getStatus())
 	<td><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProjectId(); ?>">
         <?php
             if (is_object($build->getProject())) {
-                print $build->getProject()->getTitle();
+                print htmlspecialchars($build->getProject()->getTitle());
             } else {
                 print ' - ';
             }

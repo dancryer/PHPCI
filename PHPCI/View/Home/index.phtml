@@ -11,7 +11,7 @@
         <h5>Projects</h5>
         <ul class="nav nav-pills nav-stacked">
 			<?php foreach($projects as $project): ?>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print $project->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print htmlspecialchars($project->getTitle()); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
         <?php endif; ?>

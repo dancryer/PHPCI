@@ -36,7 +36,7 @@
 
                 <div class="nav-collapse collapse navbar-responsive-collapse">
                     <ul class="nav navbar-nav pull-right">
-                        <li><p class="navbar-text"><strong><?php print $this->User()->getName(); ?></strong></p></li>
+                        <li><p class="navbar-text"><strong><?php print htmlspecialchars($this->User()->getName()); ?></strong></p></li>
                         <li><a href="<?php print PHPCI_URL ?>session/logout">Log out</a></li>
                         <?php if ($this->User()->getIsAdmin()): ?>
                         <li>

@@ -59,6 +59,24 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 		$this->testedPhpUnit = new PHPUnit($this->mockCiBuilder,$this->mockBuild, $arrOptions);
 	}
 
+    /**
+     * @param \PHPUnit_Framework_MockObject_Matcher_Invocation $expectation
+     */
+    protected function expectFindBinaryToBeCalled($expectation) {
+        $this->mockCiBuilder->expects($expectation)
+                            ->method("findBinary")
+                            ->will($this->returnValue("phpunit"));
+    }
+
+    /**
+     * @param \PHPUnit_Framework_MockObject_Matcher_Invocation $expectation
+     */
+    public function expectExectuteCommandToBeCalled($expectation)
+    {
+        $this->mockCiBuilder->expects($expectation)
+                            ->method("executeCommand");
+    }
+
 	/**
 	 * @covers PHPUnit::execute
 	 */
@@ -82,7 +100,8 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 			'directory'	=> "Fake/Test/Path"
 		));
 
-		$this->mockCiBuilder->expects($this->once())->method("executeCommand");
+        $this->expectFindBinaryToBeCalled($this->once());
+		$this->expectExectuteCommandToBeCalled($this->once());
 
 		$returnValue = $this->testedPhpUnit->execute();
 	}
@@ -99,9 +118,10 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 			'config'	=> "Fake/Test/config.xml"
 		));
 
-		$this->mockCiBuilder->expects($this->once())->method("executeCommand");
+        $this->expectFindBinaryToBeCalled($this->once());
+        $this->expectExectuteCommandToBeCalled($this->once());
 
-		$returnValue = $this->testedPhpUnit->execute();
+        $returnValue = $this->testedPhpUnit->execute();
 	}
 
 	/**
@@ -139,5 +159,4 @@ class PHPUnitTest extends  \PHPUnit_Framework_TestCase
 
 		$returnValue = $this->testedPhpUnit->execute();
 	}
-
 }

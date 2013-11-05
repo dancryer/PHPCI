@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../vars.php');
+require_once(dirname(__FILE__) . '/../bootstrap.php');
 
 $installStage = 'start';
 $formAction = '';

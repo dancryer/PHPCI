@@ -115,7 +115,7 @@ class PhpMessDetector implements \PHPCI\Plugin
 
     protected function overrideSetting($options, $key)
     {
-        if (isset($options[$key]) && is_array($options['key'])) {
+        if (isset($options[$key]) && is_array($options[$key])) {
             $this->{$key} = $options[$key];
         }
     }

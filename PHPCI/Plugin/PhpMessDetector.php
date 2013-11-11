@@ -86,7 +86,7 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
 
         foreach ($this->rules as &$rule) {
-            if ($rule[0] !== '/' && strpos($rule, '/') !== false) {
+            if (strpos($rule, '/') !== false) {
                 $rule = $this->phpci->buildPath . $rule;
             }
         }

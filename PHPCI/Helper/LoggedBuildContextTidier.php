@@ -2,9 +2,10 @@
 
 namespace PHPCI\Helper;
 
+use PHPCI\Model\Build;
 
-class LoggedBuildContextTidier{
-
+class LoggedBuildContextTidier
+{
     function __invoke()
     {
         return $this->tidyLoggedBuildContext(func_get_arg(0));

@@ -120,7 +120,7 @@ class PhpCodeSniffer implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd = $phpcs . ' %s %s %s %s %s "%s"';
+        $cmd = $phpcs . ' --report=emacs %s %s %s %s %s "%s"';
         $success = $this->phpci->executeCommand(
             $cmd,
             $standard,
@@ -134,12 +134,12 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         $output = $this->phpci->getLastOutput();
 
         $matches = array();
-        if (preg_match_all('/WARNING/', $output, $matches)) {
+        if (preg_match_all('/\: warning \-/', $output, $matches)) {
             $this->build->storeMeta('phpcs-warnings', count($matches[0]));
         }
 
         $matches = array();
-        if (preg_match_all('/ERROR/', $output, $matches)) {
+        if (preg_match_all('/\: error \-/', $output, $matches)) {
             $this->build->storeMeta('phpcs-errors', count($matches[0]));
         }
 

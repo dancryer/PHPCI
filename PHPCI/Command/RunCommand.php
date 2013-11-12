@@ -36,6 +36,22 @@ class RunCommand extends Command
      */
     protected $output;
 
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @param \Monolog\Logger $logger
+     * @param string $name
+     */
+    public function __construct(Logger $logger, $name = null)
+    {
+        parent::__construct($name);
+        $this->logger = $logger;
+    }
+
+
     protected function configure()
     {
         $this
@@ -50,21 +66,22 @@ class RunCommand extends Command
     {
         $this->output = $output;
 
-        $logger = new Logger("BuildLog");
-
-        $store = Factory::getStore('Build');
-        $result = $store->getByStatus(0);
-        $builds = 0;
-
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
         if ($input->getOption('verbose')) {
-            $logger->pushHandler(
+            $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
         }
 
-        $logger->pushProcessor(new LoggedBuildContextTidier());
+        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+
+        $this->logger->addInfo("Finding builds to process");
+        $store = Factory::getStore('Build');
+        $result = $store->getByStatus(0);
+        $this->logger->addInfo(sprintf("Found %d builds", count($result['items'])));
+
+        $builds = 0;
 
         foreach ($result['items'] as $build) {
             $builds++;
@@ -74,15 +91,17 @@ class RunCommand extends Command
             // Logging relevant to this build should be stored
             // against the build itself.
             $buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
-            $logger->pushHandler($buildDbLog);
+            $this->logger->pushHandler($buildDbLog);
 
-            $builder = new Builder($build, $logger);
+            $builder = new Builder($build, $this->logger);
             $builder->execute();
 
             // After execution we no longer want to record the information
             // back to this specific build so the handler should be removed.
-            $logger->popHandler($buildDbLog);
+            $this->logger->popHandler($buildDbLog);
         }
+
+        $this->logger->addInfo("Finished processing builds");
 
         return $builds;
     }

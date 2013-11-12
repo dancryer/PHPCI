@@ -19,10 +19,14 @@ use PHPCI\Command\InstallCommand;
 use PHPCI\Command\DaemonCommand;
 use Symfony\Component\Console\Application;
 
+$loggerConfig = new \PHPCI\Helper\LoggerConfig(__DIR__ . "/loggerconfig.php");
+
 $application = new Application();
-$application->add(new RunCommand);
+
+$application->add(new RunCommand($loggerConfig->GetFor('RunCommand')));
 $application->add(new InstallCommand);
-$application->add(new UpdateCommand);
+$application->add(new UpdateCommand($loggerConfig->GetFor('UpdateCommand')));
 $application->add(new GenerateCommand);
-$application->add(new DaemonCommand);
+$application->add(new DaemonCommand($loggerConfig->GetFor('DaemonCommand')));
+
 $application->run();

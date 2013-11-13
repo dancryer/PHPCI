@@ -17,7 +17,9 @@ framework:
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
     fragments:       ~
     http_method_override: true
 

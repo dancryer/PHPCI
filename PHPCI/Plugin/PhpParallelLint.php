@@ -20,15 +20,31 @@ use PHPCI\Model\Build;
 */
 class PhpParallelLint implements \PHPCI\Plugin
 {
-    protected $directory;
-    protected $preferDist;
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var string
+     */
+    protected $directory;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $path . $options['directory'] : $path;
+        $this->ignore       = $this->phpci->ignore;
+
+        if (isset($options['ignore'])) {
+            $this->ignore = $options['ignore'];
+        }
     }
 
     /**
@@ -36,10 +52,32 @@ class PhpParallelLint implements \PHPCI\Plugin
     */
     public function execute()
     {
-        // build the parallel lint command
-        $cmd = "run %s";
+        list($ignore) = $this->getFlags();
 
-        // and execute it
-        return $this->phpci->executeCommand(PHPCI_BIN_DIR . $cmd, $this->directory);
+        $phplint = $this->phpci->findBinary('parallel-lint');
+
+        if (!$phplint) {
+            $this->phpci->logFailure('Could not find parallel-lint.');
+            return false;
+        }
+
+        $cmd = $phplint . ' %s "%s"';
+        $success = $this->phpci->executeCommand(
+            $cmd,
+            $ignore,
+            $this->directory
+        );
+
+        return $success;
+    }
+
+    protected function getFlags()
+    {
+        $ignore = '';
+        if (count($this->ignore)) {
+            $ignore = ' --exclude ' . implode(' --exclude ', $this->ignore);
+        }
+
+        return array($ignore);
     }
 }

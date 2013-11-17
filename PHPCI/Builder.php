@@ -525,7 +525,7 @@ class Builder implements LoggerAwareInterface
                 return $factory->getSwiftMailerFromConfig();
             },
             null,
-            '\Swift_Mailer'
+            'Swift_Mailer'
         );
     }
 }

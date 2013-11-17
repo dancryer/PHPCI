@@ -40,7 +40,11 @@ class Email implements \PHPCI\Plugin
      */
     protected $mailer;
 
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci,
+                                Build $build,
+                                array $options = array(),
+                                \Swift_Mailer $mailer = null
+    )
     {
         $phpCiSettings      = $phpci->getSystemConfig('phpci');
         $this->phpci        = $phpci;
@@ -48,7 +52,12 @@ class Email implements \PHPCI\Plugin
         $this->options      = $options;
         $this->emailConfig  = isset($phpCiSettings['email_settings']) ? $phpCiSettings['email_settings'] : array();
 
-        $this->loadSwiftMailerFromConfig();
+        if ($mailer) {
+            $this->mailer = $mailer;
+        }
+        else {
+            $this->loadSwiftMailerFromConfig();
+        }
     }
 
     /**

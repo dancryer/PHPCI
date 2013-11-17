@@ -39,6 +39,14 @@ class Factory {
         return $this->currentPluginOptions;
     }
 
+    /**
+     * Builds an instance of plugin of class $className. $options will
+     * be passed along with any resources registered with the factory.
+     *
+     * @param $className
+     * @param array $options
+     * @return \PHPCI\Plugin
+     */
     public function buildPlugin($className, array $options = array())
     {
         $this->currentPluginOptions = $options;

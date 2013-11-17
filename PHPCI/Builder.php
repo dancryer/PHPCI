@@ -91,6 +91,9 @@ class Builder implements LoggerAwareInterface
      */
     public $quiet = false;
 
+    /**
+     * @var \PHPCI\Plugin\Util\Factory
+     */
     protected $pluginFactory;
 
     /**

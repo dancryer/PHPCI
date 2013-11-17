@@ -90,6 +90,8 @@ class Builder implements LoggerAwareInterface
      */
     public $quiet = false;
 
+    protected $pluginFactory;
+
     /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
@@ -102,6 +104,7 @@ class Builder implements LoggerAwareInterface
         }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
+        $this->setupPluginFactory($build);
     }
 
     /**
@@ -416,6 +419,8 @@ class Builder implements LoggerAwareInterface
         $class = ucwords($class);
         $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
 
+        $this->pluginFactory->buildPlugin($class, $options);
+
         if (!class_exists($class)) {
             $this->logFailure('Plugin does not exist: ' . $plugin, $ex);
             return false;
@@ -490,5 +495,27 @@ class Builder implements LoggerAwareInterface
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    private function setupPluginFactory(Build $build)
+    {
+        $this->pluginFactory = new Plugin\Util\Factory();
+
+        $self = $this;
+        $this->pluginFactory->registerResource(
+            function () use($self) {
+                return $self;
+            },
+            null,
+            'PHPCI\\Builder'
+        );
+
+        $this->pluginFactory->registerResource(
+            function () use($build) {
+                return $build;
+            },
+            null,
+            'PHPCI\\Model\Build'
+        );
     }
 }

@@ -420,8 +420,6 @@ class Builder implements LoggerAwareInterface
         $class = ucwords($class);
         $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
 
-        $this->pluginFactory->buildPlugin($class, $options);
-
         if (!class_exists($class)) {
             $this->logFailure('Plugin does not exist: ' . $plugin, $ex);
             return false;
@@ -431,7 +429,7 @@ class Builder implements LoggerAwareInterface
 
         // Try running it:
         try {
-            $obj = new $class($this, $this->build, $options);
+            $obj = $this->pluginFactory->buildPlugin($class, $options);
 
             if (!$obj->execute()) {
                 $rtn = false;

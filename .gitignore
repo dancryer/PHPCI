@@ -9,3 +9,4 @@ config.php
 .htaccess
 PHPCI/config.yml
 cache
+/loggerconfig.php

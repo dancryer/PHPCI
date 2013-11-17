@@ -10,8 +10,10 @@
 
 namespace PHPCI\Command;
 
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,6 +29,17 @@ use PHPCI\BuildFactory;
 */
 class DaemonCommand extends Command
 {
+    /**
+     * @var \Monolog\Logger
+     */
+    protected $logger;
+
+    public function __construct(Logger $logger, $name = null)
+    {
+        parent::__construct($name);
+        $this->logger = $logger;
+    }
+
     protected function configure()
     {
         $this
@@ -68,12 +81,14 @@ class DaemonCommand extends Command
 
         if (file_exists(PHPCI_DIR.'/daemon/daemon.pid')) {
             echo "Already started\n";
+            $this->logger->warning("Daemon already started");
             return "alreadystarted";
         }
 
         $logfile = PHPCI_DIR."/daemon/daemon.log";
         $cmd = "nohup %s/daemonise phpci:daemonise > %s 2>&1 &";
         $command = sprintf($cmd, PHPCI_DIR, $logfile);
+        $this->logger->info("Daemon started");
         exec($command);
     }
 
@@ -82,12 +97,14 @@ class DaemonCommand extends Command
 
         if (!file_exists(PHPCI_DIR.'/daemon/daemon.pid')) {
             echo "Not started\n";
+            $this->logger->warning("Can't stop daemon as not started");
             return "notstarted";
         }
 
         $cmd = "kill $(cat %s/daemon/daemon.pid)";
         $command = sprintf($cmd, PHPCI_DIR);
         exec($command);
+        $this->logger->info("Daemon stopped");
         unlink(PHPCI_DIR.'/daemon/daemon.pid');
     }
 
@@ -109,14 +126,5 @@ class DaemonCommand extends Command
         unlink(PHPCI_DIR.'/daemon/daemon.pid');
         echo "Not running\n";
         return "notrunning";
-    }
-
-    /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
-    public function logCallback($log)
-    {
-        $this->output->writeln($log);
     }
 }

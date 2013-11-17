@@ -31,33 +31,33 @@ class Email implements \PHPCI\Plugin
     protected $options;
 
     /**
-     * @var array
-     */
-    protected $emailConfig;
-
-    /**
      * @var \Swift_Mailer
      */
     protected $mailer;
 
+    /**
+     * @var string
+     */
+    protected $fromAddress;
+
     public function __construct(Builder $phpci,
                                 Build $build,
-                                array $options = array(),
-                                \Swift_Mailer $mailer = null
+                                \Swift_Mailer $mailer,
+                                array $options = array()
+
     )
     {
-        $phpCiSettings      = $phpci->getSystemConfig('phpci');
         $this->phpci        = $phpci;
         $this->build        = $build;
         $this->options      = $options;
-        $this->emailConfig  = isset($phpCiSettings['email_settings']) ? $phpCiSettings['email_settings'] : array();
 
-        if ($mailer) {
-            $this->mailer = $mailer;
-        }
-        else {
-            $this->loadSwiftMailerFromConfig();
-        }
+        $phpCiSettings      = $phpci->getSystemConfig('phpci');
+
+        $this->fromAddress = isset($phpCiSettings['email_settings']['from_address'])
+                           ? $phpCiSettings['email_settings']['from_address']
+                           : "notifications-ci@phptesting.org";
+
+        $this->mailer = $mailer;
     }
 
     /**
@@ -107,7 +107,7 @@ class Email implements \PHPCI\Plugin
     public function sendEmail($toAddresses, $subject, $body)
     {
         $message = \Swift_Message::newInstance($subject)
-            ->setFrom($this->getMailConfig('from_address'))
+            ->setFrom($this->fromAddress)
             ->setTo($toAddresses)
             ->setBody($body)
             ->setContentType("text/html");
@@ -127,44 +127,6 @@ class Email implements \PHPCI\Plugin
             }
         }
         return $failures;
-    }
-
-    protected function loadSwiftMailerFromConfig()
-    {
-        /** @var \Swift_SmtpTransport $transport */
-        $transport = \Swift_SmtpTransport::newInstance(
-            $this->getMailConfig('smtp_address'),
-            $this->getMailConfig('smtp_port'),
-            $this->getMailConfig('smtp_encryption')
-        );
-        $transport->setUsername($this->getMailConfig('smtp_username'));
-        $transport->setPassword($this->getMailConfig('smtp_password'));
-
-        $this->mailer = \Swift_Mailer::newInstance($transport);
-    }
-
-    protected function getMailConfig($configName)
-    {
-        if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
-            return $this->emailConfig[$configName];
-        } else {
-            // Check defaults
-
-            switch($configName) {
-                case 'smtp_address':
-                    return "localhost";
-                case 'default_mailto_address':
-                    return null;
-                case 'smtp_port':
-                    return '25';
-                case 'smtp_encryption':
-                    return null;
-                case 'from_address':
-                    return "notifications-ci@phptesting.org";
-                default:
-                    return "";
-            }
-        }
     }
 
     protected function getEmailAddresses()

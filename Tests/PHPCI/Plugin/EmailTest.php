@@ -100,8 +100,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 		$this->testedEmailPlugin = new EmailPlugin(
             $this->mockCiBuilder,
             $this->mockBuild,
-            $arrOptions,
-            $this->mockMailer
+            $this->mockMailer,
+            $arrOptions
         );
 	}
 

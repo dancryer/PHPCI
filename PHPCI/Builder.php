@@ -9,6 +9,7 @@
 
 namespace PHPCI;
 
+use PHPCI\Helper\MailerFactory;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
@@ -507,7 +508,7 @@ class Builder implements LoggerAwareInterface
                 return $self;
             },
             null,
-            'PHPCI\\Builder'
+            'PHPCI\Builder'
         );
 
         $this->pluginFactory->registerResource(
@@ -515,7 +516,16 @@ class Builder implements LoggerAwareInterface
                 return $build;
             },
             null,
-            'PHPCI\\Model\Build'
+            'PHPCI\Model\Build'
+        );
+
+        $this->pluginFactory->registerResource(
+            function () use ($self) {
+                $factory = new MailerFactory($self->getSystemConfig('phpci'));
+                return $factory->getSwiftMailerFromConfig();
+            },
+            null,
+            '\Swift_Mailer'
         );
     }
 }

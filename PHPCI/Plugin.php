@@ -18,6 +18,5 @@ use PHPCI\Model\Build;
 */
 interface Plugin
 {
-    public function __construct(Builder $phpci, Build $build, array $options = array());
     public function execute();
 }

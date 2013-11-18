@@ -72,8 +72,6 @@ class PollCommand extends Command
         $this->logger->addInfo(sprintf("Found %d projects", count($result['items'])));
 
         foreach ($result['items'] as $project) {
-            //$project = ProjectFactory::getProject($project);
-
             $http = new HttpClient('https://api.github.com');
             $commits = $http->get('/repos/' . $project->getReference() . '/commits', array('access_token' => $token));
 

@@ -58,8 +58,7 @@ class PollCommand extends Command
 
         $token = $this->settings['phpci']['github']['token'];
 
-        if(!$token)
-        {
+        if (!$token) {
             $this->logger->error("No github token found");
             exit();
         }
@@ -79,8 +78,7 @@ class PollCommand extends Command
 
             $this->logger->info("Last commit to github for " . $project->getTitle() . " is " . $last_commit);
 
-            if($project->getLastCommit() != $last_commit)
-            {
+            if ($project->getLastCommit() != $last_commit && $last_commit != "") {
                 $this->logger->info("Last commit is different from database, adding new build for " . $project->getTitle());
 
                 $build = new Build();

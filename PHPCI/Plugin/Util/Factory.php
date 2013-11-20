@@ -6,8 +6,8 @@ namespace PHPCI\Plugin\Util;
 
 class Factory {
 
-    const TYPE_Array = "array";
-    const TYPE_Callable = "callable";
+    const TYPE_ARRAY = "array";
+    const TYPE_CALLABLE = "callable";
 
     private $currentPluginOptions;
 
@@ -124,9 +124,9 @@ class Factory {
         if ($class) {
             return $class->getName();
         } elseif($param->isArray()) {
-            return self::TYPE_Array;
+            return self::TYPE_ARRAY;
         } elseif($param->isCallable()) {
-            return self::TYPE_Callable;
+            return self::TYPE_CALLABLE;
         } else {
             return null;
         }

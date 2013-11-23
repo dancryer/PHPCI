@@ -57,7 +57,7 @@ The script returns a status code of `0` if all mandatory requirements are met,
 
 Access the `config.php` script from a browser:
 
-    http://localhost/path/to/symfony/app/web/config.php
+    http://localhost/path-to-project/web/config.php
 
 If you get any warnings or recommendations, fix them before moving on.
 

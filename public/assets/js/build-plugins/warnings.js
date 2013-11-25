@@ -11,8 +11,9 @@ var plugin = PHPCI.UiPlugin.extend({
         var query1 = PHPCI.registerQuery('phpmd-warnings', -1, {num_builds: 10, key: 'phpmd-warnings'})
         var query2 = PHPCI.registerQuery('phpcs-warnings', -1, {num_builds: 10, key: 'phpcs-warnings'})
         var query3 = PHPCI.registerQuery('phpcs-errors', -1, {num_builds: 10, key: 'phpcs-errors'})
+        var query4 = PHPCI.registerQuery('phplint-errors', -1, {num_builds: 10, key: 'phplint-errors'})
 
-        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors', function(data) {
+        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors', function(data) {
             self.onUpdate(data);
         });
 
@@ -22,6 +23,7 @@ var plugin = PHPCI.UiPlugin.extend({
                 query1();
                 query2();
                 query3();
+                query4();
             }
         });
 
@@ -67,7 +69,12 @@ var plugin = PHPCI.UiPlugin.extend({
         var keys = self.keys;
 
         for (var i in keys) {
-            var t = {'phpmd-warnings': 'PHPMD Warnings', 'phpcs-warnings': 'PHPCS Warnings', 'phpcs-errors': 'PHPCS Errors'};
+            var t = {
+                'phpmd-warnings': 'PHPMD Warnings',
+                'phpcs-warnings': 'PHPCS Warnings',
+                'phpcs-errors': 'PHPCS Errors',
+                'phplint-errors': 'PHPLint Errors'
+            };
             titles.push(t[keys[i]]);
         }
 

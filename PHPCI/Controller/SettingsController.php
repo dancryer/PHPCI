@@ -53,9 +53,16 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['id'] = $this->getParam('githubid', '');
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
 
-        $this->storeSettings();
+        $error = $this->storeSettings();
 
-        header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        if($error)
+        {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        }
+        else
+        {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
         die;
     }
 
@@ -94,6 +101,7 @@ class SettingsController extends Controller
         $dumper = new Dumper();
         $yaml = $dumper->dump($this->settings);
         file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
+        if(error_get_last()) return error_get_last()['message'];
     }
 
     protected function getGithubForm()

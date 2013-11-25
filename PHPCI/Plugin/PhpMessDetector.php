@@ -86,7 +86,7 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
 
         foreach ($this->rules as &$rule) {
-            if ($rule[0] !== '/' && strpos($rule, '/') !== false) {
+            if (strpos($rule, '/') !== false) {
                 $rule = $this->phpci->buildPath . $rule;
             }
         }
@@ -115,7 +115,7 @@ class PhpMessDetector implements \PHPCI\Plugin
 
     protected function overrideSetting($options, $key)
     {
-        if (isset($options[$key]) && is_array($options['key'])) {
+        if (isset($options[$key]) && is_array($options[$key])) {
             $this->{$key} = $options[$key];
         }
     }

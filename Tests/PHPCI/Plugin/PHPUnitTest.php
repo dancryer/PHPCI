@@ -134,19 +134,18 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
      * @covers PHPUnit::execute
      * @covers PHPUnit::runDir
      */
-    public function testExecute_CallsExecuteCommandManyTimesWhenGivenArrayDirectory(
-    )
+    public function testExecute_CallsExecuteCommandManyTimesWhenGivenArrayDirectory()
     {
         chdir('/');
 
         $this->loadPhpUnitWithOptions(
             array(
-                'directory' => array(0, 1)
+                'directory' => array("dir1", "dir2")
             )
         );
 
-        $this->mockCiBuilder->expects($this->at(0))->method("executeCommand");
-        $this->mockCiBuilder->expects($this->at(1))->method("executeCommand");
+        $this->expectFindBinaryToBeCalled($this->exactly(2));
+        $this->expectExectuteCommandToBeCalled($this->exactly(2));
 
         $returnValue = $this->testedPhpUnit->execute();
     }
@@ -161,12 +160,12 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
 
         $this->loadPhpUnitWithOptions(
             array(
-                'config' => array(0, 1)
+                'config' => array("configfile1.xml", "configfile2.xml")
             )
         );
 
-        $this->mockCiBuilder->expects($this->at(0))->method("executeCommand");
-        $this->mockCiBuilder->expects($this->at(1))->method("executeCommand");
+        $this->expectFindBinaryToBeCalled($this->exactly(2));
+        $this->expectExectuteCommandToBeCalled($this->exactly(2));
 
         $returnValue = $this->testedPhpUnit->execute();
     }

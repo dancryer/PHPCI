@@ -37,9 +37,9 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->mockCiBuilder = $this->getMock(
             '\PHPCI\Builder',
-            array('findBinary'),
+            array('findBinary', 'executeCommand'),
             array(),
-            "mockBuilder",
+            "mockBuilder_phpUnit",
             false
         );
         $this->mockCiBuilder->buildPath = "/";
@@ -94,8 +94,7 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
      * @covers PHPUnit::execute
      * @covers PHPUnit::runDir
      */
-    public function testExecute_CallsExecuteCommandOnceWhenGivenStringDirectory(
-    )
+    public function testExecute_CallsExecuteCommandOnceWhenGivenStringDirectory()
     {
         chdir('/');
 

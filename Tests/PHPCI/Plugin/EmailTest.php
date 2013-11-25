@@ -66,7 +66,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
                 'log'
             ),
             array(),
-            "mockBuilder",
+            "mockBuilder_email",
             false
         );
 

@@ -9,6 +9,7 @@
 
 namespace PHPCI;
 
+use PHPCI\Helper\MailerFactory;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
@@ -91,6 +92,11 @@ class Builder implements LoggerAwareInterface
     public $quiet = false;
 
     /**
+     * @var \PHPCI\Plugin\Util\Factory
+     */
+    protected $pluginFactory;
+
+    /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
@@ -102,6 +108,7 @@ class Builder implements LoggerAwareInterface
         }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
+        $this->setupPluginFactory($build);
     }
 
     /**
@@ -425,7 +432,7 @@ class Builder implements LoggerAwareInterface
 
         // Try running it:
         try {
-            $obj = new $class($this, $this->build, $options);
+            $obj = $this->pluginFactory->buildPlugin($class, $options);
 
             if (!$obj->execute()) {
                 $rtn = false;
@@ -490,5 +497,36 @@ class Builder implements LoggerAwareInterface
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    private function setupPluginFactory(Build $build)
+    {
+        $this->pluginFactory = new Plugin\Util\Factory();
+
+        $self = $this;
+        $this->pluginFactory->registerResource(
+            function () use($self) {
+                return $self;
+            },
+            null,
+            'PHPCI\Builder'
+        );
+
+        $this->pluginFactory->registerResource(
+            function () use($build) {
+                return $build;
+            },
+            null,
+            'PHPCI\Model\Build'
+        );
+
+        $this->pluginFactory->registerResource(
+            function () use ($self) {
+                $factory = new MailerFactory($self->getSystemConfig('phpci'));
+                return $factory->getSwiftMailerFromConfig();
+            },
+            null,
+            'Swift_Mailer'
+        );
     }
 }

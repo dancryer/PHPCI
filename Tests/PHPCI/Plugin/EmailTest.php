@@ -10,13 +10,12 @@
 namespace PHPCI\Plugin\Tests;
 use PHPCI\Plugin\Email as EmailPlugin;
 
-define('PHPCI_BIN_DIR', "FAKEPHPCIBIN");
 
 /**
 * Unit test for the PHPUnit plugin.
 * @author meadsteve
 */
-class EmailTest extends  \PHPUnit_Framework_TestCase
+class EmailTest extends \PHPUnit_Framework_TestCase
 {
 
 	/**
@@ -43,7 +42,7 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
 	{
         $this->mockBuild = $this->getMock(
 			'\PHPCI\Model\Build',
-			array('getLog'),
+			array('getLog', 'getStatus'),
 			array(),
 			"mockBuild",
 			false
@@ -52,6 +51,10 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
         $this->mockBuild->expects($this->any())
             ->method('getLog')
             ->will($this->returnValue("Build Log"));
+
+        $this->mockBuild->expects($this->any())
+            ->method('getStatus')
+            ->will($this->returnValue(\PHPCI\Model\Build::STATUS_SUCCESS));
 
 		$this->mockCiBuilder = $this->getMock(
 			'\PHPCI\Builder',
@@ -96,8 +99,9 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
 	{
 		$this->testedEmailPlugin = new EmailPlugin(
             $this->mockCiBuilder,
-            $arrOptions,
-            $this->mockMailer
+            $this->mockBuild,
+            $this->mockMailer,
+            $arrOptions
         );
 	}
 

@@ -73,7 +73,7 @@ switch($build->getStatus())
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">
-				<li><a href="javascript:confirmDeleteBuild('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>');">Delete Build</a></li>
+				<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>', 'Build').onClose = function(){refreshBuildsTable();};">Delete Build</a></li>
 			</ul>
 			<?php endif; ?>
 		</div>

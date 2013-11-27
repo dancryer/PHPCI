@@ -30,25 +30,10 @@ if (!Function.prototype.bind) {
 /**
 * Used for delete buttons in the system, just to prevent accidental clicks.
 */
-function confirmDelete(url)
-{
-	if(confirm('Are you sure you want to delete this?'))
-	{
-		window.location.href = url;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-/**
- * Used for delete build buttons in the system, just to prevent accidental clicks.
- */
-function confirmDeleteBuild(url) {
+function confirmDelete(url, subject, reloadAfter) {
 
     var dialog = new PHPCIConfirmDialog({
-        message: 'This build will be permanently deleted. Are you sure?',
+        message: subject + ' will be permanently deleted. Are you sure?',
         confirmBtnCaption: 'Delete',
         /*
          confirm-btn click handler
@@ -62,11 +47,11 @@ function confirmDeleteBuild(url) {
              */
             $.ajax({
                 url: url,
-                'success': function () {
-                    if (refreshBuildsTable) {
-                        dialog.$dialog.on('hidden.bs.modal', function () {
-                            refreshBuildsTable();
-                        });
+                'success': function (data) {
+                    if (reloadAfter) {
+                        dialog.onClose = function () {
+                            window.location.reload();
+                        };
                     }
 
                     dialog.showStatusMessage('Successfully deleted!', 1000);
@@ -79,6 +64,7 @@ function confirmDeleteBuild(url) {
     });
 
     dialog.show();
+    return dialog;
 }
 
 /**
@@ -156,10 +142,13 @@ var PHPCIConfirmDialog = Class.extend({
         this.confirmBtnClick = options.confirmed;
 
         /*
-         Re-bind on click handler
+         Re-bind handlers
          */
         this.$confirmBtn.unbind('click');
         this.$confirmBtn.click(this.onConfirm.bind(this));
+
+        this.$confirmBtn.unbind('hidden.bs.modal');
+        this.$dialog.on('hidden.bs.modal', function () {this.onClose()}.bind(this));
 
         /*
         Restore state if was changed previously
@@ -186,6 +175,8 @@ var PHPCIConfirmDialog = Class.extend({
         $(this).attr('disabled', 'disabled');
         this.confirmBtnClick(e);
     },
+
+    onClose: function () {},
 
     showStatusMessage: function (message, closeTimeout) {
         this.$confirmBtn.hide();

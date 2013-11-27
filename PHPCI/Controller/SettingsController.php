@@ -101,7 +101,7 @@ class SettingsController extends Controller
         $dumper = new Dumper();
         $yaml = $dumper->dump($this->settings);
         file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
-        if(error_get_last()) return error_get_last()['message'];
+        if ($error_get_last = error_get_last()) { return $error_get_last['message']; }
     }
 
     protected function getGithubForm()

@@ -63,5 +63,5 @@
         $('#latest-builds').load('<?= PHPCI_URL ?>home/latest');
     };
 
-}, 10000);
+    setInterval(refreshBuildsTable, 10000);
 </script>

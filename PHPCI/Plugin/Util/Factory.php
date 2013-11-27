@@ -75,7 +75,7 @@ class Factory {
      * @throws \InvalidArgumentException
      * @internal param mixed $resource
      */
-    public function registerResource(callable $loader,
+    public function registerResource($loader,
                                      $name = null,
                                      $type = null
     )
@@ -83,6 +83,12 @@ class Factory {
         if ($name === null && $type === null) {
             throw new \InvalidArgumentException(
                 "Type or Name must be specified"
+            );
+        }
+
+        if (!($loader instanceof \Closure)) {
+            throw new \InvalidArgumentException(
+                '$loader is expected to be a function'
             );
         }
 

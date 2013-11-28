@@ -37,8 +37,14 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testRegisterResourceThrowsExceptionWithoutTypeAndName()
     {
-        $this->setExpectedException("InvalidArgumentException");
+        $this->setExpectedException('InvalidArgumentException', 'Type or Name must be specified');
         $this->testedFactory->registerResource($this->resourceLoader, null, null);
+    }
+
+    public function testRegisterResourceThrowsExceptionIfLoaderIsntFunction()
+    {
+        $this->setExpectedException('InvalidArgumentException', '$loader is expected to be a function');
+        $this->testedFactory->registerResource(array("dummy"), "TestName", "TestClass");
     }
 
     public function testBuildPluginWorksWithConstructorlessPlugins()

@@ -49,6 +49,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf($expectedPluginClass, $plugin);
     }
 
+    public function testBuildPluginFailsForNonPluginClasses()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Requested class must implement \PHPCI\Plugin');
+        $plugin = $this->testedFactory->buildPlugin("stdClass");
+    }
+
     public function testBuildPluginWorksWithSingleOptionalArgConstructor()
     {
         $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';

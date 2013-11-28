@@ -40,6 +40,7 @@ class ProjectBase extends Model
         'type' => null,
         'token' => null,
         'access_information' => null,
+        'last_commit' => null,
     );
 
     /**
@@ -54,6 +55,7 @@ class ProjectBase extends Model
         'type' => 'getType',
         'token' => 'getToken',
         'access_information' => 'getAccessInformation',
+        'last_commit' => 'getLastCommit',
 
         // Foreign key getters:
     );
@@ -70,6 +72,7 @@ class ProjectBase extends Model
         'type' => 'setType',
         'token' => 'setToken',
         'access_information' => 'setAccessInformation',
+        'last_commit' => 'setLastCommit',
 
         // Foreign key setters:
     );
@@ -110,6 +113,12 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'access_information' => array(
+            'type' => 'varchar',
+            'length' => 250,
+            'nullable' => true,
+            'default' => null,
+        ),
+        'last_commit' => array(
             'type' => 'varchar',
             'length' => 250,
             'nullable' => true,
@@ -211,6 +220,18 @@ class ProjectBase extends Model
     public function getAccessInformation()
     {
         $rtn    = $this->data['access_information'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of LastCommit / last_commit.
+    *
+    * @return string
+    */
+    public function getLastCommit()
+    {
+        $rtn    = $this->data['last_commit'];
 
         return $rtn;
     }
@@ -347,6 +368,24 @@ class ProjectBase extends Model
         $this->data['access_information'] = $value;
 
         $this->_setModified('access_information');
+    }
+
+    /**
+    * Set the value of LastCommit / last_commit.
+    *
+    * @param $value string
+    */
+    public function setLastCommit($value)
+    {
+        $this->_validateString('LastCommit', $value);
+
+        if ($this->data['last_commit'] === $value) {
+            return;
+        }
+
+        $this->data['last_commit'] = $value;
+
+        $this->_setModified('last_commit');
     }
 
     /**

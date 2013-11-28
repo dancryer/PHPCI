@@ -33,7 +33,7 @@ class LocalBuild extends Build
         // If there's a /config file in the reference directory, it is probably a bare repository
         // which we'll extract into our build path directly.
         if (is_file($reference.'/config') && $this->handleBareRepository($builder, $reference, $buildPath) === true) {
-            return true;
+            return $this->handleConfig($builder, $buildPath) !== false;
         }
 
         $buildSettings = $this->handleConfig($builder, $reference);
@@ -57,7 +57,7 @@ class LocalBuild extends Build
 
         // If it is indeed a bare repository, then extract it into our build path:
         if ($gitConfig['core']['bare']) {
-            $builder->executeCommand('git --git-dir="%s" archive master | tar -x -C "%s"', $reference, $buildPath);
+            $builder->executeCommand('mkdir %2$s; git --git-dir="%1$s" archive master | tar -x -C "%2$s"', $reference, $buildPath);
             return true;
         }
 

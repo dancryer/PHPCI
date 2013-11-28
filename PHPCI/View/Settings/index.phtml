@@ -1,6 +1,12 @@
-<?php if (isset($_GET['saved'])): ?>
+<?php if (isset($_GET['saved']) && $_GET['saved'] == 1): ?>
 <p class="alert alert-success" style="margin-bottom: 20px;">
     Your settings have been saved.
+</p>
+<?php endif; ?>
+
+<?php if (isset($_GET['saved']) && $_GET['saved'] == 2): ?>
+<p class="alert alert-danger" style="margin-bottom: 20px;">
+    Your settings could not be saved, maybe check the permissions of config.yml?
 </p>
 <?php endif; ?>
 

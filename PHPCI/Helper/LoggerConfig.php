@@ -46,7 +46,7 @@ class LoggerConfig {
      * @param $name
      * @return Logger
      */
-    public function GetFor($name) {
+    public function getFor($name) {
         $handlers = $this->getHandlers(self::KEY_AlwaysLoaded);
         $handlers = array_merge($handlers, $this->getHandlers($name));
         return new Logger($name, $handlers);

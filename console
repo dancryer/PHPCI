@@ -24,11 +24,11 @@ $loggerConfig = \PHPCI\Helper\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig
 
 $application = new Application();
 
-$application->add(new RunCommand($loggerConfig->GetFor('RunCommand')));
+$application->add(new RunCommand($loggerConfig->getFor('RunCommand')));
 $application->add(new InstallCommand);
-$application->add(new UpdateCommand($loggerConfig->GetFor('UpdateCommand')));
+$application->add(new UpdateCommand($loggerConfig->getFor('UpdateCommand')));
 $application->add(new GenerateCommand);
-$application->add(new DaemonCommand($loggerConfig->GetFor('DaemonCommand')));
-$application->add(new PollCommand($loggerConfig->GetFor('PollCommand')));
+$application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
+$application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
 
 $application->run();

@@ -418,10 +418,17 @@ class Builder implements LoggerAwareInterface
      */
     protected function executePlugin($plugin, $options)
     {
-        // Figure out the class name and check the plugin exists:
-        $class = str_replace('_', ' ', $plugin);
-        $class = ucwords($class);
-        $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
+        // Any plugin name without a namespace separator is a PHPCI built in plugin
+        // if not we assume it's a fully name-spaced class name that implements the plugin interface.
+        // If not the factory will throw an exception.
+        if (strpos($plugin, "/") === false) {
+            $class = str_replace('_', ' ', $plugin);
+            $class = ucwords($class);
+            $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
+        }
+        else {
+            $class = $plugin;
+        }
 
         if (!class_exists($class)) {
             $this->logFailure('Plugin does not exist: ' . $plugin, $ex);

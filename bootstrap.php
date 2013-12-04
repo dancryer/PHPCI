@@ -27,7 +27,7 @@ $autoload = function ($class) {
 
 spl_autoload_register($autoload, true, true);
 
-if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml') && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE) && $_SERVER['PHP_SELF'] != '/install.php') {
+if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml') && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE) && substr($_SERVER['PHP_SELF'], -12) != '/install.php') {
     header('Location: install.php');
     die;
 }

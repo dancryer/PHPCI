@@ -30,7 +30,8 @@
         "symfony/console"          : "2.*",
         "psr/log": "1.0.0",
         "monolog/monolog": "1.6.0",
-        "pimple/pimple": "1.1.*"
+        "pimple/pimple": "1.1.*",
+        "phpspec/prophecy-phpunit": "1.*"
     },
 
     "suggest": {

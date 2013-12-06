@@ -13,18 +13,31 @@ class LoggerConfig {
     private $config;
 
     /**
-     * The file specified is expected to return an array. Where each key
-     * is the name of a logger. The value of each key should be an array or
-     * a function that returns an array of LogHandlers.
-     * @param $logConfigFilePath
+     * The filepath is expected to return an array which will be
+     * passed to the normal constructor.
+     *
+     * @param string $filePath
+     * @return LoggerConfig
      */
-    function __construct($logConfigFilePath) {
-        if (file_exists($logConfigFilePath)) {
-            $this->config = require_once($logConfigFilePath);
+    public static function newFromFile($filePath)
+    {
+        if (file_exists($filePath)) {
+            $configArray = require($filePath);
         }
         else {
-            $this->config = array();
+            $configArray = array();
         }
+        return new self($configArray);
+    }
+
+    /**
+     * Each key of the array is the name of a logger. The value of
+     * each key should be an array or a function that returns an
+     * array of LogHandlers.
+     * @param array $configArray
+     */
+    function __construct(array $configArray = array()) {
+        $this->config = $configArray;
     }
 
     /**
@@ -33,7 +46,7 @@ class LoggerConfig {
      * @param $name
      * @return Logger
      */
-    public function GetFor($name) {
+    public function getFor($name) {
         $handlers = $this->getHandlers(self::KEY_AlwaysLoaded);
         $handlers = array_merge($handlers, $this->getHandlers($name));
         return new Logger($name, $handlers);

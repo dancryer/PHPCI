@@ -128,7 +128,7 @@ class PhpUnit implements \PHPCI\Plugin
     protected function runDir($dirPath)
     {
         if (is_array($dirPath)) {
-            return $this->recurseArg($dirPath, array($this, "runConfigFile"));
+            return $this->recurseArg($dirPath, array($this, "runDir"));
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);

@@ -9,7 +9,7 @@
 
 namespace PHPCI\Plugin\Tests;
 
-use PHPCI\Plugin\PHPUnit;
+use PHPCI\Plugin\PhpUnit;
 
 /**
  * Unit test for the PHPUnit plugin.
@@ -19,7 +19,7 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var PHPUnit $testedPhpUnit
+     * @var PhpUnit $testedPhpUnit
      */
     protected $testedPhpUnit;
 
@@ -57,7 +57,7 @@ class PHPUnitTest extends \PHPUnit_Framework_TestCase
 
     protected function loadPhpUnitWithOptions($arrOptions = array())
     {
-        $this->testedPhpUnit = new PHPUnit($this->mockCiBuilder, $this->mockBuild, $arrOptions);
+        $this->testedPhpUnit = new PhpUnit($this->mockCiBuilder, $this->mockBuild, $arrOptions);
     }
 
     /**

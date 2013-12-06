@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d0c90323aa9c3dcabd7d2075483de4a3",
+    "hash": "07f37de4c8bacd8a1a7b6e14269178d1",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -152,111 +152,6 @@
                 "psr-3"
             ],
             "time": "2013-07-28 22:38:30"
-        },
-        {
-            "name": "phpspec/prophecy",
-            "version": "v1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/79d9c8bd94801bffbf9b56964f6438762da6d8cd",
-                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpspec/phpspec": "2.0.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Prophecy\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com",
-                    "homepage": "http://everzet.com"
-                },
-                {
-                    "name": "Marcello Duarte",
-                    "email": "marcello.duarte@gmail.com"
-                }
-            ],
-            "description": "Highly opinionated mocking framework for PHP 5.3+",
-            "homepage": "http://phpspec.org",
-            "keywords": [
-                "Double",
-                "Dummy",
-                "fake",
-                "mock",
-                "spy",
-                "stub"
-            ],
-            "time": "2013-08-10 11:11:45"
-        },
-        {
-            "name": "phpspec/prophecy-phpunit",
-            "version": "v1.0.0",
-            "target-dir": "Prophecy/PhpUnit",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpspec/prophecy-phpunit.git",
-                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy-phpunit/zipball/ebc983be95b026fcea18afb7870e7b9041dc9d11",
-                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11",
-                "shasum": ""
-            },
-            "require": {
-                "phpspec/prophecy": "~1.0"
-            },
-            "suggest": {
-                "phpunit/phpunit": "if it is not installed globally"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Prophecy\\PhpUnit\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christophe Coevoet",
-                    "email": "stof@notk.org"
-                }
-            ],
-            "description": "PhpUnit test case integrating the Prophecy mocking library",
-            "homepage": "http://phpspec.org",
-            "keywords": [
-                "phpunit",
-                "prophecy"
-            ],
-            "time": "2013-07-04 21:27:53"
         },
         {
             "name": "pimple/pimple",
@@ -493,7 +388,111 @@
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "phpspec/prophecy",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy.git",
+                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/79d9c8bd94801bffbf9b56964f6438762da6d8cd",
+                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpspec/phpspec": "2.0.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Marcello Duarte",
+                    "email": "marcello.duarte@gmail.com"
+                }
+            ],
+            "description": "Highly opinionated mocking framework for PHP 5.3+",
+            "homepage": "http://phpspec.org",
+            "keywords": [
+                "Double",
+                "Dummy",
+                "fake",
+                "mock",
+                "spy",
+                "stub"
+            ],
+            "time": "2013-08-10 11:11:45"
+        },
+        {
+            "name": "phpspec/prophecy-phpunit",
+            "version": "v1.0.0",
+            "target-dir": "Prophecy/PhpUnit",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy-phpunit.git",
+                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy-phpunit/zipball/ebc983be95b026fcea18afb7870e7b9041dc9d11",
+                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11",
+                "shasum": ""
+            },
+            "require": {
+                "phpspec/prophecy": "~1.0"
+            },
+            "suggest": {
+                "phpunit/phpunit": "if it is not installed globally"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\PhpUnit\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                }
+            ],
+            "description": "PhpUnit test case integrating the Prophecy mocking library",
+            "homepage": "http://phpspec.org",
+            "keywords": [
+                "phpunit",
+                "prophecy"
+            ],
+            "time": "2013-07-04 21:27:53"
+        }
     ],
     "aliases": [
 

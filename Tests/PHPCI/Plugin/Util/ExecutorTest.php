@@ -86,5 +86,35 @@ class ExecutorTest extends ProphecyTestCase
         $this->assertEquals($expectedReturnValue, $returnValue);
     }
 
+    public function testExecutePlugin_LogsFailureForNonExistentClasses()
+    {
+        $options = array();
+        $pluginName = 'DOESNTEXIST';
+        $pluginNamespace = 'PHPCI\\Plugin\\';
+
+        $this->mockBuildLogger->logFailure('Plugin does not exist: ' . $pluginName)->shouldBeCalledTimes(1);
+
+        $this->testedExecutor->executePlugin($pluginName, $options);
+    }
+
+    public function testExecutePlugin_LogsFailureWhenExceptionsAreThrownByPlugin()
+    {
+        $options = array();
+        $pluginName = 'PhpUnit';
+        $pluginNamespace = 'PHPCI\\Plugin\\';
+
+        $expectedException = new \RuntimeException("Generic Error");
+
+        $mockPlugin = $this->prophesize('PHPCI\Plugin');
+        $mockPlugin->execute()->willThrow($expectedException);
+
+        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)->willReturn($mockPlugin->reveal());
+
+        $this->mockBuildLogger->logFailure('EXCEPTION: ' . $expectedException->getMessage(), $expectedException)
+                              ->shouldBeCalledTimes(1);
+
+        $this->testedExecutor->executePlugin($pluginName, $options);
+    }
+
 }
  

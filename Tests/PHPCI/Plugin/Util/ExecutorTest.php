@@ -5,6 +5,7 @@ namespace PHPCI\Plugin\Tests\Util;
 require_once __DIR__ . "/ExamplePlugins.php";
 
 use PHPCI\Plugin\Util\Executor;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTestCase;
 
 class ExecutorTest extends ProphecyTestCase
@@ -56,14 +57,11 @@ class ExecutorTest extends ProphecyTestCase
     {
         $options = array();
         $pluginName = 'PhpUnit';
-        $pluginNamespace = 'PHPCI\\Plugin\\';
 
         $mockPlugin = $this->prophesize('PHPCI\Plugin');
         $mockPlugin->execute()->shouldBeCalledTimes(1);
 
-        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)
-          ->shouldBeCalledTimes(1)
-          ->willReturn($mockPlugin->reveal());
+        $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
 
         $this->testedExecutor->executePlugin($pluginName, $options);
     }
@@ -72,14 +70,13 @@ class ExecutorTest extends ProphecyTestCase
     {
         $options = array();
         $pluginName = 'PhpUnit';
-        $pluginNamespace = 'PHPCI\\Plugin\\';
 
         $expectedReturnValue = true;
 
         $mockPlugin = $this->prophesize('PHPCI\Plugin');
         $mockPlugin->execute()->willReturn($expectedReturnValue);
 
-        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)->willReturn($mockPlugin->reveal());
+        $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
 
         $returnValue = $this->testedExecutor->executePlugin($pluginName, $options);
 
@@ -90,7 +87,6 @@ class ExecutorTest extends ProphecyTestCase
     {
         $options = array();
         $pluginName = 'DOESNTEXIST';
-        $pluginNamespace = 'PHPCI\\Plugin\\';
 
         $this->mockBuildLogger->logFailure('Plugin does not exist: ' . $pluginName)->shouldBeCalledTimes(1);
 
@@ -101,14 +97,13 @@ class ExecutorTest extends ProphecyTestCase
     {
         $options = array();
         $pluginName = 'PhpUnit';
-        $pluginNamespace = 'PHPCI\\Plugin\\';
 
         $expectedException = new \RuntimeException("Generic Error");
 
         $mockPlugin = $this->prophesize('PHPCI\Plugin');
         $mockPlugin->execute()->willThrow($expectedException);
 
-        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)->willReturn($mockPlugin->reveal());
+        $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
 
         $this->mockBuildLogger->logFailure('EXCEPTION: ' . $expectedException->getMessage(), $expectedException)
                               ->shouldBeCalledTimes(1);

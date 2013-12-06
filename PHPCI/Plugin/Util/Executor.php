@@ -2,25 +2,25 @@
 
 namespace PHPCI\Plugin\Util;
 
-use PHPCI\Builder;
+use PHPCI\BuildLogger;
 
 class Executor
 {
 
     /**
-     * @var Builder
+     * @var BuildLogger
      */
-    protected $builder;
+    protected $logger;
 
     /**
      * @var Factory
      */
     protected $pluginFactory;
 
-    function __construct(Factory $pluginFactory, Builder $builder)
+    function __construct(Factory $pluginFactory, BuildLogger $logger)
     {
         $this->pluginFactory = $pluginFactory;
-        $this->builder = $builder;
+        $this->logger = $logger;
     }
 
     /**
@@ -36,7 +36,7 @@ class Executor
         }
 
         foreach ($config[$stage] as $plugin => $options) {
-            $this->builder->log('RUNNING PLUGIN: ' . $plugin);
+            $this->logger->log('RUNNING PLUGIN: ' . $plugin);
 
             // Is this plugin allowed to fail?
             if ($stage == 'test' && !isset($options['allow_failures'])) {
@@ -47,7 +47,7 @@ class Executor
             if ($this->executePlugin($plugin, $options)) {
 
                 // Execution was successful:
-                $this->builder->logSuccess('PLUGIN STATUS: SUCCESS!');
+                $this->logger->logSuccess('PLUGIN STATUS: SUCCESS!');
 
             } else {
 
@@ -57,7 +57,7 @@ class Executor
                     $this->success = false;
                 }
 
-                $this->builder->logFailure('PLUGIN STATUS: FAILED');
+                $this->logger->logFailure('PLUGIN STATUS: FAILED');
             }
         }
     }
@@ -80,7 +80,7 @@ class Executor
         }
 
         if (!class_exists($class)) {
-            $this->builder->logFailure('Plugin does not exist: ' . $plugin);
+            $this->logger->logFailure('Plugin does not exist: ' . $plugin);
             return false;
         }
 
@@ -94,7 +94,7 @@ class Executor
                 $rtn = false;
             }
         } catch (\Exception $ex) {
-            $this->builder->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
+            $this->logger->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
             $rtn = false;
         }
 

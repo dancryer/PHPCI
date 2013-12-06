@@ -21,7 +21,7 @@ use Psr\Log\LogLevel;
  * PHPCI Build Runner
  * @author   Dan Cryer <dan@block8.co.uk>
  */
-class Builder implements LoggerAwareInterface
+class Builder implements LoggerAwareInterface, BuildLogger
 {
     /**
      * @var string

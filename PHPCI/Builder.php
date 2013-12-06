@@ -431,7 +431,7 @@ class Builder implements LoggerAwareInterface
         }
 
         if (!class_exists($class)) {
-            $this->logFailure('Plugin does not exist: ' . $plugin, $ex);
+            $this->logFailure('Plugin does not exist: ' . $plugin);
             return false;
         }
 

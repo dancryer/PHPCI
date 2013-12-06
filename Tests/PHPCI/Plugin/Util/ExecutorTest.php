@@ -111,5 +111,36 @@ class ExecutorTest extends ProphecyTestCase
         $this->testedExecutor->executePlugin($pluginName, $options);
     }
 
+    public function testExecutePlugins_CallsEachPluginForStage()
+    {
+        $phpUnitPluginOptions = array();
+        $behatPluginOptions = array();
+
+        $config = array(
+           'stageOne' => array(
+               'PhpUnit' => $phpUnitPluginOptions,
+               'Behat' => $behatPluginOptions,
+           )
+        );
+
+        $pluginNamespace = 'PHPCI\\Plugin\\';
+
+        $mockPhpUnitPlugin = $this->prophesize('PHPCI\Plugin');
+        $mockPhpUnitPlugin->execute()->shouldBeCalledTimes(1)->willReturn(true);
+
+        $this->mockFactory->buildPlugin($pluginNamespace . 'PhpUnit', $phpUnitPluginOptions)
+                          ->willReturn($mockPhpUnitPlugin->reveal());
+
+
+        $mockBehatPlugin = $this->prophesize('PHPCI\Plugin');
+        $mockBehatPlugin->execute()->shouldBeCalledTimes(1)->willReturn(true);
+
+        $this->mockFactory->buildPlugin($pluginNamespace . 'Behat', $behatPluginOptions)
+                          ->willReturn($mockBehatPlugin->reveal());
+
+
+        $this->testedExecutor->executePlugins($config, 'stageOne');
+    }
+
 }
  

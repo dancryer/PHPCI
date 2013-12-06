@@ -421,7 +421,7 @@ class Builder implements LoggerAwareInterface
         // Any plugin name without a namespace separator is a PHPCI built in plugin
         // if not we assume it's a fully name-spaced class name that implements the plugin interface.
         // If not the factory will throw an exception.
-        if (strpos($plugin, "/") === false) {
+        if (strpos($plugin, '\\') === false) {
             $class = str_replace('_', ' ', $plugin);
             $class = ucwords($class);
             $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);

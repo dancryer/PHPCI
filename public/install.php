@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../bootstrap.php');
 $installStage = 'start';
 $formAction = '';
 $config = array();
-$ciUrl = ($_SERVER['HTTPS'] == "on" ? 'https' : 'http') . '://';
+$ciUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on" ? 'https' : 'http') . '://';
 $ciUrl .= $_SERVER['HTTP_HOST'];
 $ciUrl .= str_replace('/install.php', '', $_SERVER['REQUEST_URI']);
 

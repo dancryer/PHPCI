@@ -94,7 +94,7 @@
             e.preventDefault();
             confirmDelete(
                 "<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>", "Project"
-            ).onClose = function () {window.location = '/'};
+            ).onCloseConfirmed = function () {window.location = '/'};
         });
     })
 </script>

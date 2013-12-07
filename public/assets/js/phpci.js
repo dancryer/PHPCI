@@ -83,6 +83,12 @@ var PHPCIConfirmDialogOptions = {
 
 var PHPCIConfirmDialog = Class.extend({
     /**
+     * @private
+     * @var {bool} Determines whether the dialog has been confirmed
+     */
+    confirmed: false,
+    
+    /**
      * @param {PHPCIConfirmDialogOptions} options
      */
     init: function (options) {
@@ -148,13 +154,25 @@ var PHPCIConfirmDialog = Class.extend({
         this.$confirmBtn.click(this.onConfirm.bind(this));
 
         this.$confirmBtn.unbind('hidden.bs.modal');
+
+        /*
+         Bind the close event of the dialog to the set of onClose* methods
+         */
         this.$dialog.on('hidden.bs.modal', function () {this.onClose()}.bind(this));
+        this.$dialog.on('hidden.bs.modal', function () {
+            if (this.confirmed) {
+                this.onCloseConfirmed();
+            } else {
+                this.onCloseCanceled();
+            }
+        }.bind(this));
 
         /*
         Restore state if was changed previously
          */
         this.$cancelBtn.show();
         this.$confirmBtn.show();
+        this.confirmed = false;
     },
 
     /**
@@ -172,10 +190,24 @@ var PHPCIConfirmDialog = Class.extend({
     },
 
     onConfirm: function (e) {
+        this.confirmed = true;
         $(this).attr('disabled', 'disabled');
         this.confirmBtnClick(e);
     },
 
+    /**
+     * Called only when confirmed dialog was closed
+     */
+    onCloseConfirmed: function () {},
+
+    /**
+     * Called only when canceled dialog was closed
+     */
+    onCloseCanceled: function () {},
+
+    /**
+     * Called always when the dialog was closed
+     */
     onClose: function () {},
 
     showStatusMessage: function (message, closeTimeout) {

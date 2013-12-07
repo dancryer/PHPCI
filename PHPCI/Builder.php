@@ -163,6 +163,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
+        $this->success = true;
 
         try {
             // Set up the build:
@@ -170,7 +171,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
             // Run the core plugin stages:
             foreach (array('setup', 'test', 'complete') as $stage) {
-                $this->pluginExecutor->executePlugins($this->config, $stage);
+                $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
             }
 
             // Failed build? Execute failure plugins and then mark the build as failed.

@@ -27,12 +27,14 @@ class Executor
      * Execute a the appropriate set of plugins for a given build stage.
      * @param array $config PHPCI configuration
      * @param string $stage
+     * @return bool
      */
     public function executePlugins(&$config, $stage)
     {
+        $success = true;
         // Ignore any stages for which we don't have plugins set:
         if (!array_key_exists($stage, $config) || !is_array($config[$stage])) {
-            return;
+            return $success;
         }
 
         foreach ($config[$stage] as $plugin => $options) {
@@ -54,12 +56,14 @@ class Executor
                 // If we're in the "test" stage and the plugin is not allowed to fail,
                 // then mark the build as failed:
                 if ($stage == 'test' && !$options['allow_failures']) {
-                    $this->success = false;
+                    $success = false;
                 }
 
                 $this->logger->logFailure('PLUGIN STATUS: FAILED');
             }
         }
+
+        return $success;
     }
 
     /**

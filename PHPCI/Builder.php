@@ -165,31 +165,33 @@ class Builder implements LoggerAwareInterface, BuildLogger
         $this->build->sendStatusPostback();
         $this->success = true;
 
-        try {
-            // Set up the build:
-            $this->setupBuild();
+        // Set up the build:
+        $this->setupBuild();
 
-            // Run the core plugin stages:
-            foreach (array('setup', 'test', 'complete') as $stage) {
-                $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
-            }
+        // Run the core plugin stages:
+        foreach (array('setup', 'test') as $stage) {
+            $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+        }
 
-            // Failed build? Execute failure plugins and then mark the build as failed.
-            if (!$this->success) {
-                $this->pluginExecutor->executePlugins($this->config, 'failure');
-                throw new \Exception('BUILD FAILED!');
-            }
-
-            // If we got this far, the build was successful!
-            if ($this->success) {
-                $this->build->setStatus(Build::STATUS_SUCCESS);
-                $this->pluginExecutor->executePlugins($this->config, 'success');
-                $this->logSuccess('BUILD SUCCESSFUL!');
-            }
-
-        } catch (\Exception $ex) {
-            $this->logFailure($ex->getMessage(), $ex);
+        // Set the status so this can be used by complete, success and failure
+        // stages.
+        if ($this->success) {
+            $this->build->setStatus(Build::STATUS_SUCCESS);
+        }
+        else {
             $this->build->setStatus(Build::STATUS_FAILED);
+        }
+
+        // Complete stage plugins are always run
+        $this->pluginExecutor->executePlugins($this->config, 'complete');
+
+        if ($this->success) {
+            $this->pluginExecutor->executePlugins($this->config, 'success');
+            $this->logSuccess('BUILD SUCCESSFUL!');
+        }
+        else {
+            $this->pluginExecutor->executePlugins($this->config, 'failure');
+            $this->logFailure("BUILD FAILURE");
         }
 
         // Clean up:

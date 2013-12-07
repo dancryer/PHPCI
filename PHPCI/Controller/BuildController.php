@@ -129,6 +129,12 @@ class BuildController extends \PHPCI\Controller
         }
 
         $build  = $this->buildStore->getById($buildId);
+
+        if (!$build) {
+            $this->response->setResponseCode(404);
+            return '404 - Not Found';
+        }
+
         $this->buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());

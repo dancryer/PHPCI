@@ -159,7 +159,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
     public function execute()
     {
         // Update the build in the database, ping any external services.
-        $this->build->setStatus(1);
+        $this->build->setStatus(Build::STATUS_RUNNING);
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
@@ -182,14 +182,14 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
             // If we got this far, the build was successful!
             if ($this->success) {
-                $this->build->setStatus(2);
+                $this->build->setStatus(Build::STATUS_SUCCESS);
                 $this->pluginExecutor->executePlugins($this->config, 'success');
                 $this->logSuccess('BUILD SUCCESSFUL!');
             }
 
         } catch (\Exception $ex) {
             $this->logFailure($ex->getMessage(), $ex);
-            $this->build->setStatus(3);
+            $this->build->setStatus(Build::STATUS_FAILED);
         }
 
         // Clean up:

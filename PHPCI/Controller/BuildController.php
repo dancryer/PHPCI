@@ -109,7 +109,7 @@ class BuildController extends \PHPCI\Controller
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
         $build->setCommitId($copy->getCommitId());
-        $build->setStatus(0);
+        $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
 

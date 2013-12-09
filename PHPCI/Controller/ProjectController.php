@@ -69,7 +69,7 @@ class ProjectController extends \PHPCI\Controller
         $build = new Build();
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
-        $build->setStatus(0);
+        $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
 

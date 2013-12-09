@@ -1,7 +1,7 @@
 <h1 id="title">Plugins</h1>
 <?php if (!$canInstall): ?>
-    <p class="alert alert-danger">PHPCI cannot automatically install/remove plugins for you, as the <strong>shell_exec()</strong>
-        function is disabled. PHPCI will update composer.json for you, but you will need to run Composer manually to make the changes.</p>
+    <p class="alert alert-danger">PHPCI cannot automatically install/remove plugins for you, as either the <strong>shell_exec()</strong>
+        function is disabled or PHPCI could not find Composer. PHPCI will update composer.json for you, but you will need to run Composer manually to make the changes.</p>
 <?php endif; ?>
 
 <?php if (!$canWrite): ?>

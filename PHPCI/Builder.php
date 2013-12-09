@@ -21,7 +21,7 @@ use Psr\Log\LogLevel;
  * PHPCI Build Runner
  * @author   Dan Cryer <dan@block8.co.uk>
  */
-class Builder implements LoggerAwareInterface
+class Builder implements LoggerAwareInterface, BuildLogger
 {
     /**
      * @var string
@@ -92,9 +92,9 @@ class Builder implements LoggerAwareInterface
     public $quiet = false;
 
     /**
-     * @var \PHPCI\Plugin\Util\Factory
+     * @var \PHPCI\Plugin\Util\Executor
      */
-    protected $pluginFactory;
+    protected $pluginExecutor;
 
     /**
      * Set up the builder.
@@ -108,7 +108,7 @@ class Builder implements LoggerAwareInterface
         }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
-        $this->setupPluginFactory($build);
+        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
     }
 
     /**
@@ -163,6 +163,7 @@ class Builder implements LoggerAwareInterface
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
+        $this->success = true;
 
         try {
             // Set up the build:
@@ -170,19 +171,19 @@ class Builder implements LoggerAwareInterface
 
             // Run the core plugin stages:
             foreach (array('setup', 'test', 'complete') as $stage) {
-                $this->executePlugins($stage);
+                $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
             }
 
             // Failed build? Execute failure plugins and then mark the build as failed.
             if (!$this->success) {
-                $this->executePlugins('failure');
+                $this->pluginExecutor->executePlugins($this->config, 'failure');
                 throw new \Exception('BUILD FAILED!');
             }
 
             // If we got this far, the build was successful!
             if ($this->success) {
                 $this->build->setStatus(2);
-                $this->executePlugins('success');
+                $this->pluginExecutor->executePlugins($this->config, 'success');
                 $this->logSuccess('BUILD SUCCESSFUL!');
             }
 
@@ -373,79 +374,6 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-     * Execute a the appropriate set of plugins for a given build stage.
-     */
-    protected function executePlugins($stage)
-    {
-        // Ignore any stages for which we don't have plugins set:
-        if (!array_key_exists(
-                $stage,
-                $this->config
-            ) || !is_array($this->config[$stage])
-        ) {
-            return;
-        }
-
-        foreach ($this->config[$stage] as $plugin => $options) {
-            $this->log('RUNNING PLUGIN: ' . $plugin);
-
-            // Is this plugin allowed to fail?
-            if ($stage == 'test' && !isset($options['allow_failures'])) {
-                $options['allow_failures'] = false;
-            }
-
-            // Try and execute it:
-            if ($this->executePlugin($plugin, $options)) {
-
-                // Execution was successful:
-                $this->logSuccess('PLUGIN STATUS: SUCCESS!');
-
-            } else {
-
-                // If we're in the "test" stage and the plugin is not allowed to fail,
-                // then mark the build as failed:
-                if ($stage == 'test' && !$options['allow_failures']) {
-                    $this->success = false;
-                }
-
-                $this->logFailure('PLUGIN STATUS: FAILED');
-            }
-        }
-    }
-
-    /**
-     * Executes a given plugin, with options and returns the result.
-     */
-    protected function executePlugin($plugin, $options)
-    {
-        // Figure out the class name and check the plugin exists:
-        $class = str_replace('_', ' ', $plugin);
-        $class = ucwords($class);
-        $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
-
-        if (!class_exists($class)) {
-            $this->logFailure('Plugin does not exist: ' . $plugin, $ex);
-            return false;
-        }
-
-        $rtn = true;
-
-        // Try running it:
-        try {
-            $obj = $this->pluginFactory->buildPlugin($class, $options);
-
-            if (!$obj->execute()) {
-                $rtn = false;
-            }
-        } catch (\Exception $ex) {
-            $this->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
-            $rtn = false;
-        }
-
-        return $rtn;
-    }
-
-    /**
      * Find a binary required by a plugin.
      * @param $binary
      * @return null|string
@@ -499,12 +427,12 @@ class Builder implements LoggerAwareInterface
         return $this->logger;
     }
 
-    private function setupPluginFactory(Build $build)
+    private function buildPluginFactory(Build $build)
     {
-        $this->pluginFactory = new Plugin\Util\Factory();
+        $pluginFactory = new Plugin\Util\Factory();
 
         $self = $this;
-        $this->pluginFactory->registerResource(
+        $pluginFactory->registerResource(
             function () use($self) {
                 return $self;
             },
@@ -512,7 +440,7 @@ class Builder implements LoggerAwareInterface
             'PHPCI\Builder'
         );
 
-        $this->pluginFactory->registerResource(
+        $pluginFactory->registerResource(
             function () use($build) {
                 return $build;
             },
@@ -520,7 +448,7 @@ class Builder implements LoggerAwareInterface
             'PHPCI\Model\Build'
         );
 
-        $this->pluginFactory->registerResource(
+        $pluginFactory->registerResource(
             function () use ($self) {
                 $factory = new MailerFactory($self->getSystemConfig('phpci'));
                 return $factory->getSwiftMailerFromConfig();
@@ -528,5 +456,7 @@ class Builder implements LoggerAwareInterface
             null,
             'Swift_Mailer'
         );
+
+        return $pluginFactory;
     }
 }

@@ -33,6 +33,10 @@
         "pimple/pimple": "1.1.*"
     },
 
+    "require-dev": {
+        "phpspec/prophecy-phpunit": "1.*"
+    },
+
     "suggest": {
         "phpunit/phpunit": "PHP unit testing framework",
         "phpmd/phpmd": "PHP Mess Detector",

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2f0615871ce4ee1eb8e4642bf0c731da",
+    "hash": "07f37de4c8bacd8a1a7b6e14269178d1",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -239,16 +239,16 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.0.2",
+            "version": "v5.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "f3917ecef35a4e4d98b303eb9fee463bc983f379"
+                "reference": "32edc3b0de0fdc1b10f5c4912e8677b3f411a230"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/f3917ecef35a4e4d98b303eb9fee463bc983f379",
-                "reference": "f3917ecef35a4e4d98b303eb9fee463bc983f379",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/32edc3b0de0fdc1b10f5c4912e8677b3f411a230",
+                "reference": "32edc3b0de0fdc1b10f5c4912e8677b3f411a230",
                 "shasum": ""
             },
             "require": {
@@ -284,21 +284,21 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-08-30 12:35:21"
+            "time": "2013-12-03 13:33:24"
         },
         {
             "name": "symfony/console",
-            "version": "v2.3.7",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "00848d3e13cf512e77c7498c2b3b0192f61f4b18"
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/00848d3e13cf512e77c7498c2b3b0192f61f4b18",
-                "reference": "00848d3e13cf512e77c7498c2b3b0192f61f4b18",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
                 "shasum": ""
             },
             "require": {
@@ -313,7 +313,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -337,21 +337,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-11-13 21:27:40"
+            "time": "2013-11-27 09:10:40"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.7",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "c1bda5b459d792cb253de12c65beba3040163b2b"
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/c1bda5b459d792cb253de12c65beba3040163b2b",
-                "reference": "c1bda5b459d792cb253de12c65beba3040163b2b",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
                 "shasum": ""
             },
             "require": {
@@ -360,7 +360,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -384,11 +384,115 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-10-17 11:48:01"
+            "time": "2013-11-26 16:40:27"
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "phpspec/prophecy",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy.git",
+                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/79d9c8bd94801bffbf9b56964f6438762da6d8cd",
+                "reference": "79d9c8bd94801bffbf9b56964f6438762da6d8cd",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpspec/phpspec": "2.0.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Marcello Duarte",
+                    "email": "marcello.duarte@gmail.com"
+                }
+            ],
+            "description": "Highly opinionated mocking framework for PHP 5.3+",
+            "homepage": "http://phpspec.org",
+            "keywords": [
+                "Double",
+                "Dummy",
+                "fake",
+                "mock",
+                "spy",
+                "stub"
+            ],
+            "time": "2013-08-10 11:11:45"
+        },
+        {
+            "name": "phpspec/prophecy-phpunit",
+            "version": "v1.0.0",
+            "target-dir": "Prophecy/PhpUnit",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy-phpunit.git",
+                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy-phpunit/zipball/ebc983be95b026fcea18afb7870e7b9041dc9d11",
+                "reference": "ebc983be95b026fcea18afb7870e7b9041dc9d11",
+                "shasum": ""
+            },
+            "require": {
+                "phpspec/prophecy": "~1.0"
+            },
+            "suggest": {
+                "phpunit/phpunit": "if it is not installed globally"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\PhpUnit\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                }
+            ],
+            "description": "PhpUnit test case integrating the Prophecy mocking library",
+            "homepage": "http://phpspec.org",
+            "keywords": [
+                "phpunit",
+                "prophecy"
+            ],
+            "time": "2013-07-04 21:27:53"
+        }
     ],
     "aliases": [
 

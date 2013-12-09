@@ -47,7 +47,7 @@ class Shell implements \PHPCI\Plugin
         if (!defined('ENABLE_SHELL_PLUGIN') || !ENABLE_SHELL_PLUGIN) {
             throw new \Exception('The shell plugin is not enabled.');
         }
-        
+
         $success = $this->phpci->executeCommand($this->command);
         
         return $success;

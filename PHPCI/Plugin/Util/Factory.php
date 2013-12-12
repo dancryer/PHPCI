@@ -9,6 +9,8 @@ class Factory {
     const TYPE_ARRAY = "array";
     const TYPE_CALLABLE = "callable";
 
+    const INTERFACE_PHPCI_PLUGIN = '\PHPCI\Plugin';
+
     private $currentPluginOptions;
 
     /**
@@ -45,6 +47,7 @@ class Factory {
      *
      * @param $className
      * @param array $options
+     * @throws \InvalidArgumentException if $className doesn't represent a valid plugin
      * @return \PHPCI\Plugin
      */
     public function buildPlugin($className, array $options = array())
@@ -52,6 +55,12 @@ class Factory {
         $this->currentPluginOptions = $options;
 
         $reflectedPlugin = new \ReflectionClass($className);
+
+        if (!$reflectedPlugin->implementsInterface(self::INTERFACE_PHPCI_PLUGIN)) {
+            throw new \InvalidArgumentException(
+                "Requested class must implement " . self:: INTERFACE_PHPCI_PLUGIN
+            );
+        }
 
         $constructor = $reflectedPlugin->getConstructor();
 

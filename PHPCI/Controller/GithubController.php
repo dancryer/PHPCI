@@ -48,7 +48,7 @@ class GithubController extends \PHPCI\Controller
             $build      = new Build();
             $build->setProjectId($project);
             $build->setCommitId($payload['after']);
-            $build->setStatus(0);
+            $build->setStatus(Build::STATUS_NEW);
             $build->setLog('');
             $build->setCreated(new \DateTime());
             $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));

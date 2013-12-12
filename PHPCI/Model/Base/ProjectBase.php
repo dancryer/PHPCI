@@ -215,11 +215,19 @@ class ProjectBase extends Model
     /**
     * Get the value of AccessInformation / access_information.
     *
+    * @param string|null $key Key of desired information
+    *
     * @return string
     */
-    public function getAccessInformation()
+    public function getAccessInformation($key = null)
     {
-        $rtn    = $this->data['access_information'];
+        if (is_null($key)) {
+            $rtn = $this->data['access_information'];
+        } else if (isset($this->data['access_information'][$key])) {
+            $rtn = $this->data['access_information'][$key];
+        } else {
+            $rtn = null;
+        }
 
         return $rtn;
     }

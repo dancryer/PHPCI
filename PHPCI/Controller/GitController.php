@@ -47,7 +47,7 @@ class GitController extends \PHPCI\Controller
                 $build->setCommitId($commit);
             }
 
-            $build->setStatus(0);
+            $build->setStatus(Build::STATUS_NEW);
             $build->setLog('');
             $build->setCreated(new \DateTime());
         } catch (\Exception $ex) {

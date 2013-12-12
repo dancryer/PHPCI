@@ -7,7 +7,7 @@ if (!defined('APPLICATION_PATH')) {
 }
 
 // Define our PHPCI_URL, if not already defined:
-if (!defined('PHPCI_URL')) {
+if (!defined('PHPCI_URL') && isset($config)) {
     define('PHPCI_URL', $config->get('phpci.url', '') . '/');
 }
 

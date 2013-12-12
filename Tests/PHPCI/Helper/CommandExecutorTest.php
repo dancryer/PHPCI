@@ -33,4 +33,16 @@ class CommandExecutorTest extends ProphecyTestCase
         $output = $this->testedExecutor->getLastOutput();
         $this->assertEquals("Hello Tester", $output);
     }
+
+    public function testExecuteCommand_ReturnsTrueForValidCommands()
+    {
+        $returnValue = $this->testedExecutor->executeCommand(array('echo "%s"', 'Hello World'));
+        $this->assertTrue($returnValue);
+    }
+
+    public function testExecuteCommand_ReturnsFalseForInvalidCommands()
+    {
+        $returnValue = $this->testedExecutor->executeCommand(array('eerfdcvcho "%s"', 'Hello World'));
+        $this->assertFalse($returnValue);
+    }
 }

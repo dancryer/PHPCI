@@ -45,6 +45,8 @@ class CommandExecutor
      */
     public function executeCommand($args = array())
     {
+        $this->lastOutput = array();
+
         $command = call_user_func_array('sprintf', $args);
 
         if ($this->quiet) {

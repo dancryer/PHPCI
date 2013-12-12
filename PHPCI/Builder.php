@@ -116,7 +116,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
         $this->store = Store\Factory::getStore('Build');
         $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
 
-        $this->commandExecutor = new CommandExecutor($this, $this->quiet, $this->verbose);
+        $this->commandExecutor = new CommandExecutor($this, PHPCI_DIR, $this->quiet, $this->verbose);
     }
 
     /**
@@ -226,6 +226,16 @@ class Builder implements LoggerAwareInterface, BuildLogger
     public function getLastOutput()
     {
         return $this->commandExecutor->getLastOutput();
+    }
+
+    /**
+     * Find a binary required by a plugin.
+     * @param $binary
+     * @return null|string
+     */
+    public function findBinary($binary)
+    {
+        return $this->commandExecutor->findBinary($binary);
     }
 
     /**
@@ -361,39 +371,6 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
         $this->logSuccess('Working copy created: ' . $this->buildPath);
         return true;
-    }
-
-    /**
-     * Find a binary required by a plugin.
-     * @param $binary
-     * @return null|string
-     */
-    public function findBinary($binary)
-    {
-        if (is_string($binary)) {
-            $binary = array($binary);
-        }
-
-        foreach ($binary as $bin) {
-            // Check project root directory:
-            if (is_file(PHPCI_DIR . $bin)) {
-                return PHPCI_DIR . $bin;
-            }
-
-            // Check Composer bin dir:
-            if (is_file(PHPCI_DIR . 'vendor/bin/' . $bin)) {
-                return PHPCI_DIR . 'vendor/bin/' . $bin;
-            }
-
-            // Use "which"
-            $which = trim(shell_exec('which ' . $bin));
-
-            if (!empty($which)) {
-                return $which;
-            }
-        }
-
-        return null;
     }
 
     /**

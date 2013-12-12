@@ -16,7 +16,7 @@ class CommandExecutorTest extends ProphecyTestCase
     {
         parent::setUp();
         $mockBuildLogger = $this->prophesize('\PHPCI\BuildLogger');
-        $this->testedExecutor = new CommandExecutor($mockBuildLogger->reveal());
+        $this->testedExecutor = new CommandExecutor($mockBuildLogger->reveal(), __DIR__ . "/");
     }
 
     public function testGetLastOutput_ReturnsOutputOfCommand()
@@ -44,5 +44,12 @@ class CommandExecutorTest extends ProphecyTestCase
     {
         $returnValue = $this->testedExecutor->executeCommand(array('eerfdcvcho "%s"', 'Hello World'));
         $this->assertFalse($returnValue);
+    }
+
+    public function testFindBinary_ReturnsPathInSpecifiedRoot()
+    {
+        $thisFileName = "CommandExecutorTest.php";
+        $returnValue = $this->testedExecutor->findBinary($thisFileName);
+        $this->assertEquals(__DIR__ . "/" . $thisFileName, $returnValue);
     }
 }

@@ -1,12 +1,12 @@
 <div id="title">
-	<h1>Project: <?php print $project->getTitle(); ?></h1>
+	<h1>Project: <?php print (is_object($project)) ? htmlspecialchars($project->getTitle()) : ' - '; ?></h1>
 </div>
 
 <div class="row">
 	<div class="col-lg-3">
         <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="icon-folder-open"></i> <?php print $project->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($project->getTitle()); ?></a></li>
 		</ul>
 			<h5>Options</h5>
         <ul class="nav nav-pills nav-stacked">
@@ -92,7 +92,9 @@
     $(function() {
         $('#delete-project').on('click', function (e) {
             e.preventDefault();
-            confirmDelete("<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>");
+            confirmDelete(
+                "<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>", "Project"
+            ).onCloseConfirmed = function () {window.location = '/'};
         });
     })
 </script>

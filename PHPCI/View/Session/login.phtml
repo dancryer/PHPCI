@@ -78,6 +78,9 @@
             <img src="<?php print PHPCI_URL; ?>/assets/img/logo-large.png">
         </a>
 		<div class="" id="login-box">
+            <?php if($failed): ?>
+                <p class="alert alert-danger">Incorrect email address or password</p>
+            <?php endif; ?>
 			<?php print $form; ?>
 		</div>
 

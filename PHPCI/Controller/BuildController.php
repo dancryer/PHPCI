@@ -20,9 +20,14 @@ use PHPCI\Model\Build;
 */
 class BuildController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+    
     public function init()
     {
-        $this->_buildStore      = b8\Store\Factory::getStore('Build');
+        $this->buildStore      = b8\Store\Factory::getStore('Build');
     }
 
     /**
@@ -30,9 +35,27 @@ class BuildController extends \PHPCI\Controller
     */
     public function view($buildId)
     {
-        $build          = $this->_buildStore->getById($buildId);
+        $build          = $this->buildStore->getById($buildId);
+        $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
-        $this->view->data     = $this->getBuildData($buildId);
+        $this->view->data     = $this->getBuildData($build);
+    }
+
+    protected function getUiPlugins()
+    {
+        $rtn = array();
+        $path = APPLICATION_PATH . 'public/assets/js/build-plugins/';
+        $dir = opendir($path);
+
+        while ($item = readdir($dir)) {
+            if (substr($item, 0, 1) == '.' || substr($item, -3) != '.js') {
+                continue;
+            }
+
+            $rtn[] = $item;
+        }
+
+        return $rtn;
     }
 
     /**
@@ -40,16 +63,31 @@ class BuildController extends \PHPCI\Controller
     */
     public function data($buildId)
     {
-        die($this->getBuildData($buildId));
+        die($this->getBuildData($this->buildStore->getById($buildId)));
+    }
+
+    /**
+     * AJAX call to get build meta:
+     */
+    public function meta($buildId)
+    {
+        $build  = $this->buildStore->getById($buildId);
+        $key = $this->getParam('key', null);
+        $numBuilds = $this->getParam('num_builds', 1);
+        $data = null;
+
+        if ($key && $build) {
+            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+        }
+
+        die(json_encode($data));
     }
 
     /**
     * Get build data from database and json encode it:
     */
-    protected function getBuildData($buildId)
+    protected function getBuildData($build)
     {
-        $build  = $this->_buildStore->getById($buildId);
-
         $data               = array();
         $data['status']     = (int)$build->getStatus();
         $data['log']        = $this->cleanLog($build->getLog());
@@ -66,16 +104,16 @@ class BuildController extends \PHPCI\Controller
     */
     public function rebuild($buildId)
     {
-        $copy   = $this->_buildStore->getById($buildId);
+        $copy   = $this->buildStore->getById($buildId);
 
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
         $build->setCommitId($copy->getCommitId());
-        $build->setStatus(0);
+        $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
 
-        $build = $this->_buildStore->save($build);
+        $build = $this->buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -90,8 +128,14 @@ class BuildController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $build  = $this->_buildStore->getById($buildId);
-        $this->_buildStore->delete($build);
+        $build  = $this->buildStore->getById($buildId);
+
+        if (!$build) {
+            $this->response->setResponseCode(404);
+            return '404 - Not Found';
+        }
+
+        $this->buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
         exit;

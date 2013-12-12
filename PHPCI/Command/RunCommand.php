@@ -9,6 +9,11 @@
 
 namespace PHPCI\Command;
 
+use Monolog\Logger;
+use PHPCI\Helper\BuildDBLogHandler;
+use PHPCI\Helper\LoggedBuildContextTidier;
+use PHPCI\Helper\OutputLogHandler;
+use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +31,27 @@ use PHPCI\BuildFactory;
 */
 class RunCommand extends Command
 {
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @param \Monolog\Logger $logger
+     * @param string $name
+     */
+    public function __construct(Logger $logger, $name = null)
+    {
+        parent::__construct($name);
+        $this->logger = $logger;
+    }
+
+
     protected function configure()
     {
         $this
@@ -34,14 +60,27 @@ class RunCommand extends Command
     }
 
     /**
-    * Pulls all pending builds from the database and runs them.
-    */
+     * Pulls all pending builds from the database and runs them.
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
 
-        $store  = Factory::getStore('Build');
+        // For verbose mode we want to output all informational and above
+        // messages to the symphony output interface.
+        if ($input->getOption('verbose')) {
+            $this->logger->pushHandler(
+                new OutputLogHandler($this->output, Logger::INFO)
+            );
+        }
+
+        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+
+        $this->logger->addInfo("Finding builds to process");
+        $store = Factory::getStore('Build');
         $result = $store->getByStatus(0);
+        $this->logger->addInfo(sprintf("Found %d builds", count($result['items'])));
+
         $builds = 0;
 
         foreach ($result['items'] as $build) {
@@ -49,24 +88,21 @@ class RunCommand extends Command
 
             $build = BuildFactory::getBuild($build);
 
-            if ($input->getOption('verbose')) {
-                $builder = new Builder($build, array($this, 'logCallback'));
-            } else {
-                $builder = new Builder($build);
-            }
+            // Logging relevant to this build should be stored
+            // against the build itself.
+            $buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
+            $this->logger->pushHandler($buildDbLog);
 
+            $builder = new Builder($build, $this->logger);
             $builder->execute();
+
+            // After execution we no longer want to record the information
+            // back to this specific build so the handler should be removed.
+            $this->logger->popHandler($buildDbLog);
         }
 
-        return $builds;
-    }
+        $this->logger->addInfo("Finished processing builds");
 
-    /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
-    public function logCallback($log)
-    {
-        $this->output->writeln($log);
+        return $builds;
     }
 }

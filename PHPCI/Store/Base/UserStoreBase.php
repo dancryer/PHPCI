@@ -6,7 +6,10 @@
 
 namespace PHPCI\Store\Base;
 
+use b8\Database;
+use b8\Exception\HttpException;
 use b8\Store;
+use PHPCI\Model\User;
 
 /**
  * User Base Store
@@ -22,21 +25,19 @@ class UserStoreBase extends Store
         return $this->getById($value, $useConnection);
     }
 
-
-
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $query = 'SELECT * FROM user WHERE id = :id LIMIT 1';
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new \PHPCI\Model\User($data);
+                return new User($data);
             }
         }
 
@@ -46,16 +47,16 @@ class UserStoreBase extends Store
     public function getByEmail($value, $useConnection = 'read')
     {
         if (is_null($value)) {
-            throw new \b8\Exception\HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
         $query = 'SELECT * FROM user WHERE email = :email LIMIT 1';
-        $stmt = \b8\Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':email', $value);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new \PHPCI\Model\User($data);
+                return new User($data);
             }
         }
 

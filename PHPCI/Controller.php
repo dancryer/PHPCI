@@ -9,46 +9,59 @@ use b8\View;
 
 class Controller extends \b8\Controller
 {
-	public function init() {}
+    /**
+    * @var \b8\View
+    */
+    protected $controllerView;
 
-	public function __construct(Config $config, Request $request, Response $response)
-	{
-		parent::__construct($config, $request, $response);
+    /**
+     * @var \b8\View
+     */
+    protected $view;
 
-		$class = explode('\\', get_class($this));
-		$this->className = substr(array_pop($class), 0, -10);
-		$this->setControllerView();
-	}
+    public function init()
+    {
+        // Extended by actual controllers.
+    }
 
-	protected function setControllerView()
-	{
-		if (View::exists($this->className)) {
-			$this->controllerView = new View($this->className);
-		} else {
-			$this->controllerView = new View\UserView('{@content}');
-		}
-	}
+    public function __construct(Config $config, Request $request, Response $response)
+    {
+        parent::__construct($config, $request, $response);
 
-	protected function setView($action)
-	{
-		if (View::exists($this->className . '/' . $action)) {
-			$this->view = new View($this->className . '/' . $action);
-		}
-	}
+        $class = explode('\\', get_class($this));
+        $this->className = substr(array_pop($class), 0, -10);
+        $this->setControllerView();
+    }
 
-	public function handleAction($action, $actionParams)
-	{
-		$this->setView($action);
-		$response = parent::handleAction($action, $actionParams);
+    protected function setControllerView()
+    {
+        if (View::exists($this->className)) {
+            $this->controllerView = new View($this->className);
+        } else {
+            $this->controllerView = new View\UserView('{@content}');
+        }
+    }
 
-		if (is_string($response)) {
-			$this->controllerView->content = $response;
-		} elseif (isset($this->view)) {
-			$this->controllerView->content = $this->view->render();
-		}
+    protected function setView($action)
+    {
+        if (View::exists($this->className . '/' . $action)) {
+            $this->view = new View($this->className . '/' . $action);
+        }
+    }
 
-		$this->response->setContent($this->controllerView->render());
+    public function handleAction($action, $actionParams)
+    {
+        $this->setView($action);
+        $response = parent::handleAction($action, $actionParams);
 
-		return $this->response;
-	}
+        if (is_string($response)) {
+            $this->controllerView->content = $response;
+        } elseif (isset($this->view)) {
+            $this->controllerView->content = $this->view->render();
+        }
+
+        $this->response->setContent($this->controllerView->render());
+
+        return $this->response;
+    }
 }

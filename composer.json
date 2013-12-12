@@ -1,7 +1,7 @@
 {
     "name"             : "block8/phpci",
     "description"      : "Simple continuous integration for PHP projects.",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "type"             : "library",
     "keywords"         : ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
     "homepage"         : "http://www.phptesting.org/",
@@ -23,18 +23,30 @@
     },
 
     "require": {
-        "block8/b8framework"       : "dev-master",
-        "phpunit/phpunit"          : "3.*",
-        "phpmd/phpmd"              : "1.*",
-        "sebastian/phpcpd"         : "1.*",
-        "squizlabs/php_codesniffer": "1.*",
-        "ircmaxell/password-compat": "1.x",
-        "phpspec/phpspec"          : "2.*",
-        "symfony/yaml"             : "2.2.x-dev",
-        "symfony/console"          : "2.2.*",
-        "fabpot/php-cs-fixer"      : "0.3.*@dev",
-        "swiftmailer/swiftmailer"  : "v5.0.0",
-        "phploc/phploc": "*",
-	    "atoum/atoum":"*"
+        "block8/b8framework"       : "1.*",
+        "ircmaxell/password-compat": "1.*",
+        "swiftmailer/swiftmailer"  : "5.0.*",
+        "symfony/yaml"             : "2.*",
+        "symfony/console"          : "2.*",
+        "psr/log": "1.0.0",
+        "monolog/monolog": "1.6.0",
+        "pimple/pimple": "1.1.*"
+    },
+
+    "require-dev": {
+        "phpspec/prophecy-phpunit": "1.*"
+    },
+
+    "suggest": {
+        "phpunit/phpunit": "PHP unit testing framework",
+        "phpmd/phpmd": "PHP Mess Detector",
+        "sebastian/phpcpd": "PHP Copy/Paste Detector",
+        "squizlabs/php_codesniffer": "PHP Code Sniffer",
+        "phpspec/phpspec": "PHP Spec",
+        "fabpot/php-cs-fixer": "PHP Code Sniffer Fixer",
+        "phploc/phploc": "PHP Lines of Code",
+        "atoum/atoum": "Atoum",
+        "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
+        "behat/behat": "Behat BDD Testing"
     }
 }

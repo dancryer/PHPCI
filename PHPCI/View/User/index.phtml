@@ -22,7 +22,7 @@
 				<th style="width: 100px"></th>
 			</tr>
 			</thead>
-			<tbody>
+			<tbody id="users">
 				<?php foreach($users['items'] as $user): ?>
 				<?php
 				switch($user->getIsAdmin())
@@ -40,7 +40,7 @@
 				?>
 				<tr class="<?php print $cls; ?>">
 					<td><a href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
-					<td><?php print $user->getName(); ?></td>
+					<td><?php print htmlspecialchars($user->getName()); ?></td>
 					<td><?php print $status; ?></td>
 					<td>
 						<?php if($this->User()->getIsAdmin()): ?>
@@ -50,7 +50,7 @@
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>');">Delete User</a></li>
+								<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>', 'User', true);">Delete User</a></li>
 							</ul>
 						</div>
 						<?php endif; ?>

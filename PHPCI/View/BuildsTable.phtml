@@ -6,6 +6,7 @@
 <?php endif; ?>
 
 <?php foreach($builds as $build): ?>
+
 <?php
 switch($build->getStatus())
 {
@@ -37,7 +38,14 @@ switch($build->getStatus())
 ?>
 <tr class="<?php print $cls; ?>">
 	<td><a href="<?= PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">#<?php print str_pad($build->getId(), 6, '0', STR_PAD_LEFT); ?></a></td>
-	<td><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProjectId(); ?>"><?php print $build->getProject()->getTitle(); ?></a></td>
+	<td><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProjectId(); ?>">
+        <?php
+            if (is_object($build->getProject())) {
+                print htmlspecialchars($build->getProject()->getTitle());
+            } else {
+                print ' - ';
+            }
+        ?></a></td>
 	<td><a href="<?php print $build->getCommitLink(); ?>"><?php print $build->getCommitId(); ?></a></td>
 	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
 	<td>
@@ -65,7 +73,7 @@ switch($build->getStatus())
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">
-				<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>');">Delete Build</a></li>
+				<li><a href="javascript:confirmDelete('<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>', 'Build').onClose = function(){refreshBuildsTable();};">Delete Build</a></li>
 			</ul>
 			<?php endif; ?>
 		</div>

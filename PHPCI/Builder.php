@@ -1,119 +1,138 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
 
 namespace PHPCI;
 
+use PHPCI\Helper\MailerFactory;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
-* PHPCI Build Runner
-* @author   Dan Cryer <dan@block8.co.uk>
-*/
-class Builder
+ * PHPCI Build Runner
+ * @author   Dan Cryer <dan@block8.co.uk>
+ */
+class Builder implements LoggerAwareInterface, BuildLogger
 {
     /**
-    * @var string
-    */
+     * @var string
+     */
     public $buildPath;
 
     /**
-    * @var string[]
-    */
-    public $ignore  = array();
+     * @var string[]
+     */
+    public $ignore = array();
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $ciDir;
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $directory;
 
     /**
-    * @var bool
-    */
-    protected $success  = true;
+     * @var bool
+     */
+    protected $success = true;
 
     /**
-    * @var string
-    */
-    protected $log      = '';
+     * @var bool
+     */
+    protected $verbose = true;
 
     /**
-    * @var bool
-    */
-    protected $verbose  = false;
-
-    /**
-    * @var bool[]
-    */
-    protected $plugins  = array();
-
-    /**
-    * @var \PHPCI\Model\Build
-    */
+     * @var \PHPCI\Model\Build
+     */
     protected $build;
 
     /**
-    * @var callable
-    */
-    protected $logCallback;
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     protected $config;
-    
+
     /**
-     * An array of key => value pairs that will be used for 
+     * @var string
+     */
+    protected $lastOutput;
+
+    /**
+     * An array of key => value pairs that will be used for
      * interpolation and environment variables
      * @var array
      * @see setInterpolationVars()
-     * @see getInterpolationVars()
      */
     protected $interpolation_vars = array();
 
     /**
-    * Set up the builder.
-    * @param \PHPCI\Model\Build
-    * @param callable
-    */
-    public function __construct(Build $build, $logCallback = null)
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $store;
+
+    /**
+     * @var bool
+     */
+    public $quiet = false;
+
+    /**
+     * @var \PHPCI\Plugin\Util\Executor
+     */
+    protected $pluginExecutor;
+
+    /**
+     * Set up the builder.
+     * @param \PHPCI\Model\Build $build
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Build $build, $logger = null)
     {
+        if ($logger) {
+            $this->setLogger($logger);
+        }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
-
-        if (!is_null($logCallback) && is_callable($logCallback)) {
-            $this->logCallback = $logCallback;
-        }
+        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
     }
 
     /**
-    * Set the config array, as read from phpci.yml
-    * @param array
-    */
+     * Set the config array, as read from phpci.yml
+     * @param array
+     */
     public function setConfigArray(array $config)
     {
         $this->config = $config;
     }
 
     /**
-    * Access a variable from the phpci.yml file.
-    * @param string
-    */
+     * Access a variable from the phpci.yml file.
+     * @param string
+     */
     public function getConfig($key)
     {
-        return isset($this->config[$key]) ? $this->config[$key] : null;
+        $rtn = null;
+
+        if (isset($this->config[$key])) {
+            $rtn = $this->config[$key];
+        }
+
+        return $rtn;
     }
 
     /**
@@ -127,160 +146,157 @@ class Builder
     }
 
     /**
-    * Access the build.
-    * @param Build
-    */
-    public function getBuild()
-    {
-        return $this->build;
-    }
-
-    /**
      * @return string   The title of the project being built.
      */
-    public function getBuildProjectTitle() {
-        return $this->getBuild()->getProject()->getTitle();
-    }
-
-    /**
-     * Indicates if the build has passed or failed.
-     * @return bool
-     */
-    public function getSuccessStatus()
+    public function getBuildProjectTitle()
     {
-        return $this->success;
+        return $this->build->getProject()->getTitle();
     }
 
     /**
-    * Run the active build.
-    */
+     * Run the active build.
+     */
     public function execute()
     {
         // Update the build in the database, ping any external services.
-        $this->build->setStatus(1);
+        $this->build->setStatus(Build::STATUS_RUNNING);
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
+        $this->success = true;
 
-        try {
-            if ($this->setupBuild()) {
-                // Run setup steps:
-                $this->executePlugins('setup');
+        // Set up the build:
+        $this->setupBuild();
 
-                // Run the any tests:
-                $this->executePlugins('test');
-                $this->log('');
-
-                // Run build complete steps:
-                $this->executePlugins('complete');
-
-                // Run success or failure plugins:
-                if ($this->success) {
-                    $this->executePlugins('success');
-                    $this->logSuccess('BUILD SUCCESSFUL!');
-                    $this->build->setStatus(2);
-                } else {
-                    $this->executePlugins('failure');
-                    $this->logFailure('BUILD FAILED!');
-                    $this->build->setStatus(3);
-                }
-
-                $this->log('');
-            } else {
-                $this->build->setStatus(3);
-            }
-        } catch (\Exception $ex) {
-            $this->logFailure($ex->getMessage());
-            $this->build->setStatus(3);
+        // Run the core plugin stages:
+        foreach (array('setup', 'test') as $stage) {
+            $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
         }
-        
+
+        // Set the status so this can be used by complete, success and failure
+        // stages.
+        if ($this->success) {
+            $this->build->setStatus(Build::STATUS_SUCCESS);
+        }
+        else {
+            $this->build->setStatus(Build::STATUS_FAILED);
+        }
+
+        // Complete stage plugins are always run
+        $this->pluginExecutor->executePlugins($this->config, 'complete');
+
+        if ($this->success) {
+            $this->pluginExecutor->executePlugins($this->config, 'success');
+            $this->logSuccess('BUILD SUCCESSFUL!');
+        }
+        else {
+            $this->pluginExecutor->executePlugins($this->config, 'failure');
+            $this->logFailure("BUILD FAILURE");
+        }
+
         // Clean up:
-        $this->removeBuild();
+        $this->log('Removing build.');
+        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
         $this->build->setFinished(new \DateTime());
-        $this->build->setLog($this->log);
-        $this->build->setPlugins(json_encode($this->plugins));
         $this->store->save($this->build);
     }
 
     /**
-    * Used by this class, and plugins, to execute shell commands. 
-    */
+     * Used by this class, and plugins, to execute shell commands.
+     */
     public function executeCommand()
     {
         $command = call_user_func_array('sprintf', func_get_args());
-        
-        $this->log('Executing: ' . $command, '  ');
 
-        $output = '';
+        if (!$this->quiet) {
+            $this->log('Executing: ' . $command);
+        }
+
         $status = 0;
-        exec($command, $output, $status);
+        exec($command, $this->lastOutput, $status);
 
-        if (!empty($output) && ($this->verbose || $status != 0)) {
-            $this->log($output, '       ');
+        if (!empty($this->lastOutput) && ($this->verbose || $status != 0)) {
+            $this->log($this->lastOutput);
         }
 
-        return ($status == 0) ? true : false;
+
+        $rtn = false;
+
+        if ($status == 0) {
+            $rtn = true;
+        }
+
+        return $rtn;
     }
 
     /**
-    * Add an entry to the build log. 
-    * @param string|string[]
-    * @param string
-    */
-    public function log($message, $prefix = '')
+     * Returns the output from the last command run.
+     */
+    public function getLastOutput()
     {
-        if (is_array($message)) {
-            foreach ($message as $item) {
-                if (is_callable($this->logCallback)) {
-                    call_user_func_array($this->logCallback, array($prefix . $item));
-                }
-                
-                $this->log .= $prefix . $item . PHP_EOL;
-            }
-        } else {
-            $message = $prefix . $message;
-            $this->log .= $message . PHP_EOL;
-
-            if (isset($this->logCallback) && is_callable($this->logCallback)) {
-                call_user_func_array($this->logCallback, array($message));
-            }
-        }
-
-        $this->build->setLog($this->log);
-        $this->build->setPlugins(json_encode($this->plugins));
-        $this->store->save($this->build);
+        return implode(PHP_EOL, $this->lastOutput);
     }
 
     /**
-    * Add a success-coloured message to the log. 
-    * @param string
-    */
+     * Add an entry to the build log.
+     * @param string|string[] $message
+     * @param string $level
+     * @param mixed[] $context
+     */
+    public function log($message, $level = LogLevel::INFO, $context = array())
+    {
+        // Skip if no logger has been loaded.
+        if (!$this->logger) {
+            return;
+        }
+
+        if (!is_array($message)) {
+            $message = array($message);
+        }
+
+        // The build is added to the context so the logger can use
+        // details from it if required.
+        $context['build'] = $this->build;
+
+        foreach ($message as $item) {
+            $this->logger->log($level, $item, $context);
+        }
+    }
+
+    /**
+     * Add a success-coloured message to the log.
+     * @param string
+     */
     public function logSuccess($message)
     {
         $this->log("\033[0;32m" . $message . "\033[0m");
     }
 
     /**
-    * Add a failure-coloured message to the log. 
-    * @param string
-    */
-    public function logFailure($message)
-    {
-        $this->log("\033[0;31m" . $message . "\033[0m");
-    }
-    
-    /**
-     * Get an array key => value pairs that are used for interpolation
-     * @return array
+     * Add a failure-coloured message to the log.
+     * @param string $message
+     * @param \Exception $exception The exception that caused the error.
      */
-    public function getInterpolationVars()
+    public function logFailure($message, \Exception $exception = null)
     {
-        return $this->interpolation_vars;
+        $context = array();
+
+        // The psr3 log interface stipulates that exceptions should be passed
+        // as the exception key in the context array.
+        if ($exception) {
+            $context['exception'] = $exception;
+        }
+
+        $this->log(
+            "\033[0;31m" . $message . "\033[0m",
+            LogLevel::ERROR,
+            $context
+        );
     }
-    
+
     /**
      * Replace every occurance of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
@@ -289,56 +305,65 @@ class Builder
      */
     public function interpolate($input)
     {
-        $trans_table = array();
-        foreach ($this->getInterpolationVars() as $key => $value) {
-            $trans_table['%'.$key.'%'] = $value;
-        }
-        return strtr($input, $trans_table);
+        $keys = array_keys($this->interpolation_vars);
+        $values = array_values($this->interpolation_vars);
+        return str_replace($keys, $values, $input);
     }
 
     /**
-     * Sets the variables that will be used for interpolation. This must be run 
+     * Sets the variables that will be used for interpolation. This must be run
      * from setupBuild() because prior to that, we don't know the buildPath
      */
     protected function setInterpolationVars()
     {
-        $this->interpolation_vars = array(
-            'PHPCI'               => 1,
-            'PHPCI_COMMIT'        => $this->build->getCommitId(),
-            'PHPCI_PROJECT'       => $this->build->getProject()->getId(),
-            'PHPCI_BUILD'         => $this->build->getId(),
-            'PHPCI_PROJECT_TITLE' => $this->build->getProject()->getTitle(),
-            'PHPCI_BUILD_PATH'    => $this->buildPath,
+        $this->interpolation_vars = array();
+        $this->interpolation_vars['%PHPCI%'] = 1;
+        $this->interpolation_vars['%COMMIT%'] = $this->build->getCommitId();
+        $this->interpolation_vars['%PROJECT%'] = $this->build->getProjectId();
+        $this->interpolation_vars['%BUILD%'] = $this->build->getId();
+        $this->interpolation_vars['%PROJECT_TITLE%'] = $this->getBuildProjectTitle(
         );
+        $this->interpolation_vars['%BUILD_PATH%'] = $this->buildPath;
+        $this->interpolation_vars['%BUILD_URI%'] = PHPCI_URL . "build/view/" . $this->build->getId(
+            );
+        $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
+        $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
+        $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
+        $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
+        $this->interpolation_vars['%PHPCI_BUILD_PATH%'] = $this->interpolation_vars['%BUILD_PATH%'];
+        $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
+
+        putenv('PHPCI=1');
+        putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
+        putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
+        putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
+        putenv(
+            'PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']
+        );
+        putenv('PHPCI_BUILD_PATH=' . $this->interpolation_vars['%BUILD_PATH%']);
+        putenv('PHPCI_BUILD_URI=' . $this->interpolation_vars['%BUILD_URI%']);
     }
-    
+
     /**
-    * Set up a working copy of the project for building.
-    */
+     * Set up a working copy of the project for building.
+     */
     protected function setupBuild()
     {
-        $commitId           = $this->build->getCommitId();
-        $buildId            = 'project' . $this->build->getProject()->getId() . '-build' . $this->build->getId();
-        $this->ciDir        = dirname(__FILE__) . '/../';
-        $this->buildPath    = $this->ciDir . 'build/' . $buildId . '/';
-        
+        $buildId = 'project' . $this->build->getProject()->getId(
+            ) . '-build' . $this->build->getId();
+        $this->ciDir = dirname(__FILE__) . '/../';
+        $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
+
         $this->setInterpolationVars();
-        
-        // Setup environment vars that will be accessible during exec()
-        foreach ($this->getInterpolationVars() as $key => $value) {
-            putenv($key.'='.$value);
-        }
-        
+
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
-            return false;
+            throw new \Exception('Could not create a working copy.');
         }
 
         // Does the project's phpci.yml request verbose mode?
         if (!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose']) {
             $this->verbose = false;
-        } else {
-            $this->verbose = true;
         }
 
         // Does the project have any paths it wants plugins to ignore?
@@ -351,86 +376,89 @@ class Builder
     }
 
     /**
-    * Execute a the appropriate set of plugins for a given build stage.
-    */
-    protected function executePlugins($stage)
+     * Find a binary required by a plugin.
+     * @param $binary
+     * @return null|string
+     */
+    public function findBinary($binary)
     {
-        // Ignore any stages for which we don't have plugins set:
-        if (!array_key_exists($stage, $this->config) || !is_array($this->config[$stage])) {
-            return;
+        if (is_string($binary)) {
+            $binary = array($binary);
         }
 
-        foreach ($this->config[$stage] as $plugin => $options) {
-            $this->log('');
-            $this->log('RUNNING PLUGIN: ' . $plugin);
-
-            // Is this plugin allowed to fail?
-            if ($stage == 'test' && !isset($options['allow_failures'])) {
-                $options['allow_failures'] = false;
+        foreach ($binary as $bin) {
+            // Check project root directory:
+            if (is_file(PHPCI_DIR . $bin)) {
+                return PHPCI_DIR . $bin;
             }
 
-            $class = str_replace('_', ' ', $plugin);
-            $class = ucwords($class);
-            $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
-
-            if (!class_exists($class)) {
-                $this->logFailure('Plugin does not exist: ' . $plugin);
-
-                if ($stage == 'test') {
-                    $this->plugins[$plugin] = false;
-
-                    if (!$options['allow_failures']) {
-                        $this->success = false;
-                    }
-                }
-
-                continue;
+            // Check Composer bin dir:
+            if (is_file(PHPCI_DIR . 'vendor/bin/' . $bin)) {
+                return PHPCI_DIR . 'vendor/bin/' . $bin;
             }
 
-            try {
-                $obj = new $class($this, $options);
+            // Use "which"
+            $which = trim(shell_exec('which ' . $bin));
 
-                if (!$obj->execute()) {
-                    if ($stage == 'test') {
-                        $this->plugins[$plugin] = false;
-
-                        if (!$options['allow_failures']) {
-                            $this->success = false;
-                        }
-                    }
-
-                    $this->logFailure('PLUGIN STATUS: FAILED');
-                    continue;
-                }
-            } catch (\Exception $ex) {
-                $this->logFailure('EXCEPTION: ' . $ex->getMessage());
-
-                if ($stage == 'test') {
-                    $this->plugins[$plugin] = false;
-
-                    if (!$options['allow_failures']) {
-                        $this->success = false;
-                    }
-                }
-
-                $this->logFailure('PLUGIN STATUS: FAILED');
-                continue;
+            if (!empty($which)) {
+                return $which;
             }
-
-            if ($stage == 'test') {
-                $this->plugins[$plugin] = true;
-            }
-
-            $this->logSuccess('PLUGIN STATUS: SUCCESS!');
         }
+
+        return null;
     }
 
     /**
-    * Clean up our working copy.
-    */
-    protected function removeBuild()
+     * Sets a logger instance on the object
+     *
+     * @param LoggerInterface $logger
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger)
     {
-        $this->log('Removing build.');
-        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
+        $this->logger = $logger;
+    }
+
+    /**
+     * returns the logger attached to this builder.
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    private function buildPluginFactory(Build $build)
+    {
+        $pluginFactory = new Plugin\Util\Factory();
+
+        $self = $this;
+        $pluginFactory->registerResource(
+            function () use($self) {
+                return $self;
+            },
+            null,
+            'PHPCI\Builder'
+        );
+
+        $pluginFactory->registerResource(
+            function () use($build) {
+                return $build;
+            },
+            null,
+            'PHPCI\Model\Build'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                $factory = new MailerFactory($self->getSystemConfig('phpci'));
+                return $factory->getSwiftMailerFromConfig();
+            },
+            null,
+            'Swift_Mailer'
+        );
+
+        return $pluginFactory;
     }
 }

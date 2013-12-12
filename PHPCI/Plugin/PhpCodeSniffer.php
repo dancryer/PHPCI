@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Code Sniffer Plugin - Allows PHP Code Sniffer testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -48,17 +51,59 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     protected $encoding;
 
     /**
+     * @var string, based on the assumption the root may not hold the code to be
+     * tested, exteds the base path
+     */
+    protected $path;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
+
+    /**
      * @param \PHPCI\Builder $phpci
      * @param array $options
      */
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
-        $this->suffixes     = isset($options['suffixes']) ? (array)$options['suffixes'] : array('php');
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-        $this->standard     = isset($options['standard']) ? $options['standard'] : 'PSR2';
-        $this->tab_width    = isset($options['tab_width']) ? $options['tab_width'] : '';
-        $this->encoding     = isset($options['encoding']) ? $options['encoding'] : '';
+        $this->build        = $build;
+        $this->suffixes     = array('php');
+        $this->directory    = $phpci->buildPath;
+        $this->standard     = 'PSR2';
+        $this->tab_width    = '';
+        $this->encoding     = '';
+        $this->path         = '';
+        $this->ignore       = $this->phpci->ignore;
+
+        if (isset($options['suffixes'])) {
+            $this->suffixes = (array)$options['suffixes'];
+        }
+
+        if (isset($options['directory'])) {
+            $this->directory = $options['directory'];
+        }
+
+        if (isset($options['standard'])) {
+            $this->standard = $options['standard'];
+        }
+
+        if (!empty($options['tab_width'])) {
+            $this->tab_width = ' --tab-width='.$options['tab_width'];
+        }
+
+        if (!empty($options['encoding'])) {
+            $this->encoding = ' --encoding=' . $options['encoding'];
+        }
+
+        if (isset($options['path'])) {
+            $this->path = $options['path'];
+        }
+
+        if (isset($options['ignore'])) {
+            $this->ignore = $options['ignore'];
+        }
     }
 
     /**
@@ -66,9 +111,46 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     */
     public function execute()
     {
+        list($ignore, $standard, $suffixes) = $this->getFlags();
+
+        $phpcs = $this->phpci->findBinary('phpcs');
+
+        if (!$phpcs) {
+            $this->phpci->logFailure('Could not find phpcs.');
+            return false;
+        }
+
+        $cmd = $phpcs . ' --report=emacs %s %s %s %s %s "%s"';
+        $success = $this->phpci->executeCommand(
+            $cmd,
+            $standard,
+            $suffixes,
+            $ignore,
+            $this->tab_width,
+            $this->encoding,
+            $this->phpci->buildPath . $this->path
+        );
+
+        $output = $this->phpci->getLastOutput();
+
+        $matches = array();
+        if (preg_match_all('/\: warning \-/', $output, $matches)) {
+            $this->build->storeMeta('phpcs-warnings', count($matches[0]));
+        }
+
+        $matches = array();
+        if (preg_match_all('/\: error \-/', $output, $matches)) {
+            $this->build->storeMeta('phpcs-errors', count($matches[0]));
+        }
+
+        return $success;
+    }
+
+    protected function getFlags()
+    {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --ignore=' . implode(',', $this->ignore);
         }
 
         if (strpos($this->standard, '/') !== false) {
@@ -82,17 +164,6 @@ class PhpCodeSniffer implements \PHPCI\Plugin
             $suffixes = ' --extensions=' . implode(',', $this->suffixes);
         }
 
-        $tab_width = '';
-        if (strlen($this->tab_width)) {
-            $tab_width = ' --tab-width='.$this->tab_width;
-        }
-
-        $encoding = '';
-        if (strlen($this->encoding)) {
-            $encoding = ' --encoding='.$this->encoding;
-        }
-
-        $cmd = PHPCI_BIN_DIR . 'phpcs %s %s %s %s %s "%s"';
-        return $this->phpci->executeCommand($cmd, $standard, $suffixes, $ignore, $tab_width, $encoding, $this->phpci->buildPath);
+        return array($ignore, $standard, $suffixes);
     }
 }

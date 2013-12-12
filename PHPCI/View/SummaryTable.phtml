@@ -1,87 +1,80 @@
 <?php
-// echo "<pre>";
-// var_dump($builds);
-// echo "</pre>";
 
-$maxbuildcount = 5;
-$projects      = array();
-$prevBuild     = null;
-$health        = false;
+foreach($projects as $project):
+    $statuses = array();
+    $successes = 0;
+    $failures = 0;
+    $health = '';
+    $subcls = '';
+    $cls = '';
 
-foreach($builds as $build):
+    $success = null;
+    $failure = null;
 
-    if ($build->getStatus() < 2) {
-        continue;
-    }
+    if (count($builds[$project->getId()])) {
 
-    if ( is_null($prevBuild) || $build->getProjectId() !== $prevBuild->getProjectId() ) {
-        $health = false;
-        $projects[$build->getProjectId()]['count'] = 0;
-        $projects[$build->getProjectId()]['health'] = 0;
-        $projects[$build->getProjectId()]['successes'] = 0;
-        $projects[$build->getProjectId()]['failures'] = 0;
-        $projects[$build->getProjectId()]['lastbuildstatus'] = (int)$build->getStatus();
-    }
+        // Use the latest build information to determine current status:
+        $latestBuild = $builds[$project->getId()][0];
 
-    if (
-        !is_null($prevBuild) &&
-        $projects[$build->getProjectId()]['count'] >= $maxbuildcount &&
-        $build->getProjectId() === $prevBuild->getProjectId()
-    ) {
-        $projects[$build->getProjectId()]['count']++;
-        continue;
-    }
+        switch ($latestBuild->getStatus()) {
+            case 0:
+                $cls = 'active';
+                $status = 'Pending';
+                break;
 
-    switch ((int)$build->getStatus()) {
-        case 2:
-            $projects[$build->getProjectId()]['health']++;
-            $projects[$build->getProjectId()]['successes']++;
+            case 1:
+                $cls = 'warning';
+                $status = 'Running';
+                break;
 
-            if ( empty($projects[$build->getProjectId()]['lastsuccess']) ) {
-                $projects[$build->getProjectId()]['lastsuccess'] = $build;
+            case 2:
+                $cls = 'success';
+                $status = 'Success';
+                break;
+
+            case 3:
+                $cls = 'danger';
+                $status = 'Failed';
+                break;
+        }
+
+        // Use the last 5 builds to determine project health:
+        $successes = 0;
+        $failures = 0;
+
+        foreach ($builds[$project->getId()] as $build) {
+            switch ($build->getStatus()) {
+                case 0:
+                    $statuses[] = 'pending';
+                    break;
+                case 1:
+                    $statuses[] = 'running';
+                    break;
+                case 2:
+                    $successes++;
+                    $statuses[] = 'ok';
+                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $success;
+                    break;
+                case 3:
+                    $failures++;
+                    $statuses[] = 'failed';
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $failure;
+                    break;
             }
-            break;
-        case 3:
-            $projects[$build->getProjectId()]['health']--;
-            $projects[$build->getProjectId()]['failures']++;
-
-            if ( empty($projects[$build->getProjectId()]['lastfailure']) ) {
-                $projects[$build->getProjectId()]['lastfailure'] = $build;
-            }
-            break;
+        }
     }
 
-    $projects[$build->getProjectId()]['count']++;
-    $projects[$build->getProjectId()]['projectname'] = $build->getProject()->getTitle();
-    $prevBuild = $build;
-endforeach;
-
-foreach($projects as $projectId => $project):
-    switch($project['lastbuildstatus'])
-    {
-        case 0:
-            $cls = 'active';
-            $status = 'Pending';
-        break;
-
-        case 1:
-            $cls = 'danger';
-            $status = 'Running';
-        break;
-
-        case 2:
-            $cls = 'success';
-            $status = 'Success';
-        break;
-
-        case 3:
-            $cls = 'error';
-            $status = 'Failed';
-        break;
+    if ($failures == 0) {
+        $health = 'Good';
+        $subcls = 'success';
+    } elseif ($failures > $successes) {
+        $health = 'Bad';
+        $subcls = 'danger';
+    } else {
+        $health = 'Warning';
+        $subcls = 'warning';
     }
 
-    $health = ($project['health'] <= 0 ? 'Stormy': ($project['successes'] < $project['count']? 'Overcast': 'Sunny'));
-    $subcls = ($project['health'] <= 0 ? 'danger': ($project['successes'] < $project['count']? 'warning': 'success'));
 ?>
 <tr class="<?php print $cls; ?>">
     <td>
@@ -89,26 +82,16 @@ foreach($projects as $projectId => $project):
             <?= $health ?>
         </span>
     </td>
-    <td><a href='<?= PHPCI_URL ?>project/view/<?= $projectId ?>'><?= $project['projectname'] ?></a></td>
+    <td><a href='<?= PHPCI_URL ?>project/view/<?= $project->getId() ?>'><?= htmlspecialchars($project->getTitle()) ?></a></td>
+    <td><?php print is_null($success) ? 'Never' : $success; ?></td>
+    <td><?php print is_null($failure) ? 'Never' : $failure; ?></td>
     <td>
-        <?php if (empty($project['lastsuccess'])) {
-            echo "Never";
-        } else { ?>
-            <a href='<?= PHPCI_URL ?>build/view/<?= $project['lastsuccess']->getId() ?>'>
-            <?= $project['lastsuccess']->getStarted()->format("Y-m-d H:i:s") ?>
-            </a>
-        <?php } ?>
+        <?php
+        foreach ($statuses as $status) {
+            print '<img alt="'.$status.'" src="' . PHPCI_URL . 'assets/img/icon-build-' . $status . '.png">';
+        }
+        ?>
     </td>
-    <td>
-        <?php if (empty($project['lastfailure'])) {
-            echo "Never";
-        } else { ?>
-            <a href='<?= PHPCI_URL ?>build/view/<?= $project['lastfailure']->getId() ?>'>
-            <?= $project['lastfailure']->getStarted()->format("Y-m-d H:i:s") ?>
-            </a>
-        <?php } ?>
-    </td>
-    <td><?= $project['successes'] ?>/<?= $project['failures'] ?></td>
-    <td><a class="btn btn-default btn-small" href='<?= PHPCI_URL ?>project/build/<?= $projectId ?>'>build now &raquo;</a></td>
+    <td><a class="btn btn-default btn-small" href='<?= PHPCI_URL ?>project/build/<?= $project->getId(); ?>'>build now &raquo;</a></td>
 </tr>
 <?php endforeach; ?>

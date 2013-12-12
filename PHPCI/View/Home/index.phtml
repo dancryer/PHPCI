@@ -5,43 +5,20 @@
 	<div class="col-lg-3">
 		<ul class="nav nav-pills nav-stacked">
 			<li class="active"><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?= PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
         </ul>
 
         <?php if (count($projects)): ?>
         <h5>Projects</h5>
         <ul class="nav nav-pills nav-stacked">
-			<?php
-			foreach($projects as $project):
-				$status = 'icon-build-ok';
-				$build = $project->getLatestBuild('master');
-
-				if (isset($build)) {
-					switch($build->getStatus())
-					{
-						case 0:
-							$status = 'icon-build-pending';
-							break;
-						case 1:
-							$status = 'icon-build-running';
-							break;
-						case 3:
-							$status = 'icon-build-failed';
-							break;
-						case 2:
-						default:
-							$status = 'icon-build-ok';
-							break;
-					}
-				}
-			?>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="<?= $status; ?>"></i> <?php print $project->getTitle(); ?></a></li>
+			<?php foreach($projects as $project): ?>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print htmlspecialchars($project->getTitle()); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
         <?php endif; ?>
     </div>
 	<div class="col-lg-9">
-		<h3>Project Overview</h3>
+        <div class="box">
+		<h3 class="title">Project Overview</h3>
 		<table class="table table-striped table-bordered">
 			<thead>
 			<tr>
@@ -53,12 +30,14 @@
 				<th style="width: 100px"></th>
 			</tr>
 			</thead>
-			<tbody>
+			<tbody id="project-overview">
 				<?php print $summary; ?>
 			</tbody>
 		</table>
+        </div>
 
-		<h3>Last 5 Builds</h3>
+        <div class="box">
+		<h3 class="title">Last 5 Builds</h3>
 		<table class="table table-striped table-bordered">
 			<thead>
 			<tr>
@@ -67,19 +46,22 @@
 				<th>Commit</th>
 				<th>Branch</th>
 				<th>Status</th>
-				<th style="width: 100px"></th>
+				<th style="width: 90px"></th>
 			</tr>
 			</thead>
 			<tbody id="latest-builds">
 				<?php print $builds; ?>
 			</tbody>
 		</table>
+        </div>
 	</div>
 </div>
 
 <script>
-setInterval(function()
-{
-	$('#latest-builds').load('<?= PHPCI_URL ?>index/latest');
-}, 10000);
+    refreshBuildsTable = function()
+    {
+        $('#latest-builds').load('<?= PHPCI_URL ?>home/latest');
+    };
+
+    setInterval(refreshBuildsTable, 10000);
 </script>

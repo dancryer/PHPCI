@@ -22,7 +22,7 @@ class BuildFactory
 {
     /**
     * Takes a generic build and returns a type-specific build model.
-    * @return PHPCI\Model\Build\LocalBuild|PHPCI\Model\Build\GithubBuild|PHPCI\Model\Build\BitbucketBuild
+    * @return \PHPCI\Model\Build\LocalBuild|\PHPCI\Model\Build\GithubBuild|\PHPCI\Model\Build\BitbucketBuild
     */
     public static function getBuild(Build $base)
     {
@@ -42,6 +42,9 @@ class BuildFactory
                 break;
             case 'gitlab':
                 $type = 'GitlabBuild';
+                break;
+            case 'hg':
+                $type = 'MercurialBuild';
                 break;
         }
 

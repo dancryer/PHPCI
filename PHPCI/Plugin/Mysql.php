@@ -10,6 +10,8 @@
 namespace PHPCI\Plugin;
 
 use PDO;
+use PHPCI\Builder;
+use PHPCI\Model\Build;
 
 /**
 * MySQL Plugin - Provides access to a MySQL database.
@@ -20,7 +22,7 @@ use PDO;
 */
 class Mysql implements \PHPCI\Plugin
 {
-    
+
     /**
      * @var \PHPCI\Builder
      */
@@ -30,30 +32,40 @@ class Mysql implements \PHPCI\Plugin
     protected $host;
     protected $user;
     protected $pass;
-    
+
     /**
      * Database Connection
      * @var PDO
      */
     protected $pdo;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->queries      = $options;
+        $this->phpci = $phpci;
+        $this->queries = $options;
 
-        $config     = \b8\Database::getConnection('write')->getDetails();
-        $this->host = PHPCI_DB_HOST;
+        $config = \b8\Database::getConnection('write')->getDetails();
+
+        $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
         $this->user = $config['user'];
         $this->pass = $config['pass'];
 
         $buildSettings = $phpci->getConfig('build_settings');
-        if (isset($buildSettings['mysql'])) {
-            $sql    = $buildSettings['mysql'];
 
-            $this->host = !empty($sql['host']) ? $sql['host'] : $this->phpci->interpolate($this->host);
-            $this->user = !empty($sql['user']) ? $sql['user'] : $this->phpci->interpolate($this->user);
-            $this->pass = array_key_exists('pass', $sql) ? $sql['pass'] : $this->pass;
+        if (!isset($buildSettings['mysql'])) {
+            return;
+        }
+
+        if (!empty($buildSettings['mysql']['host'])) {
+            $this->host = $this->phpci->interpolate($buildSettings['mysql']['host']);
+        }
+
+        if (!empty($buildSettings['mysql']['user'])) {
+            $this->user = $this->phpci->interpolate($buildSettings['mysql']['user']);
+        }
+
+        if (array_key_exists('pass', $buildSettings['mysql'])) {
+            $this->pass = $buildSettings['mysql']['pass'];
         }
     }
 
@@ -63,16 +75,16 @@ class Mysql implements \PHPCI\Plugin
     public function execute()
     {
         $success = true;
-        
+
         try {
             $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
             $this->pdo = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
-            
+
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
                     // Simple query
                     $this->pdo->query($this->phpci->interpolate($query));
-                } else if (isset($query['import'])) {
+                } elseif (isset($query['import'])) {
                     // SQL file execution
                     $this->executeFile($query['import']);
                 } else {
@@ -86,40 +98,41 @@ class Mysql implements \PHPCI\Plugin
 
         return $success;
     }
-    
+
     protected function executeFile($query)
     {
         if (!isset($query['file'])) {
             throw new \Exception("Import statement must contain a 'file' key");
         }
-        
+
         $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
         if (!is_readable($import_file)) {
-        	throw new \Exception("Cannot open SQL import file: $import_file");
+            throw new \Exception("Cannot open SQL import file: $import_file");
         }
-        
-        $database = isset($query['database'])? $this->phpci->interpolate($query['database']): null;
-        
+
+        $database = isset($query['database']) ? $this->phpci->interpolate($query['database']) : null;
+
         $import_command = $this->getImportCommand($import_file, $database);
-    	if (!$this->phpci->executeCommand($import_command)) {
-    	    throw new \Exception("Unable to execute SQL file");
-    	}
-    	
+        if (!$this->phpci->executeCommand($import_command)) {
+            throw new \Exception("Unable to execute SQL file");
+        }
+
         return true;
     }
-    
+
     /**
      * Builds the MySQL import command required to import/execute the specified file
      * @param string $import_file Path to file, relative to the build root
      * @param string $database If specified, this database is selected before execution
      * @return string
      */
-    protected function getImportCommand($import_file, $database=null) {
+    protected function getImportCommand($import_file, $database = null)
+    {
         $decompression = array(
             'bz2' => '| bzip2 --decompress',
             'gz' => '| gzip --decompress',
         );
-        
+
         $extension = strtolower(pathinfo($import_file, PATHINFO_EXTENSION));
         $decomp_cmd = '';
         if (array_key_exists($extension, $decompression)) {

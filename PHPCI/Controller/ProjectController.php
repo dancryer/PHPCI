@@ -12,6 +12,7 @@ namespace PHPCI\Controller;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use b8;
+use b8\Config;
 use b8\Controller;
 use b8\Store;
 use b8\Form;
@@ -24,10 +25,20 @@ use b8\Form;
 */
 class ProjectController extends \PHPCI\Controller
 {
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
     public function init()
     {
-        $this->_buildStore      = Store\Factory::getStore('Build');
-        $this->_projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore      = Store\Factory::getStore('Build');
+        $this->projectStore    = Store\Factory::getStore('Project');
     }
 
     /**
@@ -35,7 +46,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function view($projectId)
     {
-        $project        = $this->_projectStore->getById($projectId);
+        $project        = $this->projectStore->getById($projectId);
         $page           = $this->getParam('p', 1);
         $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
@@ -52,14 +63,17 @@ class ProjectController extends \PHPCI\Controller
     */
     public function build($projectId)
     {
+        /* @var \PHPCI\Model\Project $project */
+        $project = $this->projectStore->getById($projectId);
+
         $build = new Build();
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
-        $build->setStatus(0);
-        $build->setBranch('master');
+        $build->setStatus(Build::STATUS_NEW);
+        $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
 
-        $build = $this->_buildStore->save($build);
+        $build = $this->buildStore->save($build);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -74,8 +88,8 @@ class ProjectController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $project    = $this->_projectStore->getById($projectId);
-        $this->_projectStore->delete($project);
+        $project = $this->projectStore->getById($projectId);
+        $this->projectStore->delete($project);
 
         header('Location: '.PHPCI_URL);
         exit;
@@ -97,7 +111,7 @@ class ProjectController extends \PHPCI\Controller
     {
         $criteria       = array('project_id' => $projectId);
         $order          = array('id' => 'DESC');
-        $builds         = $this->_buildStore->getWhere($criteria, 10, $start, array(), $order);
+        $builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
         $view           = new b8\View('BuildsTable');
         $view->builds   = $builds['items'];
 
@@ -114,7 +128,6 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $method = $this->request->getMethod();
-        $this->handleGithubResponse();
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -141,10 +154,10 @@ class ProjectController extends \PHPCI\Controller
             $pub = file_get_contents($keyFile . '.pub');
             $prv = file_get_contents($keyFile);
 
-            $values = array('key' => $prv, 'pubkey' => $pub, 'token' => $_SESSION['github_token']);
+            $values = array('key' => $prv, 'pubkey' => $pub);
         }
 
-        $form   = $this->projectForm($values);
+        $form = $this->projectForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('ProjectForm');
@@ -152,15 +165,14 @@ class ProjectController extends \PHPCI\Controller
             $view->project  = null;
             $view->form     = $form;
             $view->key      = $pub;
-            $view->token    = $_SESSION['github_token'];
 
             return $view->render();
         }
 
-        $values             = $form->getValues();
+        $values = $form->getValues();
 
         if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
             $info = array();
             $info["user"] = $matches[1];
             $info["domain"] = $matches[2];
@@ -173,59 +185,34 @@ class ProjectController extends \PHPCI\Controller
         $project = new Project();
         $project->setValues($values);
 
-        $project = $this->_projectStore->save($project);
+        $project = $this->projectStore->save($project);
 
         header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
     }
 
     /**
-    * Handles log in with Github
-    */
-    protected function handleGithubResponse()
-    {
-        $github = \b8\Config::getInstance()->get('phpci.github');
-        $code   = $this->getParam('code', null);
-
-        if (!is_null($code)) {
-            $http = new \b8\HttpClient();
-            $url  = 'https://github.com/login/oauth/access_token';
-            $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
-            $resp = $http->post($url, $params);
-            
-            if ($resp['success']) {
-                parse_str($resp['body'], $resp);
-                $_SESSION['github_token'] = $resp['access_token'];
-                header('Location: '.PHPCI_URL.'project/add');
-                die;
-            }
-        }
-
-        if (!isset($_SESSION['github_token'])) {
-            $_SESSION['github_token'] = null;
-        }
-    }
-
-    /**
-    * Edit a project. Handles both the form and processing. 
+    * Edit a project. Handles both the form and processing.
     */
     public function edit($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
-        
+
         $method     = $this->request->getMethod();
-        $project    = $this->_projectStore->getById($projectId);
+        $project    = $this->projectStore->getById($projectId);
 
         if ($method == 'POST') {
             $values = $this->getParams();
         } else {
             $values         = $project->getDataArray();
             $values['key']  = $values['git_key'];
+
             if ($values['type'] == "gitlab") {
                 $accessInfo = $project->getAccessInformation();
-                $values['reference'] = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+                $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+                $values['reference'] = $reference;
             }
         }
 
@@ -246,23 +233,23 @@ class ProjectController extends \PHPCI\Controller
         $values['git_key']  = $values['key'];
 
         if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`',$values['reference'],$matches);
+            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
             $info = array();
             $info["user"] = $matches[1];
             $info["domain"] = $matches[2];
             $values['access_information'] = serialize($info);
-            $values['reference'] = $matches[3]."/".$matches[4];
+            $values['reference'] = $matches[3] . "/" . $matches[4];
         }
 
         $project->setValues($values);
-        $project = $this->_projectStore->save($project);
+        $project = $this->projectStore->save($project);
 
         header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
     }
 
     /**
-    * Create add / edit project form. 
+    * Create add / edit project form.
     */
     protected function projectForm($values, $type = 'add')
     {
@@ -270,7 +257,6 @@ class ProjectController extends \PHPCI\Controller
         $form->setMethod('POST');
         $form->setAction(PHPCI_URL.'project/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
-        $form->addField(new Form\Element\Hidden('token'));
         $form->addField(new Form\Element\Hidden('pubkey'));
 
         $options = array(
@@ -279,60 +265,33 @@ class ProjectController extends \PHPCI\Controller
             'bitbucket' => 'Bitbucket',
             'gitlab' => 'Gitlab',
             'remote' => 'Remote URL',
-            'local' => 'Local Path'
+            'local' => 'Local Path',
+            'hg'    => 'Mercurial',
             );
 
         $field = new Form\Element\Select('type');
         $field->setRequired(true);
-        $field->setPattern('^(github|bitbucket|gitlab|remote|local)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
         $field->setOptions($options);
         $field->setLabel('Where is your project hosted?');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        if (isset($_SESSION['github_token'])) {
-            $field = new Form\Element\Select('github');
-            $field->setLabel('Choose a Github repository:');
-            $field->setClass('form-control');
-            $field->setContainerClass('form-group');
-            $field->setOptions($this->getGithubRepositories());
-            $form->addField($field);
-        }
 
-        $referenceValidator = function ($val) use ($values) {
-            $type = $values['type'];
+        $container = new Form\ControlGroup('github-container');
+        $container->setClass('github-container');
 
-            switch($type) {
-                case 'remote':
-                    if (!preg_match('/^(git|https?):\/\//', $val)) {
-                        throw new \Exception('Repository URL must be start with git://, http:// or https://.');
-                    }
-                    break;
-                case 'local':
-                    if (!is_dir($val)) {
-                        throw new \Exception('The path you specified does not exist.');
-                    }
-                    break;
-                case 'gitlab':
-                    if (!preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $val)) {
-                        throw new \Exception('GitLab Repository name must be in the format "user@domain.tld:owner/repo.git".');
-                    }
-                    break;
-                case 'github':
-                case 'bitbucket':
-                    if (!preg_match('/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/', $val)) {
-                        throw new \Exception('Repository name must be in the format "owner/repo".');
-                    }
-                    break;
-            }
-
-            return true;
-        };
+        $field = new Form\Element\Select('github');
+        $field->setLabel('Choose a Github repository:');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $container->addField($field);
+        $form->addField($container);
 
         $field = new Form\Element\Text('reference');
         $field->setRequired(true);
-        $field->setValidator($referenceValidator);
+        $field->setValidator($this->getReferenceValidator($values));
         $field->setLabel('Repository Name / URL (Remote) or Path (Local)');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
@@ -344,7 +303,7 @@ class ProjectController extends \PHPCI\Controller
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
-        
+
         $field = new Form\Element\TextArea('key');
         $field->setRequired(false);
         $field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
@@ -366,20 +325,85 @@ class ProjectController extends \PHPCI\Controller
     /**
     * Get an array of repositories from Github's API.
     */
-    protected function getGithubRepositories()
+    protected function githubRepositories()
     {
-        $http = new \b8\HttpClient();
-        $url = 'https://api.github.com/user/repos';
-        $res = $http->get($url, array('type' => 'all', 'access_token' => $_SESSION['github_token']));
+        $token = Config::getInstance()->get('phpci.github.token');
 
-        $rtn = array();
-        $rtn['choose'] = 'Select a repository...';
-        if ($res['success']) {
-            foreach ($res['body'] as $repo) {
-                $rtn[$repo['full_name']] = $repo['full_name'];
-            }
+        if (!$token) {
+            die(json_encode(null));
         }
 
-        return $rtn;
+        $cache = \b8\Cache::getCache(\b8\Cache::TYPE_APC);
+        $rtn = $cache->get('phpci_github_repos');
+
+        if (!$rtn) {
+            $orgs = $this->doGithubApiRequest('/user/orgs', array('access_token' => $token));
+
+            $params = array('type' => 'all', 'access_token' => $token);
+            $repos = array();
+            $repos['user'] = $this->doGithubApiRequest('/user/repos', $params);
+
+
+            foreach ($orgs as $org) {
+                $repos[$org['login']] = $this->doGithubApiRequest('/orgs/'.$org['login'].'/repos', $params);
+            }
+
+            $rtn = array();
+            foreach ($repos as $repoGroup) {
+                foreach ($repoGroup as $repo) {
+                    $rtn['repos'][] = $repo['full_name'];
+                }
+            }
+
+            $cache->set('phpci_github_repos', $rtn);
+        }
+
+        die(json_encode($rtn));
+    }
+
+    protected function doGithubApiRequest($url, $params)
+    {
+        $http = new \b8\HttpClient('https://api.github.com');
+        $res = $http->get($url, $params);
+
+        return $res['body'];
+    }
+
+    protected function getReferenceValidator($values)
+    {
+        return function ($val) use ($values) {
+            $type = $values['type'];
+
+            $validators = array(
+                'hg' => array(
+                    'regex' => '/^(https?):\/\//',
+                    'message' => 'Mercurial repository URL must be start with http:// or https://'
+                ),
+                'remote' => array(
+                    'regex' => '/^(git|https?):\/\//',
+                    'message' => 'Repository URL must be start with git://, http:// or https://'
+                ),
+                'gitlab' => array(
+                    'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
+                    'message' => 'GitLab Repository name must be in the format "user@domain.tld:owner/repo.git"'
+                ),
+                'github' => array(
+                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => 'Repository name must be in the format "owner/repo"'
+                ),
+                'bitbucket' => array(
+                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => 'Repository name must be in the format "owner/repo"'
+                ),
+            );
+
+            if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
+                throw new \Exception($validators[$type]['message']);
+            } elseif ($type == 'local' && !is_dir($val)) {
+                throw new \Exception('The path you specified does not exist.');
+            }
+
+            return true;
+        };
     }
 }

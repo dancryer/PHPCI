@@ -7,7 +7,7 @@
 	<div class="col-lg-3">
         <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print $build->getProject()->getTitle(); ?></a></li>
+			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($build->getProject()->getTitle()); ?></a></li>
 		</ul>
 			<h5>Options</h5>
         <ul class="nav nav-pills nav-stacked">
@@ -16,68 +16,27 @@
 			<li><a href="#" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
-
-		<table class="table table-striped table-bordered" style="margin-top: 20px">
-			<thead>
-			<tr>
-				<th colspan="2">Plugin Status</th>
-			</tr>
-			</thead>
-			<tbody id="plugins">
-			</tbody>
-		</table>
 	</div>
+
 	<div class="col-lg-9">
 		<div id="status"></div>
-
-		<table class="table table-striped table-bordered">
-			<thead>
-			<tr>
-				<th style="width: 33.3%">Build Created</th>
-				<th style="width: 33.3%">Build Started</th>
-				<th style="width: 33.3%">Build Finished</th>
-			</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td id="created"></td>
-					<td id="started"></td>
-					<td id="finished"></td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="table table-striped table-bordered">
-			<thead>
-			<tr>
-				<th>Build Log</th>
-			</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><pre style="height: 300px; overflow-y: auto;" id="log"></pre></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+        <div id="plugins"></div>
+    </div>
 </div>
 
 <script>
-	window.initial = <?php print $data; ?>;
+    var PHPCI = new PHPCIObject(<?php print $build->getId() ?>);
+    PHPCI.buildData = <?php print $data; ?>;
+</script>
 
-	<?php if($build->getStatus() == 0 || $build->getStatus() == 1 || true): ?>
-	setInterval(function()
-	{
-		$.getJSON('<?= PHPCI_URL ?>build/data/<?php print $build->getId(); ?>', updateBuildView);
-	}, 10000);
-	<?php endif; ?>
+<?php
+foreach ($plugins as $plugin) {
+    print '<script src="'.PHPCI_URL.'assets/js/build-plugins/' . $plugin . '"></script>';
+}
+?>
 
-	$(function() {
-		updateBuildView(window.initial);
-
-        $('#delete-build').on('click', function (e) {
-            e.preventDefault();
-            confirmDelete("<?= PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>");
-        });
-	});
+<script>
+    $(document).ready(function() {
+        PHPCI.renderPlugins();
+    });
 </script>

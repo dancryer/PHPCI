@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * PHP Mess Detector Plugin - Allows PHP Mess Detector testing.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -28,6 +31,17 @@ class PhpMessDetector implements \PHPCI\Plugin
     protected $suffixes;
 
     /**
+     * @var string, based on the assumption the root may not hold the code to be
+     * tested, exteds the base path
+     */
+    protected $path;
+
+    /**
+     * @var array - paths to ignore
+     */
+    protected $ignore;
+
+    /**
      * Array of PHPMD rules. Can be one of the builtins (codesize, unusedcode, naming, design, controversial)
      * or a filenname (detected by checking for a / in it), either absolute or relative to the project root.
      * @var array
@@ -38,17 +52,21 @@ class PhpMessDetector implements \PHPCI\Plugin
      * @param \PHPCI\Builder $phpci
      * @param array $options
      */
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+        $this->suffixes = array('php');
+        $this->ignore = $phpci->ignore;
+        $this->path = '';
+        $this->rules = array('codesize', 'unusedcode', 'naming');
 
-        $this->suffixes = isset($options['suffixes']) ? (array)$options['suffixes'] : array('php');
+        if (!empty($options['path'])) {
+            $this->path = $options['path'];
+        }
 
-        $this->rules = isset($options['rules']) ? (array)$options['rules'] : array('codesize', 'unusedcode', 'naming');
-        foreach ($this->rules as &$rule) {
-            if ($rule[0] !== '/' && strpos($rule, '/') !== FALSE) {
-                $rule = $this->phpci->buildPath . $rule;
-            }
+        foreach (array('rules', 'ignore', 'suffixes') as $key) {
+            $this->overrideSetting($options, $key);
         }
     }
 
@@ -58,8 +76,8 @@ class PhpMessDetector implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --exclude ' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --exclude ' . implode(',', $this->ignore);
         }
 
         $suffixes = '';
@@ -67,7 +85,38 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
         }
 
-        $cmd = PHPCI_BIN_DIR . 'phpmd "%s" text %s %s %s';
-        return $this->phpci->executeCommand($cmd, $this->phpci->buildPath, implode(',', $this->rules), $ignore, $suffixes);
+        foreach ($this->rules as &$rule) {
+            if (strpos($rule, '/') !== false) {
+                $rule = $this->phpci->buildPath . $rule;
+            }
+        }
+
+        $phpmd = $this->phpci->findBinary('phpmd');
+
+        if (!$phpmd) {
+            $this->phpci->logFailure('Could not find phpmd.');
+            return false;
+        }
+
+        $cmd = $phpmd . ' "%s" text %s %s %s';
+        $success = $this->phpci->executeCommand(
+            $cmd,
+            $this->phpci->buildPath . $this->path,
+            implode(',', $this->rules),
+            $ignore,
+            $suffixes
+        );
+
+        $errors = count(array_filter(explode(PHP_EOL, trim($this->phpci->getLastOutput()))));
+        $this->build->storeMeta('phpmd-warnings', $errors);
+
+        return $success;
+    }
+
+    protected function overrideSetting($options, $key)
+    {
+        if (isset($options[$key]) && is_array($options[$key])) {
+            $this->{$key} = $options[$key];
+        }
     }
 }

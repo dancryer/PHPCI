@@ -1,20 +1,33 @@
 body
 {
-	background: #246;
+    background: #f9f9f9;
 	font-family: Roboto, Arial, Sans-Serif;
 	font-style: normal;
 	font-weight: 300;
 	padding-top: 70px;
 }
 
+    strong, th, .control-label {
+        font-weight: 500;
+    }
+
+    .btn, .dropdown-menu>li>a, .controls, .controls input, .controls label {
+        font-weight: 300;
+    }
+
 #content
 {
-	background: #fff;
-	border: 10px solid #369;
+	-border: 10px solid #369;
 	padding: 10px;
 }
 
-td .label { margin-right: 5px; }
+td .label {
+	margin-right: 5px;
+	line-height: 2;
+}
+#project-overview td .label {
+	margin-right: 0;
+}
 
 .success-message {
 	background-color: #4F8A10;
@@ -24,7 +37,9 @@ td .label { margin-right: 5px; }
 	background-color: #FF4747;
 }
 
-#latest-builds td {
+#latest-builds td,
+#project-overview td,
+#users td {
     vertical-align: middle;
 }
 
@@ -42,7 +57,6 @@ td .label { margin-right: 5px; }
 
 #title
 {
-	background: #f8f8f8;
 	border-bottom: 1px solid #ccc;
 	margin: -10px -10px 15px -10px;
 	padding: 10px;
@@ -54,6 +68,11 @@ td .label { margin-right: 5px; }
 		margin: 0;
 		padding: 0;
 	}
+
+    h2 {
+        color: #246;
+        font-size: 1.8em;
+    }
 
 .icon-build-ok
 {
@@ -75,13 +94,59 @@ td .label { margin-right: 5px; }
 	background: url('../img/icon-build-running.png') no-repeat top left;
 }
 
-h3
-{
-	border-bottom: 1px solid #f0f0f0;
-	margin-top: 0;
-	padding-top: 0;
-}
-
 .navbar-brand {
     padding: 10px 15px;
+}
+
+.box {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    padding: 10px;
+}
+    .box .title {
+        border-bottom: 1px solid #eee;
+        cursor: move;
+        font-size: 1.2em;
+        margin: 0;
+        margin-bottom: 20px;
+        padding: 8px 0;
+    }
+
+    .box .box-content {
+    }
+
+        .box .box-content table, .box .box-content pre {
+            margin-bottom: 0;
+        }
+
+        .box .box-content pre {
+            background: #fff;
+            border: 0;
+        }
+
+.ui-sortable-placeholder {
+    border: 1px dashed #ccc;
+    background: #ffe;
+    height: 100px;
+    margin-bottom: 15px;
+    visibility: visible !important;
+}
+
+.ui-sortable-placeholder * { visibility: hidden; }
+
+.ui-plugin { padding-top: 15px; }
+
+
+#loading {
+    font-family: Roboto, Arial, Sans-Serif;
+
+    background: #369;
+    color: #fff;
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    font-size: 2em;
+    right: 20px;
+    padding: 15px 50px;
 }

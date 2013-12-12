@@ -9,6 +9,8 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
 
 /**
 * Email Plugin - Provides simple email capability to PHPCI.
@@ -18,7 +20,6 @@ namespace PHPCI\Plugin;
 */
 class Email implements \PHPCI\Plugin
 {
-    
     /**
      * @var \PHPCI\Builder
      */
@@ -30,32 +31,33 @@ class Email implements \PHPCI\Plugin
     protected $options;
 
     /**
-     * @var array
-     */
-    protected $emailConfig;
-
-    /**
      * @var \Swift_Mailer
      */
     protected $mailer;
 
-    public function __construct(\PHPCI\Builder $phpci,
-                                array $options = array(),
-                                \Swift_Mailer $mailer = null)
-    {
-        $phpCiSettings      = $phpci->getSystemConfig('phpci');
-        $this->phpci        = $phpci;
-        $this->options      = $options;
-        $this->emailConfig  = isset($phpCiSettings['email_settings']) ? $phpCiSettings['email_settings'] : array();
+    /**
+     * @var string
+     */
+    protected $fromAddress;
 
-        // Either a mailer will have been passed in or we load from the
-        // config.
-        if ($mailer === null) {
-            $this->loadSwiftMailerFromConfig();
-        }
-        else {
-            $this->mailer = $mailer;
-        }
+    public function __construct(Builder $phpci,
+                                Build $build,
+                                \Swift_Mailer $mailer,
+                                array $options = array()
+
+    )
+    {
+        $this->phpci        = $phpci;
+        $this->build        = $build;
+        $this->options      = $options;
+
+        $phpCiSettings      = $phpci->getSystemConfig('phpci');
+
+        $this->fromAddress = isset($phpCiSettings['email_settings']['from_address'])
+                           ? $phpCiSettings['email_settings']['from_address']
+                           : "notifications-ci@phptesting.org";
+
+        $this->mailer = $mailer;
     }
 
     /**
@@ -71,20 +73,17 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $sendFailures = array();
-
         $subjectTemplate = "PHPCI - %s - %s";
         $projectName = $this->phpci->getBuildProjectTitle();
-        $logText = $this->phpci->getBuild()->getLog();
+        $logText = $this->build->getLog();
 
-        if($this->phpci->getSuccessStatus()) {
+        if ($this->build->isSuccessful()) {
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
                 sprintf($subjectTemplate, $projectName, "Passing Build"),
                 sprintf("Log Output: <br><pre>%s</pre>", $logText)
             );
-        }
-        else {
+        } else {
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
                 sprintf($subjectTemplate, $projectName, "Failing Build"),
@@ -93,14 +92,9 @@ class Email implements \PHPCI\Plugin
         }
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf(
-                "%d emails sent",
-                (count($addresses) - count($sendFailures)))
-        );
-        $this->phpci->log(sprintf(
-                "%d emails failed to send",
-                count($sendFailures))
-        );
+        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - count($sendFailures))));
+        $this->phpci->log(sprintf("%d emails failed to send", count($sendFailures)));
+
         return (count($sendFailures) == 0);
     }
 
@@ -113,7 +107,7 @@ class Email implements \PHPCI\Plugin
     public function sendEmail($toAddresses, $subject, $body)
     {
         $message = \Swift_Message::newInstance($subject)
-            ->setFrom($this->getMailConfig('from_address'))
+            ->setFrom($this->fromAddress)
             ->setTo($toAddresses)
             ->setBody($body)
             ->setContentType("text/html");
@@ -126,58 +120,23 @@ class Email implements \PHPCI\Plugin
     public function sendSeparateEmails(array $toAddresses, $subject, $body)
     {
         $failures = array();
-        foreach($toAddresses as $address) {
+        foreach ($toAddresses as $address) {
             $newFailures = $this->sendEmail($address, $subject, $body);
-            foreach($newFailures as $failure) {
+            foreach ($newFailures as $failure) {
                 $failures[] = $failure;
             }
         }
         return $failures;
     }
 
-    protected function loadSwiftMailerFromConfig()
-    {
-        /** @var \Swift_SmtpTransport $transport */
-        $transport = \Swift_SmtpTransport::newInstance(
-            $this->getMailConfig('smtp_address'),
-            $this->getMailConfig('smtp_port'),
-            $this->getMailConfig('smtp_encryption')
-        );
-        $transport->setUsername($this->getMailConfig('smtp_username'));
-        $transport->setPassword($this->getMailConfig('smtp_password'));
-
-        $this->mailer = \Swift_Mailer::newInstance($transport);
-    }
-
-    protected function getMailConfig($configName)
-    {
-        if (isset($this->emailConfig[$configName])
-            && $this->emailConfig[$configName] != "")
-        {
-            return $this->emailConfig[$configName];
-        }
-        // Check defaults
-        else {
-            switch($configName) {
-                case 'smtp_address':
-                    return "localhost";
-                case 'default_mailto_address':
-                    return null;
-                case 'smtp_port':
-                    return '25';
-                case 'smtp_encryption':
-                    return null;
-                case 'from_address':
-                    return "notifications-ci@phptesting.org";
-                default:
-                    return "";
-            }
-        }
-    }
-
     protected function getEmailAddresses()
     {
         $addresses = array();
+        $committer = $this->build->getCommitterEmail();
+
+        if (isset($this->options['committer']) && !empty($committer)) {
+            $addresses[] = $committer;
+        }
 
         if (isset($this->options['addresses'])) {
             foreach ($this->options['addresses'] as $address) {

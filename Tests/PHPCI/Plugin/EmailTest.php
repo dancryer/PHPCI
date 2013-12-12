@@ -1,33 +1,33 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright	Copyright 2013, Block 8 Limited.
-* @license		https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link			http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license        https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link            http://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin\Tests;
+
 use PHPCI\Plugin\Email as EmailPlugin;
 
-define('PHPCI_BIN_DIR', "FAKEPHPCIBIN");
 
 /**
-* Unit test for the PHPUnit plugin.
-* @author meadsteve
-*/
-class EmailTest extends  \PHPUnit_Framework_TestCase
+ * Unit test for the PHPUnit plugin.
+ * @author meadsteve
+ */
+class EmailTest extends \PHPUnit_Framework_TestCase
 {
 
-	/**
-	 * @var EmailPlugin $testedPhpUnit
-	 */
-	protected $testedEmailPlugin;
+    /**
+     * @var EmailPlugin $testedPhpUnit
+     */
+    protected $testedEmailPlugin;
 
-	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject $mockCiBuilder
-	 */
-	protected $mockCiBuilder;
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject $mockCiBuilder
+     */
+    protected $mockCiBuilder;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject $mockMailer
@@ -39,41 +39,51 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
      */
     protected $mockBuild;
 
-	public function setUp()
-	{
+    public function setUp()
+    {
         $this->mockBuild = $this->getMock(
-			'\PHPCI\Model\Build',
-			array('getLog'),
-			array(),
-			"mockBuild",
-			false
-		);
+            '\PHPCI\Model\Build',
+            array('getLog', 'getStatus'),
+            array(),
+            "mockBuild",
+            false
+        );
 
         $this->mockBuild->expects($this->any())
             ->method('getLog')
             ->will($this->returnValue("Build Log"));
 
-		$this->mockCiBuilder = $this->getMock(
-			'\PHPCI\Builder',
-			array('getSystemConfig',
-                  'getBuildProjectTitle',
-                  'getBuild',
-                  'log'),
-			array(),
-			"mockBuilder",
-			false
-		);
+        $this->mockBuild->expects($this->any())
+            ->method('getStatus')
+            ->will($this->returnValue(\PHPCI\Model\Build::STATUS_SUCCESS));
+
+        $this->mockCiBuilder = $this->getMock(
+            '\PHPCI\Builder',
+            array(
+                'getSystemConfig',
+                'getBuildProjectTitle',
+                'getBuild',
+                'log'
+            ),
+            array(),
+            "mockBuilder_email",
+            false
+        );
 
         $this->mockCiBuilder->buildPath = "/";
 
         $this->mockCiBuilder->expects($this->any())
             ->method('getSystemConfig')
             ->with('phpci')
-            ->will($this->returnValue(array(
-                'email_settings' => array(
-                    'from_address'  => "test-from-address@example.com"
+            ->will(
+                $this->returnValue(
+                    array(
+                        'email_settings' => array(
+                            'from_address' => "test-from-address@example.com"
+                        )
+                    )
                 )
-            )));
+            );
         $this->mockCiBuilder->expects($this->any())
             ->method('getBuildProjectTitle')
             ->will($this->returnValue('Test-Project'));
@@ -82,52 +92,55 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->mockBuild));
 
         $this->mockMailer = $this->getMock(
-			'\Swift_Mailer',
-			array('send'),
-			array(),
-			"mockMailer",
-			false
-		);
-
-		$this->loadEmailPluginWithOptions();
-	}
-
-	protected function loadEmailPluginWithOptions($arrOptions = array())
-	{
-		$this->testedEmailPlugin = new EmailPlugin(
-            $this->mockCiBuilder,
-            $arrOptions,
-            $this->mockMailer
+            '\Swift_Mailer',
+            array('send'),
+            array(),
+            "mockMailer",
+            false
         );
-	}
 
-	/**
-	 * @covers PHPUnit::execute
-	 */
-	public function testExecute_ReturnsFalseWithoutArgs()
-	{
-		$returnValue = $this->testedEmailPlugin->execute();
+        $this->loadEmailPluginWithOptions();
+    }
+
+    protected function loadEmailPluginWithOptions($arrOptions = array())
+    {
+        $this->testedEmailPlugin = new EmailPlugin(
+            $this->mockCiBuilder,
+            $this->mockBuild,
+            $this->mockMailer,
+            $arrOptions
+        );
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_ReturnsFalseWithoutArgs()
+    {
+        $returnValue = $this->testedEmailPlugin->execute();
         // As no addresses will have been mailed as non are configured.
-		$expectedReturn = false;
+        $expectedReturn = false;
 
-		$this->assertEquals($expectedReturn, $returnValue);
-	}
+        $this->assertEquals($expectedReturn, $returnValue);
+    }
 
-	/**
-	 * @covers PHPUnit::execute
-	 */
-	public function testExecute_BuildsBasicEmails()
-	{
-        $this->loadEmailPluginWithOptions(array(
-            'addresses' => array('test-receiver@example.com')
-        ));
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_BuildsBasicEmails()
+    {
+        $this->loadEmailPluginWithOptions(
+            array(
+                'addresses' => array('test-receiver@example.com')
+            )
+        );
 
         /** @var \Swift_Message $actualMail */
         $actualMail = null;
         $this->catchMailPassedToSend($actualMail);
 
-		$returnValue = $this->testedEmailPlugin->execute();
-		$expectedReturn = true;
+        $returnValue = $this->testedEmailPlugin->execute();
+        $expectedReturn = true;
 
         $this->assertSystemMail(
             'test-receiver@example.com',
@@ -137,14 +150,14 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
             $actualMail
         );
 
-		$this->assertEquals($expectedReturn, $returnValue);
+        $this->assertEquals($expectedReturn, $returnValue);
 
 
-	}
+    }
 
     /**
-	 * @covers PHPUnit::sendEmail
-	 */
+     * @covers PHPUnit::sendEmail
+     */
     public function testSendEmail_CallsMailerSend()
     {
         $this->mockMailer->expects($this->once())
@@ -153,8 +166,8 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
     }
 
     /**
-	 * @covers PHPUnit::sendEmail
-	 */
+     * @covers PHPUnit::sendEmail
+     */
     public function testSendEmail_BuildsAMessageObject()
     {
         $subject = "Test mail";
@@ -168,8 +181,8 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
     }
 
     /**
-	 * @covers PHPUnit::sendEmail
-	 */
+     * @covers PHPUnit::sendEmail
+     */
     public function testSendEmail_BuildsExpectedMessage()
     {
         $subject = "Test mail";
@@ -196,7 +209,7 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param \Swift_Message $actualMail   passed by ref and populated with
+     * @param \Swift_Message $actualMail passed by ref and populated with
      *                                     the message object the mock mailer
      *                                     receives.
      */
@@ -223,14 +236,17 @@ class EmailTest extends  \PHPUnit_Framework_TestCase
      * @param string $expectedSubject
      * @param \Swift_Message $actualMail
      */
-    protected function assertSystemMail($expectedToAddress,
-                                        $expectedFromAddress,
-                                        $expectedBody,
-                                        $expectedSubject,
-                                        $actualMail)
-    {
-        if (! ($actualMail instanceof \Swift_Message)) {
-            $type = is_object($actualMail) ? get_class($actualMail) : gettype($actualMail);
+    protected function assertSystemMail(
+        $expectedToAddress,
+        $expectedFromAddress,
+        $expectedBody,
+        $expectedSubject,
+        $actualMail
+    ) {
+        if (!($actualMail instanceof \Swift_Message)) {
+            $type = is_object($actualMail) ? get_class($actualMail) : gettype(
+                $actualMail
+            );
             throw new \Exception("Expected Swift_Message got " . $type);
         }
         $this->assertEquals(

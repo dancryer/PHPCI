@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * Environment variable plugin
 * @author       Steve Kamerman <stevekamerman@gmail.com>
@@ -20,7 +23,7 @@ class Env implements \PHPCI\Plugin
     protected $phpci;
     protected $env_vars;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci    = $phpci;
         $this->env_vars = $options;

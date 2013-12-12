@@ -8,28 +8,27 @@
 * @link         http://www.phptesting.org/
 */
 
-define('PHPCI_BIN_DIR', dirname(__FILE__) . '/vendor/bin/');
-define('PHPCI_DIR', dirname(__FILE__) . '/');
-define('ENABLE_SHELL_PLUGIN', false);
-
-// If this is the first time ./console has been run, we probably don't have Composer or any of our dependencies yet.
-// So we need to install and run Composer.
-if (!file_exists(PHPCI_DIR . 'vendor/autoload.php')) {
-    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
-    exit( 1 );
-}
+define('PHPCI_IS_CONSOLE', true);
 
 require('bootstrap.php');
 
 use PHPCI\Command\RunCommand;
 use PHPCI\Command\GenerateCommand;
+use PHPCI\Command\UpdateCommand;
 use PHPCI\Command\InstallCommand;
 use PHPCI\Command\DaemonCommand;
+use PHPCI\Command\PollCommand;
 use Symfony\Component\Console\Application;
 
+$loggerConfig = \PHPCI\Helper\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+
 $application = new Application();
-$application->add(new RunCommand);
+
+$application->add(new RunCommand($loggerConfig->getFor('RunCommand')));
 $application->add(new InstallCommand);
+$application->add(new UpdateCommand($loggerConfig->getFor('UpdateCommand')));
 $application->add(new GenerateCommand);
-$application->add(new DaemonCommand);
+$application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
+$application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
+
 $application->run();

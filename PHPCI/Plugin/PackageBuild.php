@@ -9,6 +9,9 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI\Builder;
+use PHPCI\Model\Build;
+
 /**
 * Create a ZIP or TAR.GZ archive of the entire build.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -22,9 +25,10 @@ class PackageBuild implements \PHPCI\Plugin
     protected $format;
     protected $phpci;
 
-    public function __construct(\PHPCI\Builder $phpci, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
+        $this->build        = $build;
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
@@ -37,7 +41,7 @@ class PackageBuild implements \PHPCI\Plugin
     public function execute()
     {
         $path = $this->phpci->buildPath;
-        $build = $this->phpci->getBuild();
+        $build = $this->build;
 
         if ($this->directory == $path) {
             return false;

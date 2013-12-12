@@ -24,16 +24,48 @@ class Application extends b8\Application
     */
     public function handleRequest()
     {
-        $this->initRequest();
+        try {
+            $this->initRequest();
 
         // Validate the user's session unless it is a login/logout action or a web hook:
         $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
-        $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'Gitlab', 'BuildStatus', 'Api'));
+        $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'Gitlab', 'BuildStatus', 'Git', 'Api'));
         $skipValidation = ($externalAction || $sessionAction);
 
-        if($skipValidation || $this->validateSession()) {
-            parent::handleRequest();
+
+            if ($skipValidation || $this->validateSession()) {
+                parent::handleRequest();
+            }
+        } catch (\Exception $ex) {
+            $content = '<h1>There was a problem with this request</h1>
+            <p>Please paste the details below into a
+            <a href="https://github.com/Block8/PHPCI/issues/new">new bug report</a>
+            so that we can investigate and fix it.</p>';
+
+            ob_start();
+            var_dump(array(
+                'message' => $ex->getMessage(),
+                'file' => $ex->getFile(),
+                'line' => $ex->getLine(),
+                'trace' => $ex->getTraceAsString()
+            ));
+            var_dump(array(
+                'PATH_INFO' => $_SERVER['PATH_INFO'],
+                'REDIRECT_PATH_INFO' => $_SERVER['REDIRECT_PATH_INFO'],
+                'REQUEST_URI' => $_SERVER['REQUEST_URI'],
+                'PHP_SELF' => $_SERVER['PHP_SELF'],
+                'SCRIPT_NAME' => $_SERVER['SCRIPT_NAME'],
+                'DOCUMENT_ROOT' => $_SERVER['DOCUMENT_ROOT'],
+                'SCRIPT_FILENAME' => $_SERVER['SCRIPT_FILENAME'],
+                'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'],
+            ));
+            $content .= ob_get_contents();
+            ob_end_clean();
+
+            $this->response->setContent($content);
+            $this->response->disableLayout();
         }
+
 
         if (View::exists('layout') && $this->response->hasLayout()) {
             $view           = new View('layout');

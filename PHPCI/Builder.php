@@ -11,6 +11,7 @@ namespace PHPCI;
 
 use PHPCI\Helper\CommandExecutor;
 use PHPCI\Helper\MailerFactory;
+use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
@@ -22,7 +23,7 @@ use Psr\Log\LogLevel;
  * PHPCI Build Runner
  * @author   Dan Cryer <dan@block8.co.uk>
  */
-class Builder implements LoggerAwareInterface, BuildLogger
+class Builder implements LoggerAwareInterface
 {
     /**
      * @var string
@@ -103,20 +104,31 @@ class Builder implements LoggerAwareInterface, BuildLogger
     protected $commandExecutor;
 
     /**
+     * @var Logging\BuildLogger
+     */
+    protected $buildLogger;
+
+    /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
      */
-    public function __construct(Build $build, $logger = null)
+    public function __construct(Build $build, LoggerInterface $logger = null)
     {
-        if ($logger) {
-            $this->setLogger($logger);
-        }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
+
+        $this->buildLogger = new BuildLogger($logger, $build);
+
         $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
 
-        $this->commandExecutor = new CommandExecutor($this, PHPCI_DIR, $this->quiet, $this->verbose);
+        $this->commandExecutor = new CommandExecutor(
+            $this->buildLogger,
+            PHPCI_DIR,
+            $this->quiet,
+            $this->verbose
+        );
+
     }
 
     /**
@@ -195,15 +207,15 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
         if ($this->success) {
             $this->pluginExecutor->executePlugins($this->config, 'success');
-            $this->logSuccess('BUILD SUCCESSFUL!');
+            $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
         }
         else {
             $this->pluginExecutor->executePlugins($this->config, 'failure');
-            $this->logFailure("BUILD FAILURE");
+            $this->buildLogger->logFailure("BUILD FAILURE");
         }
 
         // Clean up:
-        $this->log('Removing build.');
+        $this->buildLogger->log('Removing build.');
         shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
 
         // Update the build in the database, ping any external services, etc.
@@ -236,63 +248,6 @@ class Builder implements LoggerAwareInterface, BuildLogger
     public function findBinary($binary)
     {
         return $this->commandExecutor->findBinary($binary);
-    }
-
-    /**
-     * Add an entry to the build log.
-     * @param string|string[] $message
-     * @param string $level
-     * @param mixed[] $context
-     */
-    public function log($message, $level = LogLevel::INFO, $context = array())
-    {
-        // Skip if no logger has been loaded.
-        if (!$this->logger) {
-            return;
-        }
-
-        if (!is_array($message)) {
-            $message = array($message);
-        }
-
-        // The build is added to the context so the logger can use
-        // details from it if required.
-        $context['build'] = $this->build;
-
-        foreach ($message as $item) {
-            $this->logger->log($level, $item, $context);
-        }
-    }
-
-    /**
-     * Add a success-coloured message to the log.
-     * @param string
-     */
-    public function logSuccess($message)
-    {
-        $this->log("\033[0;32m" . $message . "\033[0m");
-    }
-
-    /**
-     * Add a failure-coloured message to the log.
-     * @param string $message
-     * @param \Exception $exception The exception that caused the error.
-     */
-    public function logFailure($message, \Exception $exception = null)
-    {
-        $context = array();
-
-        // The psr3 log interface stipulates that exceptions should be passed
-        // as the exception key in the context array.
-        if ($exception) {
-            $context['exception'] = $exception;
-        }
-
-        $this->log(
-            "\033[0;31m" . $message . "\033[0m",
-            LogLevel::ERROR,
-            $context
-        );
     }
 
     /**
@@ -369,7 +324,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
             $this->ignore = $this->config['build_settings']['ignore'];
         }
 
-        $this->logSuccess('Working copy created: ' . $this->buildPath);
+        $this->buildLogger->logSuccess('Working copy created: ' . $this->buildPath);
         return true;
     }
 
@@ -381,17 +336,31 @@ class Builder implements LoggerAwareInterface, BuildLogger
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->buildLogger->setLogger($logger);
+    }
+
+    public function log($message, $level = LogLevel::INFO, $context = array())
+    {
+        $this->buildLogger->log($message, $level, $context);
+    }
+
+   /**
+     * Add a success-coloured message to the log.
+     * @param string
+     */
+    public function logSuccess($message)
+    {
+        $this->buildLogger->logSuccess($message);
     }
 
     /**
-     * returns the logger attached to this builder.
-     *
-     * @return LoggerInterface
+     * Add a failure-coloured message to the log.
+     * @param string $message
+     * @param \Exception $exception The exception that caused the error.
      */
-    public function getLogger()
+    public function logFailure($message, \Exception $exception = null)
     {
-        return $this->logger;
+        $this->buildLogger->logFailure($message, $exception);
     }
 
     private function buildPluginFactory(Build $build)

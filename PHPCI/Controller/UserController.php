@@ -101,6 +101,7 @@ class UserController extends Controller
         } else {
             $values             = $user->getDataArray();
             $values['admin']    = $values['is_admin'];
+            $values['apikey']   = $values['api_key'];
         }
 
         $form   = $this->userForm($values, 'edit/' . $userId);
@@ -120,6 +121,7 @@ class UserController extends Controller
         if (!empty($values['password'])) {
             $values['hash'] = password_hash($values['password'], PASSWORD_DEFAULT);
         }
+        $values['api_key']    = $values['apikey'];
 
         $user->setValues($values);
         $user = $this->userStore->save($user);
@@ -155,6 +157,13 @@ class UserController extends Controller
         $field = new Form\Element\Password('password');
         $field->setRequired(true);
         $field->setLabel('Password' . ($type == 'edit' ? ' (leave blank to keep current password)' : ''));
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Text('api_key');
+        $field->setRequired(true);
+        $field->setLabel('Api Key');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);

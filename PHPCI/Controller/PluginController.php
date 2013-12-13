@@ -25,7 +25,10 @@ class PluginController extends \PHPCI\Controller
         'ircmaxell/password-compat',
         'swiftmailer/swiftmailer',
         'symfony/yaml',
-        'symfony/console'
+        'symfony/console',
+        'psr/log',
+        'monolog/monolog',
+        'pimple/pimple'
     );
 
     protected $canInstall;

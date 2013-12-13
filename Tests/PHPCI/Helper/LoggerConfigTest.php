@@ -1,6 +1,6 @@
 <?php
 
-use \PHPCI\Helper\LoggerConfig;
+use \PHPCI\Logging\LoggerConfig;
 
 class LoggerConfigTest extends PHPUnit_Framework_TestCase
 {

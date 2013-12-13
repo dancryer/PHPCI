@@ -20,7 +20,7 @@ use PHPCI\Command\DaemonCommand;
 use PHPCI\Command\PollCommand;
 use Symfony\Component\Console\Application;
 
-$loggerConfig = \PHPCI\Helper\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+$loggerConfig = \PHPCI\Logging\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
 
 $application = new Application();
 

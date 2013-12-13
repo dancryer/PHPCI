@@ -2,7 +2,7 @@
 
 namespace PHPCI\Plugin\Util;
 
-use PHPCI\BuildLogger;
+use \PHPCI\Logging\BuildLogger;
 
 class Executor
 {
@@ -17,7 +17,7 @@ class Executor
      */
     protected $pluginFactory;
 
-    function __construct(Factory $pluginFactory, BuildLogger $logger)
+    function __construct(Factory $pluginFactory,BuildLogger $logger)
     {
         $this->pluginFactory = $pluginFactory;
         $this->logger = $logger;

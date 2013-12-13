@@ -10,9 +10,9 @@
 namespace PHPCI\Command;
 
 use Monolog\Logger;
-use PHPCI\Helper\BuildDBLogHandler;
-use PHPCI\Helper\LoggedBuildContextTidier;
-use PHPCI\Helper\OutputLogHandler;
+use PHPCI\Logging\BuildDBLogHandler;
+use PHPCI\Logging\LoggedBuildContextTidier;
+use PHPCI\Logging\OutputLogHandler;
 use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

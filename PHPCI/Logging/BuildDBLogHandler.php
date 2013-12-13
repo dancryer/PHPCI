@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Helper;
+namespace PHPCI\Logging;
 
 
 use b8\Store;

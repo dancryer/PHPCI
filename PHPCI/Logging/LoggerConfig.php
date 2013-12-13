@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PHPCI\Helper;
+namespace PHPCI\Logging;
 
 
 use Monolog\Logger;

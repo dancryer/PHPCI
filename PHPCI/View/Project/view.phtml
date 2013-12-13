@@ -92,7 +92,9 @@
     $(function() {
         $('#delete-project').on('click', function (e) {
             e.preventDefault();
-            confirmDelete("<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>");
+            confirmDelete(
+                "<?= PHPCI_URL ?>project/delete/<?php print $project->getId(); ?>", "Project"
+            ).onCloseConfirmed = function () {window.location = '/'};
         });
     })
 </script>

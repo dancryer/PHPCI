@@ -5,18 +5,28 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Plugin;
 
-class ExamplePluginWithNoConstructorArgs {
-
+class ExamplePluginWithNoConstructorArgs implements Plugin
+{
+    public function execute()
+    {
+    }
 }
 
-class ExamplePluginWithSingleOptionalArg {
+class ExamplePluginWithSingleOptionalArg implements Plugin
+{
     function __construct($optional = null)
+    {
+
+    }
+
+    public function execute()
     {
 
     }
 }
 
-class ExamplePluginWithSingleRequiredArg {
+class ExamplePluginWithSingleRequiredArg implements Plugin
+{
 
     public $RequiredArgument;
 
@@ -24,15 +34,26 @@ class ExamplePluginWithSingleRequiredArg {
     {
         $this->RequiredArgument = $requiredArgument;
     }
+
+    public function execute()
+    {
+
+    }
 }
 
-class ExamplePluginWithSingleTypedRequiredArg {
+class ExamplePluginWithSingleTypedRequiredArg implements Plugin
+{
 
     public $RequiredArgument;
 
     function __construct(\stdClass $requiredArgument)
     {
         $this->RequiredArgument = $requiredArgument;
+    }
+
+    public function execute()
+    {
+
     }
 }
 

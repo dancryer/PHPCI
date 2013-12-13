@@ -57,7 +57,7 @@ class LocalBuild extends Build
 
         // If it is indeed a bare repository, then extract it into our build path:
         if ($gitConfig['core']['bare']) {
-            $builder->executeCommand('mkdir %2$s; git --git-dir="%1$s" archive master | tar -x -C "%2$s"', $reference, $buildPath);
+            $builder->executeCommand('mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"', $reference, $buildPath, $this->getBranch());
             return true;
         }
 

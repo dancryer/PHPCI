@@ -58,8 +58,10 @@
 </div>
 
 <script>
-setInterval(function()
-{
-	$('#latest-builds').load('<?= PHPCI_URL ?>home/latest');
-}, 10000);
+    refreshBuildsTable = function()
+    {
+        $('#latest-builds').load('<?= PHPCI_URL ?>home/latest');
+    };
+
+    setInterval(refreshBuildsTable, 10000);
 </script>

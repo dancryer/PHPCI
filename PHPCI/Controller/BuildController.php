@@ -109,7 +109,7 @@ class BuildController extends \PHPCI\Controller
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
         $build->setCommitId($copy->getCommitId());
-        $build->setStatus(0);
+        $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
 
@@ -129,6 +129,12 @@ class BuildController extends \PHPCI\Controller
         }
 
         $build  = $this->buildStore->getById($buildId);
+
+        if (!$build) {
+            $this->response->setResponseCode(404);
+            return '404 - Not Found';
+        }
+
         $this->buildStore->delete($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());

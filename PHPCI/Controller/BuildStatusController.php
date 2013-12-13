@@ -28,7 +28,7 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
     
     /**
-     * @var \PHPCI\Store\BuildtStore
+     * @var \PHPCI\Store\BuildStore
      */
     protected $buildStore;
 

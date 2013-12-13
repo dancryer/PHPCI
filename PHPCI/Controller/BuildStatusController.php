@@ -26,10 +26,16 @@ class BuildStatusController extends \PHPCI\Controller
      * @var \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
+    
+    /**
+     * @var \PHPCI\Store\BuildtStore
+     */
+    protected $buildStore;
 
     public function init()
     {
         $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = Store\Factory::getStore('Build');
     }
 
     /**

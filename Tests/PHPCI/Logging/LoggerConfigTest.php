@@ -4,7 +4,7 @@ namespace PHPCI\Plugin\Tests\Helper;
 
 use \PHPCI\Logging\LoggerConfig;
 
-class LoggerConfigTest extends PHPUnit_Framework_TestCase
+class LoggerConfigTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetFor_ReturnsPSRLogger()
     {

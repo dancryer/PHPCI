@@ -118,7 +118,7 @@ class Builder implements LoggerAwareInterface
 
         $this->buildLogger = new BuildLogger($logger, $build);
 
-        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
+        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this->buildLogger);
 
         $this->commandExecutor = new CommandExecutor(
             $this->buildLogger,

@@ -22,7 +22,7 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFor_AttachesAlwaysPresentHandlers()
     {
-        $expectedHandler = new Monolog\Handler\NullHandler();
+        $expectedHandler = new \Monolog\Handler\NullHandler();
         $config = new LoggerConfig(array(
             LoggerConfig::KEY_AlwaysLoaded => function() use ($expectedHandler) {
                 return array($expectedHandler);
@@ -38,7 +38,7 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFor_AttachesSpecificHandlers()
     {
-        $expectedHandler = new Monolog\Handler\NullHandler();
+        $expectedHandler = new \Monolog\Handler\NullHandler();
         $config = new LoggerConfig(array(
             "Specific" => function() use ($expectedHandler) {
                 return array($expectedHandler);
@@ -54,8 +54,8 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFor_IgnoresAlternativeHandlers()
     {
-        $expectedHandler = new Monolog\Handler\NullHandler();
-        $alternativeHandler = new Monolog\Handler\NullHandler();
+        $expectedHandler = new \Monolog\Handler\NullHandler();
+        $alternativeHandler = new \Monolog\Handler\NullHandler();
 
         $config = new LoggerConfig(array(
             "Specific" => function() use ($expectedHandler) {

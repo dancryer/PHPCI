@@ -28,6 +28,7 @@ class ApiController extends \PHPCI\Controller
 	public function init()
 	{
         $this->_projectStore      = Store\Factory::getStore('Project');
+        $this->buildStore      = Store\Factory::getStore('Build');
 
         $this->wsseHeader = $this->getWsseHeader();
         $this->wsseHeaderInfo = $this->parseHeader();
@@ -61,6 +62,24 @@ class ApiController extends \PHPCI\Controller
 		die();
 	}
 
+
+    public function projectStatus()
+    {
+        $this -> checkMethod(array("POST"));
+
+        $order          = array('finished' => 'DESC');
+        //$builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
+
+        $builds         = $this->buildStore->getWhere(array('project_id' => $_POST["projectId"]), 1, 0, array(), $order);
+
+        foreach($builds["items"] as $build) {
+            echo $build->getStatus();
+            echo $build->getFinished()->format("Y-m-d");
+        }
+        echo json_encode($builds);
+        die();
+    }
+
 	protected function checkMethod($allowed) {
 		$method = $this->request->getMethod();
 		if (! in_array($method, $allowed)) {
@@ -85,11 +104,7 @@ class ApiController extends \PHPCI\Controller
     private function wsseAuth($user)
     {
 
-        $now = new \DateTime('now', new \DateTimeZone('UTC'));
-        $timestamp = (string)$now->format('Y-m-d\TH:i:s\Z');
-
-        $nonce = $this->buildNonce();
-        $digest = $this->buildDigest($nonce, $timestamp, $this->encodeSecret($user->getApiKey()));
+        $digest = $this->buildDigest($this->wsseHeaderInfo["Nonce"], $this->wsseHeaderInfo["Created"], $user->getApiKey());
 
         $exceptionMsg = "Wsse auth failed";
 
@@ -98,17 +113,15 @@ class ApiController extends \PHPCI\Controller
             throw new \Exception($exceptionMsg." emails mismatch");
         }
         if ($this->wsseHeaderInfo["PasswordDigest"] != $digest) {
-
             throw new \Exception($exceptionMsg." digests mismatch");
         }
-        if ( $this->wsseHeaderInfo["Nonce"] !=  $nonce) {
 
-            throw new \Exception($exceptionMsg." nonces mismatch");
+        //expire timestamp after specified lifetime
+        if(time() - strtotime($this->wsseHeaderInfo["Created"]) > $this->lifetime)
+        {
+            throw new \Exception($exceptionMsg." token expired");
         }
-        if ($this->wsseHeaderInfo["Created"] != $timestamp) {
 
-            throw new \Exception($exceptionMsg." created mismatch");
-        }
     }
 
     private function getWsseHeader()
@@ -163,18 +176,10 @@ class ApiController extends \PHPCI\Controller
         return $digest === $expected;
     }
 
-    private function buildNonce()
-    {
-        return substr( base64_encode( sha1( time() . 'salt' ) ), 0, 16 );
-    }
 
     private function buildDigest($nonce, $created, $secret)
     {
-        return base64_encode( sha1( $nonce . $created . $secret ) );
+        return base64_encode( sha1( base64_decode($nonce) . $created . $secret , true) );
     }
 
-    private function encodeSecret($secret)
-    {
-        return bin2hex(hash("sha512", $secret, true));
-    }
 }

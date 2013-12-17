@@ -9,6 +9,7 @@
 
 namespace PHPCI;
 
+use PHPCI\Helper\BuildInterpolator;
 use PHPCI\Helper\CommandExecutor;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
@@ -76,12 +77,9 @@ class Builder implements LoggerAwareInterface
     protected $lastOutput;
 
     /**
-     * An array of key => value pairs that will be used for
-     * interpolation and environment variables
-     * @var array
-     * @see setInterpolationVars()
+     * @var BuildInterpolator
      */
-    protected $interpolation_vars = array();
+    protected $interpolator;
 
     /**
      * @var \PHPCI\Store\BuildStore
@@ -128,6 +126,8 @@ class Builder implements LoggerAwareInterface
             $this->quiet,
             $this->verbose
         );
+
+        $this->interpolator = new BuildInterpolator();
 
     }
 
@@ -251,50 +251,14 @@ class Builder implements LoggerAwareInterface
     }
 
     /**
-     * Replace every occurance of the interpolation vars in the given string
+     * Replace every occurrence of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
      * @param string $input
      * @return string
      */
     public function interpolate($input)
     {
-        $keys = array_keys($this->interpolation_vars);
-        $values = array_values($this->interpolation_vars);
-        return str_replace($keys, $values, $input);
-    }
-
-    /**
-     * Sets the variables that will be used for interpolation. This must be run
-     * from setupBuild() because prior to that, we don't know the buildPath
-     */
-    protected function setInterpolationVars()
-    {
-        $this->interpolation_vars = array();
-        $this->interpolation_vars['%PHPCI%'] = 1;
-        $this->interpolation_vars['%COMMIT%'] = $this->build->getCommitId();
-        $this->interpolation_vars['%PROJECT%'] = $this->build->getProjectId();
-        $this->interpolation_vars['%BUILD%'] = $this->build->getId();
-        $this->interpolation_vars['%PROJECT_TITLE%'] = $this->getBuildProjectTitle(
-        );
-        $this->interpolation_vars['%BUILD_PATH%'] = $this->buildPath;
-        $this->interpolation_vars['%BUILD_URI%'] = PHPCI_URL . "build/view/" . $this->build->getId(
-            );
-        $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
-        $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
-        $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
-        $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
-        $this->interpolation_vars['%PHPCI_BUILD_PATH%'] = $this->interpolation_vars['%BUILD_PATH%'];
-        $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
-
-        putenv('PHPCI=1');
-        putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
-        putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
-        putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
-        putenv(
-            'PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']
-        );
-        putenv('PHPCI_BUILD_PATH=' . $this->interpolation_vars['%BUILD_PATH%']);
-        putenv('PHPCI_BUILD_URI=' . $this->interpolation_vars['%BUILD_URI%']);
+        return $this->interpolator->interpolate($input);
     }
 
     /**
@@ -307,7 +271,11 @@ class Builder implements LoggerAwareInterface
         $this->ciDir = dirname(__FILE__) . '/../';
         $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
 
-        $this->setInterpolationVars();
+        $this->interpolator->setupInterpolationVars(
+            $this->build,
+            $this->buildPath,
+            PHPCI_URL
+        );
 
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {

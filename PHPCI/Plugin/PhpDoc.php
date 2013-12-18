@@ -85,7 +85,7 @@ class PhpDoc implements \PHPCI\Plugin
     {
         $ignore = '';
         if (count($this->ignore)) {
-            $ignore = '-i ' . implode(',', $ignore);
+            $ignore = '-i ' . implode(',', $this->ignore);
         }
 
         $phpdoc = $this->phpci->findBinary('phpdoc.php');

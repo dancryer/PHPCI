@@ -43,6 +43,12 @@ class PhpDoc implements \PHPCI\Plugin
      * @var string
      */
     protected $outputPath;
+    
+    /**
+     * Additional args for phpdoc utils
+     * @var string
+     */
+    protected $args;
 
     /**
      * @var array - paths to ignore
@@ -52,7 +58,7 @@ class PhpDoc implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
-        $this->path = $phpci->buildPath;
+        $this->path = realpath($phpci->buildPath);
         $this->ignore = $phpci->ignore;
 
         if (!empty($options['ignore'])) {
@@ -64,7 +70,11 @@ class PhpDoc implements \PHPCI\Plugin
         }
         
         if (!empty($options['outputPath'])) {
-            $this->outputPath = $this->path . $options['outputPath'];
+            $this->outputPath = realpath($this->path . $options['outputPath']);
+        }        
+        
+        if (!empty($options['outputPath'])) {
+            $this->args = $options['args'];
         }        
     }
 
@@ -75,7 +85,7 @@ class PhpDoc implements \PHPCI\Plugin
     {
         $ignore = '';
         if (count($this->ignore)) {
-            $ignore = implode('', $ignore);
+            $ignore = '-i ' . implode(',', $ignore);
         }
 
         $phpdoc = $this->phpci->findBinary('phpdoc.php');
@@ -85,10 +95,8 @@ class PhpDoc implements \PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpdoc . ' -d %s -i %s --template=%s -t %s', 
-                $this->path, $ignore, $this->template, $this->outputPath);
-
-        print $this->phpci->getLastOutput();
+        $success = $this->phpci->executeCommand($phpdoc . ' -d %s %s --template=%s -t %s %s', 
+                $this->path, $ignore, $this->template, $this->outputPath, $this->args);
 
         return $success;
     }

@@ -78,7 +78,7 @@ class PhpDoc implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        $phpdoc = $this->phpci->findBinary('phpdoc');
+        $phpdoc = $this->phpci->findBinary('phpdoc.php');
 
         if (!$phpdoc) {
             $this->phpci->logFailure('Could not find phpdoc.');

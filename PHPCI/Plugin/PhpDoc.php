@@ -64,7 +64,7 @@ class PhpDoc implements \PHPCI\Plugin
         }
         
         if (!empty($options['outputPath'])) {
-            $this->outputPath = $options['outputPath'];
+            $this->outputPath = $this->path . $options['outputPath'];
         }        
     }
 

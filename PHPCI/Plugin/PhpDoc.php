@@ -73,7 +73,7 @@ class PhpDoc implements \PHPCI\Plugin
             $this->outputPath = realpath($this->path . $options['outputPath']);
         }        
         
-        if (!empty($options['outputPath'])) {
+        if (!empty($options['args'])) {
             $this->args = $options['args'];
         }        
     }

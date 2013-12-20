@@ -9,6 +9,7 @@
 
 namespace PHPCI;
 
+use PHPCI\Helper\CommandExecutor;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Model\Build;
 use b8\Store;
@@ -97,6 +98,11 @@ class Builder implements LoggerAwareInterface, BuildLogger
     protected $pluginExecutor;
 
     /**
+     * @var Helper\CommandExecutor
+     */
+    protected $commandExecutor;
+
+    /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
@@ -109,6 +115,8 @@ class Builder implements LoggerAwareInterface, BuildLogger
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
         $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
+
+        $this->commandExecutor = new CommandExecutor($this, PHPCI_DIR, $this->quiet, $this->verbose);
     }
 
     /**
@@ -209,27 +217,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
      */
     public function executeCommand()
     {
-        $command = call_user_func_array('sprintf', func_get_args());
-
-        if (!$this->quiet) {
-            $this->log('Executing: ' . $command);
-        }
-
-        $status = 0;
-        exec($command, $this->lastOutput, $status);
-
-        if (!empty($this->lastOutput) && ($this->verbose || $status != 0)) {
-            $this->log($this->lastOutput);
-        }
-
-
-        $rtn = false;
-
-        if ($status == 0) {
-            $rtn = true;
-        }
-
-        return $rtn;
+        return $this->commandExecutor->buildAndExecuteCommand(func_get_args());
     }
 
     /**
@@ -237,7 +225,17 @@ class Builder implements LoggerAwareInterface, BuildLogger
      */
     public function getLastOutput()
     {
-        return implode(PHP_EOL, $this->lastOutput);
+        return $this->commandExecutor->getLastOutput();
+    }
+
+    /**
+     * Find a binary required by a plugin.
+     * @param $binary
+     * @return null|string
+     */
+    public function findBinary($binary)
+    {
+        return $this->commandExecutor->findBinary($binary);
     }
 
     /**
@@ -373,39 +371,6 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
         $this->logSuccess('Working copy created: ' . $this->buildPath);
         return true;
-    }
-
-    /**
-     * Find a binary required by a plugin.
-     * @param $binary
-     * @return null|string
-     */
-    public function findBinary($binary)
-    {
-        if (is_string($binary)) {
-            $binary = array($binary);
-        }
-
-        foreach ($binary as $bin) {
-            // Check project root directory:
-            if (is_file(PHPCI_DIR . $bin)) {
-                return PHPCI_DIR . $bin;
-            }
-
-            // Check Composer bin dir:
-            if (is_file(PHPCI_DIR . 'vendor/bin/' . $bin)) {
-                return PHPCI_DIR . 'vendor/bin/' . $bin;
-            }
-
-            // Use "which"
-            $which = trim(shell_exec('which ' . $bin));
-
-            if (!empty($which)) {
-                return $which;
-            }
-        }
-
-        return null;
     }
 
     /**

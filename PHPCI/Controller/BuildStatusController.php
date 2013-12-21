@@ -26,10 +26,16 @@ class BuildStatusController extends \PHPCI\Controller
      * @var \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
+    
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
 
     public function init()
     {
         $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = Store\Factory::getStore('Build');
     }
 
     /**
@@ -51,5 +57,20 @@ class BuildStatusController extends \PHPCI\Controller
 
         header('Content-Type: image/png');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
+    }
+    
+    /**
+     * Get build status
+     * @param int $buildId
+     */
+    public function buildInfo($buildId)
+    {
+        $build = $this->buildStore->getById($buildId);
+        
+        if (isset($build) && $build instanceof Build) {            
+            die($build->getStatus());    
+        }
+        
+        die();
     }
 }

@@ -10,7 +10,9 @@
 
 namespace PHPCI\Command;
 
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,6 +29,26 @@ use PHPCI\BuildFactory;
 */
 class DaemoniseCommand extends Command
 {
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @param \Monolog\Logger $logger
+     * @param string $name
+     */
+    public function __construct(Logger $logger, $name = null)
+    {
+        parent::__construct($name);
+        $this->logger = $logger;
+    }
+
     protected function configure()
     {
         $this
@@ -43,14 +65,19 @@ class DaemoniseCommand extends Command
         $command = sprintf($cmd, getmypid(), PHPCI_DIR);
         exec($command);
 
+        $this->output = $output;
         $this->run   = true;
         $this->sleep = 0;
-        $runner      = new RunCommand;
+        $runner      = new RunCommand($this->logger);
+
+        $in = new ArgvInput(array());
 
         while ($this->run) {
 
+            $buildCount = 0;
+
             try {
-                $buildCount = $runner->execute($input, $output);
+                $buildCount = $runner->run($in, $output);
             } catch (\Exception $e) {
                 var_dump($e);
             }

@@ -60,7 +60,9 @@
 <script>
     refreshBuildsTable = function()
     {
-        $('#latest-builds').load('<?= PHPCI_URL ?>home/latest');
+        $('#latest-builds').load('<?= PHPCI_URL ?>home/latest', function () {
+            $('#latest-builds').trigger('latest-builds:reload');
+        });
     };
 
     setInterval(refreshBuildsTable, 10000);

@@ -72,11 +72,11 @@ class ApiController extends \PHPCI\Controller
 
         $builds         = $this->buildStore->getWhere(array('project_id' => $_POST["projectId"]), 1, 0, array(), $order);
 
-        foreach($builds["items"] as $build) {
-            echo $build->getStatus();
-            echo $build->getFinished()->format("Y-m-d");
-        }
-        echo json_encode($builds);
+
+        $output["status"] =  $builds["items"][0]->getStatus();
+        $output["endDate"] = $builds["items"][0]->getFinished()->format("Y-m-d");
+
+        echo json_encode($output);
         die();
     }
 

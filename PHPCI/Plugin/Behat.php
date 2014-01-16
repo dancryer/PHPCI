@@ -28,6 +28,12 @@ class Behat implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->features = '';
 
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('atoum');
+        }
+
         if (!empty($options['features'])) {
             $this->features = $options['features'];
         }
@@ -41,7 +47,7 @@ class Behat implements \PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
 
-        $behat = $this->phpci->findBinary('behat');
+        $behat = $this->executable;
 
         if (!$behat) {
             $this->phpci->logFailure('Could not find behat.');

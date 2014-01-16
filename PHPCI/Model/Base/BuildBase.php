@@ -551,6 +551,17 @@ class BuildBase extends Model
     }
 
     /**
+    * Get the value of the project's Title / title.
+    *
+    * @return string
+    */
+    public function getProjectTitle()
+    {
+        return $this->getProject()->getTitle();
+    }
+
+
+    /**
     * Set Project - Accepts an ID, an array representing a Project or a Project model.
     *
     * @param $value mixed

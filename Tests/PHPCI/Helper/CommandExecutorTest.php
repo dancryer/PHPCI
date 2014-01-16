@@ -15,7 +15,7 @@ class CommandExecutorTest extends ProphecyTestCase
     protected function setUp()
     {
         parent::setUp();
-        $mockBuildLogger = $this->prophesize('\PHPCI\BuildLogger');
+        $mockBuildLogger = $this->prophesize('PHPCI\Logging\BuildLogger');
         $this->testedExecutor = new CommandExecutor($mockBuildLogger->reveal(), __DIR__ . "/");
     }
 

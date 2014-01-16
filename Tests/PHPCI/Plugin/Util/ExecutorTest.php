@@ -22,7 +22,7 @@ class ExecutorTest extends ProphecyTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockBuildLogger = $this->prophesize('\PHPCI\BuildLogger');
+        $this->mockBuildLogger = $this->prophesize('\PHPCI\Logging\BuildLogger');
         $this->mockFactory = $this->prophesize('\PHPCI\Plugin\Util\Factory');
         $this->testedExecutor = new Executor($this->mockFactory->reveal(), $this->mockBuildLogger->reveal());
     }

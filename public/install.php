@@ -139,7 +139,7 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $store->save($user);
         }
 
-        $formAction = '/session/login';
+        $formAction = rtrim( $config['phpci']['url'], '/' ) . '/session/login';
     }
 }
 

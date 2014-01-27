@@ -101,8 +101,8 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
          * Create database:
          */
         $dbhost = $config['b8']['database']['servers']['write'][0];
-        $dbname = $config['b8']['database']['name'];
-        $dbuser = $config['b8']['database']['username'];
+        $dbname = $config['b8']['database']['name'] ?: 'phpci';
+        $dbuser = $config['b8']['database']['username'] ?: 'phpci';
         $dbpass = $config['b8']['database']['password'];
 
         $pdo = new PDO('mysql:host=' . $dbhost, $dbuser, $dbpass);

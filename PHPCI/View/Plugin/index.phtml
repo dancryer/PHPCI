@@ -9,15 +9,15 @@
 <?php endif; ?>
 
 <?php if (isset($_GET['r'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['r']; ?></strong> has been removed.</p>
+    <p class="alert alert-success"><strong><?php echo  $_GET['r']; ?></strong> has been removed.</p>
 <?php endif; ?>
 
 <?php if (isset($_GET['i'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['i']; ?></strong> has been installed.</p>
+    <p class="alert alert-success"><strong><?php echo  $_GET['i']; ?></strong> has been installed.</p>
 <?php endif; ?>
 
 <?php if (isset($_GET['w'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
+    <p class="alert alert-success"><strong><?php echo  $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
 <?php endif; ?>
 
 <div class="box">
@@ -34,11 +34,11 @@
         <tbody>
 <?php foreach ($installed as $package => $version): ?>
             <tr>
-                <td><?= $package; ?></td>
-                <td><?= $version; ?></td>
+                <td><?php echo  $package; ?></td>
+                <td><?php echo  $version; ?></td>
                 <td>
                 <?php if (!in_array($package, $required) && $canWrite): ?>
-                    <a class="btn btn-danger btn-small" href="<?= PHPCI_URL ?>plugin/remove?package=<?= $package; ?>">Remove &raquo;</a>
+                    <a class="btn btn-danger btn-small" href="<?php echo  PHPCI_URL ?>plugin/remove?package=<?php echo  $package; ?>">Remove &raquo;</a>
                 <?php endif; ?>
                 </td>
             </tr>
@@ -62,11 +62,11 @@
         <?php foreach ($suggested as $package => $version): ?>
             <?php if (in_array($package, array_keys($installed))) { continue; } ?>
             <tr>
-                <td><?= $package; ?></td>
-                <td><?= $version; ?></td>
+                <td><?php echo  $package; ?></td>
+                <td><?php echo  $version; ?></td>
                 <td>
                     <?php if ($canWrite): ?>
-                        <button data-name="<?= $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
+                        <button data-name="<?php echo  $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
                     <?php endif; ?>
                 </td>
             </tr>

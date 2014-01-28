@@ -78,11 +78,11 @@ foreach($projects as $project):
 ?>
 <tr class="<?php print $cls; ?>">
     <td>
-        <span class='label label-<?= $subcls ?>'>
-            <?= $health ?>
+        <span class='label label-<?php echo  $subcls ?>'>
+            <?php echo  $health ?>
         </span>
     </td>
-    <td><a href='<?= PHPCI_URL ?>project/view/<?= $project->getId() ?>'><?= htmlspecialchars($project->getTitle()) ?></a></td>
+    <td><a href='<?php echo  PHPCI_URL ?>project/view/<?php echo  $project->getId() ?>'><?php echo  htmlspecialchars($project->getTitle()) ?></a></td>
     <td><?php print is_null($success) ? 'Never' : $success; ?></td>
     <td><?php print is_null($failure) ? 'Never' : $failure; ?></td>
     <td>
@@ -92,6 +92,6 @@ foreach($projects as $project):
         }
         ?>
     </td>
-    <td><a class="btn btn-default btn-small" href='<?= PHPCI_URL ?>project/build/<?= $project->getId(); ?>'>build now &raquo;</a></td>
+    <td><a class="btn btn-default btn-small" href='<?php echo  PHPCI_URL ?>project/build/<?php echo  $project->getId(); ?>'>build now &raquo;</a></td>
 </tr>
 <?php endforeach; ?>

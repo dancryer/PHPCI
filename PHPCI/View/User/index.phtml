@@ -5,10 +5,10 @@
 <div class="row">
 	<div class="col-lg-3">
         <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li class="active"><a href="<?= PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
+			<li><a href="<?php echo  PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li class="active"><a href="<?php echo  PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="<?= PHPCI_URL ?>user/add"><i class="icon-plus-sign"></i> Add User</a></li>
+			<li><a href="<?php echo  PHPCI_URL ?>user/add"><i class="icon-plus-sign"></i> Add User</a></li>
 			<?php endif; ?>
 		</ul>
 	</div>
@@ -39,18 +39,18 @@
 				}
 				?>
 				<tr class="<?php print $cls; ?>">
-					<td><a href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
+					<td><a href="<?php echo  PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php print $user->getEmail(); ?></a></td>
 					<td><?php print htmlspecialchars($user->getName()); ?></td>
 					<td><?php print $status; ?></td>
 					<td>
 						<?php if($this->User()->getIsAdmin()): ?>
 						<div class="btn-group">
-							<a class="btn btn-default btn-small" href="<?= PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>">Edit</a>
+							<a class="btn btn-default btn-small" href="<?php echo  PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>">Edit</a>
 							<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="<?= PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>" class="phpci-app-delete-user">Delete User</a></li>
+								<li><a href="<?php echo  PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>" class="phpci-app-delete-user">Delete User</a></li>
 							</ul>
 						</div>
 						<?php endif; ?>

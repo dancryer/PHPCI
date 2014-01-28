@@ -4,14 +4,14 @@
 <div class="row">
 	<div class="col-lg-3">
 		<ul class="nav nav-pills nav-stacked">
-			<li class="active"><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li class="active"><a href="<?php echo PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
         </ul>
 
         <?php if (count($projects)): ?>
         <h5>Projects</h5>
         <ul class="nav nav-pills nav-stacked">
 			<?php foreach($projects as $project): ?>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print htmlspecialchars($project->getTitle()); ?></a></li>
+			<li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print htmlspecialchars($project->getTitle()); ?></a></li>
 			<?php endforeach; ?>
 		</ul>
         <?php endif; ?>
@@ -60,7 +60,7 @@
 <script>
     refreshBuildsTable = function()
     {
-        $('#latest-builds').load('<?= PHPCI_URL ?>home/latest', function () {
+        $('#latest-builds').load('<?php echo PHPCI_URL ?>home/latest', function () {
             $('#latest-builds').trigger('latest-builds:reload');
         });
     };

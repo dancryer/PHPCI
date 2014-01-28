@@ -34,7 +34,7 @@
             ?>
             <?php if (!empty($id) && empty($settings['phpci']['github']['token'])): ?>
                 <p class="alert alert-warning clearfix">
-                    Before you can start using Github, you need to <a href="<?= $githubUri; ?>">sign in</a> and grant PHPCI access to your account.
+                    Before you can start using Github, you need to <a href="<?php echo $githubUri; ?>">sign in</a> and grant PHPCI access to your account.
                 </p>
             <?php endif; ?>
 
@@ -42,7 +42,7 @@
                 <p class="alert alert-success">
                     PHPCI is successfully linked to Github account
                     <strong>
-                        <a href="<?= $githubUser['html_url']; ?>"><?= $githubUser['name']; ?></a>
+                        <a href="<?php echo $githubUser['html_url']; ?>"><?php echo $githubUser['name']; ?></a>
                     </strong>
                 </p>
             <?php endif; ?>

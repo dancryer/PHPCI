@@ -82,6 +82,11 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
         require_once(PHPCI_DIR . 'vendor/autoload.php');
 
         /**
+         *  Temporary save phpci URL for redirect after install ($config is replaced in bootstrap.php)
+         */
+        $phpciUrl = $config['phpci']['url'];
+
+        /**
          * Write config file:
          */
         $config['b8']['database']['servers']['read'] = array($config['b8']['database']['servers']['read']);
@@ -139,7 +144,7 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $store->save($user);
         }
 
-        $formAction = rtrim( $config['phpci']['url'], '/' ) . '/session/login';
+        $formAction = rtrim( $phpciUrl, '/' ) . '/session/login';
     }
 }
 

@@ -36,6 +36,7 @@ class UserBase extends Model
         'id' => null,
         'email' => null,
         'hash' => null,
+        'api_key' => null,
         'is_admin' => null,
         'name' => null,
     );
@@ -48,6 +49,7 @@ class UserBase extends Model
         'id' => 'getId',
         'email' => 'getEmail',
         'hash' => 'getHash',
+        'api_key' => 'getApiKey',
         'is_admin' => 'getIsAdmin',
         'name' => 'getName',
 
@@ -62,6 +64,7 @@ class UserBase extends Model
         'id' => 'setId',
         'email' => 'setEmail',
         'hash' => 'setHash',
+        'api_key' => 'setApiKey',
         'is_admin' => 'setIsAdmin',
         'name' => 'setName',
 
@@ -84,6 +87,10 @@ class UserBase extends Model
             'length' => 250,
         ),
         'hash' => array(
+            'type' => 'varchar',
+            'length' => 250,
+        ),
+        'api_key' => array(
             'type' => 'varchar',
             'length' => 250,
         ),
@@ -145,6 +152,18 @@ class UserBase extends Model
     public function getHash()
     {
         $rtn    = $this->data['hash'];
+
+        return $rtn;
+    }
+
+    /**
+     * Get the value of ApiKey / api_key.
+     *
+     * @return string
+     */
+    public function getApiKey()
+    {
+        $rtn    = $this->data['api_key'];
 
         return $rtn;
     }
@@ -231,6 +250,26 @@ class UserBase extends Model
         $this->data['hash'] = $value;
 
         $this->_setModified('hash');
+    }
+
+    /**
+     * Set the value of ApiKey / api_key.
+     *
+     * Must not be null.
+     * @param $value string
+     */
+    public function setApiKey($value)
+    {
+        $this->_validateNotNull('ApiKey', $value);
+        $this->_validateString('ApiKey', $value);
+
+        if ($this->data['api_key'] === $value) {
+            return;
+        }
+
+        $this->data['api_key'] = $value;
+
+        $this->_setModified('api_key');
     }
 
     /**

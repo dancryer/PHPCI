@@ -210,7 +210,7 @@ class ProjectController extends \PHPCI\Controller
             $values['key']  = $values['git_key'];
 
             if ($values['type'] == "gitlab") {
-                $accessInfo = $project->getAccessInformation();
+                $accessInfo = unserialize($project->getAccessInformation());
                 $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
                 $values['reference'] = $reference;
             }

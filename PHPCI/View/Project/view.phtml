@@ -27,17 +27,17 @@
 			switch($project->getType())
 			{
 				case 'github':
-					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/github/webhook/' . $project->getId();
+					$url	= PHPCI_URL . 'webhook/github/' . $project->getId();
 					print ' as a "WebHook URL" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Service Hooks</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
 				break;
 
 				case 'gitlab':
-					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/gitlab/webhook/' . $project->getId();
+					$url	= PHPCI_URL. 'webhook/gitlab/' . $project->getId();
 					print ' as a "WebHook URL" in the Web Hooks section of your Gitlab repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
 				break;
 
 				case 'bitbucket':
-					$url	= (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . '/bitbucket/webhook/' . $project->getId();
+					$url	= PHPCI_URL . 'webhook/bitbucket/' . $project->getId();
 					print ' as a "POST" service in the <a href="https://bitbucket.org/' . $project->getReference() . '/admin/services">Services</a> section of your Bitbucket repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
 				break;
 			}

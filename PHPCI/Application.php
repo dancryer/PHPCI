@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use b8;
+use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
 
@@ -19,52 +20,38 @@ use b8\View;
 */
 class Application extends b8\Application
 {
+    public function init()
+    {
+        $request =& $this->request;
+        $route = '/:controller/:action';
+        $opts = ['controller' => 'Home', 'action' => 'index'];
+
+        $this->router->clearRoutes();
+        $this->router->register($route, $opts, function (&$route, Response &$response) use (&$request)
+        {
+            $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
+
+            if (!$skipValidation && !$this->validateSession()) {
+                if ($request->isAjax()) {
+                    $response->setResponseCode(401);
+                    $response->setContent('');
+                } else {
+                    $response = new RedirectResponse($response);
+                    $response->setHeader('Location', PHPCI_URL.'session/login');
+                }
+
+                return false;
+            }
+
+            return true;
+        });
+    }
     /**
     * Handle an incoming web request.
     */
     public function handleRequest()
     {
-        try {
-            $this->initRequest();
-
-            // Validate the user's session unless it is a login/logout action or a web hook:
-            $sessionAction = ($this->controllerName == 'Session' && in_array($this->action, array('login', 'logout')));
-            $externalAction = in_array($this->controllerName, array('Bitbucket', 'Github', 'Gitlab', 'BuildStatus', 'Git'));
-            $skipValidation = ($externalAction || $sessionAction);
-
-            if ($skipValidation || $this->validateSession()) {
-                parent::handleRequest();
-            }
-        } catch (\Exception $ex) {
-            $content = '<h1>There was a problem with this request</h1>
-            <p>Please paste the details below into a
-            <a href="https://github.com/Block8/PHPCI/issues/new">new bug report</a>
-            so that we can investigate and fix it.</p>';
-
-            ob_start();
-            var_dump(array(
-                'message' => $ex->getMessage(),
-                'file' => $ex->getFile(),
-                'line' => $ex->getLine(),
-                'trace' => $ex->getTraceAsString()
-            ));
-            var_dump(array(
-                'PATH_INFO' => $_SERVER['PATH_INFO'],
-                'REDIRECT_PATH_INFO' => $_SERVER['REDIRECT_PATH_INFO'],
-                'REQUEST_URI' => $_SERVER['REQUEST_URI'],
-                'PHP_SELF' => $_SERVER['PHP_SELF'],
-                'SCRIPT_NAME' => $_SERVER['SCRIPT_NAME'],
-                'DOCUMENT_ROOT' => $_SERVER['DOCUMENT_ROOT'],
-                'SCRIPT_FILENAME' => $_SERVER['SCRIPT_FILENAME'],
-                'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'],
-            ));
-            $content .= ob_get_contents();
-            ob_end_clean();
-
-            $this->response->setContent($content);
-            $this->response->disableLayout();
-        }
-
+        $this->response = parent::handleRequest();
 
         if (View::exists('layout') && $this->response->hasLayout()) {
             $view           = new View('layout');
@@ -89,14 +76,6 @@ class Application extends b8\Application
             }
 
             unset($_SESSION['user_id']);
-        }
-
-        if ($this->request->isAjax()) {
-            $this->response->setResponseCode(401);
-            $this->response->setContent('');
-        } else {
-            $this->response = new RedirectResponse($this->response);
-            $this->response->setHeader('Location', PHPCI_URL.'session/login');
         }
 
         return false;

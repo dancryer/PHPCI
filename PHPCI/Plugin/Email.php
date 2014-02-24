@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use b8\View;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -84,10 +85,16 @@ class Email implements \PHPCI\Plugin
                 sprintf("Log Output: <br><pre>%s</pre>", $logText)
             );
         } else {
+            $view = new View('Email/failed');
+            $view->build = $this->build;
+            $view->project = $this->build->getProject();
+
+            $emailHtml = $view->render();
+
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
                 sprintf($subjectTemplate, $projectName, "Failing Build"),
-                sprintf("Log Output: <br><pre>%s</pre>", $logText)
+                $emailHtml
             );
         }
 

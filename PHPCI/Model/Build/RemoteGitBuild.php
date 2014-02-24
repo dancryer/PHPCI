@@ -64,7 +64,9 @@ class RemoteGitBuild extends Build
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        return $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $success = $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+        return $success;
     }
 
     /**
@@ -88,7 +90,7 @@ class RemoteGitBuild extends Build
         $cmd = 'eval `ssh-agent -s` && ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
         $success = $builder->executeCommand($cmd, $keyFile, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
         $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
-        
+
         // Remove the key file:
         unlink($keyFile);
 

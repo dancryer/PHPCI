@@ -49,11 +49,14 @@ class WebhookController extends \PHPCI\Controller
 
         foreach ($commits as $commit) {
             try {
+                $email = $commit['raw_author'];
+                $email = substr($email, 0, strpos($email, '>'));
+                $email = substr($email, strpos($email, '<') + 1);
 
                 $build = new Build();
                 $build->setProjectId($project);
                 $build->setCommitId($commit['raw_node']);
-                $build->setCommitterEmail($commit['raw_author']);
+                $build->setCommitterEmail($email);
                 $build->setStatus(Build::STATUS_NEW);
                 $build->setLog('');
                 $build->setCreated(new \DateTime());

@@ -40,21 +40,20 @@ class WebhookController extends \PHPCI\Controller
     {
         $payload = json_decode($this->getParam('payload'), true);
         $branches = array();
-        $commits = array();
 
         foreach ($payload['commits'] as $commit) {
-            if (!in_array($commit['branch'], $branches)) {
-                $branches[]                 = $commit['branch'];
-                $commits[$commit['branch']] = $commit['raw_node'];
+            if (!in_array($commit['branch'], array_keys($commits))) {
+                $commits[$commit['branch']] = $commit;
             }
         }
 
-        foreach ($branches as $branch) {
+        foreach ($commits as $commit) {
             try {
 
                 $build = new Build();
                 $build->setProjectId($project);
-                $build->setCommitId($commits[$branch]);
+                $build->setCommitId($commit['raw_node']);
+                $build->setCommitterEmail($commit['raw_author']);
                 $build->setStatus(Build::STATUS_NEW);
                 $build->setLog('');
                 $build->setCreated(new \DateTime());

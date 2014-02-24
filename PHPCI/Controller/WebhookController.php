@@ -39,7 +39,7 @@ class WebhookController extends \PHPCI\Controller
     public function bitbucket($project)
     {
         $payload = json_decode($this->getParam('payload'), true);
-        $branches = array();
+        $commits = array();
 
         foreach ($payload['commits'] as $commit) {
             if (!in_array($commit['branch'], array_keys($commits))) {
@@ -124,27 +124,40 @@ class WebhookController extends \PHPCI\Controller
         }
 
         try {
-            $build      = new Build();
-            $build->setProjectId($project);
-            $build->setCommitId($payload['after']);
-            $build->setStatus(Build::STATUS_NEW);
-            $build->setLog('');
-            $build->setCreated(new \DateTime());
-            $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
 
-            if (!empty($payload['pusher']['email'])) {
+            if (isset($payload['commits']) && is_array($payload['commits'])) {
+                // If we have a list of commits, then add them all as builds to be tested:
+
+                foreach ($payload['commits'] as $commit) {
+                    if (!$commit['distinct']) {
+                        continue;
+                    }
+
+                    $build = new Build();
+                    $build->setProjectId($project);
+                    $build->setCommitId($commit['id']);
+                    $build->setStatus(Build::STATUS_NEW);
+                    $build->setLog('');
+                    $build->setCreated(new \DateTime());
+                    $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
+                    $build->setCommitterEmail($commit['committer']['email']);
+                    $build = $this->buildStore->save($build);
+                    $build->sendStatusPostback();
+                }
+            } elseif (substr($payload['ref'], 0, 10) == 'refs/tags/') {
+                // If we don't, but we're dealing with a tag, add that instead:
+                $build = new Build();
+                $build->setProjectId($project);
+                $build->setCommitId($payload['after']);
+                $build->setStatus(Build::STATUS_NEW);
+                $build->setLog('');
+                $build->setCreated(new \DateTime());
+                $build->setBranch(str_replace('refs/tags/', 'Tag: ', $payload['ref']));
                 $build->setCommitterEmail($payload['pusher']['email']);
+                $build = $this->buildStore->save($build);
+                $build->sendStatusPostback();
             }
 
-        } catch (\Exception $ex) {
-            header('HTTP/1.1 400 Bad Request');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
-        }
-
-        try {
-            $build = $this->buildStore->save($build);
-            $build->sendStatusPostback();
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Ex: ' . $ex->getMessage());

@@ -57,7 +57,7 @@ class WebhookController extends \PHPCI\Controller
                 $build->setStatus(Build::STATUS_NEW);
                 $build->setLog('');
                 $build->setCreated(new \DateTime());
-                $build->setBranch($branch);
+                $build->setBranch($commit['branch']);
                 $this->buildStore->save($build);
             } catch (\Exception $ex) {
             }

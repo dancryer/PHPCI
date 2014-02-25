@@ -54,6 +54,7 @@ class WebhookController extends \PHPCI\Controller
                 $build->setLog('');
                 $build->setCreated(new \DateTime());
                 $build->setBranch($commit['branch']);
+                $build->setCommitMessage($commit['message']);
                 $this->buildStore->save($build);
             } catch (\Exception $ex) {
             }
@@ -137,6 +138,7 @@ class WebhookController extends \PHPCI\Controller
                     $build->setCreated(new \DateTime());
                     $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
                     $build->setCommitterEmail($commit['committer']['email']);
+                    $build->setCommitMessage($commit['message']);
                     $build = $this->buildStore->save($build);
                     $build->sendStatusPostback();
                 }
@@ -150,6 +152,8 @@ class WebhookController extends \PHPCI\Controller
                 $build->setCreated(new \DateTime());
                 $build->setBranch(str_replace('refs/tags/', 'Tag: ', $payload['ref']));
                 $build->setCommitterEmail($payload['pusher']['email']);
+                $build->setCommitMessage($payload['head_commit']['message']);
+
                 $build = $this->buildStore->save($build);
                 $build->sendStatusPostback();
             }
@@ -185,6 +189,7 @@ class WebhookController extends \PHPCI\Controller
                     $build->setCreated(new \DateTime());
                     $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
                     $build->setCommitterEmail($commit['author']['email']);
+                    $build->setCommitMessage($commit['message']);
                     $build = $this->buildStore->save($build);
                     $build->sendStatusPostback();
                 }

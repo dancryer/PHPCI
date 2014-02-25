@@ -6,7 +6,7 @@
 
 namespace PHPCI\Model\Base;
 
-use b8\Model;
+use PHPCI\Model;
 use b8\Store\Factory;
 
 /**
@@ -44,6 +44,7 @@ class BuildBase extends Model
         'finished' => null,
         'plugins' => null,
         'committer_email' => null,
+        'commit_message' => null,
     );
 
     /**
@@ -62,6 +63,7 @@ class BuildBase extends Model
         'finished' => 'getFinished',
         'plugins' => 'getPlugins',
         'committer_email' => 'getCommitterEmail',
+        'commit_message' => 'getCommitMessage',
 
         // Foreign key getters:
         'Project' => 'getProject',
@@ -83,6 +85,7 @@ class BuildBase extends Model
         'finished' => 'setFinished',
         'plugins' => 'setPlugins',
         'committer_email' => 'setCommitterEmail',
+        'commit_message' => 'setCommitMessage',
 
         // Foreign key setters:
         'Project' => 'setProject',
@@ -113,6 +116,7 @@ class BuildBase extends Model
         'status' => array(
             'type' => 'tinyint',
             'length' => 4,
+            'default' => null,
         ),
         'log' => array(
             'type' => 'longtext',
@@ -147,6 +151,11 @@ class BuildBase extends Model
         'committer_email' => array(
             'type' => 'varchar',
             'length' => 512,
+            'nullable' => true,
+            'default' => null,
+        ),
+        'commit_message' => array(
+            'type' => 'text',
             'nullable' => true,
             'default' => null,
         ),
@@ -314,6 +323,18 @@ class BuildBase extends Model
     public function getCommitterEmail()
     {
         $rtn    = $this->data['committer_email'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of CommitMessage / commit_message.
+    *
+    * @return string
+    */
+    public function getCommitMessage()
+    {
+        $rtn    = $this->data['commit_message'];
 
         return $rtn;
     }
@@ -525,6 +546,24 @@ class BuildBase extends Model
     }
 
     /**
+    * Set the value of CommitMessage / commit_message.
+    *
+    * @param $value string
+    */
+    public function setCommitMessage($value)
+    {
+        $this->_validateString('CommitMessage', $value);
+
+        if ($this->data['commit_message'] === $value) {
+            return;
+        }
+
+        $this->data['commit_message'] = $value;
+
+        $this->_setModified('commit_message');
+    }
+
+    /**
      * Get the Project model for this Build by Id.
      *
      * @uses \PHPCI\Store\ProjectStore::getById()
@@ -543,23 +582,12 @@ class BuildBase extends Model
         $rtn        = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
-            $rtn    = Factory::getStore('Project')->getById($key);
+            $rtn    = Factory::getStore('Project', 'PHPCI')->getById($key);
             $this->cache->set($cacheKey, $rtn);
         }
 
         return $rtn;
     }
-
-    /**
-    * Get the value of the project's Title / title.
-    *
-    * @return string
-    */
-    public function getProjectTitle()
-    {
-        return $this->getProject()->getTitle();
-    }
-
 
     /**
     * Set Project - Accepts an ID, an array representing a Project or a Project model.
@@ -601,6 +629,33 @@ class BuildBase extends Model
      */
     public function getBuildBuildMetas()
     {
-        return Factory::getStore('BuildMeta')->getByBuildId($this->getId());
+        return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($this->getId());
     }
+
+
+
+
+    public static function getByPrimaryKey($value, $useConnection = 'read')
+    {
+        return Factory::getStore('Build', 'PHPCI')->getByPrimaryKey($value, $useConnection);
+    }
+
+
+    public static function getById($value, $useConnection = 'read')
+    {
+        return Factory::getStore('Build', 'PHPCI')->getById($value, $useConnection);
+    }
+
+    public static function getByProjectId($value, $limit = null, $useConnection = 'read')
+    {
+        return Factory::getStore('Build', 'PHPCI')->getByProjectId($value, $limit, $useConnection);
+    }
+
+    public static function getByStatus($value, $limit = null, $useConnection = 'read')
+    {
+        return Factory::getStore('Build', 'PHPCI')->getByStatus($value, $limit, $useConnection);
+    }
+
+
+
 }

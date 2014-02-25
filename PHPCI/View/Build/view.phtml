@@ -1,6 +1,11 @@
 <div id="title">
 	<h1 style="display: inline-block">Build #<?php print $build->getId(); ?></h1>
-			<h3 style="margin-left: 40px; display: inline-block">Branch: <?php print $build->getBranch(); ?> - <?php print $build->getCommitId() == 'Manual' ? 'Manual Build' : 'Commit: ' . $build->getCommitId(); ?></h3>
+
+    <div id="build-info">
+        <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>
+        <strong>Commit ID: </strong> <?php print $build->getCommitId() == 'Manual' ? 'HEAD' : $build->getCommitId(); ?><br>
+        <strong>Commit Message: </strong> <?php print $build->getCommitMessage(); ?>
+    </div>
 </div>
 
 <div class="row">

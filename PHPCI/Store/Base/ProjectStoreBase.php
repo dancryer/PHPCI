@@ -8,7 +8,7 @@ namespace PHPCI\Store\Base;
 
 use b8\Database;
 use b8\Exception\HttpException;
-use b8\Store;
+use PHPCI\Store;
 use PHPCI\Model\Project;
 
 /**
@@ -31,7 +31,7 @@ class ProjectStoreBase extends Store
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM project WHERE id = :id LIMIT 1';
+        $query = 'SELECT * FROM `project` WHERE `id` = :id LIMIT 1';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
@@ -58,7 +58,7 @@ class ProjectStoreBase extends Store
 
         $count = null;
 
-        $query = 'SELECT * FROM project WHERE title = :title' . $add;
+        $query = 'SELECT * FROM `project` WHERE `title` = :title' . $add;
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':title', $value);
 

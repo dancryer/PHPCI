@@ -7,6 +7,8 @@
         <div style="font-family: arial, verdana, sans-serif; font-size: 15px">
             <p>Your commit <strong><?= $build->getCommitId(); ?></strong> caused a failed build in project <strong><?= $project->getTitle(); ?></strong>.</p>
 
+            <p style="margin: 10px; background: #fafafa"><?= $build->getCommitMessage(); ?></p>
+
             <p>Please review <a href="<?= $build->getCommitLink(); ?>">your commit</a> and the <a href="<?= PHPCI_URL . 'build/view/' . $build->getId(); ?>">build log</a>.</p>
         </div>
     </div>

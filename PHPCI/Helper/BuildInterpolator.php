@@ -27,7 +27,7 @@ class BuildInterpolator
         $this->interpolation_vars['%COMMIT%'] = $build->getCommitId();
         $this->interpolation_vars['%PROJECT%'] = $build->getProjectId();
         $this->interpolation_vars['%BUILD%'] = $build->getId();
-        $this->interpolation_vars['%PROJECT_TITLE%'] = $build->getProject()->getTitle();
+        $this->interpolation_vars['%PROJECT_TITLE%'] = $build->getProjectTitle();
         $this->interpolation_vars['%BUILD_PATH%'] = $buildPath;
         $this->interpolation_vars['%BUILD_URI%'] = $phpCiUrl . "build/view/" . $build->getId();
         $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];

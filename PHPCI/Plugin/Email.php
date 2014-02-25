@@ -106,9 +106,10 @@ class Email implements \PHPCI\Plugin
     }
 
     /**
-     * @param array|string $toAddresses   Array or single address to send to
-     * @param string       $subject       Email subject
-     * @param string       $body          Email body
+     * @param string[]|string $toAddresses Array or single address to send to
+     * @param string[] $ccList
+     * @param string $subject Email subject
+     * @param string $body Email body
      * @return array                      Array of failed addresses
      */
     public function sendEmail($toAddresses, $ccList, $subject, $body)

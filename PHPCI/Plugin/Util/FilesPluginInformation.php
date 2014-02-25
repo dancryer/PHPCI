@@ -79,7 +79,8 @@ class FilesPluginInformation implements InstalledPluginInformation
         $newPlugin = new \stdClass();
         $newPlugin->class = $this->getFullClassFromFile($fileInfo);
         $newPlugin->source = "core";
-        $newPlugin->name = end(explode('\\', $newPlugin->class));
+        $parts = explode('\\', $newPlugin->class);
+        $newPlugin->name = end($parts);
 
         $this->pluginInfo[] = $newPlugin;
     }
@@ -87,7 +88,7 @@ class FilesPluginInformation implements InstalledPluginInformation
     protected function getFullClassFromFile(\SplFileInfo $fileInfo)
     {
         //TODO: Something less horrible than a regular expression
-        //      on the conents of a file
+        //      on the contents of a file
         $contents = file_get_contents($fileInfo->getRealPath());
 
         $matches = array();

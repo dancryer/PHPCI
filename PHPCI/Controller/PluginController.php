@@ -12,6 +12,8 @@ namespace PHPCI\Controller;
 use b8;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\ComposerPluginInformation;
+use PHPCI\Plugin\Util\FilesPluginInformation;
+use PHPCI\Plugin\Util\PluginInformationCollection;
 
 /**
  * Plugin Controller - Provides support for installing Composer packages.
@@ -63,9 +65,14 @@ class PluginController extends \PHPCI\Controller
         $this->view->installedPackages = $json['require'];
         $this->view->suggestedPackages = $json['suggest'];
 
-        $pluginInfo = ComposerPluginInformation::buildFromYaml(
+        $pluginInfo = new PluginInformationCollection();
+        $pluginInfo->add(FilesPluginInformation::newFromDir(
+            PHPCI_DIR . "PHPCI/Plugin/"
+        ));
+        $pluginInfo->add(ComposerPluginInformation::buildFromYaml(
             PHPCI_DIR . "vendor/composer/installed.json"
-        );
+        ));
+
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
         return $this->view->render();

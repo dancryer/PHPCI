@@ -1,5 +1,5 @@
 <div id="title">
-	<h1 style="display: inline-block">Build #<?php print $build->getId(); ?></h1>
+	<h1 style="display: inline-block"><?php print $build->getProject()->getTitle(); ?> - Build #<?php print $build->getId(); ?></h1>
 
     <div id="build-info">
         <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>

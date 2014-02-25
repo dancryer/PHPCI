@@ -89,7 +89,12 @@ class RemoteGitBuild extends Build
         // Use the key file to do an SSH clone:
         $cmd = 'eval `ssh-agent -s` && ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
         $success = $builder->executeCommand($cmd, $keyFile, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
-        $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+
+        $commit = $this->getCommitId();
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+        }
 
         // Remove the key file:
         unlink($keyFile);

@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
 use PHPCI\Builder;
 use PHPCI\BuildFactory;
+use PHPCI\Model\Build;
 
 /**
 * Run console command - Runs any pending builds.
@@ -68,7 +69,7 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->hasOption('verbose')) {
+        if ($input->getOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
@@ -88,17 +89,24 @@ class RunCommand extends Command
 
             $build = BuildFactory::getBuild($build);
 
-            // Logging relevant to this build should be stored
-            // against the build itself.
-            $buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
-            $this->logger->pushHandler($buildDbLog);
+            try {
+                // Logging relevant to this build should be stored
+                // against the build itself.
+                $buildDbLog = new BuildDBLogHandler($build, Logger::INFO);
+                $this->logger->pushHandler($buildDbLog);
 
-            $builder = new Builder($build, $this->logger);
-            $builder->execute();
+                $builder = new Builder($build, $this->logger);
+                $builder->execute();
 
-            // After execution we no longer want to record the information
-            // back to this specific build so the handler should be removed.
-            $this->logger->popHandler($buildDbLog);
+                // After execution we no longer want to record the information
+                // back to this specific build so the handler should be removed.
+                $this->logger->popHandler($buildDbLog);
+            } catch (\Exception $ex) {
+                $build->setStatus(Build::STATUS_FAILED);
+                $build->setLog($build->getLog() . PHP_EOL . PHP_EOL . $ex->getMessage());
+                $store->save($build);
+            }
+
         }
 
         $this->logger->addInfo("Finished processing builds");

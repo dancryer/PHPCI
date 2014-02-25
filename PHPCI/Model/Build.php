@@ -26,6 +26,8 @@ class Build extends BuildBase
     const STATUS_SUCCESS = 2;
     const STATUS_FAILED = 3;
 
+    public $currentBuildPath = null;
+
     /**
     * Get link to commit from another source (i.e. Github)
     */

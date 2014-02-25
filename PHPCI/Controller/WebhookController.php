@@ -175,25 +175,27 @@ class WebhookController extends \PHPCI\Controller
      */
     public function gitlab($project)
     {
-        $payload = json_decode(file_get_contents("php://input"), true);
+        $payload    = json_decode($this->getParam('payload'), true);
 
         try {
-            $build = new Build();
-            $build->setProjectId($project);
-            $build->setCommitId($payload['after']);
-            $build->setStatus(Build::STATUS_NEW);
-            $build->setLog('');
-            $build->setCreated(new \DateTime());
-            $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
-        } catch (\Exception $ex) {
-            header('HTTP/1.1 400 Bad Request');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
-        }
 
-        try {
-            $build = $this->buildStore->save($build);
-            $build->sendStatusPostback();
+            if (isset($payload['commits']) && is_array($payload['commits'])) {
+                // If we have a list of commits, then add them all as builds to be tested:
+
+                foreach ($payload['commits'] as $commit) {
+                    $build = new Build();
+                    $build->setProjectId($project);
+                    $build->setCommitId($commit['id']);
+                    $build->setStatus(Build::STATUS_NEW);
+                    $build->setLog('');
+                    $build->setCreated(new \DateTime());
+                    $build->setBranch(str_replace('refs/heads/', '', $payload['ref']));
+                    $build->setCommitterEmail($commit['author']['email']);
+                    $build = $this->buildStore->save($build);
+                    $build->sendStatusPostback();
+                }
+            }
+
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Ex: ' . $ex->getMessage());

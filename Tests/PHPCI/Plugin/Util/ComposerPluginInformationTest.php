@@ -2,18 +2,18 @@
 
 namespace PHPCI\Plugin\Tests\Util;
 
-use PHPCI\Plugin\Util\LoadedPluginInformation;
+use PHPCI\Plugin\Util\ComposerPluginInformation;
 
-class LoadedPluginInformationTest extends \PHPUnit_Framework_TestCase
+class ComposerPluginInformationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var LoadedPluginInformation
+     * @var ComposerPluginInformation
      */
     protected $testedInformation;
 
     protected function setUpFromFile($file)
     {
-        $this->testedInformation = LoadedPluginInformation::buildFromYaml($file);
+        $this->testedInformation = ComposerPluginInformation::buildFromYaml($file);
     }
 
     protected function phpciSetup()
@@ -27,7 +27,7 @@ class LoadedPluginInformationTest extends \PHPUnit_Framework_TestCase
     {
         $this->phpciSetup();
         $this->assertInstanceOf(
-            '\PHPCI\Plugin\Util\LoadedPluginInformation',
+            '\PHPCI\Plugin\Util\ComposerPluginInformation',
             $this->testedInformation
         );
     }

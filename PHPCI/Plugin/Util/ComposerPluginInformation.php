@@ -3,7 +3,7 @@
 namespace PHPCI\Plugin\Util;
 
 
-class LoadedPluginInformation
+class ComposerPluginInformation
 {
     /**
      * @var array
@@ -17,7 +17,7 @@ class LoadedPluginInformation
 
     /**
      * @param string $filePath The path of installed.json created by composer.
-     * @return LoadedPluginInformation
+     * @return ComposerPluginInformation
      */
     public static function buildFromYaml($filePath)
     {

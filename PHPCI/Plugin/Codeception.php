@@ -69,8 +69,8 @@ class Codeception implements \PHPCI\Plugin
                 return false;
             }
 
-            $cmd = $codecept . ' run -c "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $configPath);
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s"';
+            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $this->phpci->buildPath . $configPath);
 
             return $success;
         }

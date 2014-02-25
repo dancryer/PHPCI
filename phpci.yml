@@ -11,3 +11,8 @@ test:
     php_code_sniffer:
         standard: "PSR2"
     php_loc:
+
+failure:
+    email:
+        committer: true
+        cc: [php-ci@googlegroups.com]

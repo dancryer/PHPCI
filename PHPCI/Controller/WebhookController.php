@@ -39,15 +39,8 @@ class WebhookController extends \PHPCI\Controller
     public function bitbucket($project)
     {
         $payload = json_decode($this->getParam('payload'), true);
-        $commits = array();
 
         foreach ($payload['commits'] as $commit) {
-            if (!in_array($commit['branch'], array_keys($commits))) {
-                $commits[$commit['branch']] = $commit;
-            }
-        }
-
-        foreach ($commits as $commit) {
             try {
                 $email = $commit['raw_author'];
                 $email = substr($email, 0, strpos($email, '>'));

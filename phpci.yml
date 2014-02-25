@@ -15,4 +15,4 @@ test:
 failure:
     email:
         committer: true
-        cc: [php-ci@googlegroups.com]
+        cc: ["php-ci@googlegroups.com"]

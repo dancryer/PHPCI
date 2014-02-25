@@ -221,10 +221,12 @@ class ProjectBase extends Model
     */
     public function getAccessInformation($key = null)
     {
+        $data = unserialize($this->data['access_information']);
+
         if (is_null($key)) {
-            $rtn = $this->data['access_information'];
-        } else if (isset($this->data['access_information'][$key])) {
-            $rtn = $this->data['access_information'][$key];
+            $rtn = $data;
+        } else if (isset($data[$key])) {
+            $rtn = $data[$key];
         } else {
             $rtn = null;
         }

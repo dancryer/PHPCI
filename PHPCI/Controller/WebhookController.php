@@ -175,7 +175,8 @@ class WebhookController extends \PHPCI\Controller
      */
     public function gitlab($project)
     {
-        $payload    = json_decode($this->getParam('payload'), true);
+        $payloadString = file_get_contents("php://input");
+        $payload = json_decode($payloadString, true);
 
         try {
 

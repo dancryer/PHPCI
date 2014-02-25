@@ -5,11 +5,6 @@ build_settings:
         - "Tests"
         - "PHPCI/Command" # PHPMD complains about un-used parameters, but they are required.
         - "public/install.php" # PHPCS really doesn't like PHP mixed with HTML (and so it shouldn't)
-    irc:
-        server: "irc.freenode.net"
-        port: 6667
-        room: "#phpci"
-        nick: "phpcidev"
 
 test:
     php_mess_detector:
@@ -17,10 +12,7 @@ test:
         standard: "PSR2"
     php_loc:
 
-success:
-    irc:
-        message: "Build Success. %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
-
 failure:
-    irc:
-        message: "Build Failed. %PROJECT_TITLE% - %COMMIT% - %BUILD_URI%"
+    email:
+        committer: true
+        cc: ["php-ci@googlegroups.com"]

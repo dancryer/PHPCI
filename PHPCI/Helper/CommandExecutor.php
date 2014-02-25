@@ -3,12 +3,12 @@
 namespace PHPCI\Helper;
 
 
-use PHPCI\BuildLogger;
+use \PHPCI\Logging\BuildLogger;
 
 class CommandExecutor
 {
     /**
-     * @var \PHPCI\BuildLogger
+     * @var \PHPCI\Logging\BuildLogger
      */
     protected $logger;
 

@@ -18,9 +18,10 @@ use PHPCI\Command\UpdateCommand;
 use PHPCI\Command\InstallCommand;
 use PHPCI\Command\DaemonCommand;
 use PHPCI\Command\PollCommand;
+use PHPCI\Command\CreateAdminCommand;
 use Symfony\Component\Console\Application;
 
-$loggerConfig = \PHPCI\Helper\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+$loggerConfig = \PHPCI\Logging\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
 
 $application = new Application();
 
@@ -30,5 +31,6 @@ $application->add(new UpdateCommand($loggerConfig->getFor('UpdateCommand')));
 $application->add(new GenerateCommand);
 $application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
 $application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
+$application->add(new CreateAdminCommand);
 
 $application->run();

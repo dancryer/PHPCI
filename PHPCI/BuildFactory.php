@@ -9,10 +9,8 @@
 
 namespace PHPCI;
 
+use b8\Store\Factory;
 use PHPCI\Model\Build;
-use PHPCI\Model\Build\LocalBuild;
-use PHPCI\Model\Build\GithubBuild;
-use PHPCI\Model\Build\BitbucketBuild;
 
 /**
 * PHPCI Build Factory - Takes in a generic "Build" and returns a type-specific build model.
@@ -21,8 +19,20 @@ use PHPCI\Model\Build\BitbucketBuild;
 class BuildFactory
 {
     /**
+     * @param $buildId
+     * @return Build
+     */
+    public static function getBuildById($buildId)
+    {
+        $build = Factory::getStore('Build')->getById($buildId);
+
+        return self::getBuild($build);
+    }
+
+    /**
     * Takes a generic build and returns a type-specific build model.
-    * @return \PHPCI\Model\Build\LocalBuild|\PHPCI\Model\Build\GithubBuild|\PHPCI\Model\Build\BitbucketBuild
+    * @param Build $base The build from which to get a more specific build type.
+    * @return Build
     */
     public static function getBuild(Build $base)
     {

@@ -7,21 +7,22 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<link href='//fonts.googleapis.com/css?family=Roboto:300,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="<?= PHPCI_URL ?>assets/css/phpci.css">
+		<link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/phpci.css">
 
-        <link rel="shortcut icon" type="image/x-icon" href="<?= PHPCI_URL ?>favicon.ico">
-        <link rel="shortcut icon" type="image/png" href="<?= PHPCI_URL ?>assets/img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo PHPCI_URL ?>favicon.ico">
+        <link rel="shortcut icon" type="image/png" href="<?php echo PHPCI_URL ?>assets/img/favicon.png">
 
         <script>window.PHPCI_URL = <?php print json_encode(PHPCI_URL) ?></script>
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-        <script src="<?= PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
-        <script src="<?= PHPCI_URL ?>assets/js/jqueryui.js"></script>
-        <script src="<?= PHPCI_URL ?>assets/js/class.js"></script>
-        <script src="<?= PHPCI_URL ?>assets/js/phpci.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/jqueryui.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/class.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/phpci.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/init.js"></script>
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top">
@@ -32,7 +33,7 @@
                     <span class="icon-bar"></span>
                 </button>
 
-				<a class="navbar-brand" href="<?= PHPCI_URL ?>"><img src="<?= PHPCI_URL ?>/assets/img/logo.png"></a>
+				<a class="navbar-brand" href="<?php echo PHPCI_URL ?>"><img src="<?php echo PHPCI_URL ?>/assets/img/logo.png"></a>
 
                 <div class="nav-collapse collapse navbar-responsive-collapse">
                     <ul class="nav navbar-nav pull-right">
@@ -41,15 +42,15 @@
                         <?php if ($this->User()->getIsAdmin()): ?>
                         <li>
                             <div class="btn-group">
-                                <a class="btn btn-success navbar-btn" href="<?= PHPCI_URL ?>project/add">Add Project</a>
+                                <a class="btn btn-success navbar-btn" href="<?php echo PHPCI_URL ?>project/add">Add Project</a>
 
                                 <button type="button" class="btn navbar-btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Admin <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="/settings">Settings</a></li>
-                                    <li><a href="/plugin">Manage Plugins</a></li>
-                                    <li><a href="/user">Manage Users</a></li>
+                                    <li><a href="<?php echo PHPCI_URL ?>settings">Settings</a></li>
+                                    <li><a href="<?php echo PHPCI_URL ?>plugin">Manage Plugins</a></li>
+                                    <li><a href="<?php echo PHPCI_URL ?>user">Manage Users</a></li>
                                 </ul>
                             </div>
                         </li>

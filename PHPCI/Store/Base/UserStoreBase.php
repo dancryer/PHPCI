@@ -8,7 +8,7 @@ namespace PHPCI\Store\Base;
 
 use b8\Database;
 use b8\Exception\HttpException;
-use b8\Store;
+use PHPCI\Store;
 use PHPCI\Model\User;
 
 /**
@@ -31,7 +31,7 @@ class UserStoreBase extends Store
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM user WHERE id = :id LIMIT 1';
+        $query = 'SELECT * FROM `user` WHERE `id` = :id LIMIT 1';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
@@ -50,7 +50,7 @@ class UserStoreBase extends Store
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM user WHERE email = :email LIMIT 1';
+        $query = 'SELECT * FROM `user` WHERE `email` = :email LIMIT 1';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':email', $value);
 

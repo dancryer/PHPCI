@@ -1,17 +1,22 @@
 <div id="title">
-	<h1 style="display: inline-block">Build #<?php print $build->getId(); ?></h1>
-			<h3 style="margin-left: 40px; display: inline-block">Branch: <?php print $build->getBranch(); ?> - <?php print $build->getCommitId() == 'Manual' ? 'Manual Build' : 'Commit: ' . $build->getCommitId(); ?></h3>
+	<h1 style="display: inline-block"><?php print $build->getProject()->getTitle(); ?> - Build #<?php print $build->getId(); ?></h1>
+
+    <div id="build-info">
+        <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>
+        <strong>Commit ID: </strong> <?php print $build->getCommitId() == 'Manual' ? 'HEAD' : $build->getCommitId(); ?><br>
+        <strong>Commit Message: </strong> <?php print $build->getCommitMessage(); ?>
+    </div>
 </div>
 
 <div class="row">
 	<div class="col-lg-3">
         <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?= PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?= PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($build->getProject()->getTitle()); ?></a></li>
+			<li><a href="<?php echo PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
+			<li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $build->getProject()->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($build->getProject()->getTitle()); ?></a></li>
 		</ul>
 			<h5>Options</h5>
         <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?= PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
+			<li><a href="<?php echo PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
 			<li><a href="#" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>

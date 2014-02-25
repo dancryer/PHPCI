@@ -9,11 +9,13 @@
 
 namespace PHPCI;
 
+use PHPCI\Helper\BuildInterpolator;
 use PHPCI\Helper\CommandExecutor;
 use PHPCI\Helper\MailerFactory;
+use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
-use b8\Store;
 use b8\Config;
+use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -22,7 +24,7 @@ use Psr\Log\LogLevel;
  * PHPCI Build Runner
  * @author   Dan Cryer <dan@block8.co.uk>
  */
-class Builder implements LoggerAwareInterface, BuildLogger
+class Builder implements LoggerAwareInterface
 {
     /**
      * @var string
@@ -75,12 +77,9 @@ class Builder implements LoggerAwareInterface, BuildLogger
     protected $lastOutput;
 
     /**
-     * An array of key => value pairs that will be used for
-     * interpolation and environment variables
-     * @var array
-     * @see setInterpolationVars()
+     * @var BuildInterpolator
      */
-    protected $interpolation_vars = array();
+    protected $interpolator;
 
     /**
      * @var \PHPCI\Store\BuildStore
@@ -103,20 +102,33 @@ class Builder implements LoggerAwareInterface, BuildLogger
     protected $commandExecutor;
 
     /**
+     * @var Logging\BuildLogger
+     */
+    protected $buildLogger;
+
+    /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
      */
-    public function __construct(Build $build, $logger = null)
+    public function __construct(Build $build, LoggerInterface $logger = null)
     {
-        if ($logger) {
-            $this->setLogger($logger);
-        }
         $this->build = $build;
-        $this->store = Store\Factory::getStore('Build');
-        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
+        $this->store = Factory::getStore('Build');
 
-        $this->commandExecutor = new CommandExecutor($this, PHPCI_DIR, $this->quiet, $this->verbose);
+        $this->buildLogger = new BuildLogger($logger, $build);
+
+        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this->buildLogger);
+
+        $this->commandExecutor = new CommandExecutor(
+            $this->buildLogger,
+            PHPCI_DIR,
+            $this->quiet,
+            $this->verbose
+        );
+
+        $this->interpolator = new BuildInterpolator();
+
     }
 
     /**
@@ -195,15 +207,15 @@ class Builder implements LoggerAwareInterface, BuildLogger
 
         if ($this->success) {
             $this->pluginExecutor->executePlugins($this->config, 'success');
-            $this->logSuccess('BUILD SUCCESSFUL!');
+            $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
         }
         else {
             $this->pluginExecutor->executePlugins($this->config, 'failure');
-            $this->logFailure("BUILD FAILURE");
+            $this->buildLogger->logFailure("BUILD FAILURE");
         }
 
         // Clean up:
-        $this->log('Removing build.');
+        $this->buildLogger->log('Removing build.');
         shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
 
         // Update the build in the database, ping any external services, etc.
@@ -239,107 +251,14 @@ class Builder implements LoggerAwareInterface, BuildLogger
     }
 
     /**
-     * Add an entry to the build log.
-     * @param string|string[] $message
-     * @param string $level
-     * @param mixed[] $context
-     */
-    public function log($message, $level = LogLevel::INFO, $context = array())
-    {
-        // Skip if no logger has been loaded.
-        if (!$this->logger) {
-            return;
-        }
-
-        if (!is_array($message)) {
-            $message = array($message);
-        }
-
-        // The build is added to the context so the logger can use
-        // details from it if required.
-        $context['build'] = $this->build;
-
-        foreach ($message as $item) {
-            $this->logger->log($level, $item, $context);
-        }
-    }
-
-    /**
-     * Add a success-coloured message to the log.
-     * @param string
-     */
-    public function logSuccess($message)
-    {
-        $this->log("\033[0;32m" . $message . "\033[0m");
-    }
-
-    /**
-     * Add a failure-coloured message to the log.
-     * @param string $message
-     * @param \Exception $exception The exception that caused the error.
-     */
-    public function logFailure($message, \Exception $exception = null)
-    {
-        $context = array();
-
-        // The psr3 log interface stipulates that exceptions should be passed
-        // as the exception key in the context array.
-        if ($exception) {
-            $context['exception'] = $exception;
-        }
-
-        $this->log(
-            "\033[0;31m" . $message . "\033[0m",
-            LogLevel::ERROR,
-            $context
-        );
-    }
-
-    /**
-     * Replace every occurance of the interpolation vars in the given string
+     * Replace every occurrence of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
      * @param string $input
      * @return string
      */
     public function interpolate($input)
     {
-        $keys = array_keys($this->interpolation_vars);
-        $values = array_values($this->interpolation_vars);
-        return str_replace($keys, $values, $input);
-    }
-
-    /**
-     * Sets the variables that will be used for interpolation. This must be run
-     * from setupBuild() because prior to that, we don't know the buildPath
-     */
-    protected function setInterpolationVars()
-    {
-        $this->interpolation_vars = array();
-        $this->interpolation_vars['%PHPCI%'] = 1;
-        $this->interpolation_vars['%COMMIT%'] = $this->build->getCommitId();
-        $this->interpolation_vars['%PROJECT%'] = $this->build->getProjectId();
-        $this->interpolation_vars['%BUILD%'] = $this->build->getId();
-        $this->interpolation_vars['%PROJECT_TITLE%'] = $this->getBuildProjectTitle(
-        );
-        $this->interpolation_vars['%BUILD_PATH%'] = $this->buildPath;
-        $this->interpolation_vars['%BUILD_URI%'] = PHPCI_URL . "build/view/" . $this->build->getId(
-            );
-        $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
-        $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
-        $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
-        $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
-        $this->interpolation_vars['%PHPCI_BUILD_PATH%'] = $this->interpolation_vars['%BUILD_PATH%'];
-        $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
-
-        putenv('PHPCI=1');
-        putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
-        putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
-        putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
-        putenv(
-            'PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']
-        );
-        putenv('PHPCI_BUILD_PATH=' . $this->interpolation_vars['%BUILD_PATH%']);
-        putenv('PHPCI_BUILD_URI=' . $this->interpolation_vars['%BUILD_URI%']);
+        return $this->interpolator->interpolate($input);
     }
 
     /**
@@ -349,10 +268,15 @@ class Builder implements LoggerAwareInterface, BuildLogger
     {
         $buildId = 'project' . $this->build->getProject()->getId(
             ) . '-build' . $this->build->getId();
-        $this->ciDir = dirname(__FILE__) . '/../';
+        $this->ciDir = dirname(dirname(__FILE__) . '/../') . '/';
         $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
+        $this->build->currentBuildPath = $this->buildPath;
 
-        $this->setInterpolationVars();
+        $this->interpolator->setupInterpolationVars(
+            $this->build,
+            $this->buildPath,
+            PHPCI_URL
+        );
 
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
@@ -369,7 +293,7 @@ class Builder implements LoggerAwareInterface, BuildLogger
             $this->ignore = $this->config['build_settings']['ignore'];
         }
 
-        $this->logSuccess('Working copy created: ' . $this->buildPath);
+        $this->buildLogger->logSuccess('Working copy created: ' . $this->buildPath);
         return true;
     }
 
@@ -381,17 +305,31 @@ class Builder implements LoggerAwareInterface, BuildLogger
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->buildLogger->setLogger($logger);
+    }
+
+    public function log($message, $level = LogLevel::INFO, $context = array())
+    {
+        $this->buildLogger->log($message, $level, $context);
+    }
+
+   /**
+     * Add a success-coloured message to the log.
+     * @param string
+     */
+    public function logSuccess($message)
+    {
+        $this->buildLogger->logSuccess($message);
     }
 
     /**
-     * returns the logger attached to this builder.
-     *
-     * @return LoggerInterface
+     * Add a failure-coloured message to the log.
+     * @param string $message
+     * @param \Exception $exception The exception that caused the error.
      */
-    public function getLogger()
+    public function logFailure($message, \Exception $exception = null)
     {
-        return $this->logger;
+        $this->buildLogger->logFailure($message, $exception);
     }
 
     private function buildPluginFactory(Build $build)

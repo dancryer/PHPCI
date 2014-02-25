@@ -3,7 +3,7 @@
 namespace PHPCI\Plugin\Util;
 
 
-class ComposerPluginInformation
+class ComposerPluginInformation implements InstalledPluginInformation
 {
     /**
      * @var array

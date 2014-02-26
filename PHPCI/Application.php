@@ -27,8 +27,7 @@ class Application extends b8\Application
         $opts = ['controller' => 'Home', 'action' => 'index'];
 
         $this->router->clearRoutes();
-        $this->router->register($route, $opts, function (&$route, Response &$response) use (&$request)
-        {
+        $this->router->register($route, $opts, function (&$route, Response &$response) use (&$request) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
             if (!$skipValidation && !$this->validateSession()) {

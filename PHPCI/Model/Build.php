@@ -77,19 +77,4 @@ class Build extends BuildBase
     {
         return ($this->getStatus() === self::STATUS_SUCCESS);
     }
-
-    public function getAccessInformation($key = null)
-    {
-        $data = unserialize($this->data['access_information']);
-
-        if (is_null($key)) {
-            $rtn = $data;
-        } else if (isset($data[$key])) {
-            $rtn = $data[$key];
-        } else {
-            $rtn = null;
-        }
-
-        return $rtn;
-    }
 }

@@ -43,4 +43,19 @@ class Project extends ProjectBase
 
         return null;
     }
+
+    public function getAccessInformation($key = null)
+    {
+        $data = unserialize($this->data['access_information']);
+
+        if (is_null($key)) {
+            $rtn = $data;
+        } elseif (isset($data[$key])) {
+            $rtn = $data[$key];
+        } else {
+            $rtn = null;
+        }
+
+        return $rtn;
+    }
 }

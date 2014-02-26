@@ -162,7 +162,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     {
         $this->mockMailer->expects($this->once())
             ->method('send');
-        $this->testedEmailPlugin->sendEmail("test@email.com", "hello", "body");
+        $this->testedEmailPlugin->sendEmail("test@email.com", array(), "hello", "body");
     }
 
     /**
@@ -177,7 +177,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->mockMailer->expects($this->once())
             ->method('send')
             ->with($this->isInstanceOf('\Swift_Message'), $this->anything());
-        $this->testedEmailPlugin->sendEmail($toAddress, $subject, $body);
+        $this->testedEmailPlugin->sendEmail($toAddress, array(), $subject, $body);
     }
 
     /**
@@ -197,7 +197,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $actualMail = null;
         $this->catchMailPassedToSend($actualMail);
 
-        $this->testedEmailPlugin->sendEmail($toAddress, $subject, $body);
+        $this->testedEmailPlugin->sendEmail($toAddress, array(), $subject, $body);
 
         $this->assertSystemMail(
             $toAddress,

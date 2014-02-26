@@ -37,6 +37,15 @@ class Build extends BuildBase
     }
 
     /**
+     * @return string
+     */
+    public function getProjectTitle()
+    {
+        $project = $this->getProject();
+        return $project ? $project->getTitle() : "";
+    }
+
+    /**
     * Get link to branch from another source (i.e. Github)
     */
     public function getBranchLink()

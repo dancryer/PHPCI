@@ -3,6 +3,7 @@
 
     <div id="build-info">
         <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>
+        <strong>Committer: </strong> <?php print $build->getCommitterEmail(); ?><br>
         <strong>Commit ID: </strong> <?php print $build->getCommitId() == 'Manual' ? 'HEAD' : $build->getCommitId(); ?><br>
         <strong>Commit Message: </strong> <?php print $build->getCommitMessage(); ?>
     </div>

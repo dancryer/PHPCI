@@ -18,7 +18,7 @@
         <ul class="nav nav-pills nav-stacked">
 			<li><a href="<?php echo PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a></li>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="#" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
+			<li><a href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" id="delete-build"><i class="icon-trash"></i> Delete Build</a></li>
 			<?php endif; ?>
 		</ul>
 	</div>
@@ -43,5 +43,13 @@ foreach ($plugins as $plugin) {
 <script>
     $(document).ready(function() {
         PHPCI.renderPlugins();
+
+        $('#delete-build').on('click', function (e) {
+            e.preventDefault();
+            confirmDelete(
+                "<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>", "Build"
+            ).onCloseConfirmed = function () {window.location = '/'};
+        });
+
     });
 </script>

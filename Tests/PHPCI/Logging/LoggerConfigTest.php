@@ -24,7 +24,7 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
     {
         $expectedHandler = new \Monolog\Handler\NullHandler();
         $config = new LoggerConfig(array(
-            LoggerConfig::KEY_AlwaysLoaded => function() use ($expectedHandler) {
+            LoggerConfig::KEY_ALWAYS_LOADED => function() use ($expectedHandler) {
                 return array($expectedHandler);
             }
         ));

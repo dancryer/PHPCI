@@ -16,7 +16,7 @@ class BuildDBLogHandler extends AbstractProcessingHandler
 
     protected $logValue;
 
-    function __construct(
+    public function __construct(
         Build $build,
         $level = LogLevel::INFO,
         $bubble = true
@@ -35,4 +35,4 @@ class BuildDBLogHandler extends AbstractProcessingHandler
         $this->logValue .= $message . PHP_EOL;
         $this->build->setLog($this->logValue);
     }
-} 
+}

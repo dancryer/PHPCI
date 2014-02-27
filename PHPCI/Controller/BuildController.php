@@ -113,6 +113,8 @@ class BuildController extends \PHPCI\Controller
         $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
+        $build->setCommitterEmail($copy->getCommitterEmail());
+        $build->setCommitMessage($copy->getCommitMessage());
 
         $build = $this->buildStore->save($build);
 

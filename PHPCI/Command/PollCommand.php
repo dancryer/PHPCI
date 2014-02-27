@@ -80,7 +80,9 @@ class PollCommand extends Command
             $this->logger->info("Last commit to github for " . $project->getTitle() . " is " . $last_commit);
 
             if ($project->getLastCommit() != $last_commit && $last_commit != "") {
-                $this->logger->info("Last commit is different from database, adding new build for " . $project->getTitle());
+                $this->logger->info(
+                    "Last commit is different from database, adding new build for " . $project->getTitle()
+                );
 
                 $build = new Build();
                 $build->setProjectId($project->getId());
@@ -101,4 +103,3 @@ class PollCommand extends Command
         $this->logger->addInfo("Finished processing builds");
     }
 }
-

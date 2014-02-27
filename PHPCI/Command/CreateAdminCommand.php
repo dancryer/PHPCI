@@ -46,7 +46,7 @@ class CreateAdminCommand extends Command
         if (empty($adminEmail)) {
             return;
         }
-		
+
         $adminPass = $this->ask('Admin password: ');
         $adminName = $this->ask('Admin name: ');
 
@@ -64,7 +64,7 @@ class CreateAdminCommand extends Command
         } catch (\Exception $ex) {
             print 'There was a problem creating your account. :(' . PHP_EOL;
             print $ex->getMessage();
-			print PHP_EOL;
+            print PHP_EOL;
         }
     }
 

@@ -10,3 +10,4 @@ config.php
 PHPCI/config.yml
 cache
 /loggerconfig.php
+/pluginconfig.php

@@ -14,6 +14,7 @@ use PHPCI\Helper\MailerFactory;
 use PHPCI\Model\Build;
 use b8\Store;
 use b8\Config;
+use PHPCI\Plugin\Util\Factory;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -114,7 +115,10 @@ class Builder implements LoggerAwareInterface, BuildLogger
         }
         $this->build = $build;
         $this->store = Store\Factory::getStore('Build');
-        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this);
+
+        $pluginFactory = $this->buildPluginFactory($build);
+        $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
+        $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this);
 
         $this->commandExecutor = new CommandExecutor($this, PHPCI_DIR, $this->quiet, $this->verbose);
     }
@@ -394,9 +398,15 @@ class Builder implements LoggerAwareInterface, BuildLogger
         return $this->logger;
     }
 
+    /**
+     * Returns a configured instance of the plugin factory.
+     *
+     * @param Build $build
+     * @return Factory
+     */
     private function buildPluginFactory(Build $build)
     {
-        $pluginFactory = new Plugin\Util\Factory();
+        $pluginFactory = new Factory();
 
         $self = $this;
         $pluginFactory->registerResource(

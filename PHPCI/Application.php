@@ -24,7 +24,7 @@ class Application extends b8\Application
     {
         $request =& $this->request;
         $route = '/:controller/:action';
-        $opts = ['controller' => 'Home', 'action' => 'index'];
+        $opts = array('controller' => 'Home', 'action' => 'index');
 
         $this->router->clearRoutes();
         $this->router->register($route, $opts, function (&$route, Response &$response) use (&$request)

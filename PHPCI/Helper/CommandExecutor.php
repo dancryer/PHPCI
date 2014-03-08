@@ -75,6 +75,10 @@ class CommandExecutor
         $status = 0;
         exec($command, $this->lastOutput, $status);
 
+        foreach ($this->lastOutput as &$lastOutput) {
+            $lastOutput = trim($lastOutput, '"');
+        }
+
         if (!empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
             $this->logger->log($this->lastOutput);
         }

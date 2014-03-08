@@ -118,13 +118,12 @@ class CommandExecutor
                 return $this->rootDir . 'vendor/bin/' . $bin;
             }
 
-            if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-                // Use "which"
-                $which = trim(shell_exec('which ' . $bin));
+            // Use "where" for windows and "which" for other OS
+            $findCmd       = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') ? 'which' : 'where';
+            $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
-                if (!empty($which)) {
-                    return $which;
-                }
+            if (!empty($findCmdResult)) {
+                return $findCmdResult;
             }
         }
 

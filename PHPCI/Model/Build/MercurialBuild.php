@@ -38,13 +38,18 @@ class MercurialBuild extends Build
 
         $this->cloneByHttp($builder, $buildPath);
 
-        if (!is_file($buildPath . 'phpci.yml')) {
-            $builder->logFailure('Project does not contain a phpci.yml file.');
-            return false;
+        $build_config = $this->getProject()->getBuildConfig();
+        if (!$build_config)
+        {
+            if (!is_file($buildPath . 'phpci.yml')) {
+                $builder->logFailure('Project does not contain a phpci.yml file.');
+                return false;
+            }
+            $build_config = file_get_contents($buildPath . 'phpci.yml');
         }
 
-        $yamlFile = file_get_contents($buildPath . 'phpci.yml');
-        $builder->setConfigArray($yamlParser->parse($yamlFile));
+        $yamlParser = new YamlParser();
+        $builder->setConfigArray($yamlParser->parse($build_config));
 
         return true;
     }

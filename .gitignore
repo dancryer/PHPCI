@@ -1,7 +1,6 @@
 .idea
 vendor/
 composer.phar
-composer.lock
 config.php
 .DS_Store
 .settings/

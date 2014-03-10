@@ -353,6 +353,15 @@ class Builder implements LoggerAwareInterface
             'PHPCI\Model\Build'
         );
 
+        $logger = $this->logger;
+        $pluginFactory->registerResource(
+            function () use ($logger) {
+                return $logger;
+            },
+            null,
+            'Psr\Log\LoggerInterface'
+        );
+
         $pluginFactory->registerResource(
             function () use ($self) {
                 $factory = new MailerFactory($self->getSystemConfig('phpci'));

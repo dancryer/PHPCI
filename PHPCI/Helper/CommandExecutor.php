@@ -75,6 +75,10 @@ class CommandExecutor
         $status = 0;
         exec($command, $this->lastOutput, $status);
 
+        foreach ($this->lastOutput as &$lastOutput) {
+            $lastOutput = trim($lastOutput, '"');
+        }
+
         if (!empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
             $this->logger->log($this->lastOutput);
         }
@@ -118,11 +122,12 @@ class CommandExecutor
                 return $this->rootDir . 'vendor/bin/' . $bin;
             }
 
-            // Use "which"
-            $which = trim(shell_exec('which ' . $bin));
+            // Use "where" for windows and "which" for other OS
+            $findCmd       = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') ? 'which' : 'where';
+            $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
-            if (!empty($which)) {
-                return $which;
+            if (!empty($findCmdResult)) {
+                return $findCmdResult;
             }
         }
 

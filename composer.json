@@ -34,11 +34,11 @@
     },
 
     "require-dev": {
+        "phpunit/phpunit": "3.7.*",
         "phpspec/prophecy-phpunit": "1.*"
     },
 
     "suggest": {
-        "phpunit/phpunit": "PHP unit testing framework",
         "phpmd/phpmd": "PHP Mess Detector",
         "sebastian/phpcpd": "PHP Copy/Paste Detector",
         "squizlabs/php_codesniffer": "PHP Code Sniffer",

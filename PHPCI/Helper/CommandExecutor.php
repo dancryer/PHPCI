@@ -4,6 +4,7 @@ namespace PHPCI\Helper;
 
 
 use \PHPCI\Logging\BuildLogger;
+use Psr\Log\LogLevel;
 
 class CommandExecutor
 {
@@ -112,13 +113,16 @@ class CommandExecutor
         }
 
         foreach ($binary as $bin) {
+            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
             // Check project root directory:
             if (is_file($this->rootDir . $bin)) {
+                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
                 return $this->rootDir . $bin;
             }
 
             // Check Composer bin dir:
             if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
+                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
                 return $this->rootDir . 'vendor/bin/' . $bin;
             }
 
@@ -127,6 +131,7 @@ class CommandExecutor
             $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
             if (!empty($findCmdResult)) {
+                $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
                 return $findCmdResult;
             }
         }

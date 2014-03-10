@@ -338,7 +338,7 @@ class Builder implements LoggerAwareInterface
 
         $self = $this;
         $pluginFactory->registerResource(
-            function () use($self) {
+            function () use ($self) {
                 return $self;
             },
             null,
@@ -346,11 +346,20 @@ class Builder implements LoggerAwareInterface
         );
 
         $pluginFactory->registerResource(
-            function () use($build) {
+            function () use ($build) {
                 return $build;
             },
             null,
             'PHPCI\Model\Build'
+        );
+
+        $logger = $this->logger;
+        $pluginFactory->registerResource(
+            function () use ($logger) {
+                return $logger;
+            },
+            null,
+            'Psr\Log\LoggerInterface'
         );
 
         $pluginFactory->registerResource(

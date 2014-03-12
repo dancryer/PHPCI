@@ -127,7 +127,7 @@ class CommandExecutor
             }
 
             // Use "where" for windows and "which" for other OS
-            $findCmd       = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') ? 'which' : 'where';
+            $findCmd       = IS_WIN ? 'which' : 'where';
             $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
             if (!empty($findCmdResult)) {

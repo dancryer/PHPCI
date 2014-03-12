@@ -67,7 +67,11 @@ class RemoteGitBuild extends Build
         $success = $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
         if (!empty($commit) && $commit != 'Manual') {
-            $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+            $cmd = 'cd "%s" && git checkout %s';
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }
 
         return $success;
@@ -97,7 +101,11 @@ class RemoteGitBuild extends Build
         $commit = $this->getCommitId();
 
         if (!empty($commit) && $commit != 'Manual') {
-            $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+            $cmd = 'cd "%s" && git checkout %s';
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }
 
         // Remove the key file:

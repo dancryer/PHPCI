@@ -60,12 +60,19 @@ class Grunt implements \PHPCI\Plugin
     public function execute()
     {
         // if npm does not work, we cannot use grunt, so we return false
-        if (!$this->phpci->executeCommand('cd %s && npm install', $this->directory)) {
+        $cmd = 'cd %s && npm install';
+        if (IS_WIN) {
+            $cmd = 'cd /d %s && npm install';
+        }
+        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
             return false;
         }
 
         // build the grunt command
         $cmd = 'cd %s && ' . $this->grunt;
+        if (IS_WIN) {
+            $cmd = 'cd /d %s && ' . $this->grunt;
+        }
         $cmd .= ' --no-color';
         $cmd .= ' --gruntfile %s';
         $cmd .= ' %s'; // the task that will be executed

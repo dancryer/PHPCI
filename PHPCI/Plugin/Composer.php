@@ -46,7 +46,7 @@ class Composer implements \PHPCI\Plugin
             return false;
         }
         $cmd = '';
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if (IS_WIN) {
             $cmd = 'php ';
         }
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';

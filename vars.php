@@ -25,3 +25,8 @@ if (!defined('ENABLE_SHELL_PLUGIN')) {
 if (!defined('PHPCI_IS_CONSOLE')) {
     define('PHPCI_IS_CONSOLE', false);
 }
+
+$isWin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? true : false;
+if (!defined('IS_WIN')) {
+    define('IS_WIN', $isWin);
+}

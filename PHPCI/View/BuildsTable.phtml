@@ -46,7 +46,19 @@ switch($build->getStatus())
                 print ' - ';
             }
         ?></a></td>
-	<td><a href="<?php print $build->getCommitLink(); ?>"><?php print $build->getCommitId(); ?></a></td>
+
+    <td>
+        <?php
+            if ($build->getCommitId() !== 'Manual') {
+                print '<a href="' . $build->getCommitLink() . '">';
+            }
+            print $build->getCommitId();
+            if ($build->getCommitId() !== 'Manual') {
+                print '</a>';
+            }
+        ?>
+    </td>
+
 	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
 	<td>
 		<?php

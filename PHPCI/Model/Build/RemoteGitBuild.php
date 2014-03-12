@@ -65,7 +65,11 @@ class RemoteGitBuild extends Build
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
         $success = $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
-        $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+        }
+
         return $success;
     }
 

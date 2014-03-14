@@ -100,9 +100,8 @@ playing with it, you can remove it by following these steps:
 
   * remove the `web/bundles/acmedemo` directory;
 
-  * remove the `security.providers`, `security.firewalls.login` and
-    `security.firewalls.secured_area` entries in the `security.yml` file or
-    tweak the security configuration to fit your needs.
+  * empty the `security.yml` file or tweak the security configuration to fit
+    your needs.
 
 What's inside?
 ---------------

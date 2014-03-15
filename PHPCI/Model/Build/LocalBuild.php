@@ -11,7 +11,6 @@ namespace PHPCI\Model\Build;
 
 use PHPCI\Model\Build;
 use PHPCI\Builder;
-use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Local Build Model
@@ -82,22 +81,5 @@ class LocalBuild extends Build
         }
 
         return true;
-    }
-
-    protected function handleConfig(Builder $builder, $reference)
-    {
-        $build_config = $this->getProject()->getBuildConfig();
-        if (!$build_config)
-        {
-            if (!is_file($reference . '/phpci.yml')) {
-                $builder->logFailure('Project does not contain a phpci.yml file.');
-                return false;
-            }
-            $build_config = file_get_contents($reference . '/phpci.yml');
-         }
-
-        $yamlParser = new YamlParser();
-        $builder->setConfigArray($yamlParser->parse($build_config));
-        return $builder->getConfig('build_settings');
     }
 }

@@ -11,7 +11,6 @@ namespace PHPCI\Model\Build;
 
 use PHPCI\Model\Build;
 use PHPCI\Builder;
-use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Mercurial Build Model
@@ -36,20 +35,7 @@ class MercurialBuild extends Build
     {
         $this->cloneByHttp($builder, $buildPath);
 
-        $build_config = $this->getProject()->getBuildConfig();
-        if (!$build_config)
-        {
-            if (!is_file($buildPath . '/phpci.yml')) {
-                $builder->logFailure('Project does not contain a phpci.yml file.');
-                return false;
-            }
-            $build_config = file_get_contents($buildPath . '/phpci.yml');
-         }
-
-        $yamlParser = new YamlParser();
-        $builder->setConfigArray($yamlParser->parse($build_config));
-
-        return true;
+        return $this->handleConfig($builder, $buildPath);
     }
 
     /**

@@ -86,15 +86,18 @@ class LocalBuild extends Build
 
     protected function handleConfig(Builder $builder, $reference)
     {
-        /** @todo Add support for database-based yml definition */
-        if (!is_file($reference . '/phpci.yml')) {
-            $builder->logFailure('Project does not contain a phpci.yml file.');
-            return false;
-        }
+        $build_config = $this->getProject()->getBuildConfig();
+        if (!$build_config)
+        {
+            if (!is_file($reference . '/phpci.yml')) {
+                $builder->logFailure('Project does not contain a phpci.yml file.');
+                return false;
+            }
+            $build_config = file_get_contents($reference . '/phpci.yml');
+         }
 
         $yamlParser = new YamlParser();
-        $yamlFile = file_get_contents($reference . '/phpci.yml');
-        $builder->setConfigArray($yamlParser->parse($yamlFile));
+        $builder->setConfigArray($yamlParser->parse($build_config));
         return $builder->getConfig('build_settings');
     }
 }

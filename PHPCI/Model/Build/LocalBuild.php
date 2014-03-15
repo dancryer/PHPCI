@@ -47,7 +47,7 @@ class LocalBuild extends Build
         } else {
             $cmd = 'cp -Rf "%s" "%s/"';
             if (IS_WIN) {
-                $cmd = 'copy /Y "%s" "%s/"';
+                $cmd = 'xcopy /E /Y "%s" "%s/*"';
             }
             $builder->executeCommand($cmd, $reference, $buildPath);
         }

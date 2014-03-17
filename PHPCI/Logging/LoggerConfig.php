@@ -22,7 +22,7 @@ class LoggerConfig {
     public static function newFromFile($filePath)
     {
         if (file_exists($filePath)) {
-            $configArray = require($filePath);
+            $configArray = require_once($filePath);
         }
         else {
             $configArray = array();
@@ -48,7 +48,7 @@ class LoggerConfig {
      */
     public function getFor($name) {
         $handlers = $this->getHandlers(self::KEY_AlwaysLoaded);
-        $handlers = array_merge($handlers, $this->getHandlers($name));
+        //$handlers = array_merge($handlers, $this->getHandlers($name));
         return new Logger($name, $handlers);
     }
 

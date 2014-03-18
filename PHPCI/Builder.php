@@ -219,7 +219,7 @@ class Builder implements LoggerAwareInterface
 
         $cmd = 'rm -Rf "%s"';
         if (IS_WIN) {
-            $cmd = 'deltree /Y "%s"';
+            $cmd = 'rmdir /S /Q "%s"';
         }
         $this->executeCommand($cmd, $this->buildPath);
 

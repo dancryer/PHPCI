@@ -216,7 +216,12 @@ class Builder implements LoggerAwareInterface
 
         // Clean up:
         $this->buildLogger->log('Removing build.');
-        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
+
+        $cmd = 'rm -Rf "%s"';
+        if (IS_WIN) {
+            $cmd = 'deltree /Y "%s"';
+        }
+        $this->executeCommand($cmd, $this->buildPath);
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();

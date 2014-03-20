@@ -69,8 +69,17 @@ class Handler
     {
         $fatal_error = error_get_last();
 
-        if ($fatal_error['type'] === E_ERROR) {
-
+        try {
+            if (($e = error_get_last()) !== null) {
+                $e = new \ErrorException(
+                    sprintf('%s: %s in %s line %d', $fatal_error['type'], $fatal_error['message'], $fatal_error['file'], $fatal_error['line']),
+                    0, $fatal_error['type'], $fatal_error['file'], $fatal_error['line']
+                );
+                $this->log($e);
+            }
+        }
+        catch (\Exception $e)
+        {
             $e = new \ErrorException(
                 sprintf('%s: %s in %s line %d', $fatal_error['type'], $fatal_error['message'], $fatal_error['file'], $fatal_error['line']),
                 0, $fatal_error['type'], $fatal_error['file'], $fatal_error['line']

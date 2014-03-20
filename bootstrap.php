@@ -44,7 +44,7 @@ if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_I
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-Handler::register($loggerConfig->getFor('Exceptions'));
+Handler::register($loggerConfig->getFor('_'));
 
 // Load configuration if present:
 $conf = array();

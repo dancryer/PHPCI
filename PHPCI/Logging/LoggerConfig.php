@@ -22,7 +22,7 @@ class LoggerConfig {
     public static function newFromFile($filePath)
     {
         if (file_exists($filePath)) {
-            $configArray = require_once($filePath);
+            $configArray = require($filePath);
         }
         else {
             $configArray = array();

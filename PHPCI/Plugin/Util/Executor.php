@@ -17,7 +17,7 @@ class Executor
      */
     protected $pluginFactory;
 
-    function __construct(Factory $pluginFactory,BuildLogger $logger)
+    public function __construct(Factory $pluginFactory, BuildLogger $logger)
     {
         $this->pluginFactory = $pluginFactory;
         $this->logger = $logger;
@@ -78,8 +78,7 @@ class Executor
             $class = str_replace('_', ' ', $plugin);
             $class = ucwords($class);
             $class = 'PHPCI\\Plugin\\' . str_replace(' ', '', $class);
-        }
-        else {
+        } else {
             $class = $plugin;
         }
 
@@ -105,4 +104,4 @@ class Executor
         return $rtn;
     }
 
-} 
+}

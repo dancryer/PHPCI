@@ -29,7 +29,7 @@ class Factory {
 
         $self = $this;
         $this->registerResource(
-            function() use ($self) {
+            function () use ($self) {
                 return $self->getLastOptions();
             },
             'options',
@@ -37,7 +37,8 @@ class Factory {
         );
     }
 
-    public function getLastOptions() {
+    public function getLastOptions()
+    {
         return $this->currentPluginOptions;
     }
 
@@ -66,7 +67,7 @@ class Factory {
 
         if ($constructor) {
             $argsToUse = array();
-            foreach($constructor->getParameters() as $param) {
+            foreach ($constructor->getParameters() as $param) {
                 $argsToUse = $this->addArgFromParam($argsToUse, $param);
             }
             $plugin = $reflectedPlugin->newInstanceArgs($argsToUse);
@@ -84,11 +85,11 @@ class Factory {
      * @throws \InvalidArgumentException
      * @internal param mixed $resource
      */
-    public function registerResource($loader,
-                                     $name = null,
-                                     $type = null
-    )
-    {
+    public function registerResource(
+        $loader,
+        $name = null,
+        $type = null
+    ) {
         if ($name === null && $type === null) {
             throw new \InvalidArgumentException(
                 "Type or Name must be specified"
@@ -138,9 +139,9 @@ class Factory {
         $class = $param->getClass();
         if ($class) {
             return $class->getName();
-        } elseif($param->isArray()) {
+        } elseif ($param->isArray()) {
             return self::TYPE_ARRAY;
-        } elseif($param->isCallable()) {
+        } elseif ($param->isCallable()) {
             return self::TYPE_CALLABLE;
         } else {
             return null;
@@ -165,4 +166,4 @@ class Factory {
 
         return $existingArgs;
     }
-} 
+}

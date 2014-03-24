@@ -197,8 +197,7 @@ class Builder implements LoggerAwareInterface
         // stages.
         if ($this->success) {
             $this->build->setStatus(Build::STATUS_SUCCESS);
-        }
-        else {
+        } else {
             $this->build->setStatus(Build::STATUS_FAILED);
         }
 
@@ -208,8 +207,7 @@ class Builder implements LoggerAwareInterface
         if ($this->success) {
             $this->pluginExecutor->executePlugins($this->config, 'success');
             $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
-        }
-        else {
+        } else {
             $this->pluginExecutor->executePlugins($this->config, 'failure');
             $this->buildLogger->logFailure("BUILD FAILURE");
         }
@@ -271,8 +269,8 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $buildId = 'project' . $this->build->getProject()->getId(
-            ) . '-build' . $this->build->getId();
+        $buildId = 'project' . $this->build->getProject()->getId()
+                 . '-build' . $this->build->getId();
         $this->ciDir = dirname(dirname(__FILE__) . '/../') . '/';
         $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
         $this->build->currentBuildPath = $this->buildPath;

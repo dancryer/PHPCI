@@ -23,8 +23,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
     {
         if (file_exists($filePath)) {
             $installed = json_decode(file_get_contents($filePath));
-        }
-        else {
+        } else {
             $installed = array();
         }
         return new self($installed);
@@ -60,12 +59,12 @@ class ComposerPluginInformation implements InstalledPluginInformation
      */
     public function getPluginClasses()
     {
-       return array_map(
-           function($plugin) {
-               return $plugin->class;
-           },
-           $this->getInstalledPlugins()
-       );
+        return array_map(
+            function ($plugin) {
+                return $plugin->class;
+            },
+            $this->getInstalledPlugins()
+        );
     }
 
     protected function loadPluginInfo()
@@ -74,7 +73,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
             return;
         }
         $this->pluginInfo = array();
-        foreach($this->composerPackages as $package) {
+        foreach ($this->composerPackages as $package) {
             $this->addPluginsFromPackage($package);
         }
     }
@@ -89,8 +88,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
 
             if (isset($phpciData->pluginNamespace)) {
                 $rootNamespace = $phpciData->pluginNamespace;
-            }
-            else {
+            } else {
                 $rootNamespace = "";
             }
 
@@ -112,9 +110,9 @@ class ComposerPluginInformation implements InstalledPluginInformation
     protected function addPlugins(
         array $plugins,
         $sourcePackageName,
-        $rootNamespace = "")
-    {
-        foreach($plugins as $plugin) {
+        $rootNamespace = ""
+    ) {
+        foreach ($plugins as $plugin) {
             if (!isset($plugin->class)) {
                 continue;
             }
@@ -130,8 +128,8 @@ class ComposerPluginInformation implements InstalledPluginInformation
     protected function addPlugin(
         $plugin,
         $sourcePackageName,
-        $rootNamespace = "")
-    {
+        $rootNamespace = ""
+    ) {
         $newPlugin = clone $plugin;
 
         $newPlugin->class = $rootNamespace . $newPlugin->class;
@@ -144,4 +142,4 @@ class ComposerPluginInformation implements InstalledPluginInformation
 
         $this->pluginInfo[] = $newPlugin;
     }
-} 
+}

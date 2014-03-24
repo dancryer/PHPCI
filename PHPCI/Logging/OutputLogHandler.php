@@ -14,7 +14,7 @@ class OutputLogHandler extends AbstractProcessingHandler
      */
     protected $output;
 
-    function __construct(
+    public function __construct(
         OutputInterface $output,
         $level = LogLevel::INFO,
         $bubble = true
@@ -30,4 +30,4 @@ class OutputLogHandler extends AbstractProcessingHandler
     }
 
 
-} 
+}

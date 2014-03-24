@@ -103,7 +103,7 @@ class Handler
             $message = sprintf(
                 '%s: %s (uncaught exception) at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()
             );
-            $this->logger->error($message);
+            $this->logger->error($message, array('exception' => $exception));
         }
     }
 }

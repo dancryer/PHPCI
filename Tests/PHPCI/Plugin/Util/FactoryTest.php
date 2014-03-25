@@ -148,6 +148,33 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('thing', $plugin->Options);
     }
 
+    public function testAddConfigFromFile_ReturnsTrueForValidFile()
+    {
+        $result = $this->testedFactory->addConfigFromFile(
+            realpath(__DIR__ . "/ExamplePluginConfig.php")
+        );
+
+        $this->assertTrue($result);
+    }
+
+    public function testAddConfigFromFile_RegistersResources()
+    {
+        $this->testedFactory->addConfigFromFile(
+            realpath(__DIR__ . "/ExamplePluginConfig.php")
+        );
+
+        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $pluginName = $namespace  . 'ExamplePluginWithSingleRequiredArg';
+
+        $plugin = $this->testedFactory->buildPlugin($pluginName);
+
+        // The Example config file defines an array as the resource.
+        $this->assertEquals(
+            array("bar" => "Hello"),
+            $plugin->RequiredArgument
+        );
+    }
+
     /**
      * Registers mocked Builder and Build classes so that realistic plugins
      * can be tested.

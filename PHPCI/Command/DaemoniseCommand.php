@@ -37,6 +37,16 @@ class DaemoniseCommand extends Command
     protected $output;
 
     /**
+     * @var boolean
+     */
+    protected $run;
+
+    /**
+     * @var int
+     */
+    protected $sleep;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -67,14 +77,14 @@ class DaemoniseCommand extends Command
         $this->sleep = 0;
         $runner      = new RunCommand($this->logger);
 
-        $in = new ArgvInput(array());
+        $emptyInput = new ArgvInput(array());
 
         while ($this->run) {
 
             $buildCount = 0;
 
             try {
-                $buildCount = $runner->run($in, $output);
+                $buildCount = $runner->run($emptyInput, $output);
             } catch (\Exception $e) {
                 var_dump($e);
             }

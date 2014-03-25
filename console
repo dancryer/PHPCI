@@ -21,8 +21,6 @@ use PHPCI\Command\PollCommand;
 use PHPCI\Command\CreateAdminCommand;
 use Symfony\Component\Console\Application;
 
-$loggerConfig = \PHPCI\Logging\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-
 $application = new Application();
 
 $application->add(new RunCommand($loggerConfig->getFor('RunCommand')));

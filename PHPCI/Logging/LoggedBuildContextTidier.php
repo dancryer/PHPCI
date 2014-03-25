@@ -6,7 +6,7 @@ use PHPCI\Model\Build;
 
 class LoggedBuildContextTidier
 {
-    function __invoke()
+    public function __invoke()
     {
         return $this->tidyLoggedBuildContext(func_get_arg(0));
     }
@@ -29,4 +29,4 @@ class LoggedBuildContextTidier
         }
         return $logRecord;
     }
-} 
+}

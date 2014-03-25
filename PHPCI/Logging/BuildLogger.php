@@ -20,7 +20,7 @@ class BuildLogger implements LoggerAwareInterface
      */
     protected $build;
 
-    function __construct(LoggerInterface $logger = null, Build $build)
+    public function __construct(LoggerInterface $logger, Build $build)
     {
         $this->logger = $logger;
         $this->build = $build;

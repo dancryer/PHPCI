@@ -26,7 +26,7 @@ class FilesPluginInformation implements InstalledPluginInformation
         return new self(new \DirectoryIterator($dirPath));
     }
 
-    function __construct(\Iterator $files)
+    public function __construct(\Iterator $files)
     {
         $this->files = $files;
     }
@@ -55,17 +55,17 @@ class FilesPluginInformation implements InstalledPluginInformation
     public function getPluginClasses()
     {
         return array_map(
-           function($plugin) {
+            function ($plugin) {
                return $plugin->class;
-           },
-           $this->getInstalledPlugins()
-       );
+            },
+            $this->getInstalledPlugins()
+        );
     }
 
     protected function loadPluginInfo()
     {
         $this->pluginInfo = array();
-        foreach($this->files as $fileInfo) {
+        foreach ($this->files as $fileInfo) {
             if ($fileInfo instanceof \SplFileInfo) {
                 if ($fileInfo->isFile()) {
                     $this->addPluginFromFile($fileInfo);
@@ -101,5 +101,4 @@ class FilesPluginInformation implements InstalledPluginInformation
 
         return $namespace . '\\' . $className;
     }
-
-} 
+}

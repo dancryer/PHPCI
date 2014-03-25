@@ -19,6 +19,7 @@ use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use PHPCI\Plugin\Util\Factory as PluginFactory;
 
 /**
  * PHPCI Build Runner
@@ -118,7 +119,9 @@ class Builder implements LoggerAwareInterface
 
         $this->buildLogger = new BuildLogger($logger, $build);
 
-        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this->buildLogger);
+        $pluginFactory = $this->buildPluginFactory($build);
+        $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
+        $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this);
 
         $this->commandExecutor = new CommandExecutor(
             $this->buildLogger,
@@ -197,8 +200,7 @@ class Builder implements LoggerAwareInterface
         // stages.
         if ($this->success) {
             $this->build->setStatus(Build::STATUS_SUCCESS);
-        }
-        else {
+        } else {
             $this->build->setStatus(Build::STATUS_FAILED);
         }
 
@@ -208,15 +210,19 @@ class Builder implements LoggerAwareInterface
         if ($this->success) {
             $this->pluginExecutor->executePlugins($this->config, 'success');
             $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
-        }
-        else {
+        } else {
             $this->pluginExecutor->executePlugins($this->config, 'failure');
             $this->buildLogger->logFailure("BUILD FAILURE");
         }
 
         // Clean up:
         $this->buildLogger->log('Removing build.');
-        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
+
+        $cmd = 'rm -Rf "%s"';
+        if (IS_WIN) {
+            $cmd = 'rmdir /S /Q "%s"';
+        }
+        $this->executeCommand($cmd, $this->buildPath);
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
@@ -266,8 +272,8 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $buildId = 'project' . $this->build->getProject()->getId(
-            ) . '-build' . $this->build->getId();
+        $buildId = 'project' . $this->build->getProject()->getId()
+                 . '-build' . $this->build->getId();
         $this->ciDir = dirname(dirname(__FILE__) . '/../') . '/';
         $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
         $this->build->currentBuildPath = $this->buildPath;
@@ -331,10 +337,15 @@ class Builder implements LoggerAwareInterface
     {
         $this->buildLogger->logFailure($message, $exception);
     }
-
+    /**
+     * Returns a configured instance of the plugin factory.
+     *
+     * @param Build $build
+     * @return PluginFactory
+     */
     private function buildPluginFactory(Build $build)
     {
-        $pluginFactory = new Plugin\Util\Factory();
+        $pluginFactory = new PluginFactory();
 
         $self = $this;
         $pluginFactory->registerResource(

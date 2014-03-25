@@ -17,6 +17,7 @@ use b8\Config;
 use b8\Controller;
 use b8\Store;
 use b8\Form;
+use b8\Exception\HttpException\NotFoundException;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -47,7 +48,11 @@ class ProjectController extends \PHPCI\Controller
     */
     public function view($projectId)
     {
-        $project        = $this->projectStore->getById($projectId);
+        $project = $this->projectStore->getById($projectId);
+        if (!$project) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
         $page           = $this->getParam('p', 1);
         $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 

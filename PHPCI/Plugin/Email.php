@@ -41,13 +41,13 @@ class Email implements \PHPCI\Plugin
      */
     protected $fromAddress;
 
-    public function __construct(Builder $phpci,
-                                Build $build,
-                                \Swift_Mailer $mailer,
-                                array $options = array()
+    public function __construct(
+        Builder $phpci,
+        Build $build,
+        \Swift_Mailer $mailer,
+        array $options = array()
 
-    )
-    {
+    ) {
         $this->phpci        = $phpci;
         $this->build        = $build;
         $this->options      = $options;
@@ -168,14 +168,14 @@ class Email implements \PHPCI\Plugin
 
     protected function getCcAddresses()
     {
-        $cc = array();
+        $ccAddresses = array();
 
         if (isset($this->options['cc'])) {
             foreach ($this->options['cc'] as $address) {
-                $cc[] = $address;
+                $ccAddresses[] = $address;
             }
         }
 
-        return $cc;
+        return $ccAddresses;
     }
 }

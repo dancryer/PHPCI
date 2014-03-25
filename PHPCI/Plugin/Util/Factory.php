@@ -4,7 +4,8 @@ namespace PHPCI\Plugin\Util;
 
 
 
-class Factory {
+class Factory
+{
 
     const TYPE_ARRAY = "array";
     const TYPE_CALLABLE = "callable";
@@ -18,18 +19,17 @@ class Factory {
      */
     private $container;
 
-    function __construct(\Pimple $container = null)
+    public function __construct(\Pimple $container = null)
     {
         if ($container) {
             $this->container = $container;
-        }
-        else {
+        } else {
             $this->container = new \Pimple();
         }
 
         $self = $this;
         $this->registerResource(
-            function() use ($self) {
+            function () use ($self) {
                 return $self->getLastOptions();
             },
             'options',
@@ -37,7 +37,30 @@ class Factory {
         );
     }
 
-    public function getLastOptions() {
+    /**
+     * Trys to get a function from the file path specified. If the
+     * file returns a function then $this will be passed to it.
+     * This enables the config file to call any public methods.
+     *
+     * @param $configPath
+     * @return bool - true if the function exists else false.
+     */
+    public function addConfigFromFile($configPath)
+    {
+        // The file is expected to return a function which can
+        // act on the pluginFactory to register any resources needed.
+        if (file_exists($configPath)) {
+            $configFunction = require($configPath);
+            if (is_callable($configFunction)) {
+                $configFunction($this);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getLastOptions()
+    {
         return $this->currentPluginOptions;
     }
 
@@ -66,7 +89,7 @@ class Factory {
 
         if ($constructor) {
             $argsToUse = array();
-            foreach($constructor->getParameters() as $param) {
+            foreach ($constructor->getParameters() as $param) {
                 $argsToUse = $this->addArgFromParam($argsToUse, $param);
             }
             $plugin = $reflectedPlugin->newInstanceArgs($argsToUse);
@@ -84,11 +107,11 @@ class Factory {
      * @throws \InvalidArgumentException
      * @internal param mixed $resource
      */
-    public function registerResource($loader,
-                                     $name = null,
-                                     $type = null
-    )
-    {
+    public function registerResource(
+        $loader,
+        $name = null,
+        $type = null
+    ) {
         if ($name === null && $type === null) {
             throw new \InvalidArgumentException(
                 "Type or Name must be specified"
@@ -138,9 +161,9 @@ class Factory {
         $class = $param->getClass();
         if ($class) {
             return $class->getName();
-        } elseif($param->isArray()) {
+        } elseif ($param->isArray()) {
             return self::TYPE_ARRAY;
-        } elseif($param->isCallable()) {
+        } elseif ($param->isCallable()) {
             return self::TYPE_CALLABLE;
         } else {
             return null;
@@ -165,4 +188,4 @@ class Factory {
 
         return $existingArgs;
     }
-} 
+}

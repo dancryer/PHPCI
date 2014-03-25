@@ -82,6 +82,11 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
         require_once(PHPCI_DIR . 'vendor/autoload.php');
 
         /**
+         *  Temporary save phpci URL for redirect after install ($config is replaced in bootstrap.php)
+         */
+        $phpciUrl = $config['phpci']['url'];
+
+        /**
          * Write config file:
          */
         $config['b8']['database']['servers']['read'] = array($config['b8']['database']['servers']['read']);
@@ -101,8 +106,8 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
          * Create database:
          */
         $dbhost = $config['b8']['database']['servers']['write'][0];
-        $dbname = $config['b8']['database']['name'];
-        $dbuser = $config['b8']['database']['username'];
+        $dbname = $config['b8']['database']['name'] ?: 'phpci';
+        $dbuser = $config['b8']['database']['username'] ?: 'phpci';
         $dbpass = $config['b8']['database']['password'];
 
         $pdo = new PDO('mysql:host=' . $dbhost, $dbuser, $dbpass);
@@ -139,7 +144,7 @@ if ($installOK && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $store->save($user);
         }
 
-        $formAction = '/session/login';
+        $formAction = rtrim( $phpciUrl, '/' ) . '/session/login';
     }
 }
 

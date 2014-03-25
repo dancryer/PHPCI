@@ -26,12 +26,23 @@ class Build extends BuildBase
     const STATUS_SUCCESS = 2;
     const STATUS_FAILED = 3;
 
+    public $currentBuildPath = null;
+
     /**
     * Get link to commit from another source (i.e. Github)
     */
     public function getCommitLink()
     {
         return '#';
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectTitle()
+    {
+        $project = $this->getProject();
+        return $project ? $project->getTitle() : "";
     }
 
     /**

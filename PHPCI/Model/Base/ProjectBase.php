@@ -6,7 +6,7 @@
 
 namespace PHPCI\Model\Base;
 
-use b8\Model;
+use PHPCI\Model;
 use b8\Store\Factory;
 
 /**
@@ -91,10 +91,12 @@ class ProjectBase extends Model
         'title' => array(
             'type' => 'varchar',
             'length' => 250,
+            'default' => null,
         ),
         'reference' => array(
             'type' => 'varchar',
             'length' => 250,
+            'default' => null,
         ),
         'git_key' => array(
             'type' => 'text',
@@ -215,19 +217,11 @@ class ProjectBase extends Model
     /**
     * Get the value of AccessInformation / access_information.
     *
-    * @param string|null $key Key of desired information
-    *
     * @return string
     */
-    public function getAccessInformation($key = null)
+    public function getAccessInformation()
     {
-        if (is_null($key)) {
-            $rtn = $this->data['access_information'];
-        } else if (isset($this->data['access_information'][$key])) {
-            $rtn = $this->data['access_information'][$key];
-        } else {
-            $rtn = null;
-        }
+        $rtn    = $this->data['access_information'];
 
         return $rtn;
     }
@@ -405,6 +399,28 @@ class ProjectBase extends Model
      */
     public function getProjectBuilds()
     {
-        return Factory::getStore('Build')->getByProjectId($this->getId());
+        return Factory::getStore('Build', 'PHPCI')->getByProjectId($this->getId());
     }
+
+
+
+
+    public static function getByPrimaryKey($value, $useConnection = 'read')
+    {
+        return Factory::getStore('Project', 'PHPCI')->getByPrimaryKey($value, $useConnection);
+    }
+
+
+    public static function getById($value, $useConnection = 'read')
+    {
+        return Factory::getStore('Project', 'PHPCI')->getById($value, $useConnection);
+    }
+
+    public static function getByTitle($value, $limit = null, $useConnection = 'read')
+    {
+        return Factory::getStore('Project', 'PHPCI')->getByTitle($value, $limit, $useConnection);
+    }
+
+
+
 }

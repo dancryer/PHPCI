@@ -3,12 +3,13 @@
 namespace PHPCI\Helper;
 
 
-use PHPCI\BuildLogger;
+use \PHPCI\Logging\BuildLogger;
+use Psr\Log\LogLevel;
 
 class CommandExecutor
 {
     /**
-     * @var \PHPCI\BuildLogger
+     * @var \PHPCI\Logging\BuildLogger
      */
     protected $logger;
 
@@ -75,6 +76,10 @@ class CommandExecutor
         $status = 0;
         exec($command, $this->lastOutput, $status);
 
+        foreach ($this->lastOutput as &$lastOutput) {
+            $lastOutput = trim($lastOutput, '"');
+        }
+
         if (!empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
             $this->logger->log($this->lastOutput);
         }
@@ -108,21 +113,26 @@ class CommandExecutor
         }
 
         foreach ($binary as $bin) {
+            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
             // Check project root directory:
             if (is_file($this->rootDir . $bin)) {
+                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
                 return $this->rootDir . $bin;
             }
 
             // Check Composer bin dir:
             if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
+                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
                 return $this->rootDir . 'vendor/bin/' . $bin;
             }
 
-            // Use "which"
-            $which = trim(shell_exec('which ' . $bin));
+            // Use "where" for windows and "which" for other OS
+            $findCmd       = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') ? 'which' : 'where';
+            $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
-            if (!empty($which)) {
-                return $which;
+            if (!empty($findCmdResult)) {
+                $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
+                return $findCmdResult;
             }
         }
 

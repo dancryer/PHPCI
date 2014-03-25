@@ -37,7 +37,7 @@ class GenerateCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $gen = new CodeGenerator(Database::getConnection(), 'PHPCI', PHPCI_DIR . '/PHPCI/', false);
+        $gen = new CodeGenerator(Database::getConnection(), ['default' => 'PHPCI'], ['default' => PHPCI_DIR], false);
         $gen->generateModels();
         $gen->generateStores();
     }

@@ -9,6 +9,7 @@
 
 namespace PHPCI\Controller;
 
+use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use b8;
@@ -113,6 +114,11 @@ class ProjectController extends \PHPCI\Controller
         $order          = array('id' => 'DESC');
         $builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
         $view           = new b8\View('BuildsTable');
+
+        foreach ($builds['items'] as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
         $view->builds   = $builds['items'];
 
         return array($view->render(), $builds['count']);

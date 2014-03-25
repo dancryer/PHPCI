@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use PHPCI\BuildFactory;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -73,6 +74,11 @@ class HomeController extends \PHPCI\Controller
     {
         $builds         = $this->buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
         $view           = new b8\View('BuildsTable');
+
+        foreach ($builds['items'] as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
         $view->builds   = $builds['items'];
 
         return $view->render();

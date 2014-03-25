@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Helper;
+namespace PHPCI\Logging;
 
 
 use b8\Store;
@@ -16,7 +16,7 @@ class BuildDBLogHandler extends AbstractProcessingHandler
 
     protected $logValue;
 
-    function __construct(
+    public function __construct(
         Build $build,
         $level = LogLevel::INFO,
         $bubble = true
@@ -29,7 +29,10 @@ class BuildDBLogHandler extends AbstractProcessingHandler
 
     protected function write(array $record)
     {
-        $this->logValue .= (string)$record['formatted'];
+        $message = (string)$record['message'];
+        $message = str_replace($this->build->currentBuildPath, '/', $message);
+
+        $this->logValue .= $message . PHP_EOL;
         $this->build->setLog($this->logValue);
     }
-} 
+}

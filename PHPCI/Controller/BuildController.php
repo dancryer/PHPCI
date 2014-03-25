@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 
 /**
@@ -35,7 +36,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function view($buildId)
     {
-        $build          = $this->buildStore->getById($buildId);
+        $build          = BuildFactory::getBuildById($buildId);
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
@@ -63,7 +64,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function data($buildId)
     {
-        die($this->getBuildData($this->buildStore->getById($buildId)));
+        die($this->getBuildData(BuildFactory::getBuildById($buildId)));
     }
 
     /**
@@ -71,7 +72,7 @@ class BuildController extends \PHPCI\Controller
      */
     public function meta($buildId)
     {
-        $build  = $this->buildStore->getById($buildId);
+        $build  = BuildFactory::getBuildById($buildId);
         $key = $this->getParam('key', null);
         $numBuilds = $this->getParam('num_builds', 1);
         $data = null;
@@ -104,7 +105,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function rebuild($buildId)
     {
-        $copy   = $this->buildStore->getById($buildId);
+        $copy   = BuildFactory::getBuildById($buildId);
 
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
@@ -112,6 +113,8 @@ class BuildController extends \PHPCI\Controller
         $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($copy->getBranch());
         $build->setCreated(new \DateTime());
+        $build->setCommitterEmail($copy->getCommitterEmail());
+        $build->setCommitMessage($copy->getCommitMessage());
 
         $build = $this->buildStore->save($build);
 
@@ -128,7 +131,7 @@ class BuildController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $build  = $this->buildStore->getById($buildId);
+        $build  = BuildFactory::getBuildById($buildId);
 
         if (!$build) {
             $this->response->setResponseCode(404);

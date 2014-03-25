@@ -1,4 +1,4 @@
-<h1 id="title">Plugins</h1>
+<h1 id="title">Packages and Provided Plugins</h1>
 <?php if (!$canInstall): ?>
     <p class="alert alert-danger">PHPCI cannot automatically install/remove plugins for you, as either the <strong>shell_exec()</strong>
         function is disabled or PHPCI could not find Composer. PHPCI will update composer.json for you, but you will need to run Composer manually to make the changes.</p>
@@ -9,19 +9,42 @@
 <?php endif; ?>
 
 <?php if (isset($_GET['r'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['r']; ?></strong> has been removed.</p>
+    <p class="alert alert-success"><strong><?php echo $_GET['r']; ?></strong> has been removed.</p>
 <?php endif; ?>
 
 <?php if (isset($_GET['i'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['i']; ?></strong> has been installed.</p>
+    <p class="alert alert-success"><strong><?php echo $_GET['i']; ?></strong> has been installed.</p>
 <?php endif; ?>
 
 <?php if (isset($_GET['w'])): ?>
-    <p class="alert alert-success"><strong><?= $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
+    <p class="alert alert-success"><strong><?php echo $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
 <?php endif; ?>
 
 <div class="box">
-    <h3 class="title">Installed Plugins</h3>
+    <h3 class="title">Available Plugins</h3>
+
+    <table class="table-striped table-bordered table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Provided by Package</th>
+            </tr>
+        </thead>
+        <tbody>
+<?php foreach ($plugins as $plugin): ?>
+            <tr>
+                <td><?= $plugin->name; ?></td>
+                <td><?= $plugin->class; ?></td>
+                <td><?= $plugin->source; ?></td>
+            </tr>
+<?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="box">
+    <h3 class="title">Installed Packages</h3>
 
     <table class="table-striped table-bordered table">
         <thead>
@@ -32,13 +55,13 @@
             </tr>
         </thead>
         <tbody>
-<?php foreach ($installed as $package => $version): ?>
+<?php foreach ($installedPackages as $package => $version): ?>
             <tr>
-                <td><?= $package; ?></td>
-                <td><?= $version; ?></td>
+                <td><?php echo $package; ?></td>
+                <td><?php echo $version; ?></td>
                 <td>
                 <?php if (!in_array($package, $required) && $canWrite): ?>
-                    <a class="btn btn-danger btn-small" href="<?= PHPCI_URL ?>plugin/remove?package=<?= $package; ?>">Remove &raquo;</a>
+                    <a class="btn btn-danger btn-small" href="<?php echo PHPCI_URL ?>plugin/remove?package=<?php echo $package; ?>">Remove &raquo;</a>
                 <?php endif; ?>
                 </td>
             </tr>
@@ -48,7 +71,7 @@
 </div>
 
 <div class="box">
-    <h3 class="title">Suggested Plugins</h3>
+    <h3 class="title">Suggested Packages</h3>
 
     <table class="table-striped table-bordered table">
         <thead>
@@ -59,14 +82,14 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($suggested as $package => $version): ?>
-            <?php if (in_array($package, array_keys($installed))) { continue; } ?>
+        <?php foreach ($suggestedPackages as $package => $version): ?>
+            <?php if (in_array($package, array_keys($installedPackages))) { continue; } ?>
             <tr>
-                <td><?= $package; ?></td>
-                <td><?= $version; ?></td>
+                <td><?php echo $package; ?></td>
+                <td><?php echo $version; ?></td>
                 <td>
                     <?php if ($canWrite): ?>
-                        <button data-name="<?= $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
+                        <button data-name="<?php echo $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -76,7 +99,7 @@
 </div>
 
 <div class="box">
-    <h3 class="title">Search Packagist for More Plugins</h3>
+    <h3 class="title">Search Packagist for More Packages</h3>
 
     <div class="input-group">
         <input id="search-query" type="text" class="form-control">

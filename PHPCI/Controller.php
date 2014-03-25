@@ -38,7 +38,7 @@ class Controller extends \b8\Controller
         if (View::exists($this->className)) {
             $this->controllerView = new View($this->className);
         } else {
-            $this->controllerView = new View\UserView('{@content}');
+            $this->controllerView = new View\Template('{@content}');
         }
     }
 

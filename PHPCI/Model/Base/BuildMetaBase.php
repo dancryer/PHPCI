@@ -6,7 +6,7 @@
 
 namespace PHPCI\Model\Base;
 
-use b8\Model;
+use PHPCI\Model;
 use b8\Store\Factory;
 
 /**
@@ -95,6 +95,7 @@ class BuildMetaBase extends Model
         'meta_key' => array(
             'type' => 'varchar',
             'length' => 255,
+            'default' => null,
         ),
         'meta_value' => array(
             'type' => 'text',
@@ -299,7 +300,7 @@ class BuildMetaBase extends Model
         $rtn        = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
-            $rtn    = Factory::getStore('Build')->getById($key);
+            $rtn    = Factory::getStore('Build', 'PHPCI')->getById($key);
             $this->cache->set($cacheKey, $rtn);
         }
 
@@ -336,4 +337,26 @@ class BuildMetaBase extends Model
     {
         return $this->setBuildId($value->getId());
     }
+
+
+
+
+    public static function getByPrimaryKey($value, $useConnection = 'read')
+    {
+        return Factory::getStore('BuildMeta', 'PHPCI')->getByPrimaryKey($value, $useConnection);
+    }
+
+
+    public static function getById($value, $useConnection = 'read')
+    {
+        return Factory::getStore('BuildMeta', 'PHPCI')->getById($value, $useConnection);
+    }
+
+    public static function getByBuildId($value, $limit = null, $useConnection = 'read')
+    {
+        return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($value, $limit, $useConnection);
+    }
+
+
+
 }

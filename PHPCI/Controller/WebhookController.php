@@ -97,7 +97,7 @@ class WebhookController extends \PHPCI\Controller
         }
 
         try {
-            $this->_buildStore->save($build);
+            $this->buildStore->save($build); /** bugfix: Errors with PHPCI GitHub hook #296 */
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Ex: ' . $ex->getMessage());

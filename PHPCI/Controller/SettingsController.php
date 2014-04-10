@@ -39,7 +39,15 @@ class SettingsController extends Controller
     public function index()
     {
         $this->view->settings = $this->settings;
+
+        $emailSettings = array();
+
+        if (isset($this->settings['phpci']['email_settings'])) {
+            $emailSettings = $this->settings['phpci']['email_settings'];
+        }
+
         $this->view->github = $this->getGithubForm();
+        $this->view->emailSettings = $this->getEmailForm($emailSettings);
 
         if (!empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);
@@ -52,17 +60,28 @@ class SettingsController extends Controller
     {
         $this->settings['phpci']['github']['id'] = $this->getParam('githubid', '');
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
-
         $error = $this->storeSettings();
 
-        if($error)
-        {
+        if($error) {
             header('Location: ' . PHPCI_URL . 'settings?saved=2');
-        }
-        else
-        {
+        } else {
             header('Location: ' . PHPCI_URL . 'settings?saved=1');
         }
+
+        die;
+    }
+
+    public function email()
+    {
+        $this->settings['phpci']['email_settings'] = $this->getParams();
+        $error = $this->storeSettings();
+
+        if ($error) {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        } else {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
+
         die;
     }
 
@@ -120,8 +139,11 @@ class SettingsController extends Controller
         $field->setLabel('Application ID');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setValue($this->settings['phpci']['github']['id']);
         $form->addField($field);
+
+        if (isset($this->settings['phpci']['github']['id'])) {
+            $field->setValue($this->settings['phpci']['github']['id']);
+        }
 
         $field = new Form\Element\Text('githubsecret');
         $field->setRequired(true);
@@ -129,14 +151,86 @@ class SettingsController extends Controller
         $field->setLabel('Application Secret');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setValue($this->settings['phpci']['github']['secret']);
         $form->addField($field);
 
+        if (isset($this->settings['phpci']['github']['secret'])) {
+            $field->setValue($this->settings['phpci']['github']['secret']);
+        }
 
         $field = new Form\Element\Submit();
         $field->setValue('Save &raquo;');
         $field->setClass('btn btn-success pull-right');
         $form->addField($field);
+
+        return $form;
+    }
+
+    protected function getEmailForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/email');
+        $form->addField(new Form\Element\Csrf('csrf'));
+
+        $field = new Form\Element\Text('smtp_address');
+        $field->setRequired(false);
+        $field->setLabel('SMTP Server');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setValue('localhost');
+        $form->addField($field);
+
+        $field = new Form\Element\Text('smtp_port');
+        $field->setRequired(false);
+        $field->setPattern('[0-9]+');
+        $field->setLabel('SMTP Port');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setValue(25);
+        $form->addField($field);
+
+        $field = new Form\Element\Text('smtp_username');
+        $field->setRequired(false);
+        $field->setLabel('SMTP Username');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Text('smtp_password');
+        $field->setRequired(false);
+        $field->setLabel('SMTP Password');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Email('from_address');
+        $field->setRequired(false);
+        $field->setLabel('From Email Address');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Email('default_mailto_address');
+        $field->setRequired(false);
+        $field->setLabel('Default Notification Address');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Checkbox('smtp_encryption');
+        $field->setCheckedValue(1);
+        $field->setRequired(false);
+        $field->setLabel('Use SMTP encryption?');
+        $field->setContainerClass('form-group');
+        $field->setValue(1);
+        $form->addField($field);
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
 
         return $form;
     }

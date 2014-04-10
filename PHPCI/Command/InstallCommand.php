@@ -103,18 +103,6 @@ class InstallCommand extends Command
         $this->writeConfigFile($conf);
         $this->setupDatabase($output);
         $this->createAdminUser($output, $dialog);
-
-        /*
-        $conf['phpci']['email_settings']['smtp_address']  = $this->ask('(Optional) Smtp server address: ', true);
-        $conf['phpci']['email_settings']['smtp_port']     = $this->ask('(Optional) Smtp port: ', true);
-        $conf['phpci']['email_settings']['smtp_encryption'] = $this->ask('(Optional) Smtp encryption: ', true);
-        $conf['phpci']['email_settings']['smtp_username'] = $this->ask('(Optional) Smtp Username: ', true);
-        $conf['phpci']['email_settings']['smtp_password'] = $this->ask('(Optional) Smtp Password: ', true);
-        $conf['phpci']['email_settings']['from_address']  = $this->ask('(Optional) Email address to send from: ', true);
-
-        $ask = '(Optional) Default address to email notifications to: ';
-        $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask($ask, true);
-        */
     }
 
     /**

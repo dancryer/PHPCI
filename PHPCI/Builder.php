@@ -121,7 +121,7 @@ class Builder implements LoggerAwareInterface
 
         $pluginFactory = $this->buildPluginFactory($build);
         $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
-        $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this);
+        $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
         $this->commandExecutor = new CommandExecutor(
             $this->buildLogger,

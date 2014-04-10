@@ -88,13 +88,16 @@ class Build extends BuildBase
      */
     protected function handleConfig(Builder $builder, $buildPath)
     {
-        $build_config = $this->getProject()->getBuildConfig();
-        if (!$build_config) {
-            if (!is_file($buildPath . '/phpci.yml')) {
+        if (is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
+        }
+
+        if (!is_file($buildPath . '/phpci.yml') || !$build_config) {
+            $build_config = $this->getProject()->getBuildConfig();
+            if (!$build_config) {
                 $builder->logFailure('Project does not contain a phpci.yml file.');
                 return false;
             }
-            $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 
         $yamlParser = new YamlParser();

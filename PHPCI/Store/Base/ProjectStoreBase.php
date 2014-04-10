@@ -16,9 +16,11 @@ use PHPCI\Model\Project;
  */
 class ProjectStoreBase extends Store
 {
-    protected $tableName   = 'project';
-    protected $modelName   = '\PHPCI\Model\Project';
-    protected $primaryKey  = 'id';
+    protected $tableName = 'project';
+
+    protected $modelName = '\PHPCI\Model\Project';
+
+    protected $primaryKey = 'id';
 
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -32,7 +34,7 @@ class ProjectStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `project` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -40,7 +42,6 @@ class ProjectStoreBase extends Store
                 return new Project($data);
             }
         }
-
         return null;
     }
 
@@ -51,15 +52,13 @@ class ProjectStoreBase extends Store
         }
 
         $add = '';
-
         if ($limit) {
             $add .= ' LIMIT ' . $limit;
         }
-
         $count = null;
 
         $query = 'SELECT * FROM `project` WHERE `title` = :title' . $add;
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':title', $value);
 
         if ($stmt->execute()) {

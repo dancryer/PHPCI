@@ -16,3 +16,4 @@ require_once('../bootstrap.php');
 
 $fc = new PHPCI\Application($config, new b8\Http\Request());
 print $fc->handleRequest();
+

@@ -11,7 +11,10 @@
 use PHPCI\Logging\Handler;
 use PHPCI\Logging\LoggerConfig;
 
-date_default_timezone_set(@date_default_timezone_get());
+$timezone = ini_get('date.timezone');
+if (empty($timezone)) {
+    date_default_timezone_set('UTC');
+}
 
 // Set up a basic autoloader for PHPCI:
 $autoload = function ($class) {

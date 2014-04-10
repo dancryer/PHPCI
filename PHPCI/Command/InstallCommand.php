@@ -1,28 +1,34 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
 
 namespace PHPCI\Command;
 
+use Exception;
+use PDO;
+
+use b8\Database;
+use b8\Store\Factory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Store\Factory;
-use PHPCI\Builder;
+use Symfony\Component\Console\Helper\DialogHelper;
+use PHPCI\Model\User;
+
 
 /**
-* Install console command - Installs PHPCI.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Console
-*/
+ * Install console command - Installs PHPCI.
+ * @author       Dan Cryer <dan@block8.co.uk>
+ * @package      PHPCI
+ * @subpackage   Console
+ */
 class InstallCommand extends Command
 {
     protected function configure()
@@ -33,22 +39,70 @@ class InstallCommand extends Command
     }
 
     /**
-    * Installs PHPCI - Can be run more than once as long as you ^C instead of entering an email address.
-    */
+     * Installs PHPCI - Can be run more than once as long as you ^C instead of entering an email address.
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Gather initial data from the user:
-        $conf = array();
-        $conf['b8']['database']['servers']['read']  = $this->ask('Enter your MySQL host: ');
-        $conf['b8']['database']['servers']['write'] = $conf['b8']['database']['servers']['read'];
-        $conf['b8']['database']['name']             = $this->ask('Enter the database name PHPCI should use: ');
-        $conf['b8']['database']['username']         = $this->ask('Enter your MySQL username: ');
-        $conf['b8']['database']['password']         = $this->ask('Enter your MySQL password: ', true);
-        $ask = 'Your PHPCI URL (without trailing slash): ';
-        $conf['phpci']['url']                       = $this->ask($ask, false, array(FILTER_VALIDATE_URL,"/[^\/]$/i"));
-        $conf['phpci']['github']['id']              = $this->ask('(Optional) Github Application ID: ', true);
-        $conf['phpci']['github']['secret']          = $this->ask('(Optional) Github Application Secret: ', true);
+        $output->writeln('');
+        $output->writeln('<info>******************</info>');
+        $output->writeln('<info> Welcome to PHPCI</info>');
+        $output->writeln('<info>******************</info>');
+        $output->writeln('');
 
+        $this->checkRequirements($output);
+
+        $output->writeln('Please answer the following questions:');
+        $output->writeln('-------------------------------------');
+        $output->writeln('');
+
+
+        /**
+         * @var \Symfony\Component\Console\Helper\DialogHelper
+         */
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        // ----
+        // Get MySQL connection information and verify that it works:
+        // ----
+        $connectionVerified = false;
+
+        while (!$connectionVerified) {
+            $db = array();
+            $db['servers']['read'] = $dialog->ask($output, 'Please enter your MySQL host [localhost]: ', 'localhost');
+            $db['servers']['write'] = $db['servers']['read'];
+            $db['name'] = $dialog->ask($output, 'Please enter your database name [phpci]: ', 'phpci');
+            $db['username'] = $dialog->ask($output, 'Please enter your database username [phpci]: ', 'phpci');
+            $db['password'] = $dialog->askHiddenResponse($output, 'Please enter your database password: ');
+
+            $connectionVerified = $this->verifyDatabaseDetails($db, $output);
+        }
+
+        $output->writeln('');
+
+        // ----
+        // Get basic installation details (URL, etc)
+        // ----
+
+        $conf = array();
+        $conf['b8']['database'] = $db;
+        $conf['phpci']['url'] = $dialog->askAndValidate(
+            $output,
+            'Your PHPCI URL (without trailing slash): ',
+            function ($answer) {
+                if (!filter_var($answer, FILTER_VALIDATE_URL)) {
+                    throw new Exception('Must be a valid URL');
+                }
+
+                return $answer;
+            },
+            false
+        );
+
+        $this->writeConfigFile($conf);
+        $this->setupDatabase($output);
+        $this->createAdminUser($output, $dialog);
+
+        /*
         $conf['phpci']['email_settings']['smtp_address']  = $this->ask('(Optional) Smtp server address: ', true);
         $conf['phpci']['email_settings']['smtp_port']     = $this->ask('(Optional) Smtp port: ', true);
         $conf['phpci']['email_settings']['smtp_encryption'] = $this->ask('(Optional) Smtp encryption: ', true);
@@ -58,112 +112,170 @@ class InstallCommand extends Command
 
         $ask = '(Optional) Default address to email notifications to: ';
         $conf['phpci']['email_settings']['default_mailto_address'] = $this->ask($ask, true);
+        */
+    }
 
-        $dbUser = $conf['b8']['database']['username'];
-        $dbPass = $conf['b8']['database']['password'];
-        $dbHost = $conf['b8']['database']['servers']['write'];
-        $dbName = $conf['b8']['database']['name'];
+    /**
+     * Check PHP version, required modules and for disabled functions.
+     * @param OutputInterface $output
+     */
+    protected function checkRequirements(OutputInterface $output)
+    {
+        $output->write('Checking requirements...');
+        $errors = false;
 
-        // Create the database if it doesn't exist:
-        $cmd    = 'mysql -u' . $dbUser . (!empty($dbPass) ? ' -p' . $dbPass : '') . ' -h' . $dbHost .
-                    ' -e "CREATE DATABASE IF NOT EXISTS ' . $dbName . '"';
+        // Check PHP version:
+        if (!(version_compare(PHP_VERSION, '5.3.3') >= 0)) {
+            $output->writeln('');
+            $output->writeln('<error>PHPCI requires at least PHP 5.3.3 to function.</error>');
+            $errors = true;
+        }
 
-        shell_exec($cmd);
+        // Check for required extensions:
+        if (!extension_loaded('PDO')) {
+            $output->writeln('');
+            $output->writeln('<error>PDO extension must be installed.</error>');
+            $errors = true;
+        }
 
+        if (!extension_loaded('pdo_mysql')) {
+            $output->writeln('');
+            $output->writeln('<error>PDO MySQL extension must be installed.</error>');
+            $errors = true;
+        }
+
+        if (!extension_loaded('mcrypt')) {
+            $output->writeln('');
+            $output->writeln('<error>Mcrypt extension must be installed.</error>');
+            $errors = true;
+        }
+
+        // Check we can use the exec() and shell_exec() functions:
+        if (!function_exists('exec')) {
+            $output->writeln('');
+            $output->writeln('<error>PHPCI needs to be able to call the exec() function. Is it disabled in php.ini?</error>');
+            $errors = true;
+        }
+
+        if (!function_exists('shell_exec')) {
+            $output->writeln('');
+            $output->writeln('<error>PHPCI needs to be able to call the shell_exec() function. Is it disabled in php.ini?</error>');
+            $errors = true;
+        }
+
+        if (!function_exists('password_hash')) {
+            $output->writeln('');
+            $output->writeln('<error>PHPCI requires the password_hash() function available in PHP 5.4, or the password_compat library by ircmaxell.</error>');
+            $errors = true;
+        }
+
+        if ($errors) {
+            $output->writeln('');
+            die;
+        }
+
+        $output->writeln(' <info>OK</info>');
+        $output->writeln('');
+    }
+
+    /**
+     * Try and connect to MySQL using the details provided.
+     * @param array $db
+     * @param OutputInterface $output
+     * @return bool
+     */
+    protected function verifyDatabaseDetails(array $db, OutputInterface $output)
+    {
+        try {
+            $pdo = new PDO(
+                'mysql:host='.$db['servers']['write'].';dbname='.$db['name'],
+                $db['username'],
+                $db['password'],
+                array(
+                    \PDO::ATTR_PERSISTENT => false,
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_TIMEOUT => 2,
+                    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
+                )
+            );
+
+            return true;
+
+        } catch (Exception $ex) {
+            $output->writeln('<error>PHPCI could not connect to MySQL with the details provided. Please try again.</error>');
+            $output->writeln('<error>' . $ex->getMessage() . '</error>');
+        }
+
+        return false;
+    }
+
+    /**
+     * Write the PHPCI config.yml file.
+     * @param array $config
+     */
+    protected function writeConfigFile(array $config)
+    {
         $dumper = new \Symfony\Component\Yaml\Dumper();
-        $yaml = $dumper->dump($conf);
+        $yaml = $dumper->dump($config);
 
         file_put_contents(PHPCI_DIR . 'PHPCI/config.yml', $yaml);
+    }
 
+    protected function setupDatabase(OutputInterface $output)
+    {
+        $output->write('Setting up your database... ');
+
+        // Load PHPCI's bootstrap file:
         require(PHPCI_DIR . 'bootstrap.php');
 
-        // Update the database:
-        $gen = new \b8\Database\Generator(\b8\Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
-        $gen->generate();
-
-        // Try to create a user account:
-        $adminEmail = $this->ask('Enter your email address (leave blank if updating): ', true, FILTER_VALIDATE_EMAIL);
-
-        if (empty($adminEmail)) {
-            return;
+        try {
+            // Set up the database, based on table data from the models:
+            $gen = new Database\Generator(Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
+            $gen->generate();
+        } catch (Exception $ex) {
+            $output->writeln('');
+            $output->writeln('<error>PHPCI failed to set up the database.</error>');
+            $output->writeln('<error>' . $ex->getMessage() . '</error>');
+            die;
         }
-        $adminPass = $this->ask('Enter your desired admin password: ');
-        $adminName = $this->ask('Enter your name: ');
+
+        $output->writeln('<info>OK</info>');
+    }
+
+    protected function createAdminUser(OutputInterface $output, DialogHelper $dialog)
+    {
+        // Try to create a user account:
+        $adminEmail = $dialog->askAndValidate(
+            $output,
+            'Your email address: ',
+            function ($answer) {
+                if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
+                    throw new Exception('Must be a valid email address.');
+                }
+
+                return $answer;
+            },
+            false
+        );
+
+        $adminPass = $dialog->askHiddenResponse($output, 'Enter your desired admin password: ');
+        $adminName = $dialog->ask($output, 'Enter your name: ');
 
         try {
-            $user = new \PHPCI\Model\User();
+            $user = new User();
             $user->setEmail($adminEmail);
             $user->setName($adminName);
             $user->setIsAdmin(1);
             $user->setHash(password_hash($adminPass, PASSWORD_DEFAULT));
 
-            $store = \b8\Store\Factory::getStore('User');
+            $store = Factory::getStore('User');
             $store->save($user);
 
-            print 'User account created!' . PHP_EOL;
+            $output->writeln('<info>User account created!</info>');
         } catch (\Exception $ex) {
-            print 'There was a problem creating your account. :(' . PHP_EOL;
-            print $ex->getMessage();
+            $output->writeln('<error>PHPCI failed to create your admin account.</error>');
+            $output->writeln('<error>' . $ex->getMessage() . '</error>');
+            die;
         }
-    }
-
-    protected function ask($question, $emptyOk = false, $validationFilter = null)
-    {
-        print $question . ' ';
-
-        $rtn    = '';
-        $stdin     = fopen('php://stdin', 'r');
-        $rtn = fgets($stdin);
-        fclose($stdin);
-
-        $rtn = trim($rtn);
-
-        if (!$emptyOk && empty($rtn)) {
-            $rtn = $this->ask($question, $emptyOk, $validationFilter);
-        } elseif ($validationFilter != null  && ! empty($rtn)) {
-            if (! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
-                print $statusMessage;
-                $rtn = $this->ask($question, $emptyOk, $validationFilter);
-            }
-        }
-
-        return $rtn;
-    }
-    protected function controlFormat($valueToInspect, $filter, &$statusMessage)
-    {
-        $filters = !(is_array($filter))? array($filter) : $filter;
-        $statusMessage = '';
-        $status = true;
-        $options = array();
-
-        foreach ($filters as $filter) {
-            if (! is_int($filter)) {
-                $regexp = $filter;
-                $filter = FILTER_VALIDATE_REGEXP;
-                $options = array(
-                    'options' => array(
-                        'regexp' => $regexp,
-                    )
-                );
-            }
-            if (! filter_var($valueToInspect, $filter, $options)) {
-                $status = false;
-
-                switch ($filter)
-                {
-                    case FILTER_VALIDATE_URL:
-                        $statusMessage = 'Incorrect url format.' . PHP_EOL;
-                        break;
-                    case FILTER_VALIDATE_EMAIL:
-                        $statusMessage = 'Incorrect e-mail format.' . PHP_EOL;
-                        break;
-                    case FILTER_VALIDATE_REGEXP:
-                        $statusMessage = 'Incorrect format.' . PHP_EOL;
-                        break;
-                }
-            }
-        }
-
-        return $status;
     }
 }

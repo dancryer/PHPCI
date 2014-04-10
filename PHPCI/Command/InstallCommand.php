@@ -43,6 +43,8 @@ class InstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->verifyNotInstalled($output);
+
         $output->writeln('');
         $output->writeln('<info>******************</info>');
         $output->writeln('<info> Welcome to PHPCI</info>');
@@ -276,6 +278,19 @@ class InstallCommand extends Command
             $output->writeln('<error>PHPCI failed to create your admin account.</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
             die;
+        }
+    }
+
+    protected function verifyNotInstalled(OutputInterface $output)
+    {
+        if (file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
+            $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
+
+            if (!empty($content)) {
+                $output->writeln('<error>PHPCI/config.yml exists and is not empty.</error>');
+                $output->writeln('<error>If you were trying to update PHPCI, please use phpci:update instead.</error>');
+                die;
+            }
         }
     }
 }

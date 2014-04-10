@@ -48,8 +48,30 @@ class UpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->verifyInstalled($output);
+
+        $output->writeln('Updating PHPCI database.');
+
         // Update the database:
         $gen = new \b8\Database\Generator(\b8\Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
         $gen->generate();
+
+        $output->writeln('<info>Done!</info>');
+    }
+
+    protected function verifyInstalled(OutputInterface $output)
+    {
+        if (!file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
+            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
+            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
+            die;
+        }
+
+        $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
+        if (empty($content)) {
+            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
+            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
+            die;
+        }
     }
 }

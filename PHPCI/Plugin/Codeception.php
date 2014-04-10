@@ -20,7 +20,14 @@ use PHPCI\Model\Build;
  */
 class Codeception implements \PHPCI\Plugin
 {
-    protected $args;
+    /**
+     * @var string
+     */
+    protected $args = '';
+
+    /**
+     * @var Builder
+     */
     protected $phpci;
 
     /**
@@ -30,14 +37,13 @@ class Codeception implements \PHPCI\Plugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
 
         if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];
         }
-
         if (isset($options['args'])) {
-            $this->args = $options['args'];
+            $this->args = (string) $options['args'];
         }
     }
 
@@ -69,9 +75,9 @@ class Codeception implements \PHPCI\Plugin
                 return false;
             }
 
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s"';
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
             if (IS_WIN) {
-                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s"';
+                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
             }
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $this->phpci->buildPath . $configPath);
 

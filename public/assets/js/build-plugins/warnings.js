@@ -1,17 +1,23 @@
-var plugin = PHPCI.UiPlugin.extend({
+var warningsPlugin = PHPCI.UiPlugin.extend({
     id: 'build-warnings-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: 'Quality Trend',
+    keys: {
+      'phpmd-warnings': 'PHPMD Warnings',
+      'phpcs-warnings': 'PHPCS Warnings',
+      'phpcs-errors': 'PHPCS Errors',
+      'phplint-errors': 'PHPLint Errors'
+    },
     data: {},
-    keys: null,
     displayOnUpdate: false,
 
     register: function() {
         var self = this;
-        var query1 = PHPCI.registerQuery('phpmd-warnings', -1, {num_builds: 10, key: 'phpmd-warnings'})
-        var query2 = PHPCI.registerQuery('phpcs-warnings', -1, {num_builds: 10, key: 'phpcs-warnings'})
-        var query3 = PHPCI.registerQuery('phpcs-errors', -1, {num_builds: 10, key: 'phpcs-errors'})
-        var query4 = PHPCI.registerQuery('phplint-errors', -1, {num_builds: 10, key: 'phplint-errors'})
+
+        var queries = [];
+        for (var key in self.keys) {
+          queries.push(PHPCI.registerQuery(key, -1, {num_builds: 10, key: key}));
+        }
 
         $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors', function(data) {
             self.onUpdate(data);
@@ -20,10 +26,9 @@ var plugin = PHPCI.UiPlugin.extend({
         $(window).on('build-updated', function(data) {
             if (data.queryData.status > 1) {
                 self.displayOnUpdate = true;
-                query1();
-                query2();
-                query3();
-                query4();
+                for (var query in queries) {
+                  queries[query]();
+                }
             }
         });
 
@@ -36,23 +41,22 @@ var plugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         var self = this;
-        var build = e.queryData;
+        var builds = e.queryData;
 
-        if (!build || !build.length) {
+        if (!builds || !builds.length) {
             return;
         }
 
-        for (var i in build) {
-            var buildId = build[i]['build_id'];
-            var metaKey = build[i]['meta_key'];
-            var metaVal = build[i]['meta_value'];
+        for (var i in builds) {
+            var buildId = builds[i]['build_id'];
+            var metaKey = builds[i]['meta_key'];
+            var metaVal = builds[i]['meta_value'];
 
             if (!self.data[buildId]) {
                 self.data[buildId] = {};
             }
 
             self.data[buildId][metaKey] = metaVal;
-            self.keys = Object.keys(self.data[buildId]);
         }
 
         if (self.displayOnUpdate) {
@@ -66,25 +70,16 @@ var plugin = PHPCI.UiPlugin.extend({
         $('#build-warnings').empty().animate({height: '275px'});
 
         var titles = ['Build'];
-        var keys = self.keys;
-
-        for (var i in keys) {
-            var t = {
-                'phpmd-warnings': 'PHPMD Warnings',
-                'phpcs-warnings': 'PHPCS Warnings',
-                'phpcs-errors': 'PHPCS Errors',
-                'phplint-errors': 'PHPLint Errors'
-            };
-            titles.push(t[keys[i]]);
+        for (var key in self.keys) {
+            titles.push(self.keys[key]);
         }
 
         var data = [titles];
-
         for (var build in self.data) {
             var thisBuild = ['#' + build];
 
-            for (var i in keys) {
-                thisBuild.push(parseInt(self.data[build][keys[i]]));
+            for (var key in self.keys) {
+                thisBuild.push(parseInt(self.data[build][key]));
             }
 
             data.push(thisBuild);
@@ -94,7 +89,9 @@ var plugin = PHPCI.UiPlugin.extend({
         var options = {
             hAxis: {title: 'Build'},
             vAxis: {title: 'Warnings'},
-            backgroundColor: { fill: 'transparent' }
+            backgroundColor: { fill: 'transparent' },
+            height: 275,
+            pointSize: 3
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('build-warnings'));
@@ -102,4 +99,4 @@ var plugin = PHPCI.UiPlugin.extend({
     }
 });
 
-PHPCI.registerPlugin(new plugin());
+PHPCI.registerPlugin(new warningsPlugin());

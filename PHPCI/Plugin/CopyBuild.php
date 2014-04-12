@@ -21,6 +21,7 @@ use PHPCI\Model\Build;
 class CopyBuild implements \PHPCI\Plugin
 {
     protected $directory;
+    protected $ignore;
     protected $phpci;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())

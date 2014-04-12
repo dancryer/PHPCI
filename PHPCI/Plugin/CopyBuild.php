@@ -32,7 +32,7 @@ class CopyBuild implements \PHPCI\Plugin
     }
 
     /**
-    * Executes Composer and runs a specified command (e.g. install / update)
+    * Copies files from the root of the build directory into the target folder
     */
     public function execute()
     {

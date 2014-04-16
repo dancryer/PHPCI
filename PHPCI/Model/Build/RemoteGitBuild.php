@@ -11,7 +11,6 @@ namespace PHPCI\Model\Build;
 
 use PHPCI\Model\Build;
 use PHPCI\Builder;
-use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Remote Git Build Model
@@ -34,7 +33,6 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $yamlParser = new YamlParser();
         $key = trim($this->getProject()->getGitKey());
 
         if (!empty($key)) {
@@ -48,15 +46,7 @@ class RemoteGitBuild extends Build
             return false;
         }
 
-        if (!is_file($buildPath . 'phpci.yml')) {
-            $builder->logFailure('Project does not contain a phpci.yml file.');
-            return false;
-        }
-
-        $yamlFile = file_get_contents($buildPath . 'phpci.yml');
-        $builder->setConfigArray($yamlParser->parse($yamlFile));
-
-        return true;
+        return $this->handleConfig($builder, $buildPath);
     }
 
     /**

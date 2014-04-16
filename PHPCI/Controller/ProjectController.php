@@ -323,6 +323,14 @@ class ProjectController extends \PHPCI\Controller
         $field->setRows(6);
         $form->addField($field);
 
+        $field = new Form\Element\TextArea('build_config');
+        $field->setRequired(false);
+        $field->setLabel('PHPCI build config for this project (instead phpci.yml in the project repository)');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setRows(6);
+        $form->addField($field);
+
         $field = new Form\Element\Submit();
         $field->setValue('Save Project');
         $field->setContainerClass('form-group');

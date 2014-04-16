@@ -11,6 +11,8 @@ namespace PHPCI\Model;
 
 use b8\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
+use PHPCI\Builder;
+use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Build Model
@@ -76,5 +78,30 @@ class Build extends BuildBase
     public function isSuccessful()
     {
         return ($this->getStatus() === self::STATUS_SUCCESS);
+    }
+
+    /**
+     * @param Builder $builder
+     * @param string  $buildPath
+     *
+     * @return bool
+     */
+    protected function handleConfig(Builder $builder, $buildPath)
+    {
+        if (is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
+        }
+
+        if (!is_file($buildPath . '/phpci.yml') || !$build_config) {
+            $build_config = $this->getProject()->getBuildConfig();
+            if (!$build_config) {
+                $builder->logFailure('Project does not contain a phpci.yml file.');
+                return false;
+            }
+        }
+
+        $yamlParser = new YamlParser();
+        $builder->setConfigArray($yamlParser->parse($build_config));
+        return $builder->getConfig('build_settings');
     }
 }

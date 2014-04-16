@@ -16,9 +16,11 @@ use PHPCI\Model\User;
  */
 class UserStoreBase extends Store
 {
-    protected $tableName   = 'user';
-    protected $modelName   = '\PHPCI\Model\User';
-    protected $primaryKey  = 'id';
+    protected $tableName = 'user';
+
+    protected $modelName = '\PHPCI\Model\User';
+
+    protected $primaryKey = 'id';
 
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -32,7 +34,7 @@ class UserStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `user` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -40,7 +42,6 @@ class UserStoreBase extends Store
                 return new User($data);
             }
         }
-
         return null;
     }
 
@@ -51,7 +52,7 @@ class UserStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `user` WHERE `email` = :email LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':email', $value);
 
         if ($stmt->execute()) {
@@ -59,7 +60,6 @@ class UserStoreBase extends Store
                 return new User($data);
             }
         }
-
         return null;
     }
 }

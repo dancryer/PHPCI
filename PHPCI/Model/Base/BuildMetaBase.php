@@ -15,182 +15,176 @@ use b8\Store\Factory;
 class BuildMetaBase extends Model
 {
     /**
-    * @var array
-    */
+     * @var array
+     */
     public static $sleepable = array();
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $tableName = 'build_meta';
 
     /**
-    * @var string
-    */
+     * @var string
+     */
     protected $modelName = 'BuildMeta';
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     protected $data = array(
-        'id' => null,
+        'id'         => null,
         'project_id' => null,
-        'build_id' => null,
-        'meta_key' => null,
+        'build_id'   => null,
+        'meta_key'   => null,
         'meta_value' => null,
     );
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     protected $getters = array(
         // Direct property getters:
-        'id' => 'getId',
+        'id'         => 'getId',
         'project_id' => 'getProjectId',
-        'build_id' => 'getBuildId',
-        'meta_key' => 'getMetaKey',
+        'build_id'   => 'getBuildId',
+        'meta_key'   => 'getMetaKey',
         'meta_value' => 'getMetaValue',
-
         // Foreign key getters:
-        'Build' => 'getBuild',
+        'Build'      => 'getBuild',
     );
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     protected $setters = array(
         // Direct property setters:
-        'id' => 'setId',
+        'id'         => 'setId',
         'project_id' => 'setProjectId',
-        'build_id' => 'setBuildId',
-        'meta_key' => 'setMetaKey',
+        'build_id'   => 'setBuildId',
+        'meta_key'   => 'setMetaKey',
         'meta_value' => 'setMetaValue',
-
         // Foreign key setters:
-        'Build' => 'setBuild',
+        'Build'      => 'setBuild',
     );
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 10,
-            'primary_key' => true,
+        'id'         => array(
+            'type'           => 'int',
+            'length'         => 10,
+            'primary_key'    => true,
             'auto_increment' => true,
-            'default' => null,
+            'default'        => null,
         ),
         'project_id' => array(
-            'type' => 'int',
-            'length' => 11,
+            'type'    => 'int',
+            'length'  => 11,
             'default' => null,
         ),
-        'build_id' => array(
-            'type' => 'int',
-            'length' => 11,
+        'build_id'   => array(
+            'type'     => 'int',
+            'length'   => 11,
             'nullable' => true,
-            'default' => null,
+            'default'  => null,
         ),
-        'meta_key' => array(
-            'type' => 'varchar',
-            'length' => 255,
+        'meta_key'   => array(
+            'type'    => 'varchar',
+            'length'  => 255,
             'default' => null,
         ),
         'meta_value' => array(
-            'type' => 'text',
+            'type'     => 'text',
             'nullable' => true,
-            'default' => null,
+            'default'  => null,
         ),
     );
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_meta_id' => array('unique' => true, 'columns' => 'build_id, meta_key'),
+        'PRIMARY'     => array('unique' => true, 'columns' => 'id'),
+        'idx_meta_id' => array('unique' => true, 'columns' => 'build_id, meta_key'),
     );
 
     /**
-    * @var array
-    */
+     * @var array
+     */
     public $foreignKeys = array(
-            'fk_meta_build_id' => array(
-                'local_col' => 'build_id',
-                'update' => 'CASCADE',
-                'delete' => 'CASCADE',
-                'table' => 'build',
-                'col' => 'id'
-                ),
+        'fk_meta_build_id' => array(
+            'local_col' => 'build_id',
+            'update'    => 'CASCADE',
+            'delete'    => 'CASCADE',
+            'table'     => 'build',
+            'col'       => 'id'
+        ),
     );
 
     /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
+     * Get the value of Id / id.
+     *
+     * @return int
+     */
     public function getId()
     {
-        $rtn    = $this->data['id'];
-
+        $rtn = $this->data['id'];
         return $rtn;
     }
 
     /**
-    * Get the value of ProjectId / project_id.
-    *
-    * @return int
-    */
+     * Get the value of ProjectId / project_id.
+     *
+     * @return int
+     */
     public function getProjectId()
     {
-        $rtn    = $this->data['project_id'];
-
+        $rtn = $this->data['project_id'];
         return $rtn;
     }
 
     /**
-    * Get the value of BuildId / build_id.
-    *
-    * @return int
-    */
+     * Get the value of BuildId / build_id.
+     *
+     * @return int
+     */
     public function getBuildId()
     {
-        $rtn    = $this->data['build_id'];
-
+        $rtn = $this->data['build_id'];
         return $rtn;
     }
 
     /**
-    * Get the value of MetaKey / meta_key.
-    *
-    * @return string
-    */
+     * Get the value of MetaKey / meta_key.
+     *
+     * @return string
+     */
     public function getMetaKey()
     {
-        $rtn    = $this->data['meta_key'];
-
+        $rtn = $this->data['meta_key'];
         return $rtn;
     }
 
     /**
-    * Get the value of MetaValue / meta_value.
-    *
-    * @return string
-    */
+     * Get the value of MetaValue / meta_value.
+     *
+     * @return string
+     */
     public function getMetaValue()
     {
-        $rtn    = $this->data['meta_value'];
-
+        $rtn = $this->data['meta_value'];
         return $rtn;
     }
 
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of Id / id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setId($value)
     {
         $this->_validateNotNull('Id', $value);
@@ -199,18 +193,17 @@ class BuildMetaBase extends Model
         if ($this->data['id'] === $value) {
             return;
         }
-
         $this->data['id'] = $value;
-
         $this->_setModified('id');
     }
 
     /**
-    * Set the value of ProjectId / project_id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of ProjectId / project_id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setProjectId($value)
     {
         $this->_validateNotNull('ProjectId', $value);
@@ -219,17 +212,15 @@ class BuildMetaBase extends Model
         if ($this->data['project_id'] === $value) {
             return;
         }
-
         $this->data['project_id'] = $value;
-
         $this->_setModified('project_id');
     }
 
     /**
-    * Set the value of BuildId / build_id.
-    *
-    * @param $value int
-    */
+     * Set the value of BuildId / build_id.
+     *
+     * @param $value int
+     */
     public function setBuildId($value)
     {
         $this->_validateInt('BuildId', $value);
@@ -237,18 +228,17 @@ class BuildMetaBase extends Model
         if ($this->data['build_id'] === $value) {
             return;
         }
-
         $this->data['build_id'] = $value;
-
         $this->_setModified('build_id');
     }
 
     /**
-    * Set the value of MetaKey / meta_key.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of MetaKey / meta_key.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setMetaKey($value)
     {
         $this->_validateNotNull('MetaKey', $value);
@@ -257,17 +247,15 @@ class BuildMetaBase extends Model
         if ($this->data['meta_key'] === $value) {
             return;
         }
-
         $this->data['meta_key'] = $value;
-
         $this->_setModified('meta_key');
     }
 
     /**
-    * Set the value of MetaValue / meta_value.
-    *
-    * @param $value string
-    */
+     * Set the value of MetaValue / meta_value.
+     *
+     * @param $value string
+     */
     public function setMetaValue($value)
     {
         $this->_validateString('MetaValue', $value);
@@ -275,9 +263,7 @@ class BuildMetaBase extends Model
         if ($this->data['meta_value'] === $value) {
             return;
         }
-
         $this->data['meta_value'] = $value;
-
         $this->_setModified('meta_value');
     }
 
@@ -296,22 +282,21 @@ class BuildMetaBase extends Model
             return null;
         }
 
-        $cacheKey   = 'Cache.Build.' . $key;
-        $rtn        = $this->cache->get($cacheKey, null);
+        $cacheKey = 'Cache.Build.' . $key;
+        $rtn      = $this->cache->get($cacheKey, null);
 
         if (empty($rtn)) {
-            $rtn    = Factory::getStore('Build', 'PHPCI')->getById($key);
+            $rtn = Factory::getStore('Build', 'PHPCI')->getById($key);
             $this->cache->set($cacheKey, $rtn);
         }
-
         return $rtn;
     }
 
     /**
-    * Set Build - Accepts an ID, an array representing a Build or a Build model.
-    *
-    * @param $value mixed
-    */
+     * Set Build - Accepts an ID, an array representing a Build or a Build model.
+     *
+     * @param $value mixed
+     */
     public function setBuild($value)
     {
         // Is this an instance of Build?
@@ -329,23 +314,19 @@ class BuildMetaBase extends Model
     }
 
     /**
-    * Set Build - Accepts a Build model.
-    * 
-    * @param $value \PHPCI\Model\Build
-    */
+     * Set Build - Accepts a Build model.
+     *
+     * @param $value \PHPCI\Model\Build
+     */
     public function setBuildObject(\PHPCI\Model\Build $value)
     {
         return $this->setBuildId($value->getId());
     }
 
-
-
-
     public static function getByPrimaryKey($value, $useConnection = 'read')
     {
         return Factory::getStore('BuildMeta', 'PHPCI')->getByPrimaryKey($value, $useConnection);
     }
-
 
     public static function getById($value, $useConnection = 'read')
     {
@@ -356,7 +337,4 @@ class BuildMetaBase extends Model
     {
         return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($value, $limit, $useConnection);
     }
-
-
-
 }

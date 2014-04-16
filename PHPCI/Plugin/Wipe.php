@@ -13,15 +13,14 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* Copy Build Plugin - Copies the entire build to another directory.
-* @author       Dan Cryer <dan@block8.co.uk>
+* Wipe Plugin - Wipes a folder
+* @author       Claus Due <claus@namelesscoder.net>
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CopyBuild implements \PHPCI\Plugin
+class Wipe implements \PHPCI\Plugin
 {
     protected $directory;
-    protected $ignore;
     protected $phpci;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
@@ -29,30 +28,22 @@ class CopyBuild implements \PHPCI\Plugin
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
 
     /**
-    * Copies files from the root of the build directory into the target folder
+    * Wipes a directory's contents
     */
     public function execute()
     {
         $build = $this->phpci->buildPath;
 
-        if ($this->directory == $build) {
-            return false;
+        if ($this->directory == $build || empty($this->directory)) {
+            return true;
         }
-
-        $cmd = 'mkdir -p "%s" && ls -1a "%s"* | xargs -r -t "%s/"';
-        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
-
-        if ($this->ignore) {
-            foreach ($this->phpci->ignore as $file) {
-                $cmd = 'rm -Rf "%s/%s"';
-                $this->phpci->executeCommand($cmd, $this->directory, $file);
-            }
+        if (is_dir($this->directory)) {
+            $cmd = 'rm -rf %s*';
+            $success = $this->phpci->executeCommand($cmd, $this->directory);
         }
-
         return $success;
     }
 }

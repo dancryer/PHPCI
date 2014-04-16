@@ -136,16 +136,22 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Set the config array, as read from phpci.yml
-     * @param array
+     * @param array|null $config
+     * @throws \Exception
      */
-    public function setConfigArray(array $config)
+    public function setConfigArray($config)
     {
+        if (is_null($config) || !is_array($config)) {
+            throw new \Exception('This project does not contain a phpci.yml file, or it is empty.');
+        }
+
         $this->config = $config;
     }
 
     /**
      * Access a variable from the phpci.yml file.
      * @param string
+     * @return mixed
      */
     public function getConfig($key)
     {

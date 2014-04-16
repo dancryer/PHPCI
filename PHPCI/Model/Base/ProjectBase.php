@@ -37,6 +37,7 @@ class ProjectBase extends Model
         'title' => null,
         'reference' => null,
         'git_key' => null,
+        'build_config' => null,
         'type' => null,
         'token' => null,
         'access_information' => null,
@@ -52,6 +53,7 @@ class ProjectBase extends Model
         'title' => 'getTitle',
         'reference' => 'getReference',
         'git_key' => 'getGitKey',
+        'build_config' => 'getBuildConfig',
         'type' => 'getType',
         'token' => 'getToken',
         'access_information' => 'getAccessInformation',
@@ -69,6 +71,7 @@ class ProjectBase extends Model
         'title' => 'setTitle',
         'reference' => 'setReference',
         'git_key' => 'setGitKey',
+        'build_config' => 'setBuildConfig',
         'type' => 'setType',
         'token' => 'setToken',
         'access_information' => 'setAccessInformation',
@@ -103,6 +106,11 @@ class ProjectBase extends Model
             'nullable' => true,
             'default' => null,
         ),
+        'build_config' => array(
+            'type' => 'text',
+            'nullable' => true,
+            'default' => null,
+        ),
         'type' => array(
             'type' => 'varchar',
             'length' => 50,
@@ -132,8 +140,8 @@ class ProjectBase extends Model
     * @var array
     */
     public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_project_title' => array('columns' => 'title'),
+        'PRIMARY' => array('unique' => true, 'columns' => 'id'),
+        'idx_project_title' => array('columns' => 'title'),
     );
 
     /**
@@ -149,7 +157,7 @@ class ProjectBase extends Model
     */
     public function getId()
     {
-        $rtn    = $this->data['id'];
+        $rtn = $this->data['id'];
 
         return $rtn;
     }
@@ -161,7 +169,7 @@ class ProjectBase extends Model
     */
     public function getTitle()
     {
-        $rtn    = $this->data['title'];
+        $rtn = $this->data['title'];
 
         return $rtn;
     }
@@ -173,7 +181,7 @@ class ProjectBase extends Model
     */
     public function getReference()
     {
-        $rtn    = $this->data['reference'];
+        $rtn = $this->data['reference'];
 
         return $rtn;
     }
@@ -185,7 +193,19 @@ class ProjectBase extends Model
     */
     public function getGitKey()
     {
-        $rtn    = $this->data['git_key'];
+        $rtn = $this->data['git_key'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of BuildConfig / build_config.
+    *
+    * @return string
+    */
+    public function getBuildConfig()
+    {
+        $rtn = $this->data['build_config'];
 
         return $rtn;
     }
@@ -317,6 +337,24 @@ class ProjectBase extends Model
     }
 
     /**
+    * Set the value of BuildConfig / build_config.
+    *
+    * @param $value string
+    */
+    public function setBuildConfig($value)
+    {
+        $this->_validateString('BuildConfig', $value);
+
+        if ($this->data['build_config'] === $value) {
+            return;
+        }
+
+        $this->data['build_config'] = $value;
+
+        $this->_setModified('build_config');
+    }
+
+    /**
     * Set the value of Type / type.
     *
     * Must not be null.
@@ -420,7 +458,4 @@ class ProjectBase extends Model
     {
         return Factory::getStore('Project', 'PHPCI')->getByTitle($value, $limit, $useConnection);
     }
-
-
-
 }

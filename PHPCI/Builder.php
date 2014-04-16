@@ -188,41 +188,47 @@ class Builder implements LoggerAwareInterface
         $this->build->sendStatusPostback();
         $this->success = true;
 
-        // Set up the build:
-        $this->setupBuild();
+        try {
+            // Set up the build:
+            $this->setupBuild();
 
-        // Run the core plugin stages:
-        foreach (array('setup', 'test') as $stage) {
-            $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
-        }
+            // Run the core plugin stages:
+            foreach (array('setup', 'test') as $stage) {
+                $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+            }
 
-        // Set the status so this can be used by complete, success and failure
-        // stages.
-        if ($this->success) {
-            $this->build->setStatus(Build::STATUS_SUCCESS);
-        } else {
+            // Set the status so this can be used by complete, success and failure
+            // stages.
+            if ($this->success) {
+                $this->build->setStatus(Build::STATUS_SUCCESS);
+            } else {
+                $this->build->setStatus(Build::STATUS_FAILED);
+            }
+
+            // Complete stage plugins are always run
+            $this->pluginExecutor->executePlugins($this->config, 'complete');
+
+            if ($this->success) {
+                $this->pluginExecutor->executePlugins($this->config, 'success');
+                $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
+            } else {
+                $this->pluginExecutor->executePlugins($this->config, 'failure');
+                $this->buildLogger->logFailure("BUILD FAILURE");
+            }
+
+            // Clean up:
+            $this->buildLogger->log('Removing build.');
+
+            $cmd = 'rm -Rf "%s"';
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
+            $this->executeCommand($cmd, $this->buildPath);
+        } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
+            $this->buildLogger->logFailure('Exception: ' . $ex->getMessage());
         }
 
-        // Complete stage plugins are always run
-        $this->pluginExecutor->executePlugins($this->config, 'complete');
-
-        if ($this->success) {
-            $this->pluginExecutor->executePlugins($this->config, 'success');
-            $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
-        } else {
-            $this->pluginExecutor->executePlugins($this->config, 'failure');
-            $this->buildLogger->logFailure("BUILD FAILURE");
-        }
-
-        // Clean up:
-        $this->buildLogger->log('Removing build.');
-
-        $cmd = 'rm -Rf "%s"';
-        if (IS_WIN) {
-            $cmd = 'rmdir /S /Q "%s"';
-        }
-        $this->executeCommand($cmd, $this->buildPath);
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();

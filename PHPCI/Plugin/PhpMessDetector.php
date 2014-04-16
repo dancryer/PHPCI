@@ -100,7 +100,7 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
         
         $path = $this->phpci->buildPath . $this->path;
-        if ($this->path{0} == '/') {
+        if (!empty($this->path) && $this->path{0} == '/') {
             $path = $this->path;
         }
 

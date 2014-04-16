@@ -28,9 +28,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 We've got documentation on our wiki on [installing PHPCI](https://github.com/Block8/PHPCI/wiki/Installing-PHPCI) and [adding support for PHPCI to your projects](https://github.com/Block8/PHPCI/wiki/Adding-PHPCI-Support-to-Your-Projects).
 
 ##Contributing
-Contributions from others would be very much appreciated! If you just want to make a simple change, simply fork the repository, and send us a pull request when you're ready. 
-
-If you'd like to get more involved in developing PHPCI or to become a maintainer / committer on the main PHPCI repository, join the [mailing list](https://groups.google.com/forum/#!forum/php-ci).
+Contributions from others would be very much appreciated! Please read our [guide to contributing](https://github.com/Block8/PHPCI/wiki/Contributing-to-PHPCI) for more information on how to get involved.
 
 ##Questions?
 Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci), if you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

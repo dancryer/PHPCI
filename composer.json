@@ -52,11 +52,5 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing"
-    },
-
-    "scripts": {
-        "post-create-project-cmd": [
-            "./console phpci:install"
-        ]
     }
 }

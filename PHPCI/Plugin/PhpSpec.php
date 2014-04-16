@@ -21,15 +21,10 @@ use PHPCI\Model\Build;
 class PhpSpec implements \PHPCI\Plugin
 {
     protected $phpci;
-    protected $bootstrap;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
-
-        if (!empty($options['bootstrap'])) {
-            $this->bootstrap = $this->buildPath . $options['bootstrap'];
-        }
     }
 
     /**
@@ -47,11 +42,7 @@ class PhpSpec implements \PHPCI\Plugin
             return false;
         }
 
-        if ($this->bootstrap) {
-            $success = $this->phpci->executeCommand($phpspec . ' -f d');
-        } else {
-            $success = $this->phpci->executeCommand($phpspec . ' -f d --bootstrap "%s"', $this->bootstrap);
-        }
+        $success = $this->phpci->executeCommand($phpspec . ' --format=pretty --no-code-generation');
 
         chdir($curdir);
         

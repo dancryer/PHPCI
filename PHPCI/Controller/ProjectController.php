@@ -160,12 +160,17 @@ class ProjectController extends \PHPCI\Controller
                 mkdir($tempPath);
             }
 
-            shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
+            if ($this->canGenerateKeys()) {
+                shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
 
-            $pub = file_get_contents($keyFile . '.pub');
-            $prv = file_get_contents($keyFile);
+                $pub = file_get_contents($keyFile . '.pub');
+                $prv = file_get_contents($keyFile);
 
-            $values = array('key' => $prv, 'pubkey' => $pub);
+                $values = array('key' => $prv, 'pubkey' => $pub);
+            } else {
+                $pub = null;
+                $values = array();
+            }
         }
 
         $form = $this->projectForm($values);
@@ -325,7 +330,7 @@ class ProjectController extends \PHPCI\Controller
 
         $field = new Form\Element\TextArea('build_config');
         $field->setRequired(false);
-        $field->setLabel('PHPCI build config for this project (instead phpci.yml in the project repository)');
+        $field->setLabel('PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setRows(6);
@@ -424,5 +429,11 @@ class ProjectController extends \PHPCI\Controller
 
             return true;
         };
+    }
+
+    protected function canGenerateKeys()
+    {
+        $result = @shell_exec('ssh-keygen');
+        return !empty($result);
     }
 }

@@ -99,6 +99,11 @@ class ProjectBase extends Model
             'length'  => 250,
             'default' => null,
         ),
+        'branch'          => array(
+            'type'    => 'varchar',
+            'length'  => 50,
+            'default' => 'master',
+        ),
         'git_key'            => array(
             'type'     => 'text',
             'nullable' => true,
@@ -177,6 +182,18 @@ class ProjectBase extends Model
     public function getReference()
     {
         $rtn = $this->data['reference'];
+        return $rtn;
+    }
+
+
+    /**
+     * Get the value of Branch / branch.
+     *
+     * @return string
+     */
+    public function getBranch()
+    {
+        $rtn = $this->data['branch'];
         return $rtn;
     }
 
@@ -301,6 +318,25 @@ class ProjectBase extends Model
         }
         $this->data['reference'] = $value;
         $this->_setModified('reference');
+    }
+
+    /**
+     * Set the value of Branch / branch.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
+    public function setBranch($value)
+    {
+        $this->_validateNotNull('Branch', $value);
+        $this->_validateString('Branch', $value);
+
+        if ($this->data['branch'] === $value) {
+            return;
+        }
+        $this->data['branch'] = $value;
+        $this->_setModified('branch');
     }
 
     /**

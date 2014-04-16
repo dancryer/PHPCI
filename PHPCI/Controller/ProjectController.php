@@ -76,7 +76,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
         $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
+        $build->setBranch($project->getBranch());
         $build->setCreated(new \DateTime());
 
         $build = $this->buildStore->save($build);
@@ -319,6 +319,14 @@ class ProjectController extends \PHPCI\Controller
         $field->setRequired(true);
         $field->setValidator($this->getReferenceValidator($values));
         $field->setLabel('Repository Name / URL (Remote) or Path (Local)');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $form->addField($field);
+
+        $field = new Form\Element\Text('branch');
+        $field->setRequired(true);
+        $field->setValue('master');
+        $field->setLabel('Branch Name');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);

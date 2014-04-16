@@ -72,22 +72,24 @@ class RemoteGitBuild extends Build
     */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        // Copy the project's keyfile to disk:
-        $keyPath = realpath($cloneTo);
+        $keyFile = $this->writeSshKey($cloneTo);
 
-        if ($keyPath === false) {
-            $keyPath = dirname($cloneTo);
+        if (!IS_WIN) {
+            $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
         }
 
-        $keyFile = $keyPath . '.key';
+        // Do the git clone:
+        $cmd = 'git clone -b %s %s "%s"';
 
-        file_put_contents($keyFile, $this->getProject()->getGitKey());
-        chmod($keyFile, 0600);
+        if (!IS_WIN) {
+            $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
+        }
 
-        // Use the key file to do an SSH clone:
-        $cmd = 'eval `ssh-agent -s` && ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
-        $success = $builder->executeCommand($cmd, $keyFile, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        var_dump($cmd);
 
+        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+
+        // Checkout a specific commit if we need to:
         $commit = $this->getCommitId();
 
         if (!empty($commit) && $commit != 'Manual') {
@@ -98,9 +100,52 @@ class RemoteGitBuild extends Build
             $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }
 
-        // Remove the key file:
+        // Remove the key file and git wrapper:
         unlink($keyFile);
+        unlink($gitSshWrapper);
 
         return $success;
+    }
+
+    /**
+     * Create an SSH key file on disk for this build.
+     * @param $cloneTo
+     * @return string
+     */
+    protected function writeSshKey($cloneTo)
+    {
+        $keyPath = dirname($cloneTo . '/temp');
+        $keyFile = $keyPath . '.key';
+
+        // Write the contents of this project's git key to the file:
+        file_put_contents($keyFile, $this->getProject()->getGitKey());
+        chmod($keyFile, 0600);
+
+        // Return the filename:
+        return $keyFile;
+    }
+
+    /**
+     * Create an SSH wrapper script for Git to use, to disable host key checking, etc.
+     * @param $cloneTo
+     * @param $keyFile
+     * @return string
+     */
+    protected function writeSshWrapper($cloneTo, $keyFile)
+    {
+        $path = dirname($cloneTo . '/temp');
+        $wrapperFile = $path . '.sh';
+
+        // Write out the wrapper script for this build:
+        $script = <<<OUT
+#!/bin/sh
+ssh -o CheckHostIP=no -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o IdentityFile={$keyFile} $*
+
+OUT;
+
+        file_put_contents($wrapperFile, $script);
+        shell_exec('chmod +x "'.$wrapperFile.'"');
+
+        return $wrapperFile;
     }
 }

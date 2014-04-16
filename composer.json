@@ -23,6 +23,10 @@
     },
 
     "require": {
+        "php": ">=5.3.3",
+        "ext-mcrypt": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "block8/b8framework"       : "1.*",
         "ircmaxell/password-compat": "1.*",
         "swiftmailer/swiftmailer"  : "5.0.*",

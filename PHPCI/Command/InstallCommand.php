@@ -121,36 +121,26 @@ class InstallCommand extends Command
             $errors = true;
         }
 
-        // Check for required extensions:
-        if (!extension_loaded('PDO')) {
-            $output->writeln('');
-            $output->writeln('<error>PDO extension must be installed.</error>');
-            $errors = true;
+        // Check required extensions are present:
+        $requiredExtensions = array('PDO', 'pdo_mysql', 'mcrypt');
+
+        foreach ($requiredExtensions as $extension) {
+            if (!extension_loaded($extension)) {
+                $output->writeln('');
+                $output->writeln('<error>'.$extension.' extension must be installed.</error>');
+                $errors = true;
+            }
         }
 
-        if (!extension_loaded('pdo_mysql')) {
-            $output->writeln('');
-            $output->writeln('<error>PDO MySQL extension must be installed.</error>');
-            $errors = true;
-        }
+        // Check required functions are callable:
+        $requiredFunctions = array('exec', 'shell_exec');
 
-        if (!extension_loaded('mcrypt')) {
-            $output->writeln('');
-            $output->writeln('<error>Mcrypt extension must be installed.</error>');
-            $errors = true;
-        }
-
-        // Check we can use the exec() and shell_exec() functions:
-        if (!function_exists('exec')) {
-            $output->writeln('');
-            $output->writeln('<error>PHPCI needs to be able to call the exec() function. Is it disabled in php.ini?</error>');
-            $errors = true;
-        }
-
-        if (!function_exists('shell_exec')) {
-            $output->writeln('');
-            $output->writeln('<error>PHPCI needs to be able to call the shell_exec() function. Is it disabled in php.ini?</error>');
-            $errors = true;
+        foreach ($requiredFunctions as $function) {
+            if (!function_exists($function)) {
+                $output->writeln('');
+                $output->writeln('<error>PHPCI needs to be able to call the '.$function.'() function. Is it disabled in php.ini?</error>');
+                $errors = true;
+            }
         }
 
         if (!function_exists('password_hash')) {
@@ -160,8 +150,7 @@ class InstallCommand extends Command
         }
 
         if ($errors) {
-            $output->writeln('');
-            die;
+            throw new Exception('PHPCI cannot be installed, as not all requirements are met. Please review the errors above before continuing.');
         }
 
         $output->writeln(' <info>OK</info>');

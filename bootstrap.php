@@ -33,9 +33,8 @@ $autoload = function ($class) {
 
 spl_autoload_register($autoload, true, true);
 
-if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml') && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE) && substr($_SERVER['PHP_SELF'], -12) != '/install.php') {
-    header('Location: install.php');
-    die;
+if (!file_exists(dirname(__FILE__) . '/PHPCI/config.yml') && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
+    die('PHPCI has not yet been installed - Please use the command ./console phpci:install to install it.');
 }
 
 if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {

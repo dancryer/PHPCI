@@ -86,6 +86,11 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
         }
 
+        if (!empty($this->rules) && !is_array($this->rules)) {
+            $this->phpci->logFailure('The "rules" option must be an array.');
+            return false;
+        }
+
         foreach ($this->rules as &$rule) {
             if (strpos($rule, '/') !== false) {
                 $rule = $this->phpci->buildPath . $rule;

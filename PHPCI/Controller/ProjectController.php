@@ -61,6 +61,8 @@ class ProjectController extends \PHPCI\Controller
         $this->view->project  = $project;
         $this->view->page     = $page;
 
+        $this->config->set('page_title', $project->getTitle());
+
         return $this->view->render();
     }
 
@@ -134,6 +136,8 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
+        $this->config->set('page_title', 'Add Project');
+
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
@@ -228,6 +232,9 @@ class ProjectController extends \PHPCI\Controller
 
         $method     = $this->request->getMethod();
         $project    = $this->projectStore->getById($projectId);
+
+        $this->config->set('page_title', 'Edit: ' . $project->getTitle());
+
 
         if ($method == 'POST') {
             $values = $this->getParams();

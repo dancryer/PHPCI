@@ -40,6 +40,8 @@ class UserController extends Controller
         $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
         $this->view->users    = $users;
 
+        $this->config->set('page_title', 'Users');
+
         return $this->view->render();
     }
 
@@ -51,6 +53,9 @@ class UserController extends Controller
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
+
+        $this->config->set('page_title', 'Add User');
+
 
         $method = $this->request->getMethod();
 
@@ -95,6 +100,9 @@ class UserController extends Controller
 
         $method     = $this->request->getMethod();
         $user   = $this->userStore->getById($userId);
+
+        $this->config->set('page_title', 'Edit: ' . $user->getName());
+
 
         if ($method == 'POST') {
             $values = $this->getParams();

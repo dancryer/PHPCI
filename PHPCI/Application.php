@@ -73,6 +73,12 @@ class Application extends b8\Application
 
         if (View::exists('layout') && $this->response->hasLayout()) {
             $view           = new View('layout');
+            $pageTitle = $this->config->get('page_title', null);
+
+            if (!is_null($pageTitle)) {
+                $view->title = $pageTitle;
+            }
+
             $view->content  = $this->response->getContent();
             $this->response->setContent($view->render());
         }

@@ -75,6 +75,8 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
+        $this->config->set('page_title', 'Plugins');
+
         return $this->view->render();
     }
 

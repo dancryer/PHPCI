@@ -56,6 +56,8 @@ class HomeController extends \PHPCI\Controller
         $this->view->projects = $projects['items'];
         $this->view->summary  = $summaryView->render();
 
+        $this->config->set('page_title', 'Dashboard');
+
         return $this->view->render();
     }
 

@@ -87,8 +87,8 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
 
         var data = google.visualization.arrayToDataTable(data);
         var options = {
-            hAxis: {title: 'Build'},
-            vAxis: {title: 'Warnings'},
+            hAxis: {title: 'Builds'},
+            vAxis: {title: 'Warnings / Errors'},
             backgroundColor: { fill: 'transparent' },
             height: 275,
             pointSize: 3

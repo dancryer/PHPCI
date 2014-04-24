@@ -47,7 +47,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
         var titles = ['Build', 'Lines', 'Comment Lines', 'Non-Comment Lines', 'Logical Lines'];
         var data = [titles];
         for (var i in builds) {
-            data.push(['Build ' + builds[i].build_id, parseInt(builds[i].meta_value.LOC), parseInt(builds[i].meta_value.CLOC), parseInt(builds[i].meta_value.NCLOC), parseInt(builds[i].meta_value.LLOC)]);
+            data.push(['#' + builds[i].build_id, parseInt(builds[i].meta_value.LOC), parseInt(builds[i].meta_value.CLOC), parseInt(builds[i].meta_value.NCLOC), parseInt(builds[i].meta_value.LLOC)]);
         }
 
         var data = google.visualization.arrayToDataTable(data);

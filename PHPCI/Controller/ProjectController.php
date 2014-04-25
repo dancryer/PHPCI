@@ -80,6 +80,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
+        $build->setCommitterEmail($_SESSION['user']->getEmail());
 
         $build = $this->buildStore->save($build);
 

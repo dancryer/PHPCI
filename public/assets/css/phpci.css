@@ -57,10 +57,15 @@ td .label {
 
 #title
 {
-	border-bottom: 1px solid #ccc;
-	margin: -10px -10px 15px -10px;
-	padding: 10px;
 }
+
+    #title img {
+        border: 1px solid #fff;
+        border-radius: 50%;
+        box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+        margin-right: 15px;
+    }
 
 	#title h1
 	{
@@ -68,6 +73,23 @@ td .label {
 		margin: 0;
 		padding: 0;
 	}
+
+        #title h1 span {
+            font-weight: lighter;
+            margin-left: 15px;
+        }
+
+        #title h1 label {
+            margin-top: -6px;
+        }
+
+    #build-info {
+        margin-left: 100px;
+    }
+    .commit-message {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
 
     h2 {
         color: #246;
@@ -135,8 +157,13 @@ td .label {
 
 .ui-sortable-placeholder * { visibility: hidden; }
 
-.ui-plugin { padding-top: 15px; }
+.ui-plugin .panel-title {
+    cursor: move;
+}
 
+.panel-body table {
+    margin-bottom: 0;
+}
 
 #loading {
     font-family: Roboto, Arial, Sans-Serif;

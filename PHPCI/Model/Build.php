@@ -157,4 +157,9 @@ class Build extends BuildBase
 
         return $config;
     }
+
+    public function getFileLink($file, $line = null)
+    {
+        return null;
+    }
 }

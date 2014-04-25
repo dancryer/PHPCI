@@ -25,6 +25,9 @@ class CommandExecutor
 
     protected $lastOutput;
 
+    public $logExecOutput = true;
+
+
     /**
      * The path which findBinary will look in.
      * @var string
@@ -80,7 +83,7 @@ class CommandExecutor
             $lastOutput = trim($lastOutput, '"');
         }
 
-        if (!empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
+        if ($this->logExecOutput && !empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
             $this->logger->log($this->lastOutput);
         }
 

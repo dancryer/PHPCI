@@ -258,6 +258,11 @@ class Builder implements LoggerAwareInterface
         return $this->commandExecutor->getLastOutput();
     }
 
+    public function logExecOutput($enableLog = true)
+    {
+        $this->commandExecutor->logExecOutput = $enableLog;
+    }
+
     /**
      * Find a binary required by a plugin.
      * @param $binary

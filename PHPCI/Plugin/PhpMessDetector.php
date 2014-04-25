@@ -124,7 +124,12 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $path = $this->path;
         }
 
-        $cmd = $phpmd . ' "%s" text %s %s %s';
+        $cmd = $phpmd . ' "%s" xml %s %s %s';
+
+        // Disable exec output logging, as we don't want the XML report in the log:
+        $this->phpci->logExecOutput(false);
+
+        // Run PHPMD:
         $this->phpci->executeCommand(
             $cmd,
             $path,
@@ -133,9 +138,14 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $suffixes
         );
 
+        // Re-enable exec output logging:
+        $this->phpci->logExecOutput(true);
+
         $success = true;
-        $errors = count(array_filter(explode(PHP_EOL, trim($this->phpci->getLastOutput()))));
+
+        list($errors, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
         $this->build->storeMeta('phpmd-warnings', $errors);
+        $this->build->storeMeta('phpmd-data', $data);
 
         if ($this->allowed_warnings != -1 && $errors > $this->allowed_warnings) {
             $success = false;
@@ -149,5 +159,39 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (isset($options[$key]) && is_array($options[$key])) {
             $this->{$key} = $options[$key];
         }
+    }
+
+    protected function processReport($xml)
+    {
+        $xml = simplexml_load_string($xml);
+
+        if ($xml === false) {
+            throw new \Exception('Could not process PHPMD report XML.');
+        }
+
+        $warnings = 0;
+        $data = array();
+
+        foreach ($xml->file as $file) {
+            $fileName = (string)$file['name'];
+            $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+
+            foreach ($file->violation as $violation) {
+                $warnings++;
+                $warning = array(
+                    'file' => $fileName,
+                    'line_start' => (int)$violation['beginline'],
+                    'line_end' => (int)$violation['endline'],
+                    'rule' => (string)$violation['rule'],
+                    'ruleset' => (string)$violation['ruleset'],
+                    'priority' => (int)$violation['priority'],
+                    'message' => (string)$violation,
+                );
+
+                $data[] = $warning;
+            }
+        }
+
+        return array($warnings, $data);
     }
 }

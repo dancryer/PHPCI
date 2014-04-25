@@ -8,7 +8,7 @@ build_settings:
 
 test:
   php_mess_detector:
-    allowed_warnings: 31 # Set max warnings at the current level - Disallow any further errors creeping in.
+    allowed_warnings: 35 # Set max warnings at the current level - Disallow any further errors creeping in.
   php_code_sniffer:
     standard: "PSR2"
   php_loc:

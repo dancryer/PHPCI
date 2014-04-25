@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements \PHPCI\Plugin
+class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $args;
     protected $phpci;
@@ -46,9 +47,44 @@ class PhpUnit implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function findConfigFile($buildPath)
+    {
+        if (file_exists($buildPath . '/phpunit.xml')) {
+            return $buildPath . '/phpunit.xml';
+        }
+
+        if (file_exists($buildPath . '/tests/phpunit.xml')) {
+            return $buildPath . '/tests/phpunit.xml';
+        }
+
+        if (file_exists($buildPath . '/phpunit.xml.dist')) {
+            return $buildPath . '/phpunit.xml.dist';
+        }
+
+        if (file_exists($buildPath . '/tests/phpunit.xml.dist')) {
+            return $buildPath . '/tests/phpunit.xml.dist';
+        }
+
+        return null;
+    }
+
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
+
+        if (!count($options)) {
+            $this->runFrom = $phpci->buildPath;
+            $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
+        }
 
         if (isset($options['directory'])) {
             $this->directory = $options['directory'];

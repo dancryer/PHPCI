@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCodeSniffer implements \PHPCI\Plugin
+class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
      * @var \PHPCI\Builder
@@ -51,6 +52,16 @@ class PhpCodeSniffer implements \PHPCI\Plugin
     protected $encoding;
 
     /**
+     * @var int
+     */
+    protected $allowed_errors;
+
+    /**
+     * @var int
+     */
+    protected $allowed_warnings;
+
+    /**
      * @var string, based on the assumption the root may not hold the code to be
      * tested, exteds the base path
      */
@@ -61,21 +72,33 @@ class PhpCodeSniffer implements \PHPCI\Plugin
      */
     protected $ignore;
 
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test') {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param \PHPCI\Builder $phpci
+     * @param \PHPCI\Model\Build $build
      * @param array $options
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
-        $this->suffixes     = array('php');
-        $this->directory    = $phpci->buildPath;
-        $this->standard     = 'PSR2';
-        $this->tab_width    = '';
-        $this->encoding     = '';
-        $this->path         = '';
-        $this->ignore       = $this->phpci->ignore;
+        $this->phpci = $phpci;
+        $this->build = $build;
+        $this->suffixes = array('php');
+        $this->directory = $phpci->buildPath;
+        $this->standard = 'PSR2';
+        $this->tab_width = '';
+        $this->encoding = '';
+        $this->path = '';
+        $this->ignore = $this->phpci->ignore;
+        $this->allowed_warnings = -1;
+        $this->allowed_errors = -1;
 
         if (isset($options['suffixes'])) {
             $this->suffixes = (array)$options['suffixes'];
@@ -104,6 +127,14 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         if (isset($options['ignore'])) {
             $this->ignore = $options['ignore'];
         }
+
+        if (isset($options['allowed_warnings'])) {
+            $this->allowed_warnings = (int)$options['allowed_warnings'];
+        }
+
+        if (isset($options['allowed_errors'])) {
+            $this->allowed_errors = (int)$options['allowed_errors'];
+        }
     }
 
     /**
@@ -121,7 +152,7 @@ class PhpCodeSniffer implements \PHPCI\Plugin
         }
 
         $cmd = $phpcs . ' --report=emacs %s %s %s %s %s "%s"';
-        $success = $this->phpci->executeCommand(
+        $this->phpci->executeCommand(
             $cmd,
             $standard,
             $suffixes,
@@ -133,14 +164,25 @@ class PhpCodeSniffer implements \PHPCI\Plugin
 
         $output = $this->phpci->getLastOutput();
 
+        $success = true;
         $matches = array();
         if (preg_match_all('/\: warning \-/', $output, $matches)) {
-            $this->build->storeMeta('phpcs-warnings', count($matches[0]));
+            $warnings = count($matches[0]);
+            $this->build->storeMeta('phpcs-warnings', $warnings);
+
+            if ($this->allowed_warnings != -1 && $warnings > $this->allowed_warnings) {
+                $success = false;
+            }
         }
 
         $matches = array();
         if (preg_match_all('/\: error \-/', $output, $matches)) {
-            $this->build->storeMeta('phpcs-errors', count($matches[0]));
+            $errors = count($matches[0]);
+            $this->build->storeMeta('phpcs-errors', $errors);
+
+            if ($this->allowed_errors != -1 && $errors > $this->allowed_errors) {
+                $success = false;
+            }
         }
 
         return $success;

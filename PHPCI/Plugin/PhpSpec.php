@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec implements \PHPCI\Plugin
+class PhpSpec implements PHPCI\Plugin
 {
     protected $phpci;
 

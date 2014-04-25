@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc implements \PHPCI\Plugin
+class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
      * @var string
@@ -28,6 +29,15 @@ class PhpLoc implements \PHPCI\Plugin
      * @var \PHPCI\Builder
      */
     protected $phpci;
+
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test') {
+            return true;
+        }
+
+        return false;
+    }
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {

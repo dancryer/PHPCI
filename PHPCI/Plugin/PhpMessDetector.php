@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpMessDetector implements \PHPCI\Plugin
+class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
      * @var \PHPCI\Builder
@@ -49,6 +50,15 @@ class PhpMessDetector implements \PHPCI\Plugin
      */
     protected $rules;
 
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test') {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param \PHPCI\Builder $phpci
      * @param array $options
@@ -61,9 +71,14 @@ class PhpMessDetector implements \PHPCI\Plugin
         $this->ignore = $phpci->ignore;
         $this->path = '';
         $this->rules = array('codesize', 'unusedcode', 'naming');
+        $this->allowed_warnings = -1;
 
         if (!empty($options['path'])) {
             $this->path = $options['path'];
+        }
+
+        if (array_key_exists('allowed_warnings', $options)) {
+            $this->allowed_warnings = (int)$options['allowed_warnings'];
         }
 
         foreach (array('rules', 'ignore', 'suffixes') as $key) {
@@ -110,7 +125,7 @@ class PhpMessDetector implements \PHPCI\Plugin
         }
 
         $cmd = $phpmd . ' "%s" text %s %s %s';
-        $success = $this->phpci->executeCommand(
+        $this->phpci->executeCommand(
             $cmd,
             $path,
             implode(',', $this->rules),
@@ -118,8 +133,13 @@ class PhpMessDetector implements \PHPCI\Plugin
             $suffixes
         );
 
+        $success = true;
         $errors = count(array_filter(explode(PHP_EOL, trim($this->phpci->getLastOutput()))));
         $this->build->storeMeta('phpmd-warnings', $errors);
+
+        if ($this->allowed_warnings != -1 && $errors > $this->allowed_warnings) {
+            $success = false;
+        }
 
         return $success;
     }

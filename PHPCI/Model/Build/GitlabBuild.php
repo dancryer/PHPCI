@@ -39,6 +39,18 @@ class GitlabBuild extends RemoteGitBuild
     }
 
     /**
+     * Get link to specific file (and line) in a the repo's branch
+     */
+    public function getFileLinkTemplate()
+    {
+        return sprintf('http://%s/%s/blob/%s/{FILE}#L{LINE}',
+    	    $this->getProject()->getAccessInformation("domain"),
+    	    $this->getProject()->getReference(),
+    	    $this->getBranch()
+        );
+    }
+
+    /**
     * Get the URL to be used to clone this remote repository.
     */
     protected function getCloneUrl()

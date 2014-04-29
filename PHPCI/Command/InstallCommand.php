@@ -195,7 +195,7 @@ class InstallCommand extends Command
     protected function writeConfigFile(array $config)
     {
         $dumper = new \Symfony\Component\Yaml\Dumper();
-        $yaml = $dumper->dump($config);
+        $yaml = $dumper->dump($config, 2);
 
         file_put_contents(PHPCI_DIR . 'PHPCI/config.yml', $yaml);
     }

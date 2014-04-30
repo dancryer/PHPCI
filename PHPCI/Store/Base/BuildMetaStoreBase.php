@@ -16,11 +16,9 @@ use PHPCI\Model\BuildMeta;
  */
 class BuildMetaStoreBase extends Store
 {
-    protected $tableName = 'build_meta';
-
-    protected $modelName = '\PHPCI\Model\BuildMeta';
-
-    protected $primaryKey = 'id';
+    protected $tableName   = 'build_meta';
+    protected $modelName   = '\PHPCI\Model\BuildMeta';
+    protected $primaryKey  = 'id';
 
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -34,7 +32,7 @@ class BuildMetaStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `build_meta` WHERE `id` = :id LIMIT 1';
-        $stmt  = Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -42,6 +40,7 @@ class BuildMetaStoreBase extends Store
                 return new BuildMeta($data);
             }
         }
+
         return null;
     }
 
@@ -52,13 +51,15 @@ class BuildMetaStoreBase extends Store
         }
 
         $add = '';
+
         if ($limit) {
             $add .= ' LIMIT ' . $limit;
         }
+
         $count = null;
 
         $query = 'SELECT * FROM `build_meta` WHERE `build_id` = :build_id' . $add;
-        $stmt  = Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':build_id', $value);
 
         if ($stmt->execute()) {

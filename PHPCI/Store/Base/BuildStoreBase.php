@@ -16,11 +16,9 @@ use PHPCI\Model\Build;
  */
 class BuildStoreBase extends Store
 {
-    protected $tableName = 'build';
-
-    protected $modelName = '\PHPCI\Model\Build';
-
-    protected $primaryKey = 'id';
+    protected $tableName   = 'build';
+    protected $modelName   = '\PHPCI\Model\Build';
+    protected $primaryKey  = 'id';
 
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -34,7 +32,7 @@ class BuildStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `build` WHERE `id` = :id LIMIT 1';
-        $stmt  = Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -42,6 +40,7 @@ class BuildStoreBase extends Store
                 return new Build($data);
             }
         }
+
         return null;
     }
 
@@ -52,13 +51,15 @@ class BuildStoreBase extends Store
         }
 
         $add = '';
+
         if ($limit) {
             $add .= ' LIMIT ' . $limit;
         }
+
         $count = null;
 
         $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id' . $add;
-        $stmt  = Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':project_id', $value);
 
         if ($stmt->execute()) {
@@ -82,13 +83,15 @@ class BuildStoreBase extends Store
         }
 
         $add = '';
+
         if ($limit) {
             $add .= ' LIMIT ' . $limit;
         }
+
         $count = null;
 
         $query = 'SELECT * FROM `build` WHERE `status` = :status' . $add;
-        $stmt  = Database::getConnection($useConnection)->prepare($query);
+        $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':status', $value);
 
         if ($stmt->execute()) {

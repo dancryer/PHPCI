@@ -71,7 +71,11 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->ignore = $phpci->ignore;
         $this->path = '';
         $this->rules = array('codesize', 'unusedcode', 'naming');
-        $this->allowed_warnings = -1;
+        $this->allowed_warnings = 0;
+
+        if (isset($options['zero_config']) && $options['zero_config']) {
+            $this->allowed_warnings = -1;
+        }
 
         if (!empty($options['path'])) {
             $this->path = $options['path'];

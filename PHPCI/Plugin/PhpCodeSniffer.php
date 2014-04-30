@@ -97,8 +97,13 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->encoding = '';
         $this->path = '';
         $this->ignore = $this->phpci->ignore;
-        $this->allowed_warnings = -1;
-        $this->allowed_errors = -1;
+        $this->allowed_warnings = 0;
+        $this->allowed_errors = 0;
+
+        if (isset($options['zero_config']) && $options['zero_config']) {
+            $this->allowed_warnings = -1;
+            $this->allowed_errors = -1;
+        }
 
         if (isset($options['suffixes'])) {
             $this->suffixes = (array)$options['suffixes'];

@@ -41,20 +41,11 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
-        $projects       = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
-
-        $summaryBuilds = array();
-        foreach ($projects['items'] as $project) {
-            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
-        }
-
-        $summaryView = new b8\View('SummaryTable');
-        $summaryView->projects = $projects['items'];
-        $summaryView->builds = $summaryBuilds;
+        $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
         $this->view->builds   = $this->getLatestBuildsHtml();
         $this->view->projects = $projects['items'];
-        $this->view->summary  = $summaryView->render();
+        $this->view->summary  = $this->getSummaryHtml($projects);
 
         $this->config->set('page_title', 'Dashboard');
 
@@ -67,6 +58,26 @@ class HomeController extends \PHPCI\Controller
     public function latest()
     {
         die($this->getLatestBuildsHtml());
+    }
+
+    public function summary()
+    {
+        $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        die($this->getSummaryHtml($projects));
+    }
+
+    protected function getSummaryHtml($projects)
+    {
+        $summaryBuilds = array();
+        foreach ($projects['items'] as $project) {
+            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+        }
+
+        $summaryView = new b8\View('SummaryTable');
+        $summaryView->projects = $projects['items'];
+        $summaryView->builds = $summaryBuilds;
+
+        return $summaryView->render();
     }
 
     /**

@@ -64,12 +64,16 @@
 </div>
 
 <script>
-    refreshBuildsTable = function()
+    var refreshProjectData = function()
     {
         $('#latest-builds').load('<?php echo PHPCI_URL ?>home/latest', function () {
             $('#latest-builds').trigger('latest-builds:reload');
         });
+
+        $('#project-overview').load('<?php echo PHPCI_URL ?>home/summary', function () {
+            $('#project-overview').trigger('project-overview:reload');
+        });
     };
 
-    setInterval(refreshBuildsTable, 10000);
+    setInterval(refreshProjectData, 10000);
 </script>

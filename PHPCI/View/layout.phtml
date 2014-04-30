@@ -35,8 +35,8 @@
 
 				<a class="navbar-brand" href="<?php echo PHPCI_URL ?>"><img src="<?php echo PHPCI_URL ?>/assets/img/logo.png"></a>
 
-                <div class="nav-collapse collapse navbar-responsive-collapse">
-                    <ul class="nav navbar-nav pull-right">
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
                         <li><p class="navbar-text"><strong><?php print htmlspecialchars($this->User()->getName()); ?></strong></p></li>
                         <li><a href="<?php print PHPCI_URL ?>session/logout">Log out</a></li>
                         <?php if ($this->User()->getIsAdmin()): ?>

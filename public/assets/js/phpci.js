@@ -391,16 +391,20 @@ var PHPCIObject = Class.extend({
     },
 
     renderPlugin: function(plugin) {
-        var output = $('<div></div>').addClass('panel-body').append(plugin.render());
+        var output = plugin.render();
+
+        if (!plugin.box) {
+            output = $('<div class="panel-body"></div>').append(output);
+        }
+
         var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
         var content = $('<div></div>').attr('id', plugin.id).append(output);
-        content.addClass('panel');
+        content.addClass('panel panel-default');
 
         if (plugin.title) {
             content.prepend('<div class="panel-heading"><h3 class="panel-title">'+plugin.title+'</h3></div>');
         }
 
-        content.append(output);
         container.append(content);
 
         $('#plugins').append(container);
@@ -409,7 +413,7 @@ var PHPCIObject = Class.extend({
     UiPlugin: Class.extend({
         id: null,
         css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
-        box: true,
+        box: false,
 
         init: function(){
         },

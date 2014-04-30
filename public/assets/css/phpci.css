@@ -1,41 +1,18 @@
-body
-{
+body {
     background: #f9f9f9;
-	font-family: Roboto, Arial, Sans-Serif;
-	font-style: normal;
-	font-weight: 300;
-	padding-top: 70px;
+    font-family: Arial, Sans-Serif;
+    font-style: normal;
+    font-weight: 300;
+    padding-top: 70px;
 }
 
-    strong, th, .control-label {
-        font-weight: 500;
+.navbar {
+    background-color: #eee;
+}
+
+    .navbar-brand {
+        padding: 10px 15px;
     }
-
-    .btn, .dropdown-menu>li>a, .controls, .controls input, .controls label {
-        font-weight: 300;
-    }
-
-#content
-{
-	-border: 10px solid #369;
-	padding: 10px;
-}
-
-td .label {
-	margin-right: 5px;
-	line-height: 2;
-}
-#project-overview td .label {
-	margin-right: 0;
-}
-
-.success-message {
-	background-color: #4F8A10;
-}
-
-.error-message {
-	background-color: #FF4747;
-}
 
 #latest-builds td,
 #project-overview td,
@@ -43,137 +20,64 @@ td .label {
     vertical-align: middle;
 }
 
-.widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header, .ui-dialog .ui-dialog-titlebar {
-	background-color: #efefef;
-	background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
-	background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+.table th {
+    background-color: #efefef;
+    background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
+    background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
     background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
     background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
     background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
     background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 ); /* IE6-9 */
     border-bottom: 1px solid #CDCDCD;
 }
 
-#title
-{
+
+h1 {
+    border-bottom: 1px solid #ddd;
+    font-size: 2em;
+    padding: 10px 0;
 }
 
-    #title img {
+    h1 i {
+        font-size: 23px;
+        margin-right: 10px;
+    }
+
+
+.build-info-panel {
+
+}
+
+    .build-info-panel h1.panel-title {
+        border: 0;
+        font-size: 2em;
+        font-weight: bold;
+        padding: 0;
+    }
+
+        .build-info-panel h1.panel-title span {
+            font-weight: normal;
+        }
+
+    .build-info-panel img {
         border: 1px solid #fff;
         border-radius: 50%;
         box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
-        margin-bottom: 15px;
-        margin-right: 15px;
+        margin: 7px 15px 15px 7px;
     }
 
-	#title h1
-	{
-		font-size: 2em;
-		margin: 0;
-		padding: 0;
-	}
-
-        #title h1 span {
-            font-weight: lighter;
-            margin-left: 15px;
-        }
-
-        #title h1 label {
-            margin-top: -6px;
-        }
-
-    #build-info {
-        margin-left: 100px;
+    .build-info-panel #build-info {
+        margin-left: 90px;
     }
-    .commit-message {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-    }
-
-    h2 {
-        color: #246;
-        font-size: 1.8em;
-    }
-
-.icon-build-ok
-{
-	background: url('../img/icon-build-ok.png') no-repeat top left;
-}
-
-.icon-build-failed
-{
-	background: url('../img/icon-build-failed.png') no-repeat top left;
-}
-
-.icon-build-pending
-{
-	background: url('../img/icon-build-pending.png') no-repeat top left;
-}
-
-.icon-build-running
-{
-	background: url('../img/icon-build-running.png') no-repeat top left;
-}
-
-.navbar-brand {
-    padding: 10px 15px;
-}
-
-.box {
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-    padding: 10px;
-}
-    .box .title {
-        border-bottom: 1px solid #eee;
-        cursor: move;
-        font-size: 1.2em;
-        margin: 0;
-        margin-bottom: 20px;
-        padding: 8px 0;
-    }
-
-    .box .box-content {
-    }
-
-        .box .box-content table, .box .box-content pre {
-            margin-bottom: 0;
-        }
-
-        .box .box-content pre {
-            background: #fff;
-            border: 0;
-        }
-
-.ui-sortable-placeholder {
-    border: 1px dashed #ccc;
-    background: #ffe;
-    height: 100px;
-    margin-bottom: 15px;
-    visibility: visible !important;
-}
-
-.ui-sortable-placeholder * { visibility: hidden; }
-
-.ui-plugin .panel-title {
-    cursor: move;
-}
-
-.panel-body table {
-    margin-bottom: 0;
-}
 
 #loading {
-    font-family: Roboto, Arial, Sans-Serif;
-
-    background: #369;
+    background: #246;
+    bottom: 25px;
     color: #fff;
     display: none;
-    position: fixed;
-    bottom: 20px;
-    font-size: 2em;
-    right: 20px;
-    padding: 15px 50px;
+    font-size: 1.5em;
+    padding: 20px 40px;
+    position: absolute;
+    right: 25px;
+    width: 200px;
 }

@@ -1,16 +1,16 @@
-var phpmdPlugin = PHPCI.UiPlugin.extend({
-    id: 'build-phpmd-warnings',
+var phpcsPlugin = PHPCI.UiPlugin.extend({
+    id: 'build-phpcs',
     css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Mess Detector',
+    title: 'PHP Code Sniffer',
     lastData: null,
     displayOnUpdate: false,
     box: true,
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpmd-data', -1, {key: 'phpmd-data'})
+        var query = PHPCI.registerQuery('phpcs-data', -1, {key: 'phpcs-data'})
 
-        $(window).on('phpmd-data', function(data) {
+        $(window).on('phpcs-data', function(data) {
             self.onUpdate(data);
         });
 
@@ -24,12 +24,11 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table table-striped" id="phpmd-data">' +
+        return $('<table class="table table-striped" id="phpcs-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>File</th>' +
-            '   <th>Start</th>' +
-            '   <th>End</th>' +
+            '   <th>Line</th>' +
             '   <th>Message</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
@@ -43,7 +42,7 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
         this.lastData = e.queryData;
 
         var errors = this.lastData[0].meta_value;
-        var tbody = $('#phpmd-data tbody');
+        var tbody = $('#phpcs-data tbody');
         tbody.empty();
 
         for (var i in errors) {
@@ -58,13 +57,16 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
 
             var row = $('<tr>' +
                 '<td>'+file+'</td>' +
-                '<td>'+errors[i].line_start+'</td>' +
-                '<td>'+errors[i].line_end+'</td>' +
+                '<td>'+errors[i].line+'</td>' +
                 '<td>'+errors[i].message+'</td></tr>');
+
+            if (errors[i].type == 'ERROR') {
+                row.addClass('danger');
+            }
 
             tbody.append(row);
         }
     }
 });
 
-PHPCI.registerPlugin(new phpmdPlugin());
+PHPCI.registerPlugin(new phpcsPlugin());

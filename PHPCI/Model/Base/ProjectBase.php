@@ -43,6 +43,7 @@ class ProjectBase extends Model
         'access_information' => null,
         'last_commit' => null,
         'build_config' => null,
+        'allow_public_status' => null,
     );
 
     /**
@@ -60,6 +61,7 @@ class ProjectBase extends Model
         'access_information' => 'getAccessInformation',
         'last_commit' => 'getLastCommit',
         'build_config' => 'getBuildConfig',
+        'allow_public_status' => 'getAllowPublicStatus',
 
         // Foreign key getters:
     );
@@ -79,6 +81,7 @@ class ProjectBase extends Model
         'access_information' => 'setAccessInformation',
         'last_commit' => 'setLastCommit',
         'build_config' => 'setBuildConfig',
+        'allow_public_status' => 'setAllowPublicStatus',
 
         // Foreign key setters:
     );
@@ -141,6 +144,10 @@ class ProjectBase extends Model
             'type' => 'text',
             'nullable' => true,
             'default' => null,
+        ),
+        'allow_public_status' => array(
+            'type' => 'tinyint',
+            'length' => 4,
         ),
     );
 
@@ -274,6 +281,18 @@ class ProjectBase extends Model
     public function getBuildConfig()
     {
         $rtn    = $this->data['build_config'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of AllowPublicStatus / allow_public_status.
+    *
+    * @return int
+    */
+    public function getAllowPublicStatus()
+    {
+        $rtn    = $this->data['allow_public_status'];
 
         return $rtn;
     }
@@ -464,6 +483,26 @@ class ProjectBase extends Model
         $this->data['build_config'] = $value;
 
         $this->_setModified('build_config');
+    }
+
+    /**
+    * Set the value of AllowPublicStatus / allow_public_status.
+    *
+    * Must not be null.
+    * @param $value int
+    */
+    public function setAllowPublicStatus($value)
+    {
+        $this->_validateNotNull('AllowPublicStatus', $value);
+        $this->_validateInt('AllowPublicStatus', $value);
+
+        if ($this->data['allow_public_status'] === $value) {
+            return;
+        }
+
+        $this->data['allow_public_status'] = $value;
+
+        $this->_setModified('allow_public_status');
     }
 
     /**

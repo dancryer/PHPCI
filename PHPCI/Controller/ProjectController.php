@@ -357,6 +357,14 @@ class ProjectController extends \PHPCI\Controller
         $field->setRows(6);
         $form->addField($field);
 
+        $field = new Form\Element\Checkbox('allow_public_status');
+        $field->setRequired(false);
+        $field->setLabel('Enable public status page and image for this project?');
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(1);
+        $form->addField($field);
+
         $field = new Form\Element\Submit();
         $field->setValue('Save Project');
         $field->setContainerClass('form-group');

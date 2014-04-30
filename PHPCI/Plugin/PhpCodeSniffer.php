@@ -151,6 +151,8 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
+        $this->phpci->logExecOutput(false);
+
         $cmd = $phpcs . ' --report=json %s %s %s %s %s "%s"';
         $this->phpci->executeCommand(
             $cmd,
@@ -164,6 +166,8 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $output = $this->phpci->getLastOutput();
         list($errors, $warnings, $data) = $this->processReport(json_decode(trim($output), true));
+
+        $this->phpci->logExecOutput(true);
 
         $success = true;
         $this->build->storeMeta('phpcs-warnings', $warnings);

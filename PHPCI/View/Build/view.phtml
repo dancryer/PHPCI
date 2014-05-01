@@ -3,7 +3,7 @@
 
     <div class="panel-heading">
         <h1 class="panel-title">
-            <a href="/project/view/<?php print $build->getProjectId(); ?>">
+            <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
             <?php print $build->getProject()->getTitle(); ?></a>
             <span>#<?php print $build->getId(); ?></span>
 

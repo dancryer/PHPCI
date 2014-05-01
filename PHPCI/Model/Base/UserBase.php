@@ -273,26 +273,4 @@ class UserBase extends Model
 
         $this->_setModified('name');
     }
-
-
-
-
-    public static function getByPrimaryKey($value, $useConnection = 'read')
-    {
-        return Factory::getStore('User', 'PHPCI')->getByPrimaryKey($value, $useConnection);
-    }
-
-
-    public static function getById($value, $useConnection = 'read')
-    {
-        return Factory::getStore('User', 'PHPCI')->getById($value, $useConnection);
-    }
-
-    public static function getByEmail($value, $useConnection = 'read')
-    {
-        return Factory::getStore('User', 'PHPCI')->getByEmail($value, $useConnection);
-    }
-
-
-
 }

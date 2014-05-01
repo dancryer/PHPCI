@@ -7,7 +7,7 @@ _**Please be aware that PHPCI is a beta-release project, so whilst it is very st
 
 **Current Build Status**
 
-![Build Status](http://phpci.block8.net/build-status/image/2)
+[![Build Status](http://phpci.block8.net/build-status/image/2)](http://phpci.block8.net/build-status/view/2)
 
 ##What it does:
 * Clones your project from Github, Bitbucket or a local path

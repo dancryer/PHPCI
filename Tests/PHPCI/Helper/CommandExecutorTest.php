@@ -42,7 +42,7 @@ class CommandExecutorTest extends ProphecyTestCase
 
     public function testExecuteCommand_ReturnsFalseForInvalidCommands()
     {
-        $returnValue = $this->testedExecutor->buildAndExecuteCommand(array('eerfdcvcho "%s"', 'Hello World'));
+        $returnValue = $this->testedExecutor->buildAndExecuteCommand(array('eerfdcvcho "%s" > /dev/null 2>&1', 'Hello World'));
         $this->assertFalse($returnValue);
     }
 

@@ -3,8 +3,8 @@
 namespace PHPCI\Helper;
 
 
-class MailerFactory {
-
+class MailerFactory
+{
     /**
      * @var array
      */
@@ -33,7 +33,7 @@ class MailerFactory {
         return \Swift_Mailer::newInstance($transport);
     }
 
-     protected function getMailConfig($configName)
+    protected function getMailConfig($configName)
     {
         if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];
@@ -54,5 +54,4 @@ class MailerFactory {
             }
         }
     }
-
-} 
+}

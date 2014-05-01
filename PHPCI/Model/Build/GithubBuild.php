@@ -98,7 +98,9 @@ class GithubBuild extends RemoteGitBuild
     {
         $rtn = $this->data['commit_message'];
 
-        $rtn = preg_replace('/\#([0-9]+)/', '<a target="_blank" href="https://github.com/' . $this->getProject()->getReference() . '/issues/$1">#$1</a>', $rtn);
+        $reference = $this->getProject()->getReference();
+        $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
+        $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
         $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
 
         return $rtn;

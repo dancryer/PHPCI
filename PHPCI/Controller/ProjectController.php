@@ -351,7 +351,8 @@ class ProjectController extends \PHPCI\Controller
 
         $field = new Form\Element\TextArea('build_config');
         $field->setRequired(false);
-        $field->setLabel('PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)');
+        $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
+        $field->setLabel($label);
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setRows(6);

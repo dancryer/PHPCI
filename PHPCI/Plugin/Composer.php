@@ -42,7 +42,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
-        $this->action       = isset($options['action']) ? $options['action'] : 'update';
+        $this->action       = isset($options['action']) ? $options['action'] : 'install';
         $this->preferDist   = isset($options['prefer_dist']) ? $options['prefer_dist'] : true;
     }
 

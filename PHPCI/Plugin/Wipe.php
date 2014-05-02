@@ -20,13 +20,24 @@ use PHPCI\Model\Build;
 */
 class Wipe implements \PHPCI\Plugin
 {
-    protected $directory;
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    protected $directory;
+
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
     }
 

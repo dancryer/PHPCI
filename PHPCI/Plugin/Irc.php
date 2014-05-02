@@ -13,16 +13,18 @@ use PHPCI\Model\Build;
  */
 class Irc implements \PHPCI\Plugin
 {
-    private $phpci;
-    private $message;
-    private $server;
-    private $port;
-    private $room;
-    private $nick;
+    protected $phpci;
+    protected $build;
+    protected $message;
+    protected $server;
+    protected $port;
+    protected $room;
+    protected $nick;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
         $this->message = $options['message'];
 
         $buildSettings = $phpci->getConfig('build_settings');

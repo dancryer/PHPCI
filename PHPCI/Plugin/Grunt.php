@@ -24,12 +24,14 @@ class Grunt implements \PHPCI\Plugin
     protected $task;
     protected $preferDist;
     protected $phpci;
+    protected $build;
     protected $grunt;
     protected $gruntfile;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path = $phpci->buildPath;
+        $this->build = $build;
         $this->phpci = $phpci;
         $this->directory = $path;
         $this->task = null;

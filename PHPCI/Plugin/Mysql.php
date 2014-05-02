@@ -27,6 +27,7 @@ class Mysql implements \PHPCI\Plugin
      * @var \PHPCI\Builder
      */
     protected $phpci;
+    protected $build;
     protected $queries = array();
 
     protected $host;
@@ -42,6 +43,8 @@ class Mysql implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+
         $this->queries = $options;
 
         $config = \b8\Database::getConnection('write')->getDetails();

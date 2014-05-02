@@ -30,6 +30,8 @@ class Codeception implements \PHPCI\Plugin
      */
     protected $phpci;
 
+    protected $build;
+
     /**
      * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
      */
@@ -38,6 +40,7 @@ class Codeception implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
 
         if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];

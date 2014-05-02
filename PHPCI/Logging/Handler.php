@@ -73,8 +73,8 @@ class Handler
         $fatal_error = error_get_last();
 
         try {
-            if (($e = error_get_last()) !== null) {
-                $e = new \ErrorException(
+            if (($error = error_get_last()) !== null) {
+                $error = new \ErrorException(
                     sprintf(
                         '%s: %s in %s line %d',
                         $fatal_error['type'],
@@ -87,10 +87,10 @@ class Handler
                     $fatal_error['file'],
                     $fatal_error['line']
                 );
-                $this->log($e);
+                $this->log($error);
             }
         } catch (\Exception $e) {
-            $e = new \ErrorException(
+            $error = new \ErrorException(
                 sprintf(
                     '%s: %s in %s line %d',
                     $fatal_error['type'],
@@ -103,7 +103,7 @@ class Handler
                 $fatal_error['file'],
                 $fatal_error['line']
             );
-            $this->log($e);
+            $this->log($error);
         }
     }
 

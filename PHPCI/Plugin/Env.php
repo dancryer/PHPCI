@@ -21,11 +21,13 @@ use PHPCI\Model\Build;
 class Env implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $build;
     protected $env_vars;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci    = $phpci;
+        $this->phpci = $phpci;
+        $this->build = $build;
         $this->env_vars = $options;
     }
 

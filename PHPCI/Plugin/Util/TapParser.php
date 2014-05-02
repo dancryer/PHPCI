@@ -33,8 +33,8 @@ class TapParser
         // trim all of the lines so there's no leading or trailing whitespace.
         $lines = explode("\n", $this->tapString);
         $lines = array_map(function ($line) {
-                return trim($line);
-            }, $lines);
+            return trim($line);
+        }, $lines);
 
         // Check TAP version:
         $versionLine = array_shift($lines);
@@ -55,7 +55,19 @@ class TapParser
             $totalTests = (int)$matches[2];
         }
 
+        $rtn = $this->processTestLines($lines);
+
+        if ($totalTests != count($rtn)) {
+            throw new \Exception('Invalid TAP string, number of tests does not match specified test count.');
+        }
+
+        return $rtn;
+    }
+
+    protected function processTestLines($lines)
+    {
         $rtn = array();
+
         foreach ($lines as $line) {
             $matches = array();
 
@@ -76,10 +88,6 @@ class TapParser
             } elseif (preg_match(self::TEST_MESSAGE_PATTERN, $line, $matches)) {
                 $rtn[count($rtn) - 1]['message'] = $matches[1];
             }
-        }
-
-        if ($totalTests != count($rtn)) {
-            throw new \Exception('Invalid TAP string, number of tests does not match specified test count.');
         }
 
         return $rtn;

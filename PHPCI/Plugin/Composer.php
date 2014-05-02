@@ -25,6 +25,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $action;
     protected $preferDist;
     protected $phpci;
+    protected $build;
 
     public static function canExecute($stage, Builder $builder, Build $build)
     {
@@ -41,6 +42,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
         $this->action       = isset($options['action']) ? $options['action'] : 'install';
         $this->preferDist   = isset($options['prefer_dist']) ? $options['prefer_dist'] : true;

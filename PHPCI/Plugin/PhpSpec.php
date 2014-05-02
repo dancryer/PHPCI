@@ -21,11 +21,26 @@ use PHPCI\Model\Build;
 */
 class PhpSpec implements PHPCI\Plugin
 {
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    /**
+     * @var array
+     */
+    protected $options;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
+        $this->build = $build;
+        $this->options = $options;
     }
 
     /**

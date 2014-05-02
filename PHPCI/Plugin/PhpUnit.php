@@ -101,7 +101,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['args'])) {
-            $this->args = $options['args'];
+            $this->args = $this->phpci->interpolate($options['args']);
         }
 
         if (isset($options['path'])) {

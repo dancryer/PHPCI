@@ -50,11 +50,6 @@ class Builder implements LoggerAwareInterface
     /**
      * @var bool
      */
-    protected $success = true;
-
-    /**
-     * @var bool
-     */
     protected $verbose = true;
 
     /**
@@ -192,7 +187,7 @@ class Builder implements LoggerAwareInterface
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
-        $this->success = true;
+        $success = true;
 
         try {
             // Set up the build:
@@ -200,12 +195,12 @@ class Builder implements LoggerAwareInterface
 
             // Run the core plugin stages:
             foreach (array('setup', 'test') as $stage) {
-                $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+                $success &= $this->pluginExecutor->executePlugins($this->config, $stage);
             }
 
             // Set the status so this can be used by complete, success and failure
             // stages.
-            if ($this->success) {
+            if ($success) {
                 $this->build->setStatus(Build::STATUS_SUCCESS);
             } else {
                 $this->build->setStatus(Build::STATUS_FAILED);
@@ -214,7 +209,7 @@ class Builder implements LoggerAwareInterface
             // Complete stage plugins are always run
             $this->pluginExecutor->executePlugins($this->config, 'complete');
 
-            if ($this->success) {
+            if ($success) {
                 $this->pluginExecutor->executePlugins($this->config, 'success');
                 $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
             } else {

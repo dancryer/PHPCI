@@ -148,12 +148,9 @@ class ProjectController extends \PHPCI\Controller
         $method = $this->request->getMethod();
 
         $pub = null;
-        $values = array();
+        $values = $this->getParams();
 
-        if ($method == 'POST') {
-            $values = $this->getParams();
-            $pub = null;
-        } else {
+        if ($method != 'POST') {
             $sshKey = new SshKey();
             $key = $sshKey->generate();
 

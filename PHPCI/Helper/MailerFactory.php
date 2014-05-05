@@ -3,16 +3,16 @@
 namespace PHPCI\Helper;
 
 
-class MailerFactory {
-
+class MailerFactory
+{
     /**
      * @var array
      */
     protected $emailConfig;
 
-    public function __construct($phpCiConfig = null)
+    public function __construct($config = null)
     {
-        $this->emailConfig  = isset($phpCiSettings['email_settings']) ?: array();
+        $this->emailConfig  = isset($config['email_settings']) ?: array();
     }
 
     /**
@@ -33,7 +33,7 @@ class MailerFactory {
         return \Swift_Mailer::newInstance($transport);
     }
 
-     protected function getMailConfig($configName)
+    protected function getMailConfig($configName)
     {
         if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];
@@ -54,5 +54,4 @@ class MailerFactory {
             }
         }
     }
-
-} 
+}

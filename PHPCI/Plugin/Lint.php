@@ -25,10 +25,12 @@ class Lint implements PHPCI\Plugin
     protected $recursive = true;
     protected $ignore;
     protected $phpci;
+    protected $build;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directories    = array('');
         $this->ignore = $phpci->ignore;
 

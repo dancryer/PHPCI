@@ -10,6 +10,8 @@
 namespace PHPCI\Controller;
 
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Github;
+use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use b8;
@@ -145,37 +147,16 @@ class ProjectController extends \PHPCI\Controller
 
         $method = $this->request->getMethod();
 
-        if ($method == 'POST') {
-            $values = $this->getParams();
-            $pub = null;
-        } else {
-            $tempPath = sys_get_temp_dir() . '/';
+        $pub = null;
+        $values = $this->getParams();
 
-            // FastCGI fix for Windows machines, where temp path is not available to
-            // PHP, and defaults to the unwritable system directory.  If the temp
-            // path is pointing to the system directory, shift to the 'TEMP'
-            // sub-folder, which should also exist, but actually be writable.
-            if ($tempPath == getenv("SystemRoot") . '/') {
-                $tempPath = getenv("SystemRoot") . '/TEMP/';
-            }
+        if ($method != 'POST') {
+            $sshKey = new SshKey();
+            $key = $sshKey->generate();
 
-            $keyFile = $tempPath . md5(microtime(true));
-
-            if (!is_dir($tempPath)) {
-                mkdir($tempPath);
-            }
-
-            if ($this->canGenerateKeys()) {
-                shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
-
-                $pub = file_get_contents($keyFile . '.pub');
-                $prv = file_get_contents($keyFile);
-
-                $values = array('key' => $prv, 'pubkey' => $pub);
-            } else {
-                $pub = null;
-                $values = array();
-            }
+            $values['key'] = $key['private_key'];
+            $values['pubkey'] = $key['public_key'];
+            $pub = $key['public_key'];
         }
 
         $form = $this->projectForm($values);
@@ -351,7 +332,8 @@ class ProjectController extends \PHPCI\Controller
 
         $field = new Form\Element\TextArea('build_config');
         $field->setRequired(false);
-        $field->setLabel('PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)');
+        $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
+        $field->setLabel($label);
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setRows(6);
@@ -380,46 +362,8 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function githubRepositories()
     {
-        $token = Config::getInstance()->get('phpci.github.token');
-
-        if (!$token) {
-            die(json_encode(null));
-        }
-
-        $cache = \b8\Cache::getCache(\b8\Cache::TYPE_APC);
-        $rtn = $cache->get('phpci_github_repos');
-
-        if (!$rtn) {
-            $orgs = $this->doGithubApiRequest('/user/orgs', array('access_token' => $token));
-
-            $params = array('type' => 'all', 'access_token' => $token);
-            $repos = array();
-            $repos['user'] = $this->doGithubApiRequest('/user/repos', $params);
-
-
-            foreach ($orgs as $org) {
-                $repos[$org['login']] = $this->doGithubApiRequest('/orgs/'.$org['login'].'/repos', $params);
-            }
-
-            $rtn = array();
-            foreach ($repos as $repoGroup) {
-                foreach ($repoGroup as $repo) {
-                    $rtn['repos'][] = $repo['full_name'];
-                }
-            }
-
-            $cache->set('phpci_github_repos', $rtn);
-        }
-
-        die(json_encode($rtn));
-    }
-
-    protected function doGithubApiRequest($url, $params)
-    {
-        $http = new \b8\HttpClient('https://api.github.com');
-        $res = $http->get($url, $params);
-
-        return $res['body'];
+        $github = new Github();
+        die(json_encode($github->getRepositories()));
     }
 
     protected function getReferenceValidator($values)
@@ -458,11 +402,5 @@ class ProjectController extends \PHPCI\Controller
 
             return true;
         };
-    }
-
-    protected function canGenerateKeys()
-    {
-        $result = @shell_exec('ssh-keygen');
-        return !empty($result);
     }
 }

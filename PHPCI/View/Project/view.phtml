@@ -1,4 +1,3 @@
-
 <h1><i class="glyphicon glyphicon-th-list"></i> <?php print htmlspecialchars($project->getTitle()); ?></h1>
 
 
@@ -19,7 +18,7 @@
             </div>
         </div>
 
-        <?php if (in_array($project->getType(), array('github', 'gitlab','bitbucket'))): ?>
+        <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket'))): ?>
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 class="panel-title">Webhooks</h4>
@@ -27,7 +26,6 @@
 
             <div class="panel-body">
                 To automatically build this project when new commits are pushed, add the URL below
-        <?php endif; ?>
 
 			<?php
 			switch($project->getType())
@@ -50,6 +48,7 @@
 			?>
             </div>
         </div>
+        <?php endif; ?>
 
         <?php if ($project->getPublicKey()): ?>
             <div class="panel panel-default">

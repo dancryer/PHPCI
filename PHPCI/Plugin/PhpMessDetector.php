@@ -27,6 +27,11 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $phpci;
 
     /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    /**
      * @var array
      */
     protected $suffixes;
@@ -59,10 +64,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
-    /**
-     * @param \PHPCI\Builder $phpci
-     * @param array $options
-     */
+
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;

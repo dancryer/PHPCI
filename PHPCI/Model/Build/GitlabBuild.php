@@ -43,10 +43,11 @@ class GitlabBuild extends RemoteGitBuild
      */
     public function getFileLinkTemplate()
     {
-        return sprintf('http://%s/%s/blob/%s/{FILE}#L{LINE}',
-    	    $this->getProject()->getAccessInformation("domain"),
-    	    $this->getProject()->getReference(),
-    	    $this->getBranch()
+        return sprintf(
+            'http://%s/%s/blob/%s/{FILE}#L{LINE}',
+            $this->getProject()->getAccessInformation("domain"),
+            $this->getProject()->getReference(),
+            $this->getBranch()
         );
     }
 

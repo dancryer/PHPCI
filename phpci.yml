@@ -6,12 +6,17 @@ build_settings:
     - "PHPCI/Command" # PHPMD complains about un-used parameters, but they are required.
     - "public/install.php" # PHPCS really doesn't like PHP mixed with HTML (and so it shouldn't)
 
+setup:
+  composer:
+    action: "install"
+
 test:
   php_mess_detector:
-    allowed_warnings: 35 # Set max warnings at the current level - Disallow any further errors creeping in.
+    allowed_warnings: 10 # Set max warnings at the current level - Disallow any further errors creeping in.
   php_code_sniffer:
     standard: "PSR2"
   php_loc:
+  php_unit:
 
 failure:
   email:

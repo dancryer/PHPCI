@@ -62,7 +62,7 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error = $this->storeSettings();
 
-        if($error) {
+        if ($error) {
             header('Location: ' . PHPCI_URL . 'settings?saved=2');
         } else {
             header('Location: ' . PHPCI_URL . 'settings?saved=1');

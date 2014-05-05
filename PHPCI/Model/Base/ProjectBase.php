@@ -516,26 +516,4 @@ class ProjectBase extends Model
     {
         return Factory::getStore('Build', 'PHPCI')->getByProjectId($this->getId());
     }
-
-
-
-
-    public static function getByPrimaryKey($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getByPrimaryKey($value, $useConnection);
-    }
-
-
-    public static function getById($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getById($value, $useConnection);
-    }
-
-    public static function getByTitle($value, $limit = null, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getByTitle($value, $limit, $useConnection);
-    }
-
-
-
 }

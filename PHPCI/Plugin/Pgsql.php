@@ -22,6 +22,7 @@ use PHPCI\Model\Build;
 class Pgsql implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $build;
     protected $queries = array();
 
     protected $host;
@@ -30,13 +31,14 @@ class Pgsql implements \PHPCI\Plugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->queries      = $options;
+        $this->phpci = $phpci;
+        $this->build = $build;
+        $this->queries = $options;
 
         $buildSettings = $phpci->getConfig('build_settings');
 
         if (isset($buildSettings['pgsql'])) {
-            $sql        = $buildSettings['pgsql'];
+            $sql = $buildSettings['pgsql'];
             $this->host = $sql['host'];
             $this->user = $sql['user'];
             $this->pass = $sql['pass'];

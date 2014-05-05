@@ -54,7 +54,8 @@ class RemoteGitBuild extends Build
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        $success = $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $cmd = 'git clone -b %s %s "%s"';
+        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
         if (!empty($commit) && $commit != 'Manual') {
             $cmd = 'cd "%s" && git checkout %s';
@@ -136,10 +137,12 @@ class RemoteGitBuild extends Build
         $path = dirname($cloneTo . '/temp');
         $wrapperFile = $path . '.sh';
 
+        $sshFlags = '-o CheckHostIP=no -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no';
+
         // Write out the wrapper script for this build:
         $script = <<<OUT
 #!/bin/sh
-ssh -o CheckHostIP=no -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o IdentityFile={$keyFile} $*
+ssh {$sshFlags} -o IdentityFile={$keyFile} $*
 
 OUT;
 

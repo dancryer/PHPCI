@@ -3,10 +3,11 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: 'Quality Trend',
     keys: {
-      'phpmd-warnings': 'PHPMD Warnings',
-      'phpcs-warnings': 'PHPCS Warnings',
-      'phpcs-errors': 'PHPCS Errors',
-      'phplint-errors': 'PHPLint Errors'
+        'phpmd-warnings': 'PHPMD Warnings',
+        'phpcs-warnings': 'PHPCS Warnings',
+        'phpcs-errors': 'PHPCS Errors',
+        'phplint-errors': 'PHPLint Errors',
+        'phpunit-errors': 'PHPUnit Errors'
     },
     data: {},
     displayOnUpdate: false,
@@ -19,7 +20,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
           queries.push(PHPCI.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors', function(data) {
+        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors phpunit-errors', function(data) {
             self.onUpdate(data);
         });
 

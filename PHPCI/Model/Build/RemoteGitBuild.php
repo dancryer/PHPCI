@@ -54,7 +54,15 @@ class RemoteGitBuild extends Build
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        $cmd = 'git clone -b %s %s "%s"';
+        $cmd = 'git clone ';
+
+        $depth = $builder->getConfig('clone_depth');
+
+        if (!is_null($depth)) {
+            $cmd .= ' --depth ' . intval($depth) . ' ';
+        }
+
+        $cmd .= ' -b %s %s "%s"';
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
         if (!empty($commit) && $commit != 'Manual') {
@@ -80,13 +88,19 @@ class RemoteGitBuild extends Build
         }
 
         // Do the git clone:
-        $cmd = 'git clone -b %s %s "%s"';
+        $cmd = 'git clone ';
+
+        $depth = $builder->getConfig('clone_depth');
+
+        if (!is_null($depth)) {
+            $cmd .= ' --depth ' . intval($depth) . ' ';
+        }
+
+        $cmd .= ' -b %s %s "%s"';
 
         if (!IS_WIN) {
             $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
         }
-
-        var_dump($cmd);
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 

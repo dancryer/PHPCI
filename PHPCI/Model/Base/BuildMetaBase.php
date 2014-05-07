@@ -98,7 +98,7 @@ class BuildMetaBase extends Model
             'default' => null,
         ),
         'meta_value' => array(
-            'type' => 'text',
+            'type' => 'longtext',
             'nullable' => true,
             'default' => null,
         ),

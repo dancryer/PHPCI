@@ -132,9 +132,16 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $success &= $this->runDir($this->directory);
         }
 
-        $output = $this->phpci->getLastOutput();
-        $tapParser = new TapParser($output);
-        $output = $tapParser->parse();
+        $tapString = $this->phpci->getLastOutput();
+
+        try {
+            $tapParser = new TapParser($tapString);
+            $output = $tapParser->parse();
+        } catch (\Exception $ex) {
+            $this->phpci->logFailure($tapString);
+            throw $ex;
+        }
+
         $failures = $tapParser->getTotalFailures();
 
         $this->build->storeMeta('phpunit-errors', $failures);

@@ -9,8 +9,8 @@ class Email
 {
     const DEFAULT_FROM = 'PHPCI <no-reply@phptesting.org>';
 
-    protected $to = array();
-    protected $cc = array();
+    protected $emailTo = array();
+    protected $emailCc = array();
     protected $subject = 'Email from PHPCI';
     protected $body = '';
     protected $isHtml = false;
@@ -21,16 +21,16 @@ class Email
         $this->config = Config::getInstance();
     }
 
-    public function setTo($email, $name = null)
+    public function setEmailTo($email, $name = null)
     {
-        $this->to[$email] = $name;
+        $this->emailTo[$email] = $name;
 
         return $this;
     }
 
     public function addCc($email, $name = null)
     {
-        $this->cc[$email] = $name;
+        $this->emailCc[$email] = $name;
 
         return $this;
     }
@@ -77,20 +77,20 @@ class Email
 
         $headers .= 'From: ' . $this->getFrom() . PHP_EOL;
 
-        $to = array();
-        foreach ($this->to as $email => $name) {
+        $emailTo = array();
+        foreach ($this->emailTo as $email => $name) {
             $thisTo = $email;
 
             if (!is_null($name)) {
                 $thisTo = '"' . $name . '" <' . $thisTo . '>';
             }
 
-            $to[] = $thisTo;
+            $emailTo[] = $thisTo;
         }
 
-        $to = implode(', ', $to);
+        $emailTo = implode(', ', $emailTo);
 
-        return mail($to, $this->subject, $this->body, $headers);
+        return mail($emailTo, $this->subject, $this->body, $headers);
     }
 
     protected function sendViaSwiftMailer()
@@ -100,15 +100,15 @@ class Email
 
         $message = \Swift_Message::newInstance($this->subject)
             ->setFrom($this->getFrom())
-            ->setTo($this->to)
+            ->setTo($this->emailTo)
             ->setBody($this->body);
 
         if ($this->isHtml) {
             $message->setContentType('text/html');
         }
 
-        if (is_array($this->cc) && count($this->cc)) {
-            $message->setCc($this->cc);
+        if (is_array($this->emailCc) && count($this->emailCc)) {
+            $message->setCc($this->emailCc);
         }
 
         return $mailer->send($message);

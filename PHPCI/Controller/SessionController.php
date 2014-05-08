@@ -104,14 +104,14 @@ class SessionController extends \PHPCI\Controller
             $key = md5(date('Y-m-d') . $user->getHash());
             $url = PHPCI_URL;
             $name = $user->getName();
-            $id = $user->getId();
+            $userId = $user->getId();
 
             $message = <<<MSG
 Hi {$name},
 
 You have received this email because you, or someone else, has requested a password reset for PHPCI.
 
-If this was you, please click the following link to reset your password: {$url}session/reset-password/{$id}/{$key}
+If this was you, please click the following link to reset your password: {$url}session/reset-password/{$userId}/{$key}
 
 Otherwise, please ignore this email and no action will be taken.
 
@@ -122,7 +122,7 @@ MSG;
 
 
             $email = new Email();
-            $email->setTo($user->getEmail(), $user->getName());
+            $email->setEmailTo($user->getEmail(), $user->getName());
             $email->setSubject('Password reset');
             $email->setBody($message);
             $email->send();
@@ -133,9 +133,9 @@ MSG;
         return $this->view->render();
     }
 
-    public function resetPassword($id, $key)
+    public function resetPassword($userId, $key)
     {
-        $user = $this->userStore->getById($id);
+        $user = $this->userStore->getById($userId);
         $userKey = md5(date('Y-m-d') . $user->getHash());
 
         if (empty($user) || $key != $userKey) {
@@ -154,7 +154,7 @@ MSG;
             die;
         }
 
-        $this->view->id = $id;
+        $this->view->id = $userId;
         $this->view->key = $key;
 
         return $this->view->render();

@@ -37,13 +37,27 @@
 
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><p class="navbar-text"><strong><?php print htmlspecialchars($this->User()->getName()); ?></strong></p></li>
-                        <li><a href="<?php print PHPCI_URL ?>session/logout">Log out</a></li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img class="pull-left" style="margin-right: 7px; margin-top: -5px; border-radius: 50%" src="http://www.gravatar.com/avatar/<?php print md5($this->User()->getEmail()); ?>?d=mm&amp;s=30">
+
+                                <strong><?php print htmlspecialchars($this->User()->getName()); ?></strong> <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="<?php print PHPCI_URL ?>user/profile">Edit Profile</a></li>
+                                <li class="divider"></li>
+                                <li><a href="<?php print PHPCI_URL ?>session/logout">Log out</a></li>
+                            </ul>
+                        </li>
+
                         <?php if ($this->User()->getIsAdmin()): ?>
                         <li>
                             <div class="btn-group">
                                 <a class="btn btn-success navbar-btn" href="<?php echo PHPCI_URL ?>project/add">Add Project</a>
+                            </div>
 
+                            <div class="btn-group">
                                 <button type="button" class="btn navbar-btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Admin <span class="caret"></span>
                                 </button>

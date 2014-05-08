@@ -1,0 +1,15 @@
+<h1><?php print $this->User()->getName(); ?></h1>
+
+<?php if (isset($updated)): ?>
+<p class="alert alert-success">Your details have been updated.</p>
+<?php endif; ?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Update your details</h3>
+    </div>
+    <div class="panel-body">
+        <?php print $form; ?>
+    </div>
+</div>
+

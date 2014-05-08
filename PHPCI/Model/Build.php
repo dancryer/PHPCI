@@ -122,7 +122,7 @@ class Build extends BuildBase
         $config = array(
             'build_settings' => array(
                 'ignore' => array(
-                    'vendor/',
+                    'vendor',
                 )
             )
         );

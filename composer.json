@@ -43,6 +43,7 @@
     },
 
     "suggest": {
+        "block8/php-docblock-checker": "PHP Docblock Checker",
         "phpmd/phpmd": "PHP Mess Detector",
         "sebastian/phpcpd": "PHP Copy/Paste Detector",
         "squizlabs/php_codesniffer": "PHP Code Sniffer",

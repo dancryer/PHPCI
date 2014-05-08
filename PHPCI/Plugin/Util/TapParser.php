@@ -7,12 +7,12 @@ class TapParser
     const TEST_COUNTS_PATTERN = '/([0-9]+)\.\.([0-9]+)/';
     const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
     const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
+    const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
 
     /**
      * @var string
      */
     protected $tapString;
-
     protected $failures = 0;
 
     /**
@@ -43,16 +43,23 @@ class TapParser
             throw new \Exception('TapParser only supports TAP version 13');
         }
 
+        if (preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
+            array_pop($lines);
+            if ($lines[count($lines) - 1] == "") {
+                array_pop($lines);
+            }
+        }
+
         $matches = array();
         $totalTests = 0;
         if (preg_match(self::TEST_COUNTS_PATTERN, $lines[0], $matches)) {
             array_shift($lines);
-            $totalTests = (int)$matches[2];
+            $totalTests = (int) $matches[2];
         }
 
         if (preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
             array_pop($lines);
-            $totalTests = (int)$matches[2];
+            $totalTests = (int) $matches[2];
         }
 
         $rtn = $this->processTestLines($lines);

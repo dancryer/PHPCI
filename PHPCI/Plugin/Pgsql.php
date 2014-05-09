@@ -21,18 +21,45 @@ use PHPCI\Model\Build;
 */
 class Pgsql implements \PHPCI\Plugin
 {
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
     protected $build;
+
+    /**
+     * @var array
+     */
     protected $queries = array();
 
+    /**
+     * @var string
+     */
     protected $host;
+
+    /**
+     * @var string
+     */
     protected $user;
+
+    /**
+     * @var string
+     */
     protected $pass;
 
+    /**
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        $this->phpci   = $phpci;
+        $this->build   = $build;
         $this->queries = $options;
 
         $buildSettings = $phpci->getConfig('build_settings');
@@ -47,6 +74,7 @@ class Pgsql implements \PHPCI\Plugin
 
     /**
     * Connects to PgSQL and runs a specified set of queries.
+    * @return boolean
     */
     public function execute()
     {
@@ -61,7 +89,6 @@ class Pgsql implements \PHPCI\Plugin
             $this->phpci->logFailure($ex->getMessage());
             return false;
         }
-
         return true;
     }
 }

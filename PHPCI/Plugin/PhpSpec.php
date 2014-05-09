@@ -58,7 +58,7 @@ class PhpSpec implements PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpspec . ' run --format=pretty --no-code-generation');
+        $success = $this->phpci->executeCommand($phpspec . ' --format=pretty --no-code-generation run');
 
         chdir($curdir);
         

@@ -10,6 +10,8 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\ForbiddenException;
+use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
 use PHPCI\Model\User;
@@ -106,11 +108,10 @@ class UserController extends Controller
     public function add()
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $this->config->set('page_title', 'Add User');
-
 
         $method = $this->request->getMethod();
 
@@ -150,14 +151,17 @@ class UserController extends Controller
     public function edit($userId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $method     = $this->request->getMethod();
         $user   = $this->userStore->getById($userId);
 
-        $this->config->set('page_title', 'Edit: ' . $user->getName());
+        if (empty($user)) {
+            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
+        }
 
+        $this->config->set('page_title', 'Edit: ' . $user->getName());
 
         if ($method == 'POST') {
             $values = $this->getParams();
@@ -244,10 +248,15 @@ class UserController extends Controller
     public function delete($userId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
         
         $user   = $this->userStore->getById($userId);
+
+        if (empty($user)) {
+            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
+        }
+
         $this->userStore->delete($user);
 
         header('Location: '.PHPCI_URL.'user');

@@ -59,8 +59,10 @@ if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_I
 // Load Composer autoloader:
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
-$loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-Handler::register($loggerConfig->getFor('_'));
+if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
+    $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+    Handler::register($loggerConfig->getFor('_'));
+}
 
 // Load configuration if present:
 $conf = array();

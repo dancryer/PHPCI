@@ -15,8 +15,8 @@ use Composer\Script\CommandEvent;
 
 class Composer
 {
-    public static function hookInstallAcmeDemoBundle(CommandEvent $event)
+    public static function hookRootPackageInstall(CommandEvent $event)
     {
-        $event->getComposer()->getEventDispatcher()->addSubscriber(new InstallAcmeDemoBundleSubscriber());
+        $event->getComposer()->getEventDispatcher()->addSubscriber(new RootPackageInstallSubscriber());
     }
 }

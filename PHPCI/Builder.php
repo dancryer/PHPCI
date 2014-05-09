@@ -242,7 +242,7 @@ class Builder implements LoggerAwareInterface
      */
     public function executeCommand()
     {
-        return $this->commandExecutor->buildAndExecuteCommand(func_get_args());
+        return $this->commandExecutor->executeCommand(func_get_args());
     }
 
     /**

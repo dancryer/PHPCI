@@ -2,7 +2,6 @@
 
 namespace PHPCI\Helper;
 
-
 use \PHPCI\Logging\BuildLogger;
 use Psr\Log\LogLevel;
 
@@ -36,9 +35,9 @@ class CommandExecutor
 
     /**
      * @param BuildLogger $logger
-     * @param $rootDir
-     * @param bool $quiet
-     * @param bool $verbose
+     * @param string      $rootDir
+     * @param bool        $quiet
+     * @param bool        $verbose
      */
     public function __construct(BuildLogger $logger, $rootDir, &$quiet = false, &$verbose = false)
     {
@@ -106,7 +105,7 @@ class CommandExecutor
 
     /**
      * Find a binary required by a plugin.
-     * @param $binary
+     * @param string $binary
      * @return null|string
      */
     public function findBinary($binary)

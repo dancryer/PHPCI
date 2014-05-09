@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,19 +19,32 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements \PHPCI\Plugin
+class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $directory;
     protected $action;
     protected $preferDist;
     protected $phpci;
+    protected $build;
+
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        $path = $builder->buildPath . '/composer.json';
+
+        if (file_exists($path) && $stage == 'setup') {
+            return true;
+        }
+
+        return false;
+    }
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
-        $this->action       = isset($options['action']) ? $options['action'] : 'update';
+        $this->action       = isset($options['action']) ? $options['action'] : 'install';
         $this->preferDist   = isset($options['prefer_dist']) ? $options['prefer_dist'] : true;
     }
 
@@ -46,7 +60,7 @@ class Composer implements \PHPCI\Plugin
             return false;
         }
         $cmd = '';
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if (IS_WIN) {
             $cmd = 'php ';
         }
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';

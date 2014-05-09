@@ -21,11 +21,13 @@ use PHPCI\Model\Build;
 class Behat implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $build;
     protected $features;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->features = '';
 
         if (isset($options['executable'])) {

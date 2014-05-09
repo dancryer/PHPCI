@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><?php print $project->getTitle(); ?> - PHPCI</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href='//fonts.googleapis.com/css?family=Roboto:300,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/phpci.css">
+
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo PHPCI_URL ?>favicon.ico">
+        <link rel="shortcut icon" type="image/png" href="<?php echo PHPCI_URL ?>assets/img/favicon.png">
+
+        <script>window.PHPCI_URL = <?php print json_encode(PHPCI_URL) ?></script>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+        <script src="<?php echo PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/jqueryui.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/class.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/phpci.js"></script>
+        <script src="<?php echo PHPCI_URL ?>assets/js/init.js"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="<?php echo PHPCI_URL ?>"><img src="<?php echo PHPCI_URL ?>/assets/img/logo.png"></a>
+            </div>
+        </div>
+
+        <div id="content" class="container">
+
+            <h1><?php print $project->getTitle(); ?></h1>
+            <?php if (!empty($latest)): ?>
+
+                <?php
+
+                $statusClass = null;
+                $statusText = null;
+
+                switch ($latest->getStatus()) {
+                    case 0:
+                        $statusClass = 'info';
+                        $statusText = 'Pending';
+                        break;
+                    case 1:
+                        $statusClass = 'warning';
+                        $statusText = 'Running';
+                        break;
+                    case 2:
+                        $statusClass = 'success';
+                        $statusText = 'Success';
+                        break;
+                    case 3:
+                        $statusClass = 'danger';
+                        $statusText = 'Failed';
+                        break;
+                }
+
+                ?>
+
+            <!-- Latest Build -->
+            <div class="build-info-panel panel panel-<?php print $statusClass; ?>">
+                <img class="pull-left" src="http://www.gravatar.com/avatar/<?php print md5($latest->getCommitterEmail()); ?>?d=mm">
+
+                <div class="panel-heading">
+                    <h1 class="panel-title">
+                        <a href="/project/view/<?php print $latest->getProjectId(); ?>">
+                            <?php print $latest->getProject()->getTitle(); ?></a>
+                        <span>#<?php print $latest->getId(); ?></span>
+
+                        <label class="pull-right label label-<?php print $statusClass; ?>"><?php print $statusText; ?></label>
+                    </h1>
+                </div>
+
+                <div class="panel-body">
+                    <div id="build-info">
+                        <?php if ($latest->getCommitMessage()): ?>
+                            <div class="commit-message">
+                                <?php print $latest->getCommitMessage(); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <strong>Branch: </strong> <?php print $latest->getBranch(); ?><br>
+                        <strong>Committer: </strong> <?php print $latest->getCommitterEmail(); ?>
+
+                        <?php if ($latest->getCommitId() != 'Manual'): ?>
+                            <br><strong>Commit ID: </strong> <?php print $latest->getCommitId(); ?><br>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+
+            <!-- Recent builds: -->
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3 class="panel-title">Builds</h3></div>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Commit</th>
+                        <th>Branch</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="latest-builds">
+
+
+                    <?php if(empty($builds) || !count($builds)): ?>
+                        <tr class="">
+                            <td colspan="6">No builds yet.</td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php foreach($builds as $build): ?>
+
+                        <?php
+                        switch($build->getStatus())
+                        {
+                            case 0:
+                                $cls = 'active';
+                                $subcls = 'info';
+                                $status = 'Pending';
+
+                                break;
+
+                            case 1:
+                                $cls = 'warning';
+                                $subcls = 'warning';
+                                $status = 'Running';
+                                break;
+
+                            case 2:
+                                $cls = 'success';
+                                $subcls = 'success';
+                                $status = 'Success';
+                                break;
+
+                            case 3:
+                                $cls = 'danger';
+                                $subcls = 'danger';
+                                $status = 'Failed';
+                                break;
+                        }
+                        ?>
+                        <tr class="<?php print $cls; ?>">
+                            <td>#<?php print str_pad($build->getId(), 6, '0', STR_PAD_LEFT); ?></td>
+
+                            <td>
+                                <?php
+                                if ($build->getCommitId() !== 'Manual') {
+                                    print '<a href="' . $build->getCommitLink() . '">';
+                                }
+                                print $build->getCommitId();
+                                if ($build->getCommitId() !== 'Manual') {
+                                    print '</a>';
+                                }
+                                ?>
+                            </td>
+
+                            <td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
+                            <td>
+                                <?php
+                                $plugins = json_decode($build->getPlugins(), true);
+
+                                if ( !is_array($plugins) ) {
+                                    $plugins = array();
+                                }
+                                if ( 0 === count($plugins) ) {
+                                    ?> <span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span> <?php
+                                }
+                                ?>
+                                <?php
+                                foreach($plugins as $plugin => $pluginstatus):
+                                    $subcls = $pluginstatus?'label label-success':'label label-danger';
+                                    ?> <span class='<?php echo $subcls ?>'><?php print $this->Build()->formatPluginName($plugin); ?></span> <?php endforeach; ?>
+                                <br style='clear:both;' />
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

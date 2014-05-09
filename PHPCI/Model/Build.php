@@ -11,6 +11,8 @@ namespace PHPCI\Model;
 
 use b8\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
+use PHPCI\Builder;
+use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Build Model
@@ -76,5 +78,90 @@ class Build extends BuildBase
     public function isSuccessful()
     {
         return ($this->getStatus() === self::STATUS_SUCCESS);
+    }
+
+    /**
+     * @param Builder $builder
+     * @param string  $buildPath
+     *
+     * @return bool
+     */
+    protected function handleConfig(Builder $builder, $buildPath)
+    {
+        $build_config = null;
+
+        // Try phpci.yml first:
+        if (is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
+        }
+
+        // Try getting the project build config from the database:
+        if (empty($build_config)) {
+            $build_config = $this->getProject()->getBuildConfig();
+        }
+
+        // Fall back to zero config plugins:
+        if (empty($build_config)) {
+            $build_config = $this->getZeroConfigPlugins($builder);
+        }
+
+        if (is_string($build_config)) {
+            $yamlParser = new YamlParser();
+            $build_config = $yamlParser->parse($build_config);
+        }
+
+        $builder->setConfigArray($build_config);
+        return true;
+    }
+
+    protected function getZeroConfigPlugins(Builder $builder)
+    {
+        $pluginDir = PHPCI_DIR . 'PHPCI/Plugin/';
+        $dir = new \DirectoryIterator($pluginDir);
+
+        $config = array(
+            'build_settings' => array(
+                'ignore' => array(
+                    'vendor',
+                )
+            )
+        );
+
+        foreach ($dir as $item) {
+            if ($item->isDot()) {
+                continue;
+            }
+
+            if (!$item->isFile()) {
+                continue;
+            }
+
+            if ($item->getExtension() != 'php') {
+                continue;
+            }
+
+            $className = '\PHPCI\Plugin\\'.$item->getBasename('.php');
+
+            $reflectedPlugin = new \ReflectionClass($className);
+
+            if (!$reflectedPlugin->implementsInterface('\PHPCI\ZeroConfigPlugin')) {
+                continue;
+            }
+
+            foreach (array('setup', 'test', 'complete', 'success', 'failure') as $stage) {
+                if ($className::canExecute($stage, $builder, $this)) {
+                    $config[$stage][$className] = array(
+                        'zero_config' => true
+                    );
+                }
+            }
+        }
+
+        return $config;
+    }
+
+    public function getFileLinkTemplate()
+    {
+        return null;
     }
 }

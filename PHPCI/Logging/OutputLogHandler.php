@@ -28,6 +28,4 @@ class OutputLogHandler extends AbstractProcessingHandler
     {
         $this->output->writeln((string)$record['formatted']);
     }
-
-
 }

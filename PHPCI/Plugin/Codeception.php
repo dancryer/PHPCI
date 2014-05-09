@@ -20,8 +20,17 @@ use PHPCI\Model\Build;
  */
 class Codeception implements \PHPCI\Plugin
 {
-    protected $args;
+    /**
+     * @var string
+     */
+    protected $args = '';
+
+    /**
+     * @var Builder
+     */
     protected $phpci;
+
+    protected $build;
 
     /**
      * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
@@ -30,14 +39,14 @@ class Codeception implements \PHPCI\Plugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
+        $this->build = $build;
 
         if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];
         }
-
         if (isset($options['args'])) {
-            $this->args = $options['args'];
+            $this->args = (string) $options['args'];
         }
     }
 
@@ -69,8 +78,13 @@ class Codeception implements \PHPCI\Plugin
                 return false;
             }
 
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $this->phpci->buildPath . $configPath);
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
+            }
+
+            $configPath = $this->phpci->buildPath . $configPath;
+            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
             return $success;
         }

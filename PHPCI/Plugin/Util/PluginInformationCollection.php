@@ -44,5 +44,4 @@ class PluginInformationCollection implements InstalledPluginInformation
         }
         return $arr;
     }
-
 }

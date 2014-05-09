@@ -36,25 +36,26 @@ var locPlugin = PHPCI.UiPlugin.extend({
     },
 
     displayChart: function() {
-        var build = this.lastData;
+        var builds = this.lastData;
 
-        if (!build || !build.length) {
+        if (!builds || !builds.length) {
             return;
         }
 
         $('#phploc-lines').empty().animate({height: '275px'});
 
-        var data = [["Build", "Lines", "Comment Lines", "Non-Comment Lines", "Logical Lines"]];
-        for (var idx in build) {
-            data.push(['Build ' + build[idx].build_id, parseInt(build[idx].meta_value.LOC), parseInt(build[idx].meta_value.CLOC), parseInt(build[idx].meta_value.NCLOC), parseInt(build[idx].meta_value.LLOC)]);
+        var titles = ['Build', 'Lines', 'Comment Lines', 'Non-Comment Lines', 'Logical Lines'];
+        var data = [titles];
+        for (var i in builds) {
+            data.push(['#' + builds[i].build_id, parseInt(builds[i].meta_value.LOC), parseInt(builds[i].meta_value.CLOC), parseInt(builds[i].meta_value.NCLOC), parseInt(builds[i].meta_value.LLOC)]);
         }
 
         var data = google.visualization.arrayToDataTable(data);
-
         var options = {
             hAxis: {title: 'Builds'},
             vAxis: {title: 'Lines'},
-            backgroundColor: { fill: 'transparent' }
+            backgroundColor: { fill: 'transparent' },
+            height: 275
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('phploc-lines'));

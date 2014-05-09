@@ -29,10 +29,12 @@ class Phing implements \PHPCI\Plugin
     private $propertyFile;
 
     protected $phpci;
+    protected $build;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->setPhpci($phpci);
+        $this->build = $build;
 
         /*
          * Set working directory

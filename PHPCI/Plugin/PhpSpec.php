@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
@@ -18,18 +19,28 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec implements \PHPCI\Plugin
+class PhpSpec implements PHPCI\Plugin
 {
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
-    protected $bootstrap;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    /**
+     * @var array
+     */
+    protected $options;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-
-        if (!empty($options['bootstrap'])) {
-            $this->bootstrap = $this->buildPath . $options['bootstrap'];
-        }
+        $this->phpci = $phpci;
+        $this->build = $build;
+        $this->options = $options;
     }
 
     /**
@@ -47,11 +58,7 @@ class PhpSpec implements \PHPCI\Plugin
             return false;
         }
 
-        if ($this->bootstrap) {
-            $success = $this->phpci->executeCommand($phpspec . ' -f d');
-        } else {
-            $success = $this->phpci->executeCommand($phpspec . ' -f d --bootstrap "%s"', $this->bootstrap);
-        }
+        $success = $this->phpci->executeCommand($phpspec . ' --format=pretty --no-code-generation');
 
         chdir($curdir);
         

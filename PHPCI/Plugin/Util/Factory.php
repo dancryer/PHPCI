@@ -4,7 +4,8 @@ namespace PHPCI\Plugin\Util;
 
 
 
-class Factory {
+class Factory
+{
 
     const TYPE_ARRAY = "array";
     const TYPE_CALLABLE = "callable";
@@ -18,12 +19,11 @@ class Factory {
      */
     private $container;
 
-    function __construct(\Pimple $container = null)
+    public function __construct(\Pimple $container = null)
     {
         if ($container) {
             $this->container = $container;
-        }
-        else {
+        } else {
             $this->container = new \Pimple();
         }
 
@@ -35,6 +35,28 @@ class Factory {
             'options',
             'array'
         );
+    }
+
+    /**
+     * Trys to get a function from the file path specified. If the
+     * file returns a function then $this will be passed to it.
+     * This enables the config file to call any public methods.
+     *
+     * @param $configPath
+     * @return bool - true if the function exists else false.
+     */
+    public function addConfigFromFile($configPath)
+    {
+        // The file is expected to return a function which can
+        // act on the pluginFactory to register any resources needed.
+        if (file_exists($configPath)) {
+            $configFunction = require($configPath);
+            if (is_callable($configFunction)) {
+                $configFunction($this);
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getLastOptions()

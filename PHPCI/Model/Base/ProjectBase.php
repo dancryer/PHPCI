@@ -37,10 +37,13 @@ class ProjectBase extends Model
         'title' => null,
         'reference' => null,
         'git_key' => null,
+        'public_key' => null,
         'type' => null,
         'token' => null,
         'access_information' => null,
         'last_commit' => null,
+        'build_config' => null,
+        'allow_public_status' => null,
     );
 
     /**
@@ -52,10 +55,13 @@ class ProjectBase extends Model
         'title' => 'getTitle',
         'reference' => 'getReference',
         'git_key' => 'getGitKey',
+        'public_key' => 'getPublicKey',
         'type' => 'getType',
         'token' => 'getToken',
         'access_information' => 'getAccessInformation',
         'last_commit' => 'getLastCommit',
+        'build_config' => 'getBuildConfig',
+        'allow_public_status' => 'getAllowPublicStatus',
 
         // Foreign key getters:
     );
@@ -69,10 +75,13 @@ class ProjectBase extends Model
         'title' => 'setTitle',
         'reference' => 'setReference',
         'git_key' => 'setGitKey',
+        'public_key' => 'setPublicKey',
         'type' => 'setType',
         'token' => 'setToken',
         'access_information' => 'setAccessInformation',
         'last_commit' => 'setLastCommit',
+        'build_config' => 'setBuildConfig',
+        'allow_public_status' => 'setAllowPublicStatus',
 
         // Foreign key setters:
     );
@@ -103,6 +112,11 @@ class ProjectBase extends Model
             'nullable' => true,
             'default' => null,
         ),
+        'public_key' => array(
+            'type' => 'text',
+            'nullable' => true,
+            'default' => null,
+        ),
         'type' => array(
             'type' => 'varchar',
             'length' => 50,
@@ -125,6 +139,15 @@ class ProjectBase extends Model
             'length' => 250,
             'nullable' => true,
             'default' => null,
+        ),
+        'build_config' => array(
+            'type' => 'text',
+            'nullable' => true,
+            'default' => null,
+        ),
+        'allow_public_status' => array(
+            'type' => 'tinyint',
+            'length' => 4,
         ),
     );
 
@@ -191,6 +214,18 @@ class ProjectBase extends Model
     }
 
     /**
+    * Get the value of PublicKey / public_key.
+    *
+    * @return string
+    */
+    public function getPublicKey()
+    {
+        $rtn    = $this->data['public_key'];
+
+        return $rtn;
+    }
+
+    /**
     * Get the value of Type / type.
     *
     * @return string
@@ -234,6 +269,30 @@ class ProjectBase extends Model
     public function getLastCommit()
     {
         $rtn    = $this->data['last_commit'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of BuildConfig / build_config.
+    *
+    * @return string
+    */
+    public function getBuildConfig()
+    {
+        $rtn    = $this->data['build_config'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of AllowPublicStatus / allow_public_status.
+    *
+    * @return int
+    */
+    public function getAllowPublicStatus()
+    {
+        $rtn    = $this->data['allow_public_status'];
 
         return $rtn;
     }
@@ -317,6 +376,24 @@ class ProjectBase extends Model
     }
 
     /**
+    * Set the value of PublicKey / public_key.
+    *
+    * @param $value string
+    */
+    public function setPublicKey($value)
+    {
+        $this->_validateString('PublicKey', $value);
+
+        if ($this->data['public_key'] === $value) {
+            return;
+        }
+
+        $this->data['public_key'] = $value;
+
+        $this->_setModified('public_key');
+    }
+
+    /**
     * Set the value of Type / type.
     *
     * Must not be null.
@@ -391,6 +468,44 @@ class ProjectBase extends Model
     }
 
     /**
+    * Set the value of BuildConfig / build_config.
+    *
+    * @param $value string
+    */
+    public function setBuildConfig($value)
+    {
+        $this->_validateString('BuildConfig', $value);
+
+        if ($this->data['build_config'] === $value) {
+            return;
+        }
+
+        $this->data['build_config'] = $value;
+
+        $this->_setModified('build_config');
+    }
+
+    /**
+    * Set the value of AllowPublicStatus / allow_public_status.
+    *
+    * Must not be null.
+    * @param $value int
+    */
+    public function setAllowPublicStatus($value)
+    {
+        $this->_validateNotNull('AllowPublicStatus', $value);
+        $this->_validateInt('AllowPublicStatus', $value);
+
+        if ($this->data['allow_public_status'] === $value) {
+            return;
+        }
+
+        $this->data['allow_public_status'] = $value;
+
+        $this->_setModified('allow_public_status');
+    }
+
+    /**
      * Get Build models by ProjectId for this Project.
      *
      * @uses \PHPCI\Store\BuildStore::getByProjectId()
@@ -401,26 +516,4 @@ class ProjectBase extends Model
     {
         return Factory::getStore('Build', 'PHPCI')->getByProjectId($this->getId());
     }
-
-
-
-
-    public static function getByPrimaryKey($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getByPrimaryKey($value, $useConnection);
-    }
-
-
-    public static function getById($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getById($value, $useConnection);
-    }
-
-    public static function getByTitle($value, $limit = null, $useConnection = 'read')
-    {
-        return Factory::getStore('Project', 'PHPCI')->getByTitle($value, $limit, $useConnection);
-    }
-
-
-
 }

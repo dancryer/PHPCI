@@ -29,7 +29,7 @@ class UserController extends Controller
 
     public function init()
     {
-        $this->userStore       = b8\Store\Factory::getStore('User');
+        $this->userStore = b8\Store\Factory::getStore('User');
     }
 
     /**
@@ -39,6 +39,63 @@ class UserController extends Controller
     {
         $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
         $this->view->users    = $users;
+
+        $this->config->set('page_title', 'Users');
+
+        return $this->view->render();
+    }
+
+    public function profile()
+    {
+        $user = $_SESSION['user'];
+        $values = $user->getDataArray();
+
+        if ($this->request->getMethod() == 'POST') {
+            $values = $this->getParams();
+
+            if (!empty($values['password'])) {
+                $values['hash'] = password_hash($values['password'], PASSWORD_DEFAULT);
+            }
+
+            $this->view->updated = true;
+
+            $user->setValues($values);
+            $_SESSION['user'] = $this->userStore->save($user);
+        }
+
+        $form = new Form();
+        $form->setAction(PHPCI_URL.'user/profile');
+        $form->setMethod('POST');
+
+        $name = new Form\Element\Text('name');
+        $name->setClass('form-control');
+        $name->setContainerClass('form-group');
+        $name->setLabel('Name');
+        $name->setRequired(true);
+        $form->addField($name);
+
+        $email = new Form\Element\Email('email');
+        $email->setClass('form-control');
+        $email->setContainerClass('form-group');
+        $email->setLabel('Email Address');
+        $email->setRequired(true);
+        $form->addField($email);
+
+        $password = new Form\Element\Password('password');
+        $password->setClass('form-control');
+        $password->setContainerClass('form-group');
+        $password->setLabel('Password (leave blank if you don\'t want to change it)');
+        $password->setRequired(false);
+        $form->addField($password);
+
+        $submit = new Form\Element\Submit();
+        $submit->setClass('btn btn-success');
+        $submit->setValue('Save &raquo;');
+        $form->addField($submit);
+
+        $form->setValues($values);
+
+        $this->view->form = $form;
 
         return $this->view->render();
     }
@@ -51,6 +108,9 @@ class UserController extends Controller
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
+
+        $this->config->set('page_title', 'Add User');
+
 
         $method = $this->request->getMethod();
 
@@ -95,6 +155,9 @@ class UserController extends Controller
 
         $method     = $this->request->getMethod();
         $user   = $this->userStore->getById($userId);
+
+        $this->config->set('page_title', 'Edit: ' . $user->getName());
+
 
         if ($method == 'POST') {
             $values = $this->getParams();

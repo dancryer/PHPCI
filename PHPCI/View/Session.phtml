@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Log in to PHPCI</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/bootstrap.min.css">
+    <script src="//code.jquery.com/jquery-1.8.1.min.js"></script>
+    <script src="<?php echo PHPCI_URL ?>assets/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+
+        html {
+            min-height: 100%;
+        }
+
+        body
+        {
+            background: #224466; /* Old browsers */
+            background: -moz-radial-gradient(center, ellipse cover, #224466 0%, #112233 100%); /* FF3.6+ */
+            background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#224466), color-stop(100%,#112233)); /* Chrome,Safari4+ */
+            background: -webkit-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Opera 12+ */
+            background: -ms-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* IE10+ */
+            background: radial-gradient(ellipse at center, #224466 0%,#112233 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#224466', endColorstr='#112233',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+            min-height: 100%;
+
+            font-family: Roboto, Arial, Sans-Serif;
+            font-style: normal;
+            font-weight: 300;
+            padding-top: 0px;
+        }
+
+        #login-box
+        {
+            background: #fcfcfc; /* Old browsers */
+            background: -moz-linear-gradient(top, #fcfcfc 50%, #e0e0e0 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#fcfcfc), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* IE10+ */
+            background: linear-gradient(to bottom, #fcfcfc 50%,#e0e0e0 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0, 0.3);
+            margin: 0 auto;
+            padding: 15px 30px;
+            text-align: left;
+            width: 350px;
+        }
+
+        #logo {
+            background: transparent url('http://www.block8.co.uk/badge-dark-muted.png') no-repeat top left;
+            display: inline-block;
+            height: 26px;
+            margin: 40px auto;
+            width: 90px;
+        }
+
+        #logo:hover {
+            background-image: url('http://www.block8.co.uk/badge-dark.png');
+        }
+
+        #phpci-logo img {
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="margin-top: 10%; text-align: center">
+        <a id="phpci-logo" href="http://www.phptesting.org">
+            <img src="<?php print PHPCI_URL; ?>/assets/img/logo-large.png">
+        </a>
+        <div class="" id="login-box">
+            <?php print $content; ?>
+        </div>
+
+        <a id="logo" href="http://www.block8.co.uk/"></a>
+    </div>
+</div>
+</body>
+</html>

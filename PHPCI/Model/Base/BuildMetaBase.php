@@ -98,7 +98,7 @@ class BuildMetaBase extends Model
             'default' => null,
         ),
         'meta_value' => array(
-            'type' => 'text',
+            'type' => 'longtext',
             'nullable' => true,
             'default' => null,
         ),
@@ -337,26 +337,4 @@ class BuildMetaBase extends Model
     {
         return $this->setBuildId($value->getId());
     }
-
-
-
-
-    public static function getByPrimaryKey($value, $useConnection = 'read')
-    {
-        return Factory::getStore('BuildMeta', 'PHPCI')->getByPrimaryKey($value, $useConnection);
-    }
-
-
-    public static function getById($value, $useConnection = 'read')
-    {
-        return Factory::getStore('BuildMeta', 'PHPCI')->getById($value, $useConnection);
-    }
-
-    public static function getByBuildId($value, $limit = null, $useConnection = 'read')
-    {
-        return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($value, $limit, $useConnection);
-    }
-
-
-
 }

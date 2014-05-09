@@ -40,6 +40,9 @@ class BuildController extends \PHPCI\Controller
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
+
+        $title = 'Build #' . $build->getId() . ' - ' . $build->getProjectTitle();
+        $this->config->set('page_title', $title);
     }
 
     protected function getUiPlugins()

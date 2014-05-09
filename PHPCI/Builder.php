@@ -19,6 +19,7 @@ use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use PHPCI\Plugin\Util\Factory as PluginFactory;
 
 /**
  * PHPCI Build Runner
@@ -45,11 +46,6 @@ class Builder implements LoggerAwareInterface
      * @var string
      */
     protected $directory;
-
-    /**
-     * @var bool
-     */
-    protected $success = true;
 
     /**
      * @var bool
@@ -118,7 +114,9 @@ class Builder implements LoggerAwareInterface
 
         $this->buildLogger = new BuildLogger($logger, $build);
 
-        $this->pluginExecutor = new Plugin\Util\Executor($this->buildPluginFactory($build), $this->buildLogger);
+        $pluginFactory = $this->buildPluginFactory($build);
+        $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
+        $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
         $this->commandExecutor = new CommandExecutor(
             $this->buildLogger,
@@ -133,16 +131,22 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Set the config array, as read from phpci.yml
-     * @param array
+     * @param array|null $config
+     * @throws \Exception
      */
-    public function setConfigArray(array $config)
+    public function setConfigArray($config)
     {
+        if (is_null($config) || !is_array($config)) {
+            throw new \Exception('This project does not contain a phpci.yml file, or it is empty.');
+        }
+
         $this->config = $config;
     }
 
     /**
      * Access a variable from the phpci.yml file.
      * @param string
+     * @return mixed
      */
     public function getConfig($key)
     {
@@ -183,38 +187,49 @@ class Builder implements LoggerAwareInterface
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
-        $this->success = true;
+        $success = true;
 
-        // Set up the build:
-        $this->setupBuild();
+        try {
+            // Set up the build:
+            $this->setupBuild();
 
-        // Run the core plugin stages:
-        foreach (array('setup', 'test') as $stage) {
-            $this->success &= $this->pluginExecutor->executePlugins($this->config, $stage);
-        }
+            // Run the core plugin stages:
+            foreach (array('setup', 'test') as $stage) {
+                $success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+            }
 
-        // Set the status so this can be used by complete, success and failure
-        // stages.
-        if ($this->success) {
-            $this->build->setStatus(Build::STATUS_SUCCESS);
-        } else {
+            // Set the status so this can be used by complete, success and failure
+            // stages.
+            if ($success) {
+                $this->build->setStatus(Build::STATUS_SUCCESS);
+            } else {
+                $this->build->setStatus(Build::STATUS_FAILED);
+            }
+
+            // Complete stage plugins are always run
+            $this->pluginExecutor->executePlugins($this->config, 'complete');
+
+            if ($success) {
+                $this->pluginExecutor->executePlugins($this->config, 'success');
+                $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
+            } else {
+                $this->pluginExecutor->executePlugins($this->config, 'failure');
+                $this->buildLogger->logFailure("BUILD FAILURE");
+            }
+
+            // Clean up:
+            $this->buildLogger->log('Removing build.');
+
+            $cmd = 'rm -Rf "%s"';
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
+            $this->executeCommand($cmd, $this->buildPath);
+        } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
+            $this->buildLogger->logFailure('Exception: ' . $ex->getMessage());
         }
 
-        // Complete stage plugins are always run
-        $this->pluginExecutor->executePlugins($this->config, 'complete');
-
-        if ($this->success) {
-            $this->pluginExecutor->executePlugins($this->config, 'success');
-            $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
-        } else {
-            $this->pluginExecutor->executePlugins($this->config, 'failure');
-            $this->buildLogger->logFailure("BUILD FAILURE");
-        }
-
-        // Clean up:
-        $this->buildLogger->log('Removing build.');
-        shell_exec(sprintf('rm -Rf "%s"', $this->buildPath));
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
@@ -227,7 +242,7 @@ class Builder implements LoggerAwareInterface
      */
     public function executeCommand()
     {
-        return $this->commandExecutor->buildAndExecuteCommand(func_get_args());
+        return $this->commandExecutor->executeCommand(func_get_args());
     }
 
     /**
@@ -236,6 +251,11 @@ class Builder implements LoggerAwareInterface
     public function getLastOutput()
     {
         return $this->commandExecutor->getLastOutput();
+    }
+
+    public function logExecOutput($enableLog = true)
+    {
+        $this->commandExecutor->logExecOutput = $enableLog;
     }
 
     /**
@@ -329,10 +349,15 @@ class Builder implements LoggerAwareInterface
     {
         $this->buildLogger->logFailure($message, $exception);
     }
-
+    /**
+     * Returns a configured instance of the plugin factory.
+     *
+     * @param Build $build
+     * @return PluginFactory
+     */
     private function buildPluginFactory(Build $build)
     {
-        $pluginFactory = new Plugin\Util\Factory();
+        $pluginFactory = new PluginFactory();
 
         $self = $this;
         $pluginFactory->registerResource(
@@ -349,6 +374,15 @@ class Builder implements LoggerAwareInterface
             },
             null,
             'PHPCI\Model\Build'
+        );
+
+        $logger = $this->logger;
+        $pluginFactory->registerResource(
+            function () use ($logger) {
+                return $logger;
+            },
+            null,
+            'Psr\Log\LoggerInterface'
         );
 
         $pluginFactory->registerResource(

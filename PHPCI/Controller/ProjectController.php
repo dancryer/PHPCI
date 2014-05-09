@@ -10,6 +10,8 @@
 namespace PHPCI\Controller;
 
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Github;
+use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use b8;
@@ -17,6 +19,7 @@ use b8\Config;
 use b8\Controller;
 use b8\Store;
 use b8\Form;
+use b8\Exception\HttpException\NotFoundException;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -47,7 +50,11 @@ class ProjectController extends \PHPCI\Controller
     */
     public function view($projectId)
     {
-        $project        = $this->projectStore->getById($projectId);
+        $project = $this->projectStore->getById($projectId);
+        if (!$project) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
         $page           = $this->getParam('p', 1);
         $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
@@ -55,6 +62,8 @@ class ProjectController extends \PHPCI\Controller
         $this->view->total    = $builds[1];
         $this->view->project  = $project;
         $this->view->page     = $page;
+
+        $this->config->set('page_title', $project->getTitle());
 
         return $this->view->render();
     }
@@ -73,6 +82,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
         $build->setCreated(new \DateTime());
+        $build->setCommitterEmail($_SESSION['user']->getEmail());
 
         $build = $this->buildStore->save($build);
 
@@ -129,38 +139,24 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
+        $this->config->set('page_title', 'Add Project');
+
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
         $method = $this->request->getMethod();
 
-        if ($method == 'POST') {
-            $values = $this->getParams();
-            $pub = null;
-        } else {
-            $tempPath = sys_get_temp_dir() . '/';
+        $pub = null;
+        $values = $this->getParams();
 
-            // FastCGI fix for Windows machines, where temp path is not available to
-            // PHP, and defaults to the unwritable system directory.  If the temp
-            // path is pointing to the system directory, shift to the 'TEMP'
-            // sub-folder, which should also exist, but actually be writable.
-            if ($tempPath == getenv("SystemRoot") . '/') {
-                $tempPath = getenv("SystemRoot") . '/TEMP/';
-            }
+        if ($method != 'POST') {
+            $sshKey = new SshKey();
+            $key = $sshKey->generate();
 
-            $keyFile = $tempPath . md5(microtime(true));
-
-            if (!is_dir($tempPath)) {
-                mkdir($tempPath);
-            }
-
-            shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
-
-            $pub = file_get_contents($keyFile . '.pub');
-            $prv = file_get_contents($keyFile);
-
-            $values = array('key' => $prv, 'pubkey' => $pub);
+            $values['key'] = $key['private_key'];
+            $values['pubkey'] = $key['public_key'];
+            $pub = $key['public_key'];
         }
 
         $form = $this->projectForm($values);
@@ -179,14 +175,25 @@ class ProjectController extends \PHPCI\Controller
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
+
             $info = array();
-            $info["user"] = $matches[1];
-            $info["domain"] = $matches[2];
+            if (isset($matches[1])) {
+                $info["user"] = $matches[1];
+            }
+
+            if (isset($matches[2])) {
+                $info["domain"] = $matches[2];
+            }
+
             $values['access_information'] = serialize($info);
-            $values['reference'] = $matches[3]."/".$matches[4];
+
+            if (isset($matches[3]) && isset($matches[4])) {
+                $values['reference'] = $matches[3]."/".$matches[4];
+            }
         }
 
         $values['git_key']  = $values['key'];
+        $values['public_key']  = $values['pubkey'];
 
         $project = new Project();
         $project->setValues($values);
@@ -209,11 +216,15 @@ class ProjectController extends \PHPCI\Controller
         $method     = $this->request->getMethod();
         $project    = $this->projectStore->getById($projectId);
 
+        $this->config->set('page_title', 'Edit: ' . $project->getTitle());
+
+
         if ($method == 'POST') {
             $values = $this->getParams();
         } else {
             $values         = $project->getDataArray();
             $values['key']  = $values['git_key'];
+            $values['pubkey']  = $values['public_key'];
 
             if ($values['type'] == "gitlab") {
                 $accessInfo = $project->getAccessInformation();
@@ -237,6 +248,7 @@ class ProjectController extends \PHPCI\Controller
 
         $values             = $form->getValues();
         $values['git_key']  = $values['key'];
+        $values['public_key']  = $values['pubkey'];
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
@@ -318,6 +330,23 @@ class ProjectController extends \PHPCI\Controller
         $field->setRows(6);
         $form->addField($field);
 
+        $field = new Form\Element\TextArea('build_config');
+        $field->setRequired(false);
+        $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
+        $field->setLabel($label);
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setRows(6);
+        $form->addField($field);
+
+        $field = new Form\Element\Checkbox('allow_public_status');
+        $field->setRequired(false);
+        $field->setLabel('Enable public status page and image for this project?');
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(1);
+        $form->addField($field);
+
         $field = new Form\Element\Submit();
         $field->setValue('Save Project');
         $field->setContainerClass('form-group');
@@ -333,46 +362,8 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function githubRepositories()
     {
-        $token = Config::getInstance()->get('phpci.github.token');
-
-        if (!$token) {
-            die(json_encode(null));
-        }
-
-        $cache = \b8\Cache::getCache(\b8\Cache::TYPE_APC);
-        $rtn = $cache->get('phpci_github_repos');
-
-        if (!$rtn) {
-            $orgs = $this->doGithubApiRequest('/user/orgs', array('access_token' => $token));
-
-            $params = array('type' => 'all', 'access_token' => $token);
-            $repos = array();
-            $repos['user'] = $this->doGithubApiRequest('/user/repos', $params);
-
-
-            foreach ($orgs as $org) {
-                $repos[$org['login']] = $this->doGithubApiRequest('/orgs/'.$org['login'].'/repos', $params);
-            }
-
-            $rtn = array();
-            foreach ($repos as $repoGroup) {
-                foreach ($repoGroup as $repo) {
-                    $rtn['repos'][] = $repo['full_name'];
-                }
-            }
-
-            $cache->set('phpci_github_repos', $rtn);
-        }
-
-        die(json_encode($rtn));
-    }
-
-    protected function doGithubApiRequest($url, $params)
-    {
-        $http = new \b8\HttpClient('https://api.github.com');
-        $res = $http->get($url, $params);
-
-        return $res['body'];
+        $github = new Github();
+        die(json_encode($github->getRepositories()));
     }
 
     protected function getReferenceValidator($values)

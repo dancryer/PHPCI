@@ -23,6 +23,7 @@ class PhpCpd implements \PHPCI\Plugin
     protected $directory;
     protected $args;
     protected $phpci;
+    protected $build;
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
@@ -38,6 +39,8 @@ class PhpCpd implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+
         $this->path = $phpci->buildPath;
         $this->standard = 'PSR1';
         $this->ignore = $phpci->ignore;

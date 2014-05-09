@@ -93,4 +93,26 @@ class GithubBuild extends RemoteGitBuild
             return 'https://github.com/' . $this->getProject()->getReference() . '.git';
         }
     }
+
+    public function getCommitMessage()
+    {
+        $rtn = $this->data['commit_message'];
+
+        $reference = $this->getProject()->getReference();
+        $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
+        $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
+        $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+
+        return $rtn;
+    }
+
+    public function getFileLinkTemplate()
+    {
+        $link = 'https://github.com/' . $this->getProject()->getReference() . '/';
+        $link .= 'blob/' . $this->getBranch() . '/';
+        $link .= '{FILE}';
+        $link .= '#L{LINE}';
+
+        return $link;
+    }
 }

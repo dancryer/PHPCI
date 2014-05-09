@@ -10,7 +10,9 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 
@@ -26,10 +28,13 @@ class BuildStatusController extends \PHPCI\Controller
      * @var \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
+    protected $buildStore;
 
     public function init()
     {
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->response->disableLayout();
+        $this->buildStore      = Store\Factory::getStore('Build');
+        $this->projectStore    = Store\Factory::getStore('Project');
     }
 
     /**
@@ -41,6 +46,10 @@ class BuildStatusController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
         $status = 'ok';
 
+        if (!$project->getAllowPublicStatus()) {
+            die();
+        }
+
         if (isset($project) && $project instanceof Project) {
             $build = $project->getLatestBuild($branch, array(2,3));
 
@@ -51,5 +60,44 @@ class BuildStatusController extends \PHPCI\Controller
 
         header('Content-Type: image/png');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
+    }
+
+    public function view($projectId)
+    {
+        $project = $this->projectStore->getById($projectId);
+        if (!$project) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
+        if (!$project->getAllowPublicStatus()) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
+        $builds = $this->getLatestBuilds($projectId);
+
+        if (count($builds)) {
+            $this->view->latest = $builds[0];
+        }
+
+        $this->view->builds = $builds;
+        $this->view->project = $project;
+
+        return $this->view->render();
+    }
+
+    /**
+     * Render latest builds for project as HTML table.
+     */
+    protected function getLatestBuilds($projectId)
+    {
+        $criteria       = array('project_id' => $projectId);
+        $order          = array('id' => 'DESC');
+        $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
+
+        foreach ($builds['items'] as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        return $builds['items'];
     }
 }

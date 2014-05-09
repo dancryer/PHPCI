@@ -4,21 +4,29 @@
 
 <div class="row">
 	<div class="col-lg-4">
-		<div class="well" style="">
-			<?php if(!is_null($key)): ?>
-			<p>To make it easier to get started, we've generated a public / private key pair for you to use for this project. To use it, just add the following public key to the "deploy keys" section of your repository settings on Github / Bitbucket.</p>
+        <div class="panel panel-info">
+            <div class="panel-body">
+                <?php if(!is_null($key)): ?>
+                    <p>To make it easier to get started, we've generated a public / private key pair for you to use for this project. To use it, just add the following public key to the "deploy keys" section of your repository settings on Github / Bitbucket.</p>
 
-			<textarea style="width: 90%; height: 150px;"><?php print $key ?></textarea>
-			<?php elseif($type == 'add'): ?>
-			<p style="margin-bottom:0;">Fill in the form to the right to add your new project.</p>
-			<?php else: ?>
-			<p style="margin-bottom:0;">Edit your project details using the form to the right.</p>
-			<?php endif; ?>
-		</div>
+                    <textarea style="width: 90%; height: 150px;"><?php print $key ?></textarea>
+                <?php elseif($type == 'add'): ?>
+                    <p style="margin-bottom:0;">Fill in the form to the right to add your new project.</p>
+                <?php else: ?>
+                    <p style="margin-bottom:0;">Edit your project details using the form to the right.</p>
+                <?php endif; ?>
+            </div>
+        </div>
 	</div>
 	<div class="col-lg-8">
-        <div class="box">
-		<?php print $form; ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Project Details</h3>
+            </div>
+
+            <div class="panel-body">
+                <?php print $form; ?>
+            </div>
         </div>
 	</div>
 </div>

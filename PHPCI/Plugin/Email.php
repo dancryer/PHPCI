@@ -46,7 +46,6 @@ class Email implements \PHPCI\Plugin
         Build $build,
         \Swift_Mailer $mailer,
         array $options = array()
-
     ) {
         $this->phpci        = $phpci;
         $this->build        = $build;

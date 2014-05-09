@@ -11,7 +11,6 @@ namespace PHPCI\Model\Build;
 
 use PHPCI\Model\Build;
 use PHPCI\Builder;
-use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Local Build Model
@@ -45,7 +44,11 @@ class LocalBuild extends Build
         if (isset($buildSettings['prefer_symlink']) && $buildSettings['prefer_symlink'] === true) {
             return $this->handleSymlink($builder, $reference, $buildPath);
         } else {
-            $builder->executeCommand('cp -Rf "%s" "%s/"', $reference, $buildPath);
+            $cmd = 'cp -Rf "%s" "%s/"';
+            if (IS_WIN) {
+                $cmd = 'xcopy /E /Y "%s" "%s/*"';
+            }
+            $builder->executeCommand($cmd, $reference, $buildPath);
         }
 
         return true;
@@ -57,7 +60,8 @@ class LocalBuild extends Build
 
         // If it is indeed a bare repository, then extract it into our build path:
         if ($gitConfig['core']['bare']) {
-            $builder->executeCommand('mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"', $reference, $buildPath, $this->getBranch());
+            $cmd = 'mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"';
+            $builder->executeCommand($cmd, $reference, $buildPath, $this->getBranch());
             return true;
         }
 
@@ -78,19 +82,5 @@ class LocalBuild extends Build
         }
 
         return true;
-    }
-
-    protected function handleConfig(Builder $builder, $reference)
-    {
-        /** @todo Add support for database-based yml definition */
-        if (!is_file($reference . '/phpci.yml')) {
-            $builder->logFailure('Project does not contain a phpci.yml file.');
-            return false;
-        }
-
-        $yamlParser = new YamlParser();
-        $yamlFile = file_get_contents($reference . '/phpci.yml');
-        $builder->setConfigArray($yamlParser->parse($yamlFile));
-        return $builder->getConfig('build_settings');
     }
 }

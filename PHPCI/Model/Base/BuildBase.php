@@ -631,31 +631,4 @@ class BuildBase extends Model
     {
         return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($this->getId());
     }
-
-
-
-
-    public static function getByPrimaryKey($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Build', 'PHPCI')->getByPrimaryKey($value, $useConnection);
-    }
-
-
-    public static function getById($value, $useConnection = 'read')
-    {
-        return Factory::getStore('Build', 'PHPCI')->getById($value, $useConnection);
-    }
-
-    public static function getByProjectId($value, $limit = null, $useConnection = 'read')
-    {
-        return Factory::getStore('Build', 'PHPCI')->getByProjectId($value, $limit, $useConnection);
-    }
-
-    public static function getByStatus($value, $limit = null, $useConnection = 'read')
-    {
-        return Factory::getStore('Build', 'PHPCI')->getByStatus($value, $limit, $useConnection);
-    }
-
-
-
 }

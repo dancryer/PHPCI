@@ -25,6 +25,9 @@ class CommandExecutor
 
     protected $lastOutput;
 
+    public $logExecOutput = true;
+
+
     /**
      * The path which findBinary will look in.
      * @var string
@@ -49,21 +52,11 @@ class CommandExecutor
     }
 
     /**
-     * Executes shell commands. Accepts multiple arguments the first
-     * is the template and everything else is inserted in. c.f. sprintf
-     * @return bool Indicates success
-     */
-    public function executeCommand()
-    {
-        return $this->buildAndExecuteCommand(func_get_args());
-    }
-
-    /**
      * Executes shell commands.
      * @param array $args
      * @return bool Indicates success
      */
-    public function buildAndExecuteCommand($args = array())
+    public function executeCommand($args = array())
     {
         $this->lastOutput = array();
 
@@ -80,7 +73,7 @@ class CommandExecutor
             $lastOutput = trim($lastOutput, '"');
         }
 
-        if (!empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
+        if ($this->logExecOutput && !empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
             $this->logger->log($this->lastOutput);
         }
 
@@ -127,7 +120,7 @@ class CommandExecutor
             }
 
             // Use "where" for windows and "which" for other OS
-            $findCmd       = (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') ? 'which' : 'where';
+            $findCmd       = IS_WIN ? 'where' : 'which';
             $findCmdResult = trim(shell_exec($findCmd . ' ' . $bin));
 
             if (!empty($findCmdResult)) {

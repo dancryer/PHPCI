@@ -21,18 +21,21 @@ use PHPCI\Model\Build;
 class CopyBuild implements \PHPCI\Plugin
 {
     protected $directory;
+    protected $ignore;
     protected $phpci;
+    protected $build;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
 
     /**
-    * Executes Composer and runs a specified command (e.g. install / update)
+    * Copies files from the root of the build directory into the target folder
     */
     public function execute()
     {
@@ -42,7 +45,7 @@ class CopyBuild implements \PHPCI\Plugin
             return false;
         }
 
-        $cmd = 'mkdir -p "%s" && ls -1a "%s"* | xargs -r -t "%s/"';
+        $cmd = 'mkdir -p "%s" && cp -R "%s" "%s"';
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         if ($this->ignore) {

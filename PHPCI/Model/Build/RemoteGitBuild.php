@@ -11,7 +11,6 @@ namespace PHPCI\Model\Build;
 
 use PHPCI\Model\Build;
 use PHPCI\Builder;
-use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Remote Git Build Model
@@ -34,7 +33,6 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $yamlParser = new YamlParser();
         $key = trim($this->getProject()->getGitKey());
 
         if (!empty($key)) {
@@ -48,15 +46,7 @@ class RemoteGitBuild extends Build
             return false;
         }
 
-        if (!is_file($buildPath . 'phpci.yml')) {
-            $builder->logFailure('Project does not contain a phpci.yml file.');
-            return false;
-        }
-
-        $yamlFile = file_get_contents($buildPath . 'phpci.yml');
-        $builder->setConfigArray($yamlParser->parse($yamlFile));
-
-        return true;
+        return $this->handleConfig($builder, $buildPath);
     }
 
     /**
@@ -64,8 +54,25 @@ class RemoteGitBuild extends Build
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        $success = $builder->executeCommand('git clone -b %s %s "%s"', $this->getBranch(), $this->getCloneUrl(), $cloneTo);
-        $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+        $cmd = 'git clone ';
+
+        $depth = $builder->getConfig('clone_depth');
+
+        if (!is_null($depth)) {
+            $cmd .= ' --depth ' . intval($depth) . ' ';
+        }
+
+        $cmd .= ' -b %s %s "%s"';
+        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $cmd = 'cd "%s" && git checkout %s';
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        }
+
         return $success;
     }
 
@@ -74,31 +81,88 @@ class RemoteGitBuild extends Build
     */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        // Copy the project's keyfile to disk:
-        $keyPath = realpath($cloneTo);
+        $keyFile = $this->writeSshKey($cloneTo);
 
-        if ($keyPath === false) {
-            $keyPath = dirname($cloneTo);
+        if (!IS_WIN) {
+            $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
         }
 
-        $keyFile = $keyPath . '.key';
+        // Do the git clone:
+        $cmd = 'git clone ';
 
-        file_put_contents($keyFile, $this->getProject()->getGitKey());
-        chmod($keyFile, 0600);
+        $depth = $builder->getConfig('clone_depth');
 
-        // Use the key file to do an SSH clone:
-        $cmd = 'eval `ssh-agent -s` && ssh-add "%s" && git clone -b %s %s "%s" && ssh-agent -k';
-        $success = $builder->executeCommand($cmd, $keyFile, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        if (!is_null($depth)) {
+            $cmd .= ' --depth ' . intval($depth) . ' ';
+        }
 
+        $cmd .= ' -b %s %s "%s"';
+
+        if (!IS_WIN) {
+            $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
+        }
+
+        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+
+        // Checkout a specific commit if we need to:
         $commit = $this->getCommitId();
 
         if (!empty($commit) && $commit != 'Manual') {
-            $builder->executeCommand('cd "%s" && git checkout %s', $cloneTo, $this->getCommitId());
+            $cmd = 'cd "%s" && git checkout %s';
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }
 
-        // Remove the key file:
+        // Remove the key file and git wrapper:
         unlink($keyFile);
+        unlink($gitSshWrapper);
 
         return $success;
+    }
+
+    /**
+     * Create an SSH key file on disk for this build.
+     * @param $cloneTo
+     * @return string
+     */
+    protected function writeSshKey($cloneTo)
+    {
+        $keyPath = dirname($cloneTo . '/temp');
+        $keyFile = $keyPath . '.key';
+
+        // Write the contents of this project's git key to the file:
+        file_put_contents($keyFile, $this->getProject()->getGitKey());
+        chmod($keyFile, 0600);
+
+        // Return the filename:
+        return $keyFile;
+    }
+
+    /**
+     * Create an SSH wrapper script for Git to use, to disable host key checking, etc.
+     * @param $cloneTo
+     * @param $keyFile
+     * @return string
+     */
+    protected function writeSshWrapper($cloneTo, $keyFile)
+    {
+        $path = dirname($cloneTo . '/temp');
+        $wrapperFile = $path . '.sh';
+
+        $sshFlags = '-o CheckHostIP=no -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no';
+
+        // Write out the wrapper script for this build:
+        $script = <<<OUT
+#!/bin/sh
+ssh {$sshFlags} -o IdentityFile={$keyFile} $*
+
+OUT;
+
+        file_put_contents($wrapperFile, $script);
+        shell_exec('chmod +x "'.$wrapperFile.'"');
+
+        return $wrapperFile;
     }
 }

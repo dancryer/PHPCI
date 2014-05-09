@@ -24,7 +24,7 @@
     },
     "scripts": {
         "post-root-package-install": [
-            "SymfonyStandard\\Composer::hookInstallAcmeDemoBundle"
+            "SymfonyStandard\\Composer::hookRootPackageInstall"
         ],
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",

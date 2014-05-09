@@ -16,15 +16,25 @@ use Composer\Script\ScriptEvents;
 use Composer\Script\CommandEvent;
 use Sensio\Bundle\DistributionBundle\Composer\ScriptHandler;
 
-class InstallAcmeDemoBundleSubscriber implements EventSubscriberInterface
+class RootPackageInstallSubscriber implements EventSubscriberInterface
 {
     public static function installAcmeDemoBundle(CommandEvent $event)
     {
         ScriptHandler::installAcmeDemoBundle($event);
     }
 
+    public static function setupNewDirectoryStructure(CommandEvent $event)
+    {
+        ScriptHandler::defineDirectoryStructure($event);
+    }
+
     public static function getSubscribedEvents()
     {
-        return array(ScriptEvents::POST_INSTALL_CMD => 'installAcmeDemoBundle');
+        return array(
+            ScriptEvents::POST_INSTALL_CMD => array(
+                array('setupNewDirectoryStructure', 512),
+                array('installAcmeDemoBundle', 0)
+            ),
+        );
     }
 }

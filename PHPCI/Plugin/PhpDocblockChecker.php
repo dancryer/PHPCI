@@ -89,13 +89,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function execute()
     {
-        $ignore = '';
-        if (count($this->ignore)) {
-            $ignore = ' --exclude="' . implode(',', $this->ignore) . '"';
-        }
-
-        var_dump($ignore);
-
+        // Check that the binary exists:
         $checker = $this->phpci->findBinary('phpdoccheck');
 
         if (!$checker) {
@@ -103,9 +97,25 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $path = $this->phpci->buildPath . $this->path;
+        // Build ignore string:
+        $ignore = '';
+        if (count($this->ignore)) {
+            $ignore = ' --exclude="' . implode(',', $this->ignore) . '"';
+        }
 
-        $cmd = $checker . ' --json --directory="%s"%s%s%s';
+        // Are we skipping any checks?
+        $add = '';
+        if ($this->skipClasses) {
+            $add .= ' --skip-classes';
+        }
+
+        if ($this->skipMethods) {
+            $add .= ' --skip-methods';
+        }
+
+        // Build command string:
+        $path = $this->phpci->buildPath . $this->path;
+        $cmd = $checker . ' --json --directory="%s"%s%s';
 
         // Disable exec output logging, as we don't want the XML report in the log:
         $this->phpci->logExecOutput(false);
@@ -115,8 +125,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $cmd,
             $path,
             $ignore,
-            ($this->skipClasses ? ' --skip-classes' : ''),
-            ($this->skipMethods ? ' --skip-methods' : '')
+            $add
         );
 
         // Re-enable exec output logging:

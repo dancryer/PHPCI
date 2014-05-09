@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use b8;
+use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
@@ -51,6 +52,7 @@ class Application extends b8\Application
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
+                    $_SESSION['login_redirect'] = substr($request->getPath(), 1);
                     $response = new RedirectResponse($response);
                     $response->setHeader('Location', PHPCI_URL.'session/login');
                 }
@@ -69,7 +71,25 @@ class Application extends b8\Application
     */
     public function handleRequest()
     {
-        $this->response = parent::handleRequest();
+        try {
+            $this->response = parent::handleRequest();
+        } catch (HttpException $ex) {
+            $this->config->set('page_title', 'Error');
+
+            $view = new View('exception');
+            $view->exception = $ex;
+
+            $this->response->setResponseCode($ex->getErrorCode());
+            $this->response->setContent($view->render());
+        } catch (\Exception $ex) {
+            $this->config->set('page_title', 'Error');
+
+            $view = new View('exception');
+            $view->exception = $ex;
+
+            $this->response->setResponseCode(500);
+            $this->response->setContent($view->render());
+        }
 
         if (View::exists('layout') && $this->response->hasLayout()) {
             $view           = new View('layout');

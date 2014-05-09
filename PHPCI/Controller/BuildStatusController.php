@@ -65,7 +65,8 @@ class BuildStatusController extends \PHPCI\Controller
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
-        if (!$project) {
+
+        if (empty($project)) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 

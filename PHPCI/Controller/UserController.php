@@ -10,6 +10,8 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\ForbiddenException;
+use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
 use PHPCI\Model\User;
@@ -106,11 +108,10 @@ class UserController extends Controller
     public function add()
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $this->config->set('page_title', 'Add User');
-
 
         $method = $this->request->getMethod();
 
@@ -132,7 +133,6 @@ class UserController extends Controller
         }
 
         $values             = $form->getValues();
-        $values['is_admin'] = $values['admin'] ? 1 : 0;
         $values['hash']     = password_hash($values['password'], PASSWORD_DEFAULT);
 
         $user = new User();
@@ -150,42 +150,40 @@ class UserController extends Controller
     public function edit($userId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
-        $method     = $this->request->getMethod();
-        $user   = $this->userStore->getById($userId);
+        $method = $this->request->getMethod();
+        $user = $this->userStore->getById($userId);
 
-        $this->config->set('page_title', 'Edit: ' . $user->getName());
-
-
-        if ($method == 'POST') {
-            $values = $this->getParams();
-        } else {
-            $values             = $user->getDataArray();
-            $values['admin']    = $values['is_admin'];
+        if (empty($user)) {
+            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
         }
 
-        $form   = $this->userForm($values, 'edit/' . $userId);
+        $values = array_merge($user->getDataArray(), $this->getParams());
+        $form = $this->userForm($values, 'edit/' . $userId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view           = new b8\View('UserForm');
-            $view->type     = 'edit';
-            $view->user     = $user;
-            $view->form     = $form;
+            $view = new b8\View('UserForm');
+            $view->type = 'edit';
+            $view->user = $user;
+            $view->form = $form;
 
             return $view->render();
         }
-
-        $values             = $form->getValues();
-        $values['is_admin'] = $values['admin'] ? 1 : 0;
 
         if (!empty($values['password'])) {
             $values['hash'] = password_hash($values['password'], PASSWORD_DEFAULT);
         }
 
         $user->setValues($values);
-        $user = $this->userStore->save($user);
+
+        $isAdmin = $this->getParam('is_admin');
+        if (empty($isAdmin)) {
+            $user->setIsAdmin(0);
+        }
+
+        $this->userStore->save($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -216,13 +214,20 @@ class UserController extends Controller
         $form->addField($field);
 
         $field = new Form\Element\Password('password');
-        $field->setRequired(true);
-        $field->setLabel('Password' . ($type == 'edit' ? ' (leave blank to keep current password)' : ''));
+
+        if ($type == 'add') {
+            $field->setRequired(true);
+            $field->setLabel('Password');
+        } else {
+            $field->setRequired(false);
+            $field->setLabel('Password (leave blank to keep current password)');
+        }
+
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Checkbox('admin');
+        $field = new Form\Element\Checkbox('is_admin');
         $field->setRequired(false);
         $field->setCheckedValue(1);
         $field->setLabel('Is this user an administrator?');
@@ -244,10 +249,15 @@ class UserController extends Controller
     public function delete($userId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
         
         $user   = $this->userStore->getById($userId);
+
+        if (empty($user)) {
+            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
+        }
+
         $this->userStore->delete($user);
 
         header('Location: '.PHPCI_URL.'user');

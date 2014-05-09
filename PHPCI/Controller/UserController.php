@@ -153,31 +153,23 @@ class UserController extends Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $method     = $this->request->getMethod();
-        $user   = $this->userStore->getById($userId);
+        $method = $this->request->getMethod();
+        $user = $this->userStore->getById($userId);
 
         $this->config->set('page_title', 'Edit: ' . $user->getName());
 
-
-        if ($method == 'POST') {
-            $values = $this->getParams();
-        } else {
-            $values             = $user->getDataArray();
-            $values['admin']    = $values['is_admin'];
-        }
-
-        $form   = $this->userForm($values, 'edit/' . $userId);
+        $values = array_merge($user->getDataArray(), $this->getParams());
+        $form = $this->userForm($values, 'edit/' . $userId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view           = new b8\View('UserForm');
-            $view->type     = 'edit';
-            $view->user     = $user;
-            $view->form     = $form;
+            $view = new b8\View('UserForm');
+            $view->type = 'edit';
+            $view->user = $user;
+            $view->form = $form;
 
             return $view->render();
         }
 
-        $values             = $form->getValues();
         $values['is_admin'] = $values['admin'] ? 1 : 0;
 
         if (!empty($values['password'])) {
@@ -185,7 +177,7 @@ class UserController extends Controller
         }
 
         $user->setValues($values);
-        $user = $this->userStore->save($user);
+        $this->userStore->save($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -222,7 +214,7 @@ class UserController extends Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Checkbox('admin');
+        $field = new Form\Element\Checkbox('is_admin');
         $field->setRequired(false);
         $field->setCheckedValue(1);
         $field->setLabel('Is this user an administrator?');

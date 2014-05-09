@@ -52,7 +52,10 @@ class Wipe implements \PHPCI\Plugin
             return true;
         }
         if (is_dir($this->directory)) {
-            $cmd = 'rm -rf %s*';
+            $cmd = 'rm -Rf "%s"';
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
             $success = $this->phpci->executeCommand($cmd, $this->directory);
         }
         return $success;

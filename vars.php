@@ -25,7 +25,3 @@ if (!defined('ENABLE_SHELL_PLUGIN')) {
 if (!defined('PHPCI_IS_CONSOLE')) {
     define('PHPCI_IS_CONSOLE', false);
 }
-
-if (!defined('IS_WIN')) {
-    define('IS_WIN', ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? true : false));
-}

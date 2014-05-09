@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0692857385ac27090b3000cbc680ced8",
+    "hash": "07244b4e81274ba07fdb9f0166c73678",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -885,7 +885,7 @@
 
     ],
     "platform": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.8",
         "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*"

@@ -227,21 +227,19 @@ class ProjectController extends \PHPCI\Controller
 
         $this->config->set('page_title', 'Edit: ' . $project->getTitle());
 
+        $values = $project->getDataArray();
+        $values['key'] = $values['git_key'];
+        $values['pubkey'] = $values['public_key'];
+
+        if ($values['type'] == "gitlab") {
+            $accessInfo = $project->getAccessInformation();
+            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+            $values['reference'] = $reference;
+        }
 
         if ($method == 'POST') {
             $values = $this->getParams();
-        } else {
-            $values         = $project->getDataArray();
-            $values['key']  = $values['git_key'];
-            $values['pubkey']  = $values['public_key'];
-
-            if ($values['type'] == "gitlab") {
-                $accessInfo = $project->getAccessInformation();
-                $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
-                $values['reference'] = $reference;
-            }
         }
-
 
         $form = $this->projectForm($values, 'edit/' . $projectId);
 

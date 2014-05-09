@@ -118,7 +118,7 @@ class Builder implements LoggerAwareInterface
         $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
         $executorClass = 'PHPCI\Helper\UnixCommandExecutor';
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (IS_WIN) {
             $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
         }
 

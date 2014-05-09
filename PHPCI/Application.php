@@ -51,6 +51,7 @@ class Application extends b8\Application
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
+                    $_SESSION['login_redirect'] = substr($request->getPath(), 1);
                     $response = new RedirectResponse($response);
                     $response->setHeader('Location', PHPCI_URL.'session/login');
                 }

@@ -43,7 +43,7 @@ class SessionController extends \PHPCI\Controller
             
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['user_id']    = $user->getId();
-                header('Location: ' . PHPCI_URL);
+                header('Location: ' . $this->getLoginRedirect());
                 die;
             } else {
                 $isLoginFailure = true;
@@ -158,5 +158,17 @@ MSG;
         $this->view->key = $key;
 
         return $this->view->render();
+    }
+
+    protected function getLoginRedirect()
+    {
+        $rtn = PHPCI_URL;
+
+        if (!empty($_SESSION['login_redirect'])) {
+            $rtn .= $_SESSION['login_redirect'];
+            $_SESSION['login_redirect'] = null;
+        }
+
+        return $rtn;
     }
 }

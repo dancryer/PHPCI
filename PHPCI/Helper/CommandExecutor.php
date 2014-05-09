@@ -51,21 +51,11 @@ class CommandExecutor
     }
 
     /**
-     * Executes shell commands. Accepts multiple arguments the first
-     * is the template and everything else is inserted in. c.f. sprintf
-     * @return bool Indicates success
-     */
-    public function executeCommand()
-    {
-        return $this->buildAndExecuteCommand(func_get_args());
-    }
-
-    /**
      * Executes shell commands.
      * @param array $args
      * @return bool Indicates success
      */
-    public function buildAndExecuteCommand($args = array())
+    public function executeCommand($args = array())
     {
         $this->lastOutput = array();
 

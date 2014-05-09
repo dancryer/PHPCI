@@ -317,8 +317,19 @@ var PHPCIObject = Class.extend({
     updateInterval: null,
 
     init: function(build) {
+        var self = this;
         this.buildId = build;
         this.registerQuery('build-updated', 10);
+
+        $(window).on('build-updated', function(data) {
+
+            // If the build has finished, stop updating every 10 seconds:
+            if (data.queryData.status > 1) {
+                self.cancelQuery('build-updated');
+                $(window).trigger({type: 'build-complete'});
+            }
+
+        });
     },
 
     registerQuery: function(name, seconds, query) {
@@ -337,10 +348,14 @@ var PHPCIObject = Class.extend({
         };
 
         if (seconds != -1) {
-            setInterval(cb, seconds * 1000);
+            self.queries[name] = setInterval(cb, seconds * 1000);
         }
 
         return cb;
+    },
+
+    cancelQuery: function (name) {
+        clearInterval(this.queries[name]);
     },
 
     registerPlugin: function(plugin) {

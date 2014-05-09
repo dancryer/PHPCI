@@ -12,6 +12,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
     },
     data: {},
     displayOnUpdate: false,
+    rendered: false,
 
     register: function() {
         var self = this;
@@ -26,7 +27,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
         });
 
         $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1) {
+            if (!self.rendered && data.queryData.status > 1) {
                 self.displayOnUpdate = true;
                 for (var query in queries) {
                   queries[query]();
@@ -68,6 +69,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
 
     displayChart: function() {
         var self = this;
+        self.rendered = true;
 
         $('#build-warnings').empty().animate({height: '275px'});
 

@@ -5,6 +5,7 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
     lastData: null,
     displayOnUpdate: false,
     box: true,
+    rendered: false,
 
     register: function() {
         var self = this;
@@ -14,8 +15,8 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
             self.onUpdate(data);
         });
 
-        $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1) {
+        $(window).on('build-updated', function() {
+            if (!self.rendered) {
                 self.displayOnUpdate = true;
                 query();
             }
@@ -33,10 +34,11 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
     },
 
     onUpdate: function(e) {
-        if (this.lastData && this.lastData[0]) {
+        if (!e.queryData) {
             return;
         }
 
+        this.rendered = true;
         this.lastData = e.queryData;
 
         var tests = this.lastData[0].meta_value;

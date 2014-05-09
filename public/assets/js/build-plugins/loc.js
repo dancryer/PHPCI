@@ -4,6 +4,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
     title: 'Lines of Code',
     lastData: null,
     displayOnUpdate: false,
+    rendered: false,
 
     register: function() {
         var self = this;
@@ -14,8 +15,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
         });
 
         $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1) {
-                self.displayOnUpdate = true;
+            if (data.queryData.status > 1 && !self.rendered) {
                 query();
             }
         });
@@ -29,10 +29,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         this.lastData = e.queryData;
-
-        if (this.displayOnUpdate) {
-            this.displayChart();
-        }
+        this.displayChart();
     },
 
     displayChart: function() {
@@ -41,6 +38,8 @@ var locPlugin = PHPCI.UiPlugin.extend({
         if (!builds || !builds.length) {
             return;
         }
+
+        this.rendered = true;
 
         $('#phploc-lines').empty().animate({height: '275px'});
 

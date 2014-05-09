@@ -14,12 +14,12 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* PgSQL Plugin - Provides access to a PgSQL database.
-* @author       Dan Cryer <dan@block8.co.uk>
+* SQLite Plugin — Provides access to a SQLite database.
+* @author       Corpsee <poisoncorpsee@gmail.com>
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Pgsql implements \PHPCI\Plugin
+class Sqlite implements \PHPCI\Plugin
 {
     /**
      * @var \PHPCI\Builder
@@ -39,17 +39,7 @@ class Pgsql implements \PHPCI\Plugin
     /**
      * @var string
      */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * @var string
-     */
-    protected $pass;
+    protected $path;
 
     /**
      * @param Builder $phpci
@@ -61,26 +51,23 @@ class Pgsql implements \PHPCI\Plugin
         $this->phpci   = $phpci;
         $this->build   = $build;
         $this->queries = $options;
-
         $buildSettings = $phpci->getConfig('build_settings');
 
-        if (isset($buildSettings['pgsql'])) {
-            $sql = $buildSettings['pgsql'];
-            $this->host = $sql['host'];
-            $this->user = $sql['user'];
-            $this->pass = $sql['pass'];
+        if (isset($buildSettings['sqlite'])) {
+            $sql = $buildSettings['sqlite'];
+            $this->path = $sql['path'];
         }
     }
 
     /**
-    * Connects to PgSQL and runs a specified set of queries.
-    * @return boolean
-    */
+     * Connects to SQLite and runs a specified set of queries.
+     * @return boolean
+     */
     public function execute()
     {
         try {
             $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
+            $pdo = new PDO('sqlite:' . $this->path, $opts);
 
             foreach ($this->queries as $query) {
                 $pdo->query($query);

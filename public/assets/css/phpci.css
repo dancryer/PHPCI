@@ -81,3 +81,7 @@ h1 {
     right: 25px;
     width: 200px;
 }
+
+.panel-body {
+    overflow: auto;
+}

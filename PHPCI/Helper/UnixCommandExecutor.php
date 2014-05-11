@@ -2,6 +2,8 @@
 
 namespace PHPCI\Helper;
 
+use Psr\Log\LogLevel;
+
 class UnixCommandExecutor extends BaseCommandExecutor
 {
     /**
@@ -11,21 +13,32 @@ class UnixCommandExecutor extends BaseCommandExecutor
      */
     public function findBinary($binary)
     {
-        $binaryPath = parent::findBinary($binary);
-        if (is_null($binaryPath)) {
+        $binaryPath = null;
 
-            if (is_string($binary)) {
-                $binary = array($binary);
+        if (is_string($binary)) {
+            $binary = array($binary);
+        }
+
+        foreach ($binary as $bin) {
+            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
+
+            if (is_file($this->rootDir . $bin)) {
+                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
+                $binaryPath = $this->rootDir . $bin;
+                break;
             }
 
-            foreach ($binary as $bin) {
-                $findCmdResult = trim(shell_exec('which ' . $bin));
+            if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
+                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
+                $binaryPath = $this->rootDir . 'vendor/bin/' . $bin;
+                break;
+            }
 
-                if (!empty($findCmdResult)) {
-                    $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
-                    $binaryPath = $findCmdResult;
-                    break;
-                }
+            $findCmdResult = trim(shell_exec('which ' . $bin));
+            if (!empty($findCmdResult)) {
+                $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
+                $binaryPath = $findCmdResult;
+                break;
             }
         }
         return $binaryPath;

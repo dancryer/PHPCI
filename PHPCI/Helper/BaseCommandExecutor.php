@@ -3,9 +3,8 @@
 namespace PHPCI\Helper;
 
 use \PHPCI\Logging\BuildLogger;
-use Psr\Log\LogLevel;
 
-class BaseCommandExecutor implements CommandExecutor
+abstract class BaseCommandExecutor implements CommandExecutor
 {
     /**
      * @var \PHPCI\Logging\BuildLogger
@@ -98,30 +97,5 @@ class BaseCommandExecutor implements CommandExecutor
      * @param string $binary
      * @return null|string
      */
-    public function findBinary($binary)
-    {
-        $binaryPath = null;
-
-        if (is_string($binary)) {
-            $binary = array($binary);
-        }
-
-        foreach ($binary as $bin) {
-            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
-            // Check project root directory:
-            if (is_file($this->rootDir . $bin)) {
-                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
-                $binaryPath = $this->rootDir . $bin;
-                break;
-            }
-
-            // Check Composer bin dir:
-            if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
-                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
-                $binaryPath = $this->rootDir . 'vendor/bin/' . $bin;
-                break;
-            }
-        }
-        return $binaryPath;
-    }
+    abstract public function findBinary($binary);
 }

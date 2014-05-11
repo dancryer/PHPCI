@@ -2,18 +2,8 @@
 
 namespace PHPCI\Helper;
 
-use \PHPCI\Logging\BuildLogger;
-
 interface CommandExecutor
 {
-    /**
-     * @param BuildLogger $logger
-     * @param string      $rootDir
-     * @param bool        $quiet
-     * @param bool        $verbose
-     */
-    public function __construct(BuildLogger $logger, $rootDir, &$quiet = false, &$verbose = false);
-
     /**
      * Executes shell commands. Accepts multiple arguments the first
      * is the template and everything else is inserted in. c.f. sprintf

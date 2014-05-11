@@ -81,3 +81,6 @@ h1 {
     right: 25px;
     width: 200px;
 }
+.word-wrap {
+    word-wrap: break-word;
+}

@@ -61,6 +61,41 @@ class BuildStatusController extends \PHPCI\Controller
         header('Content-Type: image/png');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
     }
+    
+    /**
+    * Returns the appropriate build status image for a given project in SVG format (like TravisCI).
+    */
+    public function svg($projectId)
+    {
+        $branch = $this->getParam('branch', 'master');
+        $project = $this->projectStore->getById($projectId);
+        $status = 'passing';
+        if (!$project->getAllowPublicStatus()) {
+            die();
+        }
+
+        if (isset($project) && $project instanceof Project) {
+            $build = $project->getLatestBuild($branch, array(2,3));
+
+            if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
+                $status = 'failed';
+            }
+        }
+        switch($status)
+        {
+            case 'passing':
+                $color = 'green';
+                break;
+            case 'failed':
+                $color = 'red';
+                break;
+        }
+
+        header('Content-Type: image/svg+xml');
+        die(file_get_contents('http://img.shields.io/badge/build-'.$status.'-'.$color.'.svg'));
+    }
+
+
 
     public function view($projectId)
     {

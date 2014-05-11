@@ -97,67 +97,24 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function execute()
     {
-        $ignore = '';
-        if (count($this->ignore)) {
-            $ignore = ' --exclude ' . implode(',', $this->ignore);
-        }
-
-        $suffixes = '';
-        if (count($this->suffixes)) {
-            $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
-        }
-
-        if (!empty($this->rules) && !is_array($this->rules)) {
-            $this->phpci->logFailure('The "rules" option must be an array.');
+        if (!$this->tryAndProcessRules()) {
             return false;
         }
 
-        foreach ($this->rules as &$rule) {
-            if (strpos($rule, '/') !== false) {
-                $rule = $this->phpci->buildPath . $rule;
-            }
-        }
+        $phpmdBinaryPath = $this->phpci->findBinary('phpmd');
 
-        $phpmd = $this->phpci->findBinary('phpmd');
-
-        if (!$phpmd) {
+        if (!$phpmdBinaryPath) {
             $this->phpci->logFailure('Could not find phpmd.');
             return false;
         }
-        
-        $path = $this->phpci->buildPath . $this->path;
-        if (!empty($this->path) && $this->path{0} == '/') {
-            $path = $this->path;
-        }
 
-        $cmd = $phpmd . ' "%s" xml %s %s %s';
+        $this->executePhpMd($phpmdBinaryPath);
 
-        // Disable exec output logging, as we don't want the XML report in the log:
-        $this->phpci->logExecOutput(false);
-
-        // Run PHPMD:
-        $this->phpci->executeCommand(
-            $cmd,
-            $path,
-            implode(',', $this->rules),
-            $ignore,
-            $suffixes
-        );
-
-        // Re-enable exec output logging:
-        $this->phpci->logExecOutput(true);
-
-        $success = true;
-
-        list($errors, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
-        $this->build->storeMeta('phpmd-warnings', $errors);
+        list($errorCount, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
+        $this->build->storeMeta('phpmd-warnings', $errorCount);
         $this->build->storeMeta('phpmd-data', $data);
 
-        if ($this->allowed_warnings != -1 && $errors > $this->allowed_warnings) {
-            $success = false;
-        }
-
-        return $success;
+        return $this->wasLastExecSuccessful($errorCount);
     }
 
     protected function overrideSetting($options, $key)
@@ -199,5 +156,80 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         return array($warnings, $data);
+    }
+
+    protected function tryAndProcessRules()
+    {
+        if (!empty($this->rules) && !is_array($this->rules)) {
+            $this->phpci->logFailure('The "rules" option must be an array.');
+            return false;
+        }
+
+        foreach ($this->rules as &$rule) {
+            if (strpos($rule, '/') !== false) {
+                $rule = $this->phpci->buildPath . $rule;
+            }
+        }
+
+        return true;
+    }
+
+    protected function executePhpMd($binaryPath)
+    {
+        $cmd = $binaryPath . ' "%s" xml %s %s %s';
+
+        $path = $this->getTargetPath();
+
+        $ignore = '';
+        if (count($this->ignore)) {
+            $ignore = ' --exclude ' . implode(',', $this->ignore);
+        }
+
+        $suffixes = '';
+        if (count($this->suffixes)) {
+            $suffixes = ' --suffixes ' . implode(',', $this->suffixes);
+        }
+
+        // Disable exec output logging, as we don't want the XML report in the log:
+        $this->phpci->logExecOutput(false);
+
+        // Run PHPMD:
+        $this->phpci->executeCommand(
+            $cmd,
+            $path,
+            implode(',', $this->rules),
+            $ignore,
+            $suffixes
+        );
+
+        // Re-enable exec output logging:
+        $this->phpci->logExecOutput(true);
+    }
+
+    protected function getTargetPath()
+    {
+        $path = $this->phpci->buildPath . $this->path;
+        if (!empty($this->path) && $this->path{0} == '/') {
+            $path = $this->path;
+            return $path;
+        }
+        return $path;
+    }
+
+    /**
+     * Returns a boolean indicating if the error count can be considered a success.
+     *
+     * @param int $errorCount
+     * @return bool
+     */
+    protected function wasLastExecSuccessful($errorCount)
+    {
+        $success = true;
+
+        if ($this->allowed_warnings != -1 && $errorCount > $this->allowed_warnings) {
+            $success = false;
+            return $success;
+        }
+        return $success;
     }
 }

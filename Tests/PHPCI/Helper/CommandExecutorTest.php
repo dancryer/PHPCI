@@ -8,7 +8,7 @@ use \Prophecy\PhpUnit\ProphecyTestCase;
 class CommandExecutorTest extends ProphecyTestCase
 {
     /**
-     * @var CommandExecutor
+     * @var UnixCommandExecutor
      */
     protected $testedExecutor;
 

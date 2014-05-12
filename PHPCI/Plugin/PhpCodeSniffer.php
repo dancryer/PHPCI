@@ -109,14 +109,6 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->suffixes = (array)$options['suffixes'];
         }
 
-        if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
-        }
-
-        if (isset($options['standard'])) {
-            $this->standard = $options['standard'];
-        }
-
         if (!empty($options['tab_width'])) {
             $this->tab_width = ' --tab-width='.$options['tab_width'];
         }
@@ -125,20 +117,15 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->encoding = ' --encoding=' . $options['encoding'];
         }
 
-        if (isset($options['path'])) {
-            $this->path = $options['path'];
-        }
+        $this->setOptions($options);
+    }
 
-        if (isset($options['ignore'])) {
-            $this->ignore = $options['ignore'];
-        }
-
-        if (isset($options['allowed_warnings'])) {
-            $this->allowed_warnings = (int)$options['allowed_warnings'];
-        }
-
-        if (isset($options['allowed_errors'])) {
-            $this->allowed_errors = (int)$options['allowed_errors'];
+    protected function setOptions($options)
+    {
+        foreach (array('directory', 'standard', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
+            if (array_key_exists($key, $options)) {
+                $this->{$key} = $options[$key];
+            }
         }
     }
 

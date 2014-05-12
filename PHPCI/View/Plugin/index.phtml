@@ -26,9 +26,9 @@
         <tbody>
 <?php foreach ($plugins as $plugin): ?>
             <tr>
-                <td><?= $plugin->name; ?></td>
-                <td><?= $plugin->class; ?></td>
-                <td><?= $plugin->source; ?></td>
+                <td><?php print $plugin->name; ?></td>
+                <td><?php print $plugin->class; ?></td>
+                <td><?php print $plugin->source; ?></td>
             </tr>
 <?php endforeach; ?>
         </tbody>

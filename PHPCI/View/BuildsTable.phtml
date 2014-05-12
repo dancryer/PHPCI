@@ -61,21 +61,7 @@ switch($build->getStatus())
 
 	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
 	<td>
-		<?php
-		$plugins = json_decode($build->getPlugins(), true);
-
-		if ( !is_array($plugins) ) {
-			$plugins = array();
-		}
-		if ( 0 === count($plugins) ) {
-			?> <span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span> <?php
-		}
-		?>
-		<?php
-			foreach($plugins as $plugin => $pluginstatus):
-				$subcls = $pluginstatus?'label label-success':'label label-danger';
-		?> <span class='<?php echo $subcls ?>'><?php print $this->Build()->formatPluginName($plugin); ?></span> <?php endforeach; ?>
-		<br style='clear:both;' />
+		<span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span>
 	</td>
 	<td>
 		<div class="btn-group">

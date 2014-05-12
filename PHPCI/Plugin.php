@@ -9,7 +9,6 @@
 
 namespace PHPCI;
 
-use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**

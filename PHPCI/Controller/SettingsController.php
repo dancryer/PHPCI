@@ -48,6 +48,7 @@ class SettingsController extends Controller
 
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);
@@ -241,5 +242,10 @@ class SettingsController extends Controller
         $user = $http->get('/user', array('access_token' => $token));
 
         return $user['body'];
+    }
+
+    protected function canWriteConfig()
+    {
+        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
     }
 }

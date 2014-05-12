@@ -40,12 +40,24 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path               = $phpci->buildPath;
-        $this->phpci        = $phpci;
+        $path = $phpci->buildPath;
+        $this->phpci = $phpci;
         $this->build = $build;
-        $this->directory    = isset($options['directory']) ? $path . '/' . $options['directory'] : $path;
-        $this->action       = isset($options['action']) ? $options['action'] : 'install';
-        $this->preferDist   = isset($options['prefer_dist']) ? $options['prefer_dist'] : true;
+        $this->directory = $path;
+        $this->action = 'install';
+        $this->preferDist = false;
+
+        if (array_key_exists('directory', $options)) {
+            $this->directory = $path . '/' . $options['directory'];
+        }
+
+        if (array_key_exists('action', $options)) {
+            $this->action = $options['action'];
+        }
+
+        if (array_key_exists('prefer_dist', $options)) {
+            $this->preferDist = (bool)$options['prefer_dist'];
+        }
     }
 
     /**
@@ -59,12 +71,24 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->phpci->logFailure('Could not find Composer.');
             return false;
         }
+
         $cmd = '';
+
         if (IS_WIN) {
             $cmd = 'php ';
         }
+
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';
-        $cmd .= ($this->preferDist ? '--prefer-dist' : '--prefer-source') . ' --working-dir="%s" %s';
+
+        if ($this->preferDist) {
+            $this->phpci->log('Using --prefer-dist flag');
+            $cmd .= '--prefer-dist';
+        } else {
+            $this->phpci->log('Using --prefer-source flag');
+            $cmd .= '--prefer-source';
+        }
+
+        $cmd .= ' --working-dir="%s" %s';
 
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
     }

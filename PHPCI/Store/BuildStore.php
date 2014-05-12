@@ -39,6 +39,28 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    public function getByProjectAndCommit($projectId, $commitId)
+    {
+        $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id AND `commit_id` = :commit_id';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':project_id', $projectId);
+        $stmt->bindValue(':commit_id', $commitId);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return new Build($item);
+            };
+
+            $rtn = array_map($map, $res);
+
+            return array('items' => $rtn, 'count' => count($rtn));
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
+    }
+
     public function getMeta($key, $projectId, $buildId = null, $numResults = 1)
     {
         $select = '`build_id`, `meta_key`, `meta_value`';

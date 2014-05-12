@@ -252,7 +252,7 @@ class WebhookController extends \PHPCI\Controller
         if (!is_null($extra)) {
             $build->setExtra(json_encode($extra));
         }
-        
+
         $build = BuildFactory::getBuild($this->buildStore->save($build));
 
         // Send a status postback if the build type provides one:

@@ -64,7 +64,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $cmd = 'php ';
         }
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';
-        $cmd .= ($this->preferDist ? '--prefer-dist' : null) . ' --working-dir="%s" %s';
+        $cmd .= ($this->preferDist ? '--prefer-dist' : '--prefer-source') . ' --working-dir="%s" %s';
 
         return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
     }

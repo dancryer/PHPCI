@@ -112,11 +112,27 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
-        $payload    = json_decode($this->getParam('payload'), true);
+        $payload = json_decode($this->getParam('payload'), true);
 
+        // Handle Pull Request web hooks:
+        if (array_key_exists('pull_request', $payload)) {
+            return $this->githubPullRequest($project, $payload);
+        }
+
+        // Handle Push web hooks:
+        if (array_key_exists('commits', $payload)) {
+            return $this->githubCommitRequest($project, $payload);
+        }
+
+        header('HTTP/1.1 200 OK');
+        die('This request type is not supported, this is not an error.');
+    }
+
+    protected function githubCommitRequest($project, array $payload)
+    {
         // Github sends a payload when you close a pull request with a
         // non-existant commit. We don't want this.
-        if ($payload['after'] === '0000000000000000000000000000000000000000') {
+        if (array_key_exists('after', $payload) && $payload['after'] === '0000000000000000000000000000000000000000') {
             die('OK');
         }
 
@@ -158,6 +174,58 @@ class WebhookController extends \PHPCI\Controller
                 $build->sendStatusPostback();
             }
 
+        } catch (\Exception $ex) {
+            header('HTTP/1.1 500 Internal Server Error');
+            header('Ex: ' . $ex->getMessage());
+            die('FAIL');
+        }
+
+        die('OK');
+    }
+
+    protected function githubPullRequest($projectId, array $payload)
+    {
+        // We only want to know about open pull requests:
+        if (!in_array($payload['action'], array('opened', 'synchronize', 'reopened'))) {
+            die('OK');
+        }
+
+        try {
+            $headers = array();
+            $token = \b8\Config::getInstance()->get('phpci.github.token');
+
+            if (!empty($token)) {
+                $headers[] = 'Authorization: token ' . $token;
+            }
+
+            $url    = $payload['pull_request']['commits_url'];
+            $http   = new \b8\HttpClient();
+            $response = $http->get($url);
+
+            foreach ($response as $commit) {
+                $build = new Build();
+                $build->setProjectId($projectId);
+                $build->setCommitId($commit['sha']);
+                $build->setStatus(Build::STATUS_NEW);
+                $build->setLog('');
+                $build->setCreated(new \DateTime());
+                $build->setBranch(str_replace('refs/heads/', '', $payload['pull_request']['base']['ref']));
+                $build->setCommitterEmail($commit['commit']['author']['email']);
+                $build->setCommitMessage($commit['commit']['message']);
+
+                $extra = array(
+                    'build_type' => 'pull_request',
+                    'pull_request_id' => $payload['pull_request']['id'],
+                    'pull_request_number' => $payload['number'],
+                    'remote_branch' => $payload['pull_request']['head']['ref'],
+                    'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
+                );
+
+                $build->setExtra(json_encode($extra));
+
+                $build = $this->buildStore->save($build);
+                $build->sendStatusPostback();
+            }
         } catch (\Exception $ex) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Ex: ' . $ex->getMessage());

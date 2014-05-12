@@ -13,9 +13,11 @@ setup:
 
 test:
   php_mess_detector:
-    allowed_warnings: 10 # Set max warnings at the current level - Disallow any further errors creeping in.
+    allowed_warnings: 0
   php_code_sniffer:
     standard: "PSR2"
+    allowed_warnings: 0
+    allowed_errors: 0
   php_loc:
   php_unit:
   php_docblock_checker:

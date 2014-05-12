@@ -9,6 +9,10 @@ RUN apt-get update
 # Install PHP:
 RUN apt-get install -qy git-core php5-common php5-cli php5-curl php5-imap php5-mcrypt php5-mysqlnd
 
+# Give Git some fake user details to prevent it asking when trying to test merges:
+git config --global user.name "PHPCI"
+git config --global user.email "hello@php.ci"
+
 ADD ./ /phpci
 
 CMD /phpci/daemonise phpci:daemonise

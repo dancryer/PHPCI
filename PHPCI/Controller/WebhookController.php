@@ -200,9 +200,17 @@ class WebhookController extends \PHPCI\Controller
 
             $url    = $payload['pull_request']['commits_url'];
             $http   = new \b8\HttpClient();
+            $http->setHeaders($headers);
             $response = $http->get($url);
 
-            foreach ($response as $commit) {
+            // Check we got a success response:
+            if (!$response['success']) {
+                header('HTTP/1.1 500 Internal Server Error');
+                header('Ex: Could not get commits, failed API request.');
+                die('FAIL');
+            }
+
+            foreach ($response['body'] as $commit) {
                 $build = new Build();
                 $build->setProjectId($projectId);
                 $build->setCommitId($commit['sha']);

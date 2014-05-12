@@ -229,7 +229,7 @@ class WebhookController extends \PHPCI\Controller
         die('OK');
     }
 
-    protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, $extra = array())
+    protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, $extra = null)
     {
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
@@ -248,6 +248,11 @@ class WebhookController extends \PHPCI\Controller
         $build->setBranch($branch);
         $build->setCommitterEmail($committer);
         $build->setCommitMessage($commitMessage);
+
+        if (!is_null($extra)) {
+            $build->setExtra(json_encode($extra));
+        }
+        
         $build = BuildFactory::getBuild($this->buildStore->save($build));
 
         // Send a status postback if the build type provides one:

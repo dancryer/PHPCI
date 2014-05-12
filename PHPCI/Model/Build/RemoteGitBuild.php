@@ -65,12 +65,8 @@ class RemoteGitBuild extends Build
         $cmd .= ' -b %s %s "%s"';
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
-        if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
-            if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
-            }
-            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        if ($success) {
+            $success = $this->postCloneSetup($builder, $cloneTo);
         }
 
         return $success;
@@ -104,20 +100,31 @@ class RemoteGitBuild extends Build
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
-        // Checkout a specific commit if we need to:
-        $commit = $this->getCommitId();
-
-        if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
-            if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
-            }
-            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        if ($success) {
+            $success = $this->postCloneSetup($builder, $cloneTo);
         }
 
         // Remove the key file and git wrapper:
         unlink($keyFile);
         unlink($gitSshWrapper);
+
+        return $success;
+    }
+
+    protected function postCloneSetup(Builder $builder, $cloneTo)
+    {
+        $success = true;
+        $commit = $this->getCommitId();
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $cmd = 'cd "%s" && git checkout %s';
+
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+
+            $success = $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        }
 
         return $success;
     }

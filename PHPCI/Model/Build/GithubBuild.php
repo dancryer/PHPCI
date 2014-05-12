@@ -9,6 +9,7 @@
 
 namespace PHPCI\Model\Build;
 
+use PHPCI\Builder;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
@@ -114,5 +115,30 @@ class GithubBuild extends RemoteGitBuild
         $link .= '#L{LINE}';
 
         return $link;
+    }
+
+    protected function postCloneSetup(Builder $builder, $cloneTo)
+    {
+        $buildType = $this->getExtra('build_type');
+
+        $success = true;
+
+        try {
+            if (!empty($buildType) && $buildType == 'pull_request') {
+                $remoteUrl = $this->getExtra('remote_url');
+                $remoteBranch = $this->getExtra('remote_branch');
+
+                $cmd = 'cd "%s" && git checkout -b phpci/' . $this->getId() . ' %s && git pull %s %s';
+                $success = $builder->executeCommand($cmd, $cloneTo, $this->getBranch(), $remoteUrl, $remoteBranch);
+            }
+        } catch (\Exception $ex) {
+            $success = false;
+        }
+
+        if ($success) {
+            $success = parent::postCloneSetup($builder, $cloneTo);
+        }
+
+        return $success;
     }
 }

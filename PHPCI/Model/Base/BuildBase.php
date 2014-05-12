@@ -42,9 +42,9 @@ class BuildBase extends Model
         'created' => null,
         'started' => null,
         'finished' => null,
-        'plugins' => null,
         'committer_email' => null,
         'commit_message' => null,
+        'extra' => null,
     );
 
     /**
@@ -61,9 +61,9 @@ class BuildBase extends Model
         'created' => 'getCreated',
         'started' => 'getStarted',
         'finished' => 'getFinished',
-        'plugins' => 'getPlugins',
         'committer_email' => 'getCommitterEmail',
         'commit_message' => 'getCommitMessage',
+        'extra' => 'getExtra',
 
         // Foreign key getters:
         'Project' => 'getProject',
@@ -83,9 +83,9 @@ class BuildBase extends Model
         'created' => 'setCreated',
         'started' => 'setStarted',
         'finished' => 'setFinished',
-        'plugins' => 'setPlugins',
         'committer_email' => 'setCommitterEmail',
         'commit_message' => 'setCommitMessage',
+        'extra' => 'setExtra',
 
         // Foreign key setters:
         'Project' => 'setProject',
@@ -143,11 +143,6 @@ class BuildBase extends Model
             'nullable' => true,
             'default' => null,
         ),
-        'plugins' => array(
-            'type' => 'text',
-            'nullable' => true,
-            'default' => null,
-        ),
         'committer_email' => array(
             'type' => 'varchar',
             'length' => 512,
@@ -156,6 +151,11 @@ class BuildBase extends Model
         ),
         'commit_message' => array(
             'type' => 'text',
+            'nullable' => true,
+            'default' => null,
+        ),
+        'extra' => array(
+            'type' => 'longtext',
             'nullable' => true,
             'default' => null,
         ),
@@ -304,18 +304,6 @@ class BuildBase extends Model
     }
 
     /**
-    * Get the value of Plugins / plugins.
-    *
-    * @return string
-    */
-    public function getPlugins()
-    {
-        $rtn    = $this->data['plugins'];
-
-        return $rtn;
-    }
-
-    /**
     * Get the value of CommitterEmail / committer_email.
     *
     * @return string
@@ -335,6 +323,18 @@ class BuildBase extends Model
     public function getCommitMessage()
     {
         $rtn    = $this->data['commit_message'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of Extra / extra.
+    *
+    * @return string
+    */
+    public function getExtra()
+    {
+        $rtn    = $this->data['extra'];
 
         return $rtn;
     }
@@ -510,24 +510,6 @@ class BuildBase extends Model
     }
 
     /**
-    * Set the value of Plugins / plugins.
-    *
-    * @param $value string
-    */
-    public function setPlugins($value)
-    {
-        $this->_validateString('Plugins', $value);
-
-        if ($this->data['plugins'] === $value) {
-            return;
-        }
-
-        $this->data['plugins'] = $value;
-
-        $this->_setModified('plugins');
-    }
-
-    /**
     * Set the value of CommitterEmail / committer_email.
     *
     * @param $value string
@@ -561,6 +543,24 @@ class BuildBase extends Model
         $this->data['commit_message'] = $value;
 
         $this->_setModified('commit_message');
+    }
+
+    /**
+    * Set the value of Extra / extra.
+    *
+    * @param $value string
+    */
+    public function setExtra($value)
+    {
+        $this->_validateString('Extra', $value);
+
+        if ($this->data['extra'] === $value) {
+            return;
+        }
+
+        $this->data['extra'] = $value;
+
+        $this->_setModified('extra');
     }
 
     /**

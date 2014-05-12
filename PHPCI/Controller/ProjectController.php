@@ -178,23 +178,13 @@ class ProjectController extends \PHPCI\Controller
 
         $values = $form->getValues();
 
-        if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
-
+        $matches = array();
+        if ($values['type'] == "gitlab" && preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches)) {
             $info = array();
-            if (isset($matches[1])) {
-                $info["user"] = $matches[1];
-            }
-
-            if (isset($matches[2])) {
-                $info["domain"] = $matches[2];
-            }
-
+            $info['user'] = $matches[1];
+            $info['domain'] = $matches[2];
             $values['access_information'] = serialize($info);
-
-            if (isset($matches[3]) && isset($matches[4])) {
-                $values['reference'] = $matches[3]."/".$matches[4];
-            }
+            $values['reference'] = $matches[3]."/".$matches[4];
         }
 
         $values['git_key']  = $values['key'];

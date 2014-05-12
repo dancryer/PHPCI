@@ -80,8 +80,9 @@ class Git implements \PHPCI\Plugin
     protected function runMergeAction($options)
     {
         if (array_key_exists('branch', $options)) {
-            $cmd = 'git checkout %s && git merge ' . $this->build->getBranch();
-            return $this->phpci->executeCommand($cmd, $this->directory, $options['branch']);
+            $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
+            $path = $this->phpci->buildPath;
+            return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
         }
     }
 

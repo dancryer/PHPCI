@@ -164,4 +164,19 @@ class Build extends BuildBase
     {
         return null;
     }
+
+    public function getExtra($key = null)
+    {
+        $data = unserialize($this->data['extra']);
+
+        if (is_null($key)) {
+            $rtn = $data;
+        } elseif (isset($data[$key])) {
+            $rtn = $data[$key];
+        } else {
+            $rtn = null;
+        }
+
+        return $rtn;
+    }
 }

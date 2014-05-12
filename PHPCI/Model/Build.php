@@ -167,7 +167,7 @@ class Build extends BuildBase
 
     public function getExtra($key = null)
     {
-        $data = unserialize($this->data['extra']);
+        $data = json_decode($this->data['extra']);
 
         if (is_null($key)) {
             $rtn = $data;

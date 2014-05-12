@@ -105,7 +105,6 @@ class BuildController extends \PHPCI\Controller
         $data               = array();
         $data['status']     = (int)$build->getStatus();
         $data['log']        = $this->cleanLog($build->getLog());
-        $data['plugins']    = json_decode($build->getPlugins(), true);
         $data['created']    = !is_null($build->getCreated()) ? $build->getCreated()->format('Y-m-d H:i:s') : null;
         $data['started']    = !is_null($build->getStarted()) ? $build->getStarted()->format('Y-m-d H:i:s') : null;
         $data['finished']   = !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : null;

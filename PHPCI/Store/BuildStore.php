@@ -9,6 +9,7 @@
 
 namespace PHPCI\Store;
 
+use b8\Database;
 use PHPCI\Store\Base\BuildStoreBase;
 
 /**
@@ -22,7 +23,7 @@ class BuildStore extends BuildStoreBase
     public function getLatestBuilds($projectId)
     {
         $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':pid', $projectId);
 
         if ($stmt->execute()) {
@@ -68,7 +69,7 @@ class BuildStore extends BuildStoreBase
         $where = '`meta_key` = :key AND `project_id` = :projectId ' . $and;
         $query = 'SELECT '.$select.' FROM `build_meta` WHERE '.$where.' ORDER BY id DESC LIMIT :numResults';
 
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
@@ -99,7 +100,7 @@ class BuildStore extends BuildStoreBase
         $cols = '`project_id`, `build_id`, `meta_key`, `meta_value`';
         $query = 'REPLACE INTO build_meta ('.$cols.') VALUES (:projectId, :buildId, :key, :value)';
 
-        $stmt = \b8\Database::getConnection('read')->prepare($query);
+        $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);

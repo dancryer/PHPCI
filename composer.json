@@ -53,6 +53,7 @@
         "phploc/phploc": "PHP Lines of Code",
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
-        "behat/behat": "Behat BDD Testing"
+        "behat/behat": "Behat BDD Testing",
+        "hipchat/hipchat-php": "Hipchat integration"
     }
 }

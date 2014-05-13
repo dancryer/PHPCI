@@ -33,7 +33,7 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             $success = $this->cloneBySsh($builder, $buildPath);
@@ -140,7 +140,7 @@ class RemoteGitBuild extends Build
         $keyFile = $keyPath . '.key';
 
         // Write the contents of this project's git key to the file:
-        file_put_contents($keyFile, $this->getProject()->getGitKey());
+        file_put_contents($keyFile, $this->getProject()->getSshPrivateKey());
         chmod($keyFile, 0600);
 
         // Return the filename:

@@ -56,7 +56,7 @@ class GitlabBuild extends RemoteGitBuild
     */
     protected function getCloneUrl()
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             $user = $this->getProject()->getAccessInformation("user");

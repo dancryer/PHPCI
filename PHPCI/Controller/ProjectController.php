@@ -187,8 +187,8 @@ class ProjectController extends \PHPCI\Controller
             $values['reference'] = $matches[3]."/".$matches[4];
         }
 
-        $values['git_key']  = $values['key'];
-        $values['public_key']  = $values['pubkey'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         $project = new Project();
         $project->setValues($values);
@@ -218,8 +218,8 @@ class ProjectController extends \PHPCI\Controller
         $this->config->set('page_title', 'Edit: ' . $project->getTitle());
 
         $values = $project->getDataArray();
-        $values['key'] = $values['git_key'];
-        $values['pubkey'] = $values['public_key'];
+        $values['key'] = $values['ssh_private_key'];
+        $values['pubkey'] = $values['ssh_public_key'];
 
         if ($values['type'] == "gitlab") {
             $accessInfo = $project->getAccessInformation();
@@ -244,8 +244,8 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $values             = $form->getValues();
-        $values['git_key']  = $values['key'];
-        $values['public_key']  = $values['pubkey'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);

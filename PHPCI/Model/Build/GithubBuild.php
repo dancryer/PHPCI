@@ -86,7 +86,7 @@ class GithubBuild extends RemoteGitBuild
     */
     protected function getCloneUrl()
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             return 'git@github.com:' . $this->getProject()->getReference() . '.git';

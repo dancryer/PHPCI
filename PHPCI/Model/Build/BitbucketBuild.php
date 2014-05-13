@@ -41,7 +41,7 @@ class BitbucketBuild extends RemoteGitBuild
     */
     protected function getCloneUrl()
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             return 'git@bitbucket.org:' . $this->getProject()->getReference() . '.git';

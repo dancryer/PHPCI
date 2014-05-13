@@ -50,11 +50,9 @@ class UpdateCommand extends Command
     {
         $this->verifyInstalled($output);
 
-        $output->writeln('Updating PHPCI database.');
+        $output->write('Updating PHPCI database: ');
 
-        // Update the database:
-        $gen = new \b8\Database\Generator(\b8\Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
-        $gen->generate();
+        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
         $output->writeln('<info>Done!</info>');
     }

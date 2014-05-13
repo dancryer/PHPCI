@@ -11,3 +11,7 @@ PHPCI/config.yml
 cache
 /loggerconfig.php
 /pluginconfig.php
+PHPCI/Model/Migration.php
+PHPCI/Model/Base/MigrationBase.php
+PHPCI/Store/MigrationStore.php
+PHPCI/Store/Base/MigrationStoreBase.php

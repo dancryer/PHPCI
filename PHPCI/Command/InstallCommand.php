@@ -204,19 +204,7 @@ class InstallCommand extends Command
     {
         $output->write('Setting up your database... ');
 
-        // Load PHPCI's bootstrap file:
-        require(PHPCI_DIR . 'bootstrap.php');
-
-        try {
-            // Set up the database, based on table data from the models:
-            $gen = new Database\Generator(Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
-            $gen->generate();
-        } catch (Exception $ex) {
-            $output->writeln('');
-            $output->writeln('<error>PHPCI failed to set up the database.</error>');
-            $output->writeln('<error>' . $ex->getMessage() . '</error>');
-            die;
-        }
+        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
         $output->writeln('<info>OK</info>');
     }

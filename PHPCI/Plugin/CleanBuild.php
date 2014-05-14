@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -38,6 +38,9 @@ class CleanBuild implements \PHPCI\Plugin
     public function execute()
     {
         $cmd = 'rm -Rf "%s"';
+        if (IS_WIN) {
+            $cmd = 'rmdir /S /Q "%s"';
+        }
         $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.phar');
         $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.lock');
 

@@ -1,15 +1,16 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\NotFoundException;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 
@@ -36,7 +37,16 @@ class BuildController extends \PHPCI\Controller
     */
     public function view($buildId)
     {
-        $build          = BuildFactory::getBuildById($buildId);
+        try {
+            $build = BuildFactory::getBuildById($buildId);
+        } catch (\Exception $ex) {
+            $build = null;
+        }
+
+        if (empty($build)) {
+            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+        }
+
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
@@ -95,7 +105,6 @@ class BuildController extends \PHPCI\Controller
         $data               = array();
         $data['status']     = (int)$build->getStatus();
         $data['log']        = $this->cleanLog($build->getLog());
-        $data['plugins']    = json_decode($build->getPlugins(), true);
         $data['created']    = !is_null($build->getCreated()) ? $build->getCreated()->format('Y-m-d H:i:s') : null;
         $data['started']    = !is_null($build->getStarted()) ? $build->getStarted()->format('Y-m-d H:i:s') : null;
         $data['finished']   = !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : null;
@@ -109,6 +118,10 @@ class BuildController extends \PHPCI\Controller
     public function rebuild($buildId)
     {
         $copy   = BuildFactory::getBuildById($buildId);
+
+        if (empty($copy)) {
+            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+        }
 
         $build  = new Build();
         $build->setProjectId($copy->getProjectId());
@@ -134,11 +147,10 @@ class BuildController extends \PHPCI\Controller
             throw new \Exception('You do not have permission to do that.');
         }
 
-        $build  = BuildFactory::getBuildById($buildId);
+        $build = BuildFactory::getBuildById($buildId);
 
-        if (!$build) {
-            $this->response->setResponseCode(404);
-            return '404 - Not Found';
+        if (empty($build)) {
+            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
         }
 
         $this->buildStore->delete($build);

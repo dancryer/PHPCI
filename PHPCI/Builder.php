@@ -2,15 +2,14 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI;
 
 use PHPCI\Helper\BuildInterpolator;
-use PHPCI\Helper\CommandExecutor;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
@@ -118,7 +117,12 @@ class Builder implements LoggerAwareInterface
         $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
         $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
-        $this->commandExecutor = new CommandExecutor(
+        $executorClass = 'PHPCI\Helper\UnixCommandExecutor';
+        if (IS_WIN) {
+            $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
+        }
+
+        $this->commandExecutor = new $executorClass(
             $this->buildLogger,
             PHPCI_DIR,
             $this->quiet,
@@ -126,7 +130,6 @@ class Builder implements LoggerAwareInterface
         );
 
         $this->interpolator = new BuildInterpolator();
-
     }
 
     /**
@@ -242,7 +245,7 @@ class Builder implements LoggerAwareInterface
      */
     public function executeCommand()
     {
-        return $this->commandExecutor->buildAndExecuteCommand(func_get_args());
+        return $this->commandExecutor->executeCommand(func_get_args());
     }
 
     /**

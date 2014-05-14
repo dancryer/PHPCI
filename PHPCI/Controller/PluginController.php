@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Controller;
@@ -37,20 +37,6 @@ class PluginController extends \PHPCI\Controller
     protected $canInstall;
     protected $composerPath;
 
-    public function init()
-    {
-        parent::init();
-        $this->canInstall = function_exists('shell_exec');
-
-        if ($this->canInstall) {
-            $this->composerPath = $this->findBinary(array('composer', 'composer.phar'));
-
-            if (!$this->composerPath) {
-                $this->canInstall = false;
-            }
-        }
-    }
-
     public function index()
     {
         if (!$_SESSION['user']->getIsAdmin()) {
@@ -58,7 +44,6 @@ class PluginController extends \PHPCI\Controller
         }
 
         $this->view->canWrite = is_writable(APPLICATION_PATH . 'composer.json');
-        $this->view->canInstall = $this->canInstall;
         $this->view->required = $this->required;
 
         $json = $this->getComposerJson();
@@ -93,13 +78,6 @@ class PluginController extends \PHPCI\Controller
             unset($json['require'][$package]);
             $this->setComposerJson($json);
 
-            if ($this->canInstall) {
-                $home = 'COMPOSER_HOME='.APPLICATION_PATH . ' ';
-                $action = ' update --working-dir=' . APPLICATION_PATH;
-                $toLog = APPLICATION_PATH . '/phpci_composer_remove.log  2>&1 &';
-                shell_exec($home . $this->composerPath . $action . ' > /' . $toLog);
-            }
-
             header('Location: ' . PHPCI_URL . 'plugin?r=' . $package);
             die;
         }
@@ -120,16 +98,6 @@ class PluginController extends \PHPCI\Controller
         $json = $this->getComposerJson();
         $json['require'][$package] = $version;
         $this->setComposerJson($json);
-
-        if ($this->canInstall) {
-            $home = 'COMPOSER_HOME='.APPLICATION_PATH . ' ';
-            $action = ' update --working-dir=' . APPLICATION_PATH;
-            $toLog = ' > /' . APPLICATION_PATH . '/phpci_composer_install.log 2>&1 &';
-            shell_exec($home . $this->composerPath . $action . $toLog);
-
-            header('Location: ' . PHPCI_URL . 'plugin?i=' . $package);
-            die;
-        }
 
         header('Location: ' . PHPCI_URL . 'plugin?w=' . $package);
         die;
@@ -179,7 +147,7 @@ class PluginController extends \PHPCI\Controller
     {
         $searchQuery = $this->getParam('q', '');
         $http = new \b8\HttpClient();
-        $http->setHeaders(array('User-Agent: PHPCI/1.0 (+http://www.phptesting.org)'));
+        $http->setHeaders(array('User-Agent: PHPCI/1.0 (+https://www.phptesting.org)'));
         $res = $http->get('https://packagist.org/search.json', array('q' => $searchQuery));
 
         die(json_encode($res['body']));
@@ -189,7 +157,7 @@ class PluginController extends \PHPCI\Controller
     {
         $name = $this->getParam('p', '');
         $http = new \b8\HttpClient();
-        $http->setHeaders(array('User-Agent: PHPCI/1.0 (+http://www.phptesting.org)'));
+        $http->setHeaders(array('User-Agent: PHPCI/1.0 (+https://www.phptesting.org)'));
         $res = $http->get('https://packagist.org/packages/'.$name.'.json');
 
         die(json_encode($res['body']));

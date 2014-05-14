@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -101,7 +101,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['args'])) {
-            $this->args = $options['args'];
+            $this->args = $this->phpci->interpolate($options['args']);
         }
 
         if (isset($options['path'])) {
@@ -132,9 +132,16 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $success &= $this->runDir($this->directory);
         }
 
-        $output = $this->phpci->getLastOutput();
-        $tapParser = new TapParser($output);
-        $output = $tapParser->parse();
+        $tapString = $this->phpci->getLastOutput();
+
+        try {
+            $tapParser = new TapParser($tapString);
+            $output = $tapParser->parse();
+        } catch (\Exception $ex) {
+            $this->phpci->logFailure($tapString);
+            throw $ex;
+        }
+
         $failures = $tapParser->getTotalFailures();
 
         $this->build->storeMeta('phpunit-errors', $failures);

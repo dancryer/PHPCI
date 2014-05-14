@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -58,7 +58,7 @@ class PhpSpec implements PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpspec . ' --format=pretty --no-code-generation');
+        $success = $this->phpci->executeCommand($phpspec . ' --format=pretty --no-code-generation run');
 
         chdir($curdir);
         

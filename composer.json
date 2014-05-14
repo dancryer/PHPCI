@@ -23,7 +23,7 @@
     },
 
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.8",
         "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
@@ -34,7 +34,8 @@
         "symfony/console"          : "~2.1",
         "psr/log": "~1.0",
         "monolog/monolog": "~1.6",
-        "pimple/pimple": "~1.1"
+        "pimple/pimple": "~1.1",
+        "robmorgan/phinx": "*"
     },
 
     "require-dev": {
@@ -43,6 +44,7 @@
     },
 
     "suggest": {
+        "block8/php-docblock-checker": "PHP Docblock Checker",
         "phpmd/phpmd": "PHP Mess Detector",
         "sebastian/phpcpd": "PHP Copy/Paste Detector",
         "squizlabs/php_codesniffer": "PHP Code Sniffer",
@@ -51,6 +53,7 @@
         "phploc/phploc": "PHP Lines of Code",
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
-        "behat/behat": "Behat BDD Testing"
+        "behat/behat": "Behat BDD Testing",
+        "hipchat/hipchat-php": "Hipchat integration"
     }
 }

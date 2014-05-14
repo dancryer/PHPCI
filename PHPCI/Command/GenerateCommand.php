@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Command;
 
@@ -37,7 +37,13 @@ class GenerateCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $gen = new CodeGenerator(Database::getConnection(), ['default' => 'PHPCI'], ['default' => PHPCI_DIR], false);
+        $gen = new CodeGenerator(
+            Database::getConnection(),
+            array('default' => 'PHPCI'),
+            array('default' => PHPCI_DIR),
+            false
+        );
+
         $gen->generateModels();
         $gen->generateStores();
     }

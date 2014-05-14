@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Controller;
 
@@ -65,7 +65,8 @@ class BuildStatusController extends \PHPCI\Controller
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
-        if (!$project) {
+
+        if (empty($project)) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 

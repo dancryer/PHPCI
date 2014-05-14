@@ -3,11 +3,9 @@ PHPCI
 
 PHPCI is a free and open source continuous integration tool specifically designed for PHP. We've  built it with simplicity in mind, so whilst it doesn't do *everything* Jenkins can do, it is a breeze to set up and use.
 
-_**Please be aware that PHPCI is a beta-release project, so whilst it is very stable, there may be bugs and/or missing features.**_
-
 **Current Build Status**
 
-[![Build Status](http://phpci.block8.net/build-status/image/2)](http://phpci.block8.net/build-status/view/2)
+[![Build Status](http://phpci.block8.net/build-status/image/2?branch=master)](http://phpci.block8.net/build-status/view/2?branch=master)
 
 ##What it does:
 * Clones your project from Github, Bitbucket or a local path

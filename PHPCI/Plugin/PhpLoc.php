@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
@@ -68,7 +68,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->phpci->buildPath);
+        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
         $output = $this->phpci->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {

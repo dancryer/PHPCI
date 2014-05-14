@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Command;
 
@@ -43,6 +43,11 @@ class RunCommand extends Command
     protected $logger;
 
     /**
+     * @var int
+     */
+    protected $maxBuilds = null;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -51,7 +56,6 @@ class RunCommand extends Command
         parent::__construct($name);
         $this->logger = $logger;
     }
-
 
     protected function configure()
     {
@@ -69,7 +73,7 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->getOption('verbose')) {
+        if ($input->hasOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
@@ -79,7 +83,7 @@ class RunCommand extends Command
 
         $this->logger->addInfo("Finding builds to process");
         $store = Factory::getStore('Build');
-        $result = $store->getByStatus(0);
+        $result = $store->getByStatus(0, $this->maxBuilds);
         $this->logger->addInfo(sprintf("Found %d builds", count($result['items'])));
 
         $builds = 0;
@@ -112,5 +116,10 @@ class RunCommand extends Command
         $this->logger->addInfo("Finished processing builds");
 
         return $builds;
+    }
+
+    public function setBaxBuilds($numBuilds)
+    {
+        $this->maxBuilds = (int)$numBuilds;
     }
 }

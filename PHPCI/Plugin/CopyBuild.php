@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -46,11 +46,17 @@ class CopyBuild implements \PHPCI\Plugin
         }
 
         $cmd = 'mkdir -p "%s" && cp -R "%s" "%s"';
+        if (IS_WIN) {
+            $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
+        }
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         if ($this->ignore) {
             foreach ($this->phpci->ignore as $file) {
                 $cmd = 'rm -Rf "%s/%s"';
+                if (IS_WIN) {
+                    $cmd = 'rmdir /S /Q "%s\%s"';
+                }
                 $this->phpci->executeCommand($cmd, $this->directory, $file);
             }
         }

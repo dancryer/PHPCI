@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Model\Build;
 
@@ -33,7 +33,7 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             $success = $this->cloneBySsh($builder, $buildPath);
@@ -65,12 +65,8 @@ class RemoteGitBuild extends Build
         $cmd .= ' -b %s %s "%s"';
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
-        if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
-            if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
-            }
-            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        if ($success) {
+            $success = $this->postCloneSetup($builder, $cloneTo);
         }
 
         return $success;
@@ -104,20 +100,31 @@ class RemoteGitBuild extends Build
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
-        // Checkout a specific commit if we need to:
-        $commit = $this->getCommitId();
-
-        if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
-            if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
-            }
-            $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        if ($success) {
+            $success = $this->postCloneSetup($builder, $cloneTo);
         }
 
         // Remove the key file and git wrapper:
         unlink($keyFile);
         unlink($gitSshWrapper);
+
+        return $success;
+    }
+
+    protected function postCloneSetup(Builder $builder, $cloneTo)
+    {
+        $success = true;
+        $commit = $this->getCommitId();
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $cmd = 'cd "%s" && git checkout %s';
+
+            if (IS_WIN) {
+                $cmd = 'cd /d "%s" && git checkout %s';
+            }
+
+            $success = $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
+        }
 
         return $success;
     }
@@ -133,7 +140,7 @@ class RemoteGitBuild extends Build
         $keyFile = $keyPath . '.key';
 
         // Write the contents of this project's git key to the file:
-        file_put_contents($keyFile, $this->getProject()->getGitKey());
+        file_put_contents($keyFile, $this->getProject()->getSshPrivateKey());
         chmod($keyFile, 0600);
 
         // Return the filename:

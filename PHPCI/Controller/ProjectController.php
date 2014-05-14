@@ -1,25 +1,25 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Controller;
 
+use b8;
+use b8\Controller;
+use b8\Form;
+use b8\Exception\HttpException\ForbiddenException;
+use b8\Exception\HttpException\NotFoundException;
+use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
 use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
-use b8;
-use b8\Config;
-use b8\Controller;
-use b8\Store;
-use b8\Form;
-use b8\Exception\HttpException\NotFoundException;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -41,8 +41,8 @@ class ProjectController extends \PHPCI\Controller
 
     public function init()
     {
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore = Store\Factory::getStore('Build');
+        $this->projectStore = Store\Factory::getStore('Project');
     }
 
     /**
@@ -51,17 +51,18 @@ class ProjectController extends \PHPCI\Controller
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
-        if (!$project) {
+
+        if (empty($project)) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $page           = $this->getParam('p', 1);
-        $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
+        $page = $this->getParam('p', 1);
+        $builds = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
-        $this->view->builds   = $builds[0];
-        $this->view->total    = $builds[1];
-        $this->view->project  = $project;
-        $this->view->page     = $page;
+        $this->view->builds = $builds[0];
+        $this->view->total = $builds[1];
+        $this->view->project = $project;
+        $this->view->page = $page;
 
         $this->config->set('page_title', $project->getTitle());
 
@@ -75,6 +76,10 @@ class ProjectController extends \PHPCI\Controller
     {
         /* @var \PHPCI\Model\Project $project */
         $project = $this->projectStore->getById($projectId);
+
+        if (empty($project)) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
 
         $build = new Build();
         $build->setProjectId($projectId);
@@ -96,7 +101,7 @@ class ProjectController extends \PHPCI\Controller
     public function delete($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $project = $this->projectStore->getById($projectId);
@@ -120,10 +125,10 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml($projectId, $start = 0)
     {
-        $criteria       = array('project_id' => $projectId);
-        $order          = array('id' => 'DESC');
-        $builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
-        $view           = new b8\View('BuildsTable');
+        $criteria = array('project_id' => $projectId);
+        $order = array('id' => 'DESC');
+        $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
+        $view = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
             $build = BuildFactory::getBuild($build);
@@ -142,7 +147,7 @@ class ProjectController extends \PHPCI\Controller
         $this->config->set('page_title', 'Add Project');
 
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $method = $this->request->getMethod();
@@ -173,27 +178,17 @@ class ProjectController extends \PHPCI\Controller
 
         $values = $form->getValues();
 
-        if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
-
+        $matches = array();
+        if ($values['type'] == "gitlab" && preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches)) {
             $info = array();
-            if (isset($matches[1])) {
-                $info["user"] = $matches[1];
-            }
-
-            if (isset($matches[2])) {
-                $info["domain"] = $matches[2];
-            }
-
+            $info['user'] = $matches[1];
+            $info['domain'] = $matches[2];
             $values['access_information'] = serialize($info);
-
-            if (isset($matches[3]) && isset($matches[4])) {
-                $values['reference'] = $matches[3]."/".$matches[4];
-            }
+            $values['reference'] = $matches[3]."/".$matches[4];
         }
 
-        $values['git_key']  = $values['key'];
-        $values['public_key']  = $values['pubkey'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         $project = new Project();
         $project->setValues($values);
@@ -210,31 +205,33 @@ class ProjectController extends \PHPCI\Controller
     public function edit($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
-        $method     = $this->request->getMethod();
-        $project    = $this->projectStore->getById($projectId);
+        $method = $this->request->getMethod();
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($project)) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
 
         $this->config->set('page_title', 'Edit: ' . $project->getTitle());
 
+        $values = $project->getDataArray();
+        $values['key'] = $values['ssh_private_key'];
+        $values['pubkey'] = $values['ssh_public_key'];
+
+        if ($values['type'] == "gitlab") {
+            $accessInfo = $project->getAccessInformation();
+            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+            $values['reference'] = $reference;
+        }
 
         if ($method == 'POST') {
             $values = $this->getParams();
-        } else {
-            $values         = $project->getDataArray();
-            $values['key']  = $values['git_key'];
-            $values['pubkey']  = $values['public_key'];
-
-            if ($values['type'] == "gitlab") {
-                $accessInfo = $project->getAccessInformation();
-                $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
-                $values['reference'] = $reference;
-            }
         }
 
-
-        $form   = $this->projectForm($values, 'edit/' . $projectId);
+        $form = $this->projectForm($values, 'edit/' . $projectId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('ProjectForm');
@@ -247,8 +244,8 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $values             = $form->getValues();
-        $values['git_key']  = $values['key'];
-        $values['public_key']  = $values['pubkey'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);

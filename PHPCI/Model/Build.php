@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Model;
 
@@ -122,7 +122,7 @@ class Build extends BuildBase
         $config = array(
             'build_settings' => array(
                 'ignore' => array(
-                    'vendor/',
+                    'vendor',
                 )
             )
         );
@@ -163,5 +163,20 @@ class Build extends BuildBase
     public function getFileLinkTemplate()
     {
         return null;
+    }
+
+    public function getExtra($key = null)
+    {
+        $data = json_decode($this->data['extra'], true);
+
+        if (is_null($key)) {
+            $rtn = $data;
+        } elseif (isset($data[$key])) {
+            $rtn = $data[$key];
+        } else {
+            $rtn = null;
+        }
+
+        return $rtn;
     }
 }

@@ -3,8 +3,8 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
     css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
     title: 'PHP Code Sniffer',
     lastData: null,
-    displayOnUpdate: false,
     box: true,
+    rendered: false,
 
     register: function() {
         var self = this;
@@ -14,16 +14,14 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
             self.onUpdate(data);
         });
 
-        $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1) {
-                self.displayOnUpdate = true;
+        $(window).on('build-updated', function() {
+            if (!self.rendered) {
                 query();
             }
         });
     },
 
     render: function() {
-
         return $('<table class="table table-striped" id="phpcs-data">' +
             '<thead>' +
             '<tr>' +
@@ -35,10 +33,11 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
     },
 
     onUpdate: function(e) {
-        if (this.lastData && this.lastData[0]) {
+        if (!e.queryData) {
             return;
         }
 
+        this.rendered = true;
         this.lastData = e.queryData;
 
         var errors = this.lastData[0].meta_value;

@@ -47,13 +47,7 @@ class CopyBuild implements \PHPCI\Plugin
             return false;
         }
 
-        if ($this->wipe == true && $this->directory != '/' && is_dir($this->directory)) {
-            $cmd = 'rm -Rf "%s*"';
-            $success = $this->phpci->executeCommand($cmd, $this->directory);
-            if (!$success) {
-                throw new \Exception('Failed to wipe existing directory ' . $this->directory . ' before copy');
-            }
-        }
+        $this->wipeExistingDirectory();
 
         $cmd = 'mkdir -p "%s" && cp -R "%s" "%s"';
         if (IS_WIN) {
@@ -62,6 +56,24 @@ class CopyBuild implements \PHPCI\Plugin
 
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
+        $this->deleteIgnoredFiles();
+
+        return $success;
+    }
+
+    protected function wipeExistingDirectory()
+    {
+        if ($this->wipe == true && $this->directory != '/' && is_dir($this->directory)) {
+            $cmd = 'rm -Rf "%s*"';
+            $success = $this->phpci->executeCommand($cmd, $this->directory);
+            if (!$success) {
+                throw new \Exception('Failed to wipe existing directory ' . $this->directory . ' before copy');
+            }
+        }
+    }
+
+    protected function deleteIgnoredFiles()
+    {
         if ($this->ignore) {
             foreach ($this->phpci->ignore as $file) {
                 $cmd = 'rm -Rf "%s/%s"';
@@ -71,7 +83,5 @@ class CopyBuild implements \PHPCI\Plugin
                 $this->phpci->executeCommand($cmd, $this->directory, $file);
             }
         }
-
-        return $success;
     }
 }

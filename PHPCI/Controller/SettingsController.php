@@ -46,6 +46,7 @@ class SettingsController extends Controller
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
+        $this->view->buildForm = $this->getBuildAgentForm();
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
         $this->view->isWriteable = $this->canWriteConfig();
@@ -157,6 +158,32 @@ class SettingsController extends Controller
         if (isset($this->settings['phpci']['github']['secret'])) {
             $field->setValue($this->settings['phpci']['github']['secret']);
         }
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        return $form;
+    }
+
+    protected function getBuildAgentForm()
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/build-agents');
+
+        $field = new Form\Element\Select('build_agents');
+        $field->setLabel('Active Build Agents (will build with any agent if you select none)');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setOptions(array(
+            'PHP53' => 'PHP 5.3',
+            'PHP55' => 'PHP 5.5',
+            'HHVM30' => 'HHVM 3.0',
+        ));
+        $field->setMultiple(true);
+        $form->addField($field);
 
         $field = new Form\Element\Submit();
         $field->setValue('Save &raquo;');

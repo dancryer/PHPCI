@@ -22,6 +22,7 @@ class CopyBuild implements \PHPCI\Plugin
 {
     protected $directory;
     protected $ignore;
+    protected $wipe;
     protected $phpci;
     protected $build;
 
@@ -31,6 +32,7 @@ class CopyBuild implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
 
@@ -45,10 +47,19 @@ class CopyBuild implements \PHPCI\Plugin
             return false;
         }
 
+        if ($this->wipe == true && $this->directory != '/' && is_dir($this->directory)) {
+            $cmd = 'rm -Rf "%s*"';
+            $success = $this->phpci->executeCommand($cmd, $this->directory);
+            if (!$success) {
+                throw new \Exception('Failed to wipe existing directory ' . $this->directory . ' before copy');
+            }
+        }
+
         $cmd = 'mkdir -p "%s" && cp -R "%s" "%s"';
         if (IS_WIN) {
             $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
         }
+
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         if ($this->ignore) {

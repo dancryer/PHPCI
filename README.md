@@ -16,9 +16,9 @@ PHPCI is a free and open source continuous integration tool specifically designe
 * You can mark certain plugins as being allowed to fail (but still run.)
 
 ##What it doesn't do (yet):
-* Virtualised testing.
-* Multiple PHP-version tests.
-* Multiple testing workers.
+* Virtualised testing. *(In progress)*
+* Multiple PHP-version tests. *(In progress)*
+* Multiple testing workers. *(In progress)*
 * Install PEAR or PECL extensions.
 * Deployments.
 

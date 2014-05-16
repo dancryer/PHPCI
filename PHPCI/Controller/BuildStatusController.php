@@ -42,7 +42,7 @@ class BuildStatusController extends \PHPCI\Controller
      * @param $projectId
      * @return string
      */
-    protected function _getStatus($projectId)
+    protected function getStatus($projectId)
     {
         $branch = $this->getParam('branch', 'master');
         try {
@@ -72,7 +72,7 @@ class BuildStatusController extends \PHPCI\Controller
     */
     public function image($projectId)
     {
-        $status = $this->_getStatus($projectId);
+        $status = $this->getStatus($projectId);
         header('Content-Type: image/png');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
     }
@@ -82,7 +82,7 @@ class BuildStatusController extends \PHPCI\Controller
     */
     public function svg($projectId)
     {
-        $status = $this->_getStatus($projectId);
+        $status = $this->getStatus($projectId);
         header('Content-Type: image/svg+xml');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
     }

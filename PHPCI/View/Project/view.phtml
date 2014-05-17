@@ -51,9 +51,11 @@
         <?php endif; ?>
 
         <?php if ($project->getSshPublicKey()): ?>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h3 class="panel-title">Public Key</h3></div>
-                <div class="panel-body"><?php print $project->getSshPublicKey(); ?></div>
+            <div class="panel panel-info">
+                <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse">Public Key</a></h3></div>
+                <div id="publicCollapse" class="panel-collapse collapse out">
+                    <div class="panel-body word-wrap"><?php print $project->getSshPublicKey(); ?></div>
+                </div>
             </div>
         <?php endif; ?>
 	</div>

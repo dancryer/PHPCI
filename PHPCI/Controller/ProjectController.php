@@ -96,6 +96,30 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
+    * Delete all builds of a project
+    */
+    public function clean($projectId)
+    {
+        if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
+            throw new \Exception('You do not have permission to do that.');
+        }
+
+        /* @var \PHPCI\Model\Project $project */
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($project)) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+        
+        if (!$project->cleanBuilds()) {
+            throw new \Exception('Unable to clean up of builds of project.');
+        }
+
+        header('Location: '.PHPCI_URL.'project/view/' . $projectId);
+        exit;
+    }
+
+    /**
     * Delete a project.
     */
     public function delete($projectId)

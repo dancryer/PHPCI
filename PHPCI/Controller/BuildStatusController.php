@@ -38,28 +38,53 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
+     * Returns status of the last build
+     * @param $projectId
+     * @return string
+     */
+    protected function getStatus($projectId)
+    {
+        $branch = $this->getParam('branch', 'master');
+        try {
+            $project = $this->projectStore->getById($projectId);
+            $status = 'passing';
+
+            if (!$project->getAllowPublicStatus()) {
+                die();
+            }
+
+            if (isset($project) && $project instanceof Project) {
+                $build = $project->getLatestBuild($branch, array(2,3));
+
+                if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
+                    $status = 'failed';
+                }
+            }
+        } catch (\Exception $e) {
+            $status = 'error';
+        }
+
+        return $status;
+    }
+
+    /**
     * Returns the appropriate build status image for a given project.
     */
     public function image($projectId)
     {
-        $branch = $this->getParam('branch', 'master');
-        $project = $this->projectStore->getById($projectId);
-        $status = 'ok';
-
-        if (!$project->getAllowPublicStatus()) {
-            die();
-        }
-
-        if (isset($project) && $project instanceof Project) {
-            $build = $project->getLatestBuild($branch, array(2,3));
-
-            if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
-                $status = 'failed';
-            }
-        }
-
+        $status = $this->getStatus($projectId);
         header('Content-Type: image/png');
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
+    }
+
+    /**
+    * Returns the appropriate build status image in SVG format for a given project.
+    */
+    public function svg($projectId)
+    {
+        $status = $this->getStatus($projectId);
+        header('Content-Type: image/svg+xml');
+        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
     }
 
     public function view($projectId)

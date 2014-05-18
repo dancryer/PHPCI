@@ -323,10 +323,10 @@ class ProjectController extends \PHPCI\Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Text('branch');
+        $field = new Form\Element\Text('defaultbranch');
         $field->setRequired(true);
         $field->setValue('master');
-        $field->setLabel('Branch Name');
+        $field->setLabel('Default Branch Name');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);

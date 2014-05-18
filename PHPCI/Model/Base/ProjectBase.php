@@ -53,7 +53,7 @@ class ProjectBase extends Model
         'id'                 => 'getId',
         'title'              => 'getTitle',
         'reference'          => 'getReference',
-        'branch'          => 'getBranch',
+        'defaultbranch'      => 'getDefaultBranch',
         'git_key'            => 'getGitKey',
         'build_config'       => 'getBuildConfig',
         'type'               => 'getType',
@@ -71,7 +71,7 @@ class ProjectBase extends Model
         'id'                 => 'setId',
         'title'              => 'setTitle',
         'reference'          => 'setReference',
-        'branch'          => 'setbranch',
+        'defaultbranch'      => 'setDefaultBranch',
         'git_key'            => 'setGitKey',
         'build_config'       => 'setBuildConfig',
         'type'               => 'setType',
@@ -102,7 +102,7 @@ class ProjectBase extends Model
             'length'  => 250,
             'default' => null,
         ),
-        'branch'          => array(
+        'defaultbranch'          => array(
             'type'    => 'varchar',
             'length'  => 50,
             'default' => 'master',
@@ -194,9 +194,9 @@ class ProjectBase extends Model
      *
      * @return string
      */
-    public function getBranch()
+    public function getDefaultBranch()
     {
-        $rtn = $this->data['branch'];
+        $rtn = $this->data['defaultbranch'];
         return $rtn;
     }
 
@@ -330,16 +330,16 @@ class ProjectBase extends Model
      *
      * @param $value string
      */
-    public function setBranch($value)
+    public function setDefaultBranch($value)
     {
-        $this->_validateNotNull('Branch', $value);
-        $this->_validateString('Branch', $value);
+        $this->_validateNotNull('DefaultBranch', $value);
+        $this->_validateString('DefaultBranch', $value);
 
-        if ($this->data['branch'] === $value) {
+        if ($this->data['defaultbranch'] === $value) {
             return;
         }
-        $this->data['branch'] = $value;
-        $this->_setModified('branch');
+        $this->data['defaultbranch'] = $value;
+        $this->_setModified('defaultbranch');
     }
 
     /**

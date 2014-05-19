@@ -66,7 +66,15 @@ class PhpCpd implements \PHPCI\Plugin
         $ignore = '';
         if (count($this->ignore)) {
             $map = function ($item) {
-                return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+                // remove the trailing slash
+                $item = (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+
+                if (is_file($this->path . '/' . $item)) {
+                    return ' --names-exclude ' . $item;
+                } else {
+                    return ' --exclude ' . $item;
+                }
+
             };
             $ignore = array_map($map, $this->ignore);
 

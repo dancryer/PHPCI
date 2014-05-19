@@ -416,9 +416,9 @@ var PHPCIObject = Class.extend({
         var content = $('<div></div>').attr('id', plugin.id).append(output);
         content.addClass('panel panel-default');
 
-        if(plugin.title != undefined)
+        if(plugin.title != undefined) {
             $('<a>').attr({'class':'list-group-item', 'href':'#'+plugin.id}).html(plugin.title).appendTo($('#anchorPlugins'));
-
+        }
 
         if (plugin.title) {
             content.prepend('<div class="panel-heading"><h3 class="panel-title">'+plugin.title+'</h3></div>');

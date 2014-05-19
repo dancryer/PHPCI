@@ -52,6 +52,10 @@ class InitialMigration extends AbstractMigration
     {
         $table = $this->table('build');
 
+        if (!$this->hasTable('build')) {
+            $table->create();
+        }
+
         if (!$table->hasColumn('project_id')) {
             $table->addColumn('project_id', 'integer');
         }
@@ -115,6 +119,10 @@ class InitialMigration extends AbstractMigration
     {
         $table = $this->table('build_meta');
 
+        if (!$this->hasTable('build_meta')) {
+            $table->create();
+        }
+
         if (!$table->hasColumn('project_id')) {
             $table->addColumn('project_id', 'integer');
         }
@@ -141,6 +149,10 @@ class InitialMigration extends AbstractMigration
     protected function createProjectTable()
     {
         $table = $this->table('project');
+
+        if (!$this->hasTable('project')) {
+            $table->create();
+        }
 
         if (!$table->hasColumn('title')) {
             $table->addColumn('title', 'string', array('limit' => 250));
@@ -192,6 +204,10 @@ class InitialMigration extends AbstractMigration
     protected function createUserTable()
     {
         $table = $this->table('user');
+
+        if (!$this->hasTable('user')) {
+            $table->create();
+        }
 
         if (!$table->hasColumn('email')) {
             $table->addColumn('email', 'string', array('limit' => 250));

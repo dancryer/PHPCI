@@ -76,7 +76,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
         $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($project->getBranch());
+        $build->setBranch($project->getDefaultBranch());
         $build->setCreated(new \DateTime());
 
         $build = $this->buildStore->save($build);

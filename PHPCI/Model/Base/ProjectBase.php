@@ -36,7 +36,7 @@ class ProjectBase extends Model
         'id'                 => null,
         'title'              => null,
         'reference'          => null,
-        'branch'          => null,
+        'defaultbranch'          => null,
         'git_key'            => null,
         'build_config'       => null,
         'type'               => null,

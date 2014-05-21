@@ -130,12 +130,12 @@ class XMPP implements \PHPCI\Plugin
     }
 
     /**
-     * Find config file for sendxmpp binary (default is ~/.sendxmpp)
+     * Find config file for sendxmpp binary (default is ~/.sendxmpprc)
      */
     public static function findConfigFile()
     {
-        if (file_exists('~/.sendxmpp')) {
-            if( md5(file_get_contents('~/.sendxmpp')) !==
+        if (file_exists('~/.sendxmpprc')) {
+            if( md5(file_get_contents('~/.sendxmpprc')) !==
                     md5($this->getConfigFormat())) {
                 return null;
             }
@@ -169,8 +169,8 @@ class XMPP implements \PHPCI\Plugin
          * Try to build conf file
          */
         if(is_null(self::findConfigFile())) {
-            file_put_contents('~/.sendxmpp', $this->getConfigFormat());
-            chmod('~/.sendxmpp', 0600);
+            file_put_contents('~/.sendxmpprc', $this->getConfigFormat());
+            chmod('~/.sendxmpprc', 0600);
         }
 
         /*

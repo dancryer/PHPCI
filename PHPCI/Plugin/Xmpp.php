@@ -100,7 +100,7 @@ class XMPP implements \PHPCI\Plugin
      */
     protected function setOptions($options)
     {
-        foreach (array('username', 'password', 'alias', 'tls', 'server', 'dateFormat')
+        foreach (array('username', 'password', 'alias', 'tls', 'server', 'date_format')
                 as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];

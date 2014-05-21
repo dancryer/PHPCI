@@ -21,7 +21,6 @@ use PHPCI\Model\Build;
 class XMPP implements \PHPCI\Plugin
 {
     protected $directory;
-    protected $args;
     protected $phpci;
     protected $build;
 

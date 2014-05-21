@@ -152,6 +152,13 @@ class XMPP implements \PHPCI\Plugin
         }
 
         /*
+         * Without recipients we can't send notification
+         */
+        if (count($this->recipients) == 0) {
+            return false;
+        }
+
+        /*
          * Try to build conf file
          */
         if(is_null(self::findConfigFile())) {
@@ -181,13 +188,16 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Send XMPP notification for all recipients
          */
-        $success = false;
+        $success = array()
         foreach($this->recipients as $recipient) {
-            $success = $this->phpci->executeCommand('echo %s | ' . $sendxmpp .
-                    ' %s %s', $message, $tls, $recipients);
+            if($cmd = $this->phpci->executeCommand('echo %s | ' . $sendxmpp .
+                    ' %s %s', $message, $tls, $recipients)) {
+                $success[] = $cmd;
+            }
+
             print $this->phpci->getLastOutput();
         }
 
-        return $success;
+        return (count($success) === count($this->recipients));
     }
 }

@@ -19,7 +19,7 @@ class MailerFactory
 
     public function __construct($config = null)
     {
-        $this->emailConfig  = isset($config['email_settings']) ?: array();
+        $this->emailConfig  = isset($config['email_settings']) ? $config['email_settings'] : array();
     }
 
     /**

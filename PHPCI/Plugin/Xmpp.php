@@ -53,12 +53,12 @@ class XMPP implements \PHPCI\Plugin
     /**
      * @var array, list of recipients xmpp accounts
      */
-    protected $recipients
+    protected $recipients;
 
     /**
      * @var string, mask to format date
      */
-    protected $dateFormat
+    protected $date_format;
 
     /**
      *
@@ -71,13 +71,13 @@ class XMPP implements \PHPCI\Plugin
         $this->phpci = $phpci;
         $this->build = $build;
 
-        $this->username  = '';
-        $this->password  = '';
-        $this->server    = '';
-        $this->alias     = '';
-        $this->recipients= array();
-        $this->tls       = false;
-        $this->dateFormat= '%d/%m/%Y %l:%M %P';
+        $this->username    = '';
+        $this->password    = '';
+        $this->server      = '';
+        $this->alias       = '';
+        $this->recipients  = array();
+        $this->tls         = false;
+        $this->date_format = '%d/%m/%Y %l:%M %P';
 
         /*
          * Set recipients list
@@ -214,7 +214,7 @@ class XMPP implements \PHPCI\Plugin
                     $this->build->getId()." failure";
         }
 
-        $message .= ' ('.strftime($this->dateFormat).')';
+        $message .= ' ('.strftime($this->date_format).')';
         return $message;
     }
 }

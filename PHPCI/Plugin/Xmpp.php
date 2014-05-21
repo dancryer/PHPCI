@@ -181,6 +181,11 @@ class XMPP implements \PHPCI\Plugin
             $tls = ' -t';
         }
 
+        $message_file = uniqid('xmppmessage');
+        if($this->buildMessage($message_file) === false) {
+            return false;
+        }
+
         /*
          * Send XMPP notification for all recipients
          */
@@ -202,7 +207,7 @@ class XMPP implements \PHPCI\Plugin
      *
      * @return string
      */
-    protected function getMessage()
+    protected function buildMessage($message_file)
     {
         $message = '';
 
@@ -215,6 +220,7 @@ class XMPP implements \PHPCI\Plugin
         }
 
         $message .= ' ('.strftime($this->date_format).')';
-        return $message;
+
+        return file_put_contents($message_file, $message);
     }
 }

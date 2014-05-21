@@ -56,6 +56,11 @@ class XMPP implements \PHPCI\Plugin
     protected $recipients
 
     /**
+     * @var string, mask to format date
+     */
+    protected $dateFormat
+
+    /**
      *
      * @param Builder $phpci
      * @param Build $build
@@ -72,6 +77,7 @@ class XMPP implements \PHPCI\Plugin
         $this->alias     = '';
         $this->recipients= array();
         $this->tls       = false;
+        $this->dateFormat= '%d/%m/%Y %l:%M %P';
 
         /*
          * Set recipients list
@@ -94,7 +100,8 @@ class XMPP implements \PHPCI\Plugin
      */
     protected function setOptions($options)
     {
-        foreach (array('username', 'password', 'alias', 'tls', 'server') as $key) {
+        foreach (array('username', 'password', 'alias', 'tls', 'server', 'dateFormat')
+                as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
             }
@@ -175,8 +182,30 @@ class XMPP implements \PHPCI\Plugin
         }
 
         /*
-         * Build message from status build
+         * Send XMPP notification for all recipients
          */
+        $success = array()
+        foreach($this->recipients as $recipient) {
+            if($cmd = $this->phpci->executeCommand('echo %s | ' . $sendxmpp .
+                    ' %s %s', $this->getMessage(), $tls, $recipients)) {
+                $success[] = $cmd;
+            }
+
+            print $this->phpci->getLastOutput();
+        }
+
+        return (count($success) === count($this->recipients));
+    }
+
+    /**
+     * Build message for notification
+     *
+     * @return string
+     */
+    protected function getMessage()
+    {
+        $message = '';
+
         if($this->build->isSuccessful()) {
             $message = "✔ [".$this->build->getProjectTitle()."] Build #".
                     $this->build->getId()." successful";
@@ -185,19 +214,7 @@ class XMPP implements \PHPCI\Plugin
                     $this->build->getId()." failure";
         }
 
-        /*
-         * Send XMPP notification for all recipients
-         */
-        $success = array()
-        foreach($this->recipients as $recipient) {
-            if($cmd = $this->phpci->executeCommand('echo %s | ' . $sendxmpp .
-                    ' %s %s', $message, $tls, $recipients)) {
-                $success[] = $cmd;
-            }
-
-            print $this->phpci->getLastOutput();
-        }
-
-        return (count($success) === count($this->recipients));
+        $message .= ' ('.strftime($this->dateFormat).')';
+        return $message;
     }
 }

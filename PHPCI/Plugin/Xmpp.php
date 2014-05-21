@@ -77,7 +77,7 @@ class XMPP implements \PHPCI\Plugin
         $this->alias       = '';
         $this->recipients  = array();
         $this->tls         = false;
-        $this->date_format = '%d/%m/%Y %l:%M %P';
+        $this->date_format = '%c';
 
         /*
          * Set recipients list

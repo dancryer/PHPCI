@@ -189,17 +189,24 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Send XMPP notification for all recipients
          */
-        $success = array()
+        $cmd = $sendxmpp . "%s -f .sendxmpprc -m %s %s";
+        $recipients = '';
         foreach($this->recipients as $recipient) {
-            if($cmd = $this->phpci->executeCommand('echo %s | ' . $sendxmpp .
-                    ' %s %s', $this->getMessage(), $tls, $recipients)) {
-                $success[] = $cmd;
-            }
-
-            print $this->phpci->getLastOutput();
+            if(!empty($recipients))
+                $recipients .= ' ';
+            $recipients .= $recipient;
         }
 
-        return (count($success) === count($this->recipients));
+        $success = $this->phpci->executeCommand(
+                $cmd, $tls, $message_file, $recipients);
+        print $this->phpci->getLastOutput();
+
+        /*
+         * Remove temp message file
+         */
+        $this->phpci->executeCommand("rm -rf ".$message_file);
+
+        return $success;
     }
 
     /**

@@ -131,7 +131,7 @@ class BuildController extends \PHPCI\Controller
         $build->setCreated(new \DateTime());
         $build->setCommitterEmail($copy->getCommitterEmail());
         $build->setCommitMessage($copy->getCommitMessage());
-        $build->setExtra($copy->getExtra());
+        $build->setExtra(json_encode($copy->getExtra()));
 
         $build = $this->buildStore->save($build);
 

@@ -26,14 +26,14 @@ class Behat implements \PHPCI\Plugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build = $build;
+        $this->phpci    = $phpci;
+        $this->build    = $build;
         $this->features = '';
 
         if (isset($options['executable'])) {
             $this->executable = $options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('atoum');
+            $this->executable = $this->phpci->findBinary('behat');
         }
 
         if (!empty($options['features'])) {

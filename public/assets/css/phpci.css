@@ -82,6 +82,6 @@ h1 {
     width: 200px;
 }
 
-.panel-body {
-    overflow: auto;
+.word-wrap {
+    word-wrap: break-word;
 }

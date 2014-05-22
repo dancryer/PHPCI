@@ -124,11 +124,12 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
     }
 
-    protected function processReport($xml)
+    protected function processReport($xmlString)
     {
-        $xml = simplexml_load_string($xml);
+        $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
+            $this->phpci->log($xmlString);
             throw new \Exception('Could not process PHPMD report XML.');
         }
 

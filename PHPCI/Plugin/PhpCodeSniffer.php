@@ -157,7 +157,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         );
 
         $output = $this->phpci->getLastOutput();
-        list($errors, $warnings, $data) = $this->processReport(json_decode(trim($output), true));
+        list($errors, $warnings, $data) = $this->processReport($output);
 
         $this->phpci->logExecOutput(true);
 
@@ -198,9 +198,12 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return array($ignore, $standard, $suffixes);
     }
 
-    protected function processReport($data)
+    protected function processReport($output)
     {
+        $data = json_decode(trim($output), true);
+
         if (!is_array($data)) {
+            $this->phpci->log($output);
             throw new \Exception('Could not process PHPCS report JSON.');
         }
 

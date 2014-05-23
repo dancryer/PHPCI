@@ -28,8 +28,17 @@ class Build extends BuildBase
     const STATUS_SUCCESS = 2;
     const STATUS_FAILED = 3;
 
-    public $currentBuildPath = null;
+    protected $currentBuildPath;
 
+    public function setBuildPath($path)
+    {
+        $this->currentBuildPath = $path;
+    }
+
+    public function getBuildPath()
+    {
+        return $this->currentBuildPath;
+    }
     /**
     * Get link to commit from another source (i.e. Github)
     */
@@ -112,6 +121,23 @@ class Build extends BuildBase
 
         $builder->setConfigArray($build_config);
         return true;
+    }
+
+    /**
+     * Create an SSH key file on disk for this build.
+     * @param $cloneTo
+     * @return string
+     */
+    protected function writeSshKey()
+    {
+        $keyFile = PHPCI_DIR . 'PHPCI/build/'. uniqid().'.key';
+
+        // Write the contents of this project's git key to the file:
+        file_put_contents($keyFile, $this->getProject()->getSshPrivateKey());
+        chmod($keyFile, 0600);
+
+        // Return the filename:
+        return $keyFile;
     }
 
     protected function getZeroConfigPlugins(Builder $builder)

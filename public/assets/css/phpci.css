@@ -85,3 +85,9 @@ h1 {
 .word-wrap {
     word-wrap: break-word;
 }
+
+@media (min-width: 1830px) {
+    .container {
+        width: 1800px;
+    }
+}

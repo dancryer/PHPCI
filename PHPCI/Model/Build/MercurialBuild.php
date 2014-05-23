@@ -33,7 +33,17 @@ class MercurialBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $this->cloneByHttp($builder, $buildPath);
+        $key = trim($this->getProject()->getSshPublicKey());
+
+        if (!empty($key) && strpos($this->getProject()->getReference(), 'ssh') > -1) {
+            $success = $this->cloneBySsh($builder, $buildPath);
+        } else {
+            $success = $this->cloneByHttp($builder, $buildPath);
+        }
+        if (!$success) {
+            $builder->logFailure('Failed to clone remote git repository.');
+            return false;
+        }
 
         return $this->handleConfig($builder, $buildPath);
     }
@@ -45,4 +55,42 @@ class MercurialBuild extends Build
     {
         return $builder->executeCommand('hg clone %s "%s" -r %s', $this->getCloneUrl(), $cloneTo, $this->getBranch());
     }
+
+    /**
+     * Use an SSH-based git clone.
+     */
+    protected function cloneBySsh(Builder $builder, $cloneTo)
+    {
+        $keyFile = $this->writeSshKey();
+
+        // Do the git clone:
+        $cmd = 'hg clone --ssh "ssh -i '.$keyFile.'" %s "%s"';
+
+        $success = $builder->executeCommand($cmd, $this->getCloneUrl(), $cloneTo);
+
+        if ($success) {
+            $success = $this->postCloneSetup($builder, $cloneTo);
+        }
+
+        // Remove the key file:
+        unlink($keyFile);
+
+        return $success;
+    }
+
+    protected function postCloneSetup(Builder $builder, $cloneTo)
+    {
+        $success = true;
+        $commit = $this->getCommitId();
+
+        if (!empty($commit) && $commit != 'Manual') {
+            $cmd = 'cd "%s" && hg checkout %s';
+
+            $success = $builder->executeCommand($cmd, $cloneTo, $this->getBranch());
+        }
+
+        return $success;
+    }
+
+
 }

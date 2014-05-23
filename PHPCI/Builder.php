@@ -289,9 +289,11 @@ class Builder implements LoggerAwareInterface
     {
         $buildId = 'project' . $this->build->getProject()->getId()
                  . '-build' . $this->build->getId();
-        $this->ciDir = dirname(dirname(__FILE__) . '/../') . '/';
+        $this->ciDir = PHPCI_DIR . 'PHPCI/';
+
         $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
-        $this->build->currentBuildPath = $this->buildPath;
+
+        $this->build->setBuildPath( $this->buildPath );
 
         $this->interpolator->setupInterpolationVars(
             $this->build,

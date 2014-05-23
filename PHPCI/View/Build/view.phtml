@@ -31,7 +31,7 @@
 
 <div class="row">
 	<div class="col-lg-3">
-        <div class="panel panel-default">
+        <div class="panel panel-default affix">
             <div class="panel-heading">
                 <h4 class="panel-title">Options</h4>
             </div>
@@ -41,6 +41,11 @@
                         <a class="list-group-item" href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" id="delete-build"><i class="icon-trash"></i> Delete Build</a>
                     <?php endif; ?>
                 </ul>
+            <div class="panel-heading">
+                <h4 class="panel-title">Quick links</h4>
+            </div>
+                <ul class="list-group" id="anchorPlugins"></ul>
+
         </div>
 	</div>
 

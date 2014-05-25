@@ -47,12 +47,12 @@ if (!file_exists($configFile)) {
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
 if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
-    die('PHPCI has not yet been installed - Please use the command ./console phpci:install to install it.');
+    die('PHPCI has not yet been installed - Please use the command "./console phpci:install" (or "php ./console phpci:install" for Windows) to install it.');
 }
 
 // If composer has not been run, fail at this point and tell the user to install:
 if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
+    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" (or "php composer.phar install" for Windows) before using console');
     exit(1);
 }
 

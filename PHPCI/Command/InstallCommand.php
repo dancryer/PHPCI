@@ -12,6 +12,7 @@ namespace PHPCI\Command;
 use Exception;
 use PDO;
 
+use b8\Config;
 use b8\Database;
 use b8\Store\Factory;
 use Symfony\Component\Console\Command\Command;
@@ -89,7 +90,7 @@ class InstallCommand extends Command
         $conf['b8']['database'] = $db;
         $conf['phpci']['url'] = $dialog->askAndValidate(
             $output,
-            'Your PHPCI URL (without trailing slash): ',
+            'Your PHPCI URL without trailing slash ("http://phpci.local" for example): ',
             function ($answer) {
                 if (!filter_var($answer, FILTER_VALIDATE_URL)) {
                     throw new Exception('Must be a valid URL');
@@ -235,6 +236,8 @@ class InstallCommand extends Command
             $user->setIsAdmin(1);
             $user->setHash(password_hash($adminPass, PASSWORD_DEFAULT));
 
+            $this->reloadConfig();
+
             $store = Factory::getStore('User');
             $store->save($user);
 
@@ -243,6 +246,16 @@ class InstallCommand extends Command
             $output->writeln('<error>PHPCI failed to create your admin account.</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
             die;
+        }
+    }
+
+    protected function reloadConfig()
+    {
+        $configFile = PHPCI_DIR . 'PHPCI/config.yml';
+        $config     = Config::getInstance();
+
+        if (file_exists($configFile)) {
+            $config->loadYaml($configFile);
         }
     }
 

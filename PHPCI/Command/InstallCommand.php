@@ -108,8 +108,10 @@ class InstallCommand extends Command
 
     /**
      * Check PHP version, required modules and for disabled functions.
-     * @param OutputInterface $output
+     * @param  OutputInterface $output
+     * @throws \Exception
      */
+
     protected function checkRequirements(OutputInterface $output)
     {
         $output->write('Checking requirements...');
@@ -160,8 +162,8 @@ class InstallCommand extends Command
 
     /**
      * Try and connect to MySQL using the details provided.
-     * @param array $db
-     * @param OutputInterface $output
+     * @param  array           $db
+     * @param  OutputInterface $output
      * @return bool
      */
     protected function verifyDatabaseDetails(array $db, OutputInterface $output)
@@ -210,6 +212,10 @@ class InstallCommand extends Command
         $output->writeln('<info>OK</info>');
     }
 
+    /**
+     * @param OutputInterface $output
+     * @param DialogHelper    $dialog
+     */
     protected function createAdminUser(OutputInterface $output, DialogHelper $dialog)
     {
         // Try to create a user account:
@@ -259,6 +265,9 @@ class InstallCommand extends Command
         }
     }
 
+    /**
+     * @param OutputInterface $output
+     */
     protected function verifyNotInstalled(OutputInterface $output)
     {
         if (file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {

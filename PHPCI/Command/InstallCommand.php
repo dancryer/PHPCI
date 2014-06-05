@@ -90,13 +90,13 @@ class InstallCommand extends Command
         $conf['b8']['database'] = $db;
         $conf['phpci']['url'] = $dialog->askAndValidate(
             $output,
-            'Your PHPCI URL without trailing slash ("http://phpci.local" for example): ',
+            'Your PHPCI URL ("http://phpci.local" for example): ',
             function ($answer) {
                 if (!filter_var($answer, FILTER_VALIDATE_URL)) {
                     throw new Exception('Must be a valid URL');
                 }
 
-                return $answer;
+                return rtrim($answer, '/');
             },
             false
         );

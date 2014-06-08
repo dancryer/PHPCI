@@ -56,13 +56,20 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $page = $this->getParam('p', 1);
-        $builds = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
+        $per_page = 10;
+        $page     = $this->getParam('p', 1);
+        $builds   = $this->getLatestBuildsHtml($projectId, (($page - 1) * $per_page));
+        $pages    = ceil($builds[1] / $per_page);
 
-        $this->view->builds = $builds[0];
-        $this->view->total = $builds[1];
+        if ($page > $pages) {
+            throw new NotFoundException('Page with number: ' . $page . ' not found');
+        }
+
+        $this->view->builds  = $builds[0];
+        $this->view->total   = $builds[1];
         $this->view->project = $project;
-        $this->view->page = $page;
+        $this->view->page    = $page;
+        $this->view->pages   = $pages;
 
         $this->config->set('page_title', $project->getTitle());
 

@@ -82,8 +82,6 @@
         <?php
 
         print '<div><ul class="pagination">';
-        $pages = ceil($total / 10);
-        $pages = $pages == 0 ? 1 : $pages;
 
         if ($page > 1) {
             print '<li><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo; Prev</a></li>';

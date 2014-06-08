@@ -85,3 +85,17 @@ h1 {
 .word-wrap {
     word-wrap: break-word;
 }
+
+ul.pagination {
+
+}
+
+    ul.pagination > li > span {
+        color: #333;
+    }
+
+    ul.pagination > li > span:hover,
+    ul.pagination > li > span:focus {
+        color:            #333;
+        background-color: #fff;
+    }

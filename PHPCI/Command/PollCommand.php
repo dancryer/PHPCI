@@ -87,7 +87,7 @@ class PollCommand extends Command
                 $build->setProjectId($project->getId());
                 $build->setCommitId($last_commit);
                 $build->setStatus(Build::STATUS_NEW);
-                $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
+                $build->setBranch($project->getBranch());
                 $build->setCreated(new \DateTime());
                 if (!empty($last_committer)) {
                     $build->setCommitterEmail($last_committer);

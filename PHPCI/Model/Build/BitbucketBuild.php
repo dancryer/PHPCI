@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Model\Build;
 
@@ -41,7 +41,7 @@ class BitbucketBuild extends RemoteGitBuild
     */
     protected function getCloneUrl()
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             return 'git@bitbucket.org:' . $this->getProject()->getReference() . '.git';

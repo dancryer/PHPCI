@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
@@ -30,7 +30,6 @@ class Git implements \PHPCI\Plugin
         $this->build = $build;
         $this->actions = $options;
     }
-
 
     public function execute()
     {
@@ -58,68 +57,81 @@ class Git implements \PHPCI\Plugin
         return $success;
     }
 
-    protected function runAction($action, $options = array())
+    protected function runAction($action, array $options = array())
     {
-        // If options isn't an array, it should be.
-        if (!is_array($options)) {
-            $options = array();
+        switch ($action) {
+            case 'merge':
+                return $this->runMergeAction($options);
+
+            case 'tag':
+                return $this->runTagAction($options);
+
+            case 'pull':
+                return $this->runPullAction($options);
+
+            case 'push':
+                return $this->runPushAction($options);
         }
 
-        // Handle git merges.
-        if ($action == 'merge' && array_key_exists('branch', $options)) {
-            $cmd = 'git checkout %s && git merge ' . $this->build->getBranch();
-            return $this->phpci->executeCommand($cmd, $this->directory, $options['branch']);
-        }
-
-        // Handle tagging:
-        if ($action == 'tag') {
-            $tagName = date('Ymd-His');
-            $message = 'Tag created by PHPCI: ' . date('Y-m-d H:i:s');
-
-            if (array_key_exists('name', $options)) {
-                $tagName = $this->phpci->interpolate($options['name']);
-            }
-
-            if (array_key_exists('message', $options)) {
-                $message = $this->phpci->interpolate($options['message']);
-            }
-
-            $cmd = 'git tag %s -m "%s"';
-            return $this->phpci->executeCommand($cmd, $tagName, $message);
-        }
-
-        // Handle pull:
-        if ($action == 'pull') {
-            $branch = $this->build->getBranch();
-            $remote = 'origin';
-
-            if (array_key_exists('branch', $options)) {
-                $branch = $this->phpci->interpolate($options['branch']);
-            }
-
-            if (array_key_exists('remote', $options)) {
-                $remote = $this->phpci->interpolate($options['remote']);
-            }
-
-            return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
-        }
-
-        // Handle push:
-        if ($action == 'push') {
-            $branch = $this->build->getBranch();
-            $remote = 'origin';
-
-            if (array_key_exists('branch', $options)) {
-                $branch = $this->phpci->interpolate($options['branch']);
-            }
-
-            if (array_key_exists('remote', $options)) {
-                $remote = $this->phpci->interpolate($options['remote']);
-            }
-
-            return $this->phpci->executeCommand('git push %s %s', $remote, $branch);
-        }
 
         return false;
+    }
+
+    protected function runMergeAction($options)
+    {
+        if (array_key_exists('branch', $options)) {
+            $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
+            $path = $this->phpci->buildPath;
+            return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
+        }
+    }
+
+    protected function runTagAction($options)
+    {
+        $tagName = date('Ymd-His');
+        $message = 'Tag created by PHPCI: ' . date('Y-m-d H:i:s');
+
+        if (array_key_exists('name', $options)) {
+            $tagName = $this->phpci->interpolate($options['name']);
+        }
+
+        if (array_key_exists('message', $options)) {
+            $message = $this->phpci->interpolate($options['message']);
+        }
+
+        $cmd = 'git tag %s -m "%s"';
+        return $this->phpci->executeCommand($cmd, $tagName, $message);
+    }
+
+    protected function runPullAction($options)
+    {
+        $branch = $this->build->getBranch();
+        $remote = 'origin';
+
+        if (array_key_exists('branch', $options)) {
+            $branch = $this->phpci->interpolate($options['branch']);
+        }
+
+        if (array_key_exists('remote', $options)) {
+            $remote = $this->phpci->interpolate($options['remote']);
+        }
+
+        return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
+    }
+
+    protected function runPushAction($options)
+    {
+        $branch = $this->build->getBranch();
+        $remote = 'origin';
+
+        if (array_key_exists('branch', $options)) {
+            $branch = $this->phpci->interpolate($options['branch']);
+        }
+
+        if (array_key_exists('remote', $options)) {
+            $remote = $this->phpci->interpolate($options['remote']);
+        }
+
+        return $this->phpci->executeCommand('git push %s %s', $remote, $branch);
     }
 }

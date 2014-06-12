@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -20,7 +20,15 @@ use PHPCI\Model\Build;
 */
 class PhpCsFixer implements \PHPCI\Plugin
 {
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
 
     protected $workingDir = '';
     protected $level      = ' --level=all';
@@ -31,6 +39,8 @@ class PhpCsFixer implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+
         $this->workingdir = $this->phpci->buildPath;
         $this->buildArgs($options);
     }

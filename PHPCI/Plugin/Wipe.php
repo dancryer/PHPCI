@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -20,13 +20,24 @@ use PHPCI\Model\Build;
 */
 class Wipe implements \PHPCI\Plugin
 {
-    protected $directory;
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    protected $directory;
+
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
+        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
     }
 
@@ -41,7 +52,10 @@ class Wipe implements \PHPCI\Plugin
             return true;
         }
         if (is_dir($this->directory)) {
-            $cmd = 'rm -rf %s*';
+            $cmd = 'rm -Rf "%s"';
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
             $success = $this->phpci->executeCommand($cmd, $this->directory);
         }
         return $success;

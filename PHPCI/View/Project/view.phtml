@@ -1,27 +1,31 @@
-<div id="title">
-	<h1>Project: <?php print (is_object($project)) ? htmlspecialchars($project->getTitle()) : ' - '; ?></h1>
-</div>
+<h1><i class="glyphicon glyphicon-th-list"></i> <?php print htmlspecialchars($project->getTitle()); ?></h1>
+
 
 <div class="row">
 	<div class="col-lg-3">
-        <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?php echo PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><i class="icon-folder-open"></i> <?php print htmlspecialchars($project->getTitle()); ?></a></li>
-		</ul>
-			<h5>Options</h5>
-        <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?php echo PHPCI_URL ?>project/build/<?php print $project->getId(); ?>"><i class="icon-cog"></i> Build Now</a></li>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Options</h3>
+            </div>
 
-			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="<?php echo PHPCI_URL ?>project/edit/<?php print $project->getId(); ?>"><i class="icon-edit"></i> Edit Project</a></li>
-			<li><a href="#" id="delete-project"><i class="icon-trash"></i> Delete Project</a></li>
-			<?php endif; ?>
-		</ul>
+            <div class="list-group">
+                <a class="list-group-item" href="<?php echo PHPCI_URL ?>project/build/<?php print $project->getId(); ?>"><i class="glyphicon glyphicon-cog"></i> Build Now</a>
 
-        <?php if (in_array($project->getType(), array('github', 'gitlab','bitbucket'))): ?>
-            <br>
-            <p class="alert alert-info">To automatically build this project when new commits are pushed, add the URL below
-        <?php endif; ?>
+                <?php if($this->User()->getIsAdmin()): ?>
+                    <a class="list-group-item" href="<?php echo PHPCI_URL ?>project/edit/<?php print $project->getId(); ?>"><i class="glyphicon glyphicon-edit"></i> Edit Project</a>
+                    <a class="list-group-item" href="#" id="delete-project"><i class="glyphicon glyphicon-trash"></i> Delete Project</a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket'))): ?>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 class="panel-title">Webhooks</h4>
+            </div>
+
+            <div class="panel-body">
+                To automatically build this project when new commits are pushed, add the URL below
 
 			<?php
 			switch($project->getType())
@@ -42,9 +46,22 @@
 				break;
 			}
 			?>
-		</p>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($project->getSshPublicKey()): ?>
+            <div class="panel panel-info">
+                <div class="panel-heading"><h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse">Public Key</a></h3></div>
+                <div id="publicCollapse" class="panel-collapse collapse out">
+                    <div class="panel-body word-wrap"><?php print $project->getSshPublicKey(); ?></div>
+                </div>
+            </div>
+        <?php endif; ?>
 	</div>
 	<div class="col-lg-9">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Builds</h3></div>
 		<table class="table table-striped table-bordered">
 			<thead>
 			<tr>
@@ -60,25 +77,32 @@
 				<?php print $builds; ?>
 			</tbody>
 		</table>
+        </div>
 
-<?php
+        <?php
 
-	print '<div><ul class="pagination">';
-	$pages = ceil($total / 10);
-	$pages = $pages == 0 ? 1 : $pages;
+        print '<div><ul class="pagination">';
+        $pages = ceil($total / 10);
+        $pages = $pages == 0 ? 1 : $pages;
 
-	print '<li class="'.($page == 1 ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo;</a></li>';
+        if ($page > 1) {
+            print '<li><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo; Prev</a></li>';
+        }
 
-	for($i = 1; $i <= $pages; $i++)
-	{
-		print '<li><a href="' . PHPCI_URL . 'project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
-	}
+        for($i = 1; $i <= $pages; $i++)
+        {
+            print '<li><a href="' . PHPCI_URL . 'project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
+        }
 
-	print '<li class="'.($page == $pages ? 'disabled' : '').'"><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">&raquo;</a></li>';
+        if ($page < $pages) {
+            print '<li><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">Next &raquo;</a></li>';
+        }
 
-	print '</ul></div>';
+        print '</ul></div>';
 
-?>
+        ?>
+
+
 	</div>
 </div>
 

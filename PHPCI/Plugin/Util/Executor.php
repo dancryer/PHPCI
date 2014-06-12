@@ -6,7 +6,6 @@ use \PHPCI\Logging\BuildLogger;
 
 class Executor
 {
-
     /**
      * @var BuildLogger
      */
@@ -103,5 +102,4 @@ class Executor
 
         return $rtn;
     }
-
 }

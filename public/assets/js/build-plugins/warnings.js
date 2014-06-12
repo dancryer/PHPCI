@@ -3,13 +3,16 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: 'Quality Trend',
     keys: {
-      'phpmd-warnings': 'PHPMD Warnings',
-      'phpcs-warnings': 'PHPCS Warnings',
-      'phpcs-errors': 'PHPCS Errors',
-      'phplint-errors': 'PHPLint Errors'
+        'phpmd-warnings': 'PHPMD Warnings',
+        'phpcs-warnings': 'PHPCS Warnings',
+        'phpcs-errors': 'PHPCS Errors',
+        'phplint-errors': 'PHPLint Errors',
+        'phpunit-errors': 'PHPUnit Errors',
+        'phpdoccheck-warnings': 'PHP Docblock Checker Warnings'
     },
     data: {},
     displayOnUpdate: false,
+    rendered: false,
 
     register: function() {
         var self = this;
@@ -19,12 +22,12 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
           queries.push(PHPCI.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors', function(data) {
+        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
             self.onUpdate(data);
         });
 
         $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1) {
+            if (!self.rendered && data.queryData.status > 1) {
                 self.displayOnUpdate = true;
                 for (var query in queries) {
                   queries[query]();
@@ -66,6 +69,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
 
     displayChart: function() {
         var self = this;
+        self.rendered = true;
 
         $('#build-warnings').empty().animate({height: '275px'});
 
@@ -87,8 +91,8 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
 
         var data = google.visualization.arrayToDataTable(data);
         var options = {
-            hAxis: {title: 'Build'},
-            vAxis: {title: 'Warnings'},
+            hAxis: {title: 'Builds'},
+            vAxis: {title: 'Warnings / Errors'},
             backgroundColor: { fill: 'transparent' },
             height: 275,
             pointSize: 3

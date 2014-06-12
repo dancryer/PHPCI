@@ -61,27 +61,13 @@ switch($build->getStatus())
 
 	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
 	<td>
-		<?php
-		$plugins = json_decode($build->getPlugins(), true);
-
-		if ( !is_array($plugins) ) {
-			$plugins = array();
-		}
-		if ( 0 === count($plugins) ) {
-			?> <span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span> <?php
-		}
-		?>
-		<?php
-			foreach($plugins as $plugin => $pluginstatus):
-				$subcls = $pluginstatus?'label label-success':'label label-danger';
-		?> <span class='<?php echo $subcls ?>'><?php print $this->Build()->formatPluginName($plugin); ?></span> <?php endforeach; ?>
-		<br style='clear:both;' />
+		<span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span>
 	</td>
 	<td>
 		<div class="btn-group">
-			<a class="btn btn-default btn-small" href="<?php echo PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>
+			<a class="btn btn-default btn-sm" href="<?php echo PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>
 			<?php if($this->User()->getIsAdmin()): ?>
-			<button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
+			<button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">

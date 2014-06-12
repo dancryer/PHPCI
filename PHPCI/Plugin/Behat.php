@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
@@ -21,17 +21,19 @@ use PHPCI\Model\Build;
 class Behat implements \PHPCI\Plugin
 {
     protected $phpci;
+    protected $build;
     protected $features;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci    = $phpci;
+        $this->build    = $build;
         $this->features = '';
 
         if (isset($options['executable'])) {
             $this->executable = $options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('atoum');
+            $this->executable = $this->phpci->findBinary('behat');
         }
 
         if (!empty($options['features'])) {

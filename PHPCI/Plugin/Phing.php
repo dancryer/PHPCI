@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
@@ -29,10 +29,12 @@ class Phing implements \PHPCI\Plugin
     private $propertyFile;
 
     protected $phpci;
+    protected $build;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->setPhpci($phpci);
+        $this->build = $build;
 
         /*
          * Set working directory

@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -24,12 +24,14 @@ class Grunt implements \PHPCI\Plugin
     protected $task;
     protected $preferDist;
     protected $phpci;
+    protected $build;
     protected $grunt;
     protected $gruntfile;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path = $phpci->buildPath;
+        $this->build = $build;
         $this->phpci = $phpci;
         $this->directory = $path;
         $this->task = null;

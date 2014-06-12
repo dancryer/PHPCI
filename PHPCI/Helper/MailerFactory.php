@@ -1,18 +1,25 @@
 <?php
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Helper;
 
 
-class MailerFactory {
-
+class MailerFactory
+{
     /**
      * @var array
      */
     protected $emailConfig;
 
-    public function __construct($phpCiConfig = null)
+    public function __construct($config = null)
     {
-        $this->emailConfig  = isset($phpCiSettings['email_settings']) ?: array();
+        $this->emailConfig  = isset($config['email_settings']) ? $config['email_settings'] : array();
     }
 
     /**
@@ -33,7 +40,7 @@ class MailerFactory {
         return \Swift_Mailer::newInstance($transport);
     }
 
-     protected function getMailConfig($configName)
+    protected function getMailConfig($configName)
     {
         if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];
@@ -54,5 +61,4 @@ class MailerFactory {
             }
         }
     }
-
-} 
+}

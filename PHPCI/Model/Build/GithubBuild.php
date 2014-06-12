@@ -1,14 +1,15 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Model\Build;
 
+use PHPCI\Builder;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
@@ -85,12 +86,59 @@ class GithubBuild extends RemoteGitBuild
     */
     protected function getCloneUrl()
     {
-        $key = trim($this->getProject()->getGitKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 
         if (!empty($key)) {
             return 'git@github.com:' . $this->getProject()->getReference() . '.git';
         } else {
             return 'https://github.com/' . $this->getProject()->getReference() . '.git';
         }
+    }
+
+    public function getCommitMessage()
+    {
+        $rtn = $this->data['commit_message'];
+
+        $reference = $this->getProject()->getReference();
+        $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
+        $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
+        $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+
+        return $rtn;
+    }
+
+    public function getFileLinkTemplate()
+    {
+        $link = 'https://github.com/' . $this->getProject()->getReference() . '/';
+        $link .= 'blob/' . $this->getBranch() . '/';
+        $link .= '{FILE}';
+        $link .= '#L{LINE}';
+
+        return $link;
+    }
+
+    protected function postCloneSetup(Builder $builder, $cloneTo)
+    {
+        $buildType = $this->getExtra('build_type');
+
+        $success = true;
+
+        try {
+            if (!empty($buildType) && $buildType == 'pull_request') {
+                $remoteUrl = $this->getExtra('remote_url');
+                $remoteBranch = $this->getExtra('remote_branch');
+
+                $cmd = 'cd "%s" && git checkout -b phpci/' . $this->getId() . ' %s && git pull -q --no-edit %s %s';
+                $success = $builder->executeCommand($cmd, $cloneTo, $this->getBranch(), $remoteUrl, $remoteBranch);
+            }
+        } catch (\Exception $ex) {
+            $success = false;
+        }
+
+        if ($success) {
+            $success = parent::postCloneSetup($builder, $cloneTo);
+        }
+
+        return $success;
     }
 }

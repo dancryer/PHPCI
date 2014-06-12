@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Command;
@@ -195,7 +195,7 @@ class InstallCommand extends Command
     protected function writeConfigFile(array $config)
     {
         $dumper = new \Symfony\Component\Yaml\Dumper();
-        $yaml = $dumper->dump($config);
+        $yaml = $dumper->dump($config, 2);
 
         file_put_contents(PHPCI_DIR . 'PHPCI/config.yml', $yaml);
     }
@@ -204,19 +204,7 @@ class InstallCommand extends Command
     {
         $output->write('Setting up your database... ');
 
-        // Load PHPCI's bootstrap file:
-        require(PHPCI_DIR . 'bootstrap.php');
-
-        try {
-            // Set up the database, based on table data from the models:
-            $gen = new Database\Generator(Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
-            $gen->generate();
-        } catch (Exception $ex) {
-            $output->writeln('');
-            $output->writeln('<error>PHPCI failed to set up the database.</error>');
-            $output->writeln('<error>' . $ex->getMessage() . '</error>');
-            die;
-        }
+        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
         $output->writeln('<info>OK</info>');
     }

@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Controller;
@@ -48,6 +48,7 @@ class SettingsController extends Controller
 
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);
@@ -62,7 +63,7 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error = $this->storeSettings();
 
-        if($error) {
+        if ($error) {
             header('Location: ' . PHPCI_URL . 'settings?saved=2');
         } else {
             header('Location: ' . PHPCI_URL . 'settings?saved=1');
@@ -241,5 +242,10 @@ class SettingsController extends Controller
         $user = $http->get('/user', array('access_token' => $token));
 
         return $user['body'];
+    }
+
+    protected function canWriteConfig()
+    {
+        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
     }
 }

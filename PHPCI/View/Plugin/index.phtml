@@ -1,8 +1,4 @@
 <h1 id="title">Packages and Provided Plugins</h1>
-<?php if (!$canInstall): ?>
-    <p class="alert alert-danger">PHPCI cannot automatically install/remove plugins for you, as either the <strong>shell_exec()</strong>
-        function is disabled or PHPCI could not find Composer. PHPCI will update composer.json for you, but you will need to run Composer manually to make the changes.</p>
-<?php endif; ?>
 
 <?php if (!$canWrite): ?>
     <p class="alert alert-danger">PHPCI cannot update composer.json for you as it is not writable.</p>
@@ -12,12 +8,8 @@
     <p class="alert alert-success"><strong><?php echo $_GET['r']; ?></strong> has been removed.</p>
 <?php endif; ?>
 
-<?php if (isset($_GET['i'])): ?>
-    <p class="alert alert-success"><strong><?php echo $_GET['i']; ?></strong> has been installed.</p>
-<?php endif; ?>
-
 <?php if (isset($_GET['w'])): ?>
-    <p class="alert alert-success"><strong><?php echo $_GET['w']; ?></strong> has been added to composer.json and will be installed next time you run composer update.</p>
+    <p class="alert alert-success"><strong><?php echo $_GET['w']; ?></strong> has been added to composer.json for you and will be installed next time you run composer update.</p>
 <?php endif; ?>
 
 <div class="box">
@@ -34,9 +26,9 @@
         <tbody>
 <?php foreach ($plugins as $plugin): ?>
             <tr>
-                <td><?= $plugin->name; ?></td>
-                <td><?= $plugin->class; ?></td>
-                <td><?= $plugin->source; ?></td>
+                <td><?php print $plugin->name; ?></td>
+                <td><?php print $plugin->class; ?></td>
+                <td><?php print $plugin->source; ?></td>
             </tr>
 <?php endforeach; ?>
         </tbody>

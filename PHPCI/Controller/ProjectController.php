@@ -1,23 +1,25 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Controller;
 
+use b8;
+use b8\Controller;
+use b8\Form;
+use b8\Exception\HttpException\ForbiddenException;
+use b8\Exception\HttpException\NotFoundException;
+use b8\Store;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Github;
+use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
-use b8;
-use b8\Config;
-use b8\Controller;
-use b8\Store;
-use b8\Form;
-use b8\Exception\HttpException\NotFoundException;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -39,8 +41,8 @@ class ProjectController extends \PHPCI\Controller
 
     public function init()
     {
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore = Store\Factory::getStore('Build');
+        $this->projectStore = Store\Factory::getStore('Project');
     }
 
     /**
@@ -49,17 +51,20 @@ class ProjectController extends \PHPCI\Controller
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
-        if (!$project) {
+
+        if (empty($project)) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $page           = $this->getParam('p', 1);
-        $builds         = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
+        $page = $this->getParam('p', 1);
+        $builds = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
 
-        $this->view->builds   = $builds[0];
-        $this->view->total    = $builds[1];
-        $this->view->project  = $project;
-        $this->view->page     = $page;
+        $this->view->builds = $builds[0];
+        $this->view->total = $builds[1];
+        $this->view->project = $project;
+        $this->view->page = $page;
+
+        $this->config->set('page_title', $project->getTitle());
 
         return $this->view->render();
     }
@@ -72,12 +77,17 @@ class ProjectController extends \PHPCI\Controller
         /* @var \PHPCI\Model\Project $project */
         $project = $this->projectStore->getById($projectId);
 
+        if (empty($project)) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
         $build = new Build();
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
         $build->setStatus(Build::STATUS_NEW);
         $build->setBranch($project->getDefaultBranch());
         $build->setCreated(new \DateTime());
+        $build->setCommitterEmail($_SESSION['user']->getEmail());
 
         $build = $this->buildStore->save($build);
 
@@ -91,7 +101,7 @@ class ProjectController extends \PHPCI\Controller
     public function delete($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $project = $this->projectStore->getById($projectId);
@@ -115,10 +125,10 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml($projectId, $start = 0)
     {
-        $criteria       = array('project_id' => $projectId);
-        $order          = array('id' => 'DESC');
-        $builds         = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
-        $view           = new b8\View('BuildsTable');
+        $criteria = array('project_id' => $projectId);
+        $order = array('id' => 'DESC');
+        $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
+        $view = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
             $build = BuildFactory::getBuild($build);
@@ -134,43 +144,24 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
+        $this->config->set('page_title', 'Add Project');
+
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
         $method = $this->request->getMethod();
 
-        if ($method == 'POST') {
-            $values = $this->getParams();
-            $pub = null;
-        } else {
-            $tempPath = sys_get_temp_dir() . '/';
+        $pub = null;
+        $values = $this->getParams();
 
-            // FastCGI fix for Windows machines, where temp path is not available to
-            // PHP, and defaults to the unwritable system directory.  If the temp
-            // path is pointing to the system directory, shift to the 'TEMP'
-            // sub-folder, which should also exist, but actually be writable.
-            if ($tempPath == getenv("SystemRoot") . '/') {
-                $tempPath = getenv("SystemRoot") . '/TEMP/';
-            }
+        if ($method != 'POST') {
+            $sshKey = new SshKey();
+            $key = $sshKey->generate();
 
-            $keyFile = $tempPath . md5(microtime(true));
-
-            if (!is_dir($tempPath)) {
-                mkdir($tempPath);
-            }
-
-            if ($this->canGenerateKeys()) {
-                shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
-
-                $pub = file_get_contents($keyFile . '.pub');
-                $prv = file_get_contents($keyFile);
-
-                $values = array('key' => $prv, 'pubkey' => $pub);
-            } else {
-                $pub = null;
-                $values = array();
-            }
+            $values['key'] = $key['private_key'];
+            $values['pubkey'] = $key['public_key'];
+            $pub = $key['public_key'];
         }
 
         $form = $this->projectForm($values);
@@ -187,26 +178,17 @@ class ProjectController extends \PHPCI\Controller
 
         $values = $form->getValues();
 
-        if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
-
+        $matches = array();
+        if ($values['type'] == "gitlab" && preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches)) {
             $info = array();
-            if (isset($matches[1])) {
-                $info["user"] = $matches[1];
-            }
-
-            if (isset($matches[2])) {
-                $info["domain"] = $matches[2];
-            }
-
+            $info['user'] = $matches[1];
+            $info['domain'] = $matches[2];
             $values['access_information'] = serialize($info);
-
-            if (isset($matches[3]) && isset($matches[4])) {
-                $values['reference'] = $matches[3]."/".$matches[4];
-            }
+            $values['reference'] = $matches[3]."/".$matches[4];
         }
 
-        $values['git_key']  = $values['key'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         $project = new Project();
         $project->setValues($values);
@@ -223,27 +205,33 @@ class ProjectController extends \PHPCI\Controller
     public function edit($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
+            throw new ForbiddenException('You do not have permission to do that.');
         }
 
-        $method     = $this->request->getMethod();
-        $project    = $this->projectStore->getById($projectId);
+        $method = $this->request->getMethod();
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($project)) {
+            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+        }
+
+        $this->config->set('page_title', 'Edit: ' . $project->getTitle());
+
+        $values = $project->getDataArray();
+        $values['key'] = $values['ssh_private_key'];
+        $values['pubkey'] = $values['ssh_public_key'];
+
+        if ($values['type'] == "gitlab") {
+            $accessInfo = $project->getAccessInformation();
+            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+            $values['reference'] = $reference;
+        }
 
         if ($method == 'POST') {
             $values = $this->getParams();
-        } else {
-            $values         = $project->getDataArray();
-            $values['key']  = $values['git_key'];
-
-            if ($values['type'] == "gitlab") {
-                $accessInfo = $project->getAccessInformation();
-                $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
-                $values['reference'] = $reference;
-            }
         }
 
-
-        $form   = $this->projectForm($values, 'edit/' . $projectId);
+        $form = $this->projectForm($values, 'edit/' . $projectId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
             $view           = new b8\View('ProjectForm');
@@ -256,7 +244,8 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $values             = $form->getValues();
-        $values['git_key']  = $values['key'];
+        $values['ssh_private_key']  = $values['key'];
+        $values['ssh_public_key']  = $values['pubkey'];
 
         if ($values['type'] == "gitlab") {
             preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
@@ -348,10 +337,19 @@ class ProjectController extends \PHPCI\Controller
 
         $field = new Form\Element\TextArea('build_config');
         $field->setRequired(false);
-        $field->setLabel('PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)');
+        $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
+        $field->setLabel($label);
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setRows(6);
+        $form->addField($field);
+
+        $field = new Form\Element\Checkbox('allow_public_status');
+        $field->setRequired(false);
+        $field->setLabel('Enable public status page and image for this project?');
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(1);
         $form->addField($field);
 
         $field = new Form\Element\Submit();
@@ -369,46 +367,8 @@ class ProjectController extends \PHPCI\Controller
     */
     protected function githubRepositories()
     {
-        $token = Config::getInstance()->get('phpci.github.token');
-
-        if (!$token) {
-            die(json_encode(null));
-        }
-
-        $cache = \b8\Cache::getCache(\b8\Cache::TYPE_APC);
-        $rtn = $cache->get('phpci_github_repos');
-
-        if (!$rtn) {
-            $orgs = $this->doGithubApiRequest('/user/orgs', array('access_token' => $token));
-
-            $params = array('type' => 'all', 'access_token' => $token);
-            $repos = array();
-            $repos['user'] = $this->doGithubApiRequest('/user/repos', $params);
-
-
-            foreach ($orgs as $org) {
-                $repos[$org['login']] = $this->doGithubApiRequest('/orgs/'.$org['login'].'/repos', $params);
-            }
-
-            $rtn = array();
-            foreach ($repos as $repoGroup) {
-                foreach ($repoGroup as $repo) {
-                    $rtn['repos'][] = $repo['full_name'];
-                }
-            }
-
-            $cache->set('phpci_github_repos', $rtn);
-        }
-
-        die(json_encode($rtn));
-    }
-
-    protected function doGithubApiRequest($url, $params)
-    {
-        $http = new \b8\HttpClient('https://api.github.com');
-        $res = $http->get($url, $params);
-
-        return $res['body'];
+        $github = new Github();
+        die(json_encode($github->getRepositories()));
     }
 
     protected function getReferenceValidator($values)
@@ -447,11 +407,5 @@ class ProjectController extends \PHPCI\Controller
 
             return true;
         };
-    }
-
-    protected function canGenerateKeys()
-    {
-        $result = @shell_exec('ssh-keygen');
-        return !empty($result);
     }
 }

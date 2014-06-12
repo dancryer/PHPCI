@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -22,26 +22,46 @@ use PHPCI\Model\Build;
 */
 class Mysql implements \PHPCI\Plugin
 {
-
     /**
      * @var \PHPCI\Builder
      */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    /**
+     * @var array
+     */
     protected $queries = array();
 
+    /**
+     * @var string
+     */
     protected $host;
+
+    /**
+     * @var string
+     */
     protected $user;
+
+    /**
+     * @var string
+     */
     protected $pass;
 
     /**
-     * Database Connection
-     * @var PDO
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
      */
-    protected $pdo;
-
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+
         $this->queries = $options;
 
         $config = \b8\Database::getConnection('write')->getDetails();
@@ -71,19 +91,18 @@ class Mysql implements \PHPCI\Plugin
 
     /**
     * Connects to MySQL and runs a specified set of queries.
+    * @return boolean
     */
     public function execute()
     {
-        $success = true;
-
         try {
             $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $this->pdo = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
+            $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
 
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
                     // Simple query
-                    $this->pdo->query($this->phpci->interpolate($query));
+                    $pdo->query($this->phpci->interpolate($query));
                 } elseif (isset($query['import'])) {
                     // SQL file execution
                     $this->executeFile($query['import']);
@@ -95,10 +114,14 @@ class Mysql implements \PHPCI\Plugin
             $this->phpci->logFailure($ex->getMessage());
             return false;
         }
-
-        return $success;
+        return true;
     }
 
+    /**
+     * @param string $query
+     * @return boolean
+     * @throws \Exception
+     */
     protected function executeFile($query)
     {
         if (!isset($query['file'])) {

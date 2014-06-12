@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
@@ -20,8 +20,17 @@ use PHPCI\Model\Build;
  */
 class Shell implements \PHPCI\Plugin
 {
-    protected $args;
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    protected $args;
 
     /**
      * @var string[] $commands The commands to be executed
@@ -30,7 +39,8 @@ class Shell implements \PHPCI\Plugin
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
+        $this->build = $build;
 
         if (isset($options['command'])) {
             // Keeping this for backwards compatibility, new projects should use interpolation vars.

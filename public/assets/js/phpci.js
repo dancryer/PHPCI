@@ -317,8 +317,19 @@ var PHPCIObject = Class.extend({
     updateInterval: null,
 
     init: function(build) {
+        var self = this;
         this.buildId = build;
         this.registerQuery('build-updated', 10);
+
+        $(window).on('build-updated', function(data) {
+
+            // If the build has finished, stop updating every 10 seconds:
+            if (data.queryData.status > 1) {
+                self.cancelQuery('build-updated');
+                $(window).trigger({type: 'build-complete'});
+            }
+
+        });
     },
 
     registerQuery: function(name, seconds, query) {
@@ -337,10 +348,14 @@ var PHPCIObject = Class.extend({
         };
 
         if (seconds != -1) {
-            setInterval(cb, seconds * 1000);
+            self.queries[name] = setInterval(cb, seconds * 1000);
         }
 
         return cb;
+    },
+
+    cancelQuery: function (name) {
+        clearInterval(this.queries[name]);
     },
 
     registerPlugin: function(plugin) {
@@ -382,7 +397,7 @@ var PHPCIObject = Class.extend({
         }
 
         $('#plugins').sortable({
-            handle: '.title',
+            handle: '.panel-title',
             connectWith: '#plugins',
             update: self.storePluginOrder
         });
@@ -391,19 +406,24 @@ var PHPCIObject = Class.extend({
     },
 
     renderPlugin: function(plugin) {
-        var output = $('<div></div>').addClass('box-content').append(plugin.render());
+        var output = plugin.render();
+
+        if (!plugin.box) {
+            output = $('<div class="panel-body"></div>').append(output);
+        }
+
         var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
         var content = $('<div></div>').attr('id', plugin.id).append(output);
+        content.addClass('panel panel-default');
 
-        if (plugin.box) {
-            content.addClass('box');
+        if(plugin.title != undefined) {
+            $('<a>').attr({'class':'list-group-item', 'href':'#'+plugin.id}).html(plugin.title).appendTo($('#anchorPlugins'));
         }
 
         if (plugin.title) {
-            content.prepend('<h3 class="title">'+plugin.title+'</h3>');
+            content.prepend('<div class="panel-heading"><h3 class="panel-title">'+plugin.title+'</h3></div>');
         }
 
-        content.append(output);
         container.append(content);
 
         $('#plugins').append(container);
@@ -412,7 +432,7 @@ var PHPCIObject = Class.extend({
     UiPlugin: Class.extend({
         id: null,
         css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
-        box: true,
+        box: false,
 
         init: function(){
         },

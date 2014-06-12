@@ -1,4 +1,11 @@
 <?php
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -13,16 +20,18 @@ use PHPCI\Model\Build;
  */
 class Irc implements \PHPCI\Plugin
 {
-    private $phpci;
-    private $message;
-    private $server;
-    private $port;
-    private $room;
-    private $nick;
+    protected $phpci;
+    protected $build;
+    protected $message;
+    protected $server;
+    protected $port;
+    protected $room;
+    protected $nick;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
         $this->message = $options['message'];
 
         $buildSettings = $phpci->getConfig('build_settings');

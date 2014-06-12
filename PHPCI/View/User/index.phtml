@@ -4,13 +4,17 @@
 
 <div class="row">
 	<div class="col-lg-3">
-        <ul class="nav nav-pills nav-stacked">
-			<li><a href="<?php echo PHPCI_URL ?>"><i class="icon-home"></i> Dashboard</a></li>
-			<li class="active"><a href="<?php echo PHPCI_URL ?>user"><i class="icon-user"></i> Users</a></li>
-			<?php if($this->User()->getIsAdmin()): ?>
-			<li><a href="<?php echo PHPCI_URL ?>user/add"><i class="icon-plus-sign"></i> Add User</a></li>
-			<?php endif; ?>
-		</ul>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Options</h4>
+            </div>
+
+            <div class="list-group">
+                <?php if($this->User()->getIsAdmin()): ?>
+                <a class="list-group-item" href="<?php echo PHPCI_URL ?>user/add"><i class="icon-plus-sign"></i> Add User</a>
+                <?php endif; ?>
+            </div>
+        </div>
 	</div>
 	<div class="col-lg-9">
 		<table class="table table-striped table-bordered">

@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Model\Build;
 
@@ -60,7 +60,8 @@ class LocalBuild extends Build
 
         // If it is indeed a bare repository, then extract it into our build path:
         if ($gitConfig['core']['bare']) {
-            $builder->executeCommand('mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"', $reference, $buildPath, $this->getBranch());
+            $cmd = 'mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"';
+            $builder->executeCommand($cmd, $reference, $buildPath, $this->getBranch());
             return true;
         }
 

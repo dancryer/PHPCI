@@ -2,9 +2,9 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2013, Block 8 Limited.
+ * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link         http://www.phptesting.org/
+ * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Command;
@@ -50,11 +50,9 @@ class UpdateCommand extends Command
     {
         $this->verifyInstalled($output);
 
-        $output->writeln('Updating PHPCI database.');
+        $output->write('Updating PHPCI database: ');
 
-        // Update the database:
-        $gen = new \b8\Database\Generator(\b8\Database::getConnection(), 'PHPCI', './PHPCI/Model/Base/');
-        $gen->generate();
+        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
         $output->writeln('<info>Done!</info>');
     }

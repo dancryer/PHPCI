@@ -1,11 +1,11 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
@@ -23,6 +23,7 @@ class PhpCpd implements \PHPCI\Plugin
     protected $directory;
     protected $args;
     protected $phpci;
+    protected $build;
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
@@ -38,6 +39,8 @@ class PhpCpd implements \PHPCI\Plugin
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
+        $this->build = $build;
+
         $this->path = $phpci->buildPath;
         $this->standard = 'PSR1';
         $this->ignore = $phpci->ignore;
@@ -63,7 +66,15 @@ class PhpCpd implements \PHPCI\Plugin
         $ignore = '';
         if (count($this->ignore)) {
             $map = function ($item) {
-                return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+                // remove the trailing slash
+                $item = (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+
+                if (is_file($this->path . '/' . $item)) {
+                    return ' --names-exclude ' . $item;
+                } else {
+                    return ' --exclude ' . $item;
+                }
+
             };
             $ignore = array_map($map, $this->ignore);
 

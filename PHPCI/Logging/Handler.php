@@ -1,4 +1,11 @@
 <?php
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Logging;
 
@@ -26,12 +33,12 @@ class Handler
      */
     protected $logger;
 
-    public function __construct(LoggerInterface $logger = NULL)
+    public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
-    public static function register(LoggerInterface $logger = NULL)
+    public static function register(LoggerInterface $logger = null)
     {
         $handler = new static($logger);
 
@@ -57,7 +64,10 @@ class Handler
 
             throw new \ErrorException(
                 sprintf('%s: %s in %s line %d', $exception_level, $message, $file, $line),
-                0, $level, $file, $line
+                0,
+                $level,
+                $file,
+                $line
             );
         }
     }
@@ -70,21 +80,37 @@ class Handler
         $fatal_error = error_get_last();
 
         try {
-            if (($e = error_get_last()) !== null) {
-                $e = new \ErrorException(
-                    sprintf('%s: %s in %s line %d', $fatal_error['type'], $fatal_error['message'], $fatal_error['file'], $fatal_error['line']),
-                    0, $fatal_error['type'], $fatal_error['file'], $fatal_error['line']
+            if (($error = error_get_last()) !== null) {
+                $error = new \ErrorException(
+                    sprintf(
+                        '%s: %s in %s line %d',
+                        $fatal_error['type'],
+                        $fatal_error['message'],
+                        $fatal_error['file'],
+                        $fatal_error['line']
+                    ),
+                    0,
+                    $fatal_error['type'],
+                    $fatal_error['file'],
+                    $fatal_error['line']
                 );
-                $this->log($e);
+                $this->log($error);
             }
-        }
-        catch (\Exception $e)
-        {
-            $e = new \ErrorException(
-                sprintf('%s: %s in %s line %d', $fatal_error['type'], $fatal_error['message'], $fatal_error['file'], $fatal_error['line']),
-                0, $fatal_error['type'], $fatal_error['file'], $fatal_error['line']
+        } catch (\Exception $e) {
+            $error = new \ErrorException(
+                sprintf(
+                    '%s: %s in %s line %d',
+                    $fatal_error['type'],
+                    $fatal_error['message'],
+                    $fatal_error['file'],
+                    $fatal_error['line']
+                ),
+                0,
+                $fatal_error['type'],
+                $fatal_error['file'],
+                $fatal_error['line']
             );
-            $this->log($e);
+            $this->log($error);
         }
     }
 
@@ -101,8 +127,13 @@ class Handler
         if (null !== $this->logger) {
 
             $message = sprintf(
-                '%s: %s (uncaught exception) at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()
+                '%s: %s (uncaught exception) at %s line %s',
+                get_class($exception),
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine()
             );
+
             $this->logger->error($message, array('exception' => $exception));
         }
     }

@@ -1,16 +1,18 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Plugin\Util\TapParser;
 
 /**
 * PHP Unit Plugin - Allows PHP Unit testing.
@@ -18,10 +20,11 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements \PHPCI\Plugin
+class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $args;
     protected $phpci;
+    protected $build;
 
     /**
      * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
@@ -46,9 +49,44 @@ class PhpUnit implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function findConfigFile($buildPath)
+    {
+        if (file_exists($buildPath . 'phpunit.xml')) {
+            return 'phpunit.xml';
+        }
+
+        if (file_exists($buildPath . 'tests/phpunit.xml')) {
+            return 'tests/phpunit.xml';
+        }
+
+        if (file_exists($buildPath . 'phpunit.xml.dist')) {
+            return 'phpunit.xml.dist';
+        }
+
+        if (file_exists($buildPath . 'tests/phpunit.xml.dist')) {
+            return 'tests/phpunit.xml.dist';
+        }
+
+        return null;
+    }
+
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
+        $this->build = $build;
+
+        if (empty($options['config']) && empty($options['directory'])) {
+            $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
+        }
 
         if (isset($options['directory'])) {
             $this->directory = $options['directory'];
@@ -63,7 +101,7 @@ class PhpUnit implements \PHPCI\Plugin
         }
 
         if (isset($options['args'])) {
-            $this->args = $options['args'];
+            $this->args = $this->phpci->interpolate($options['args']);
         }
 
         if (isset($options['path'])) {
@@ -82,6 +120,8 @@ class PhpUnit implements \PHPCI\Plugin
     {
         $success = true;
 
+        $this->phpci->logExecOutput(false);
+
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
             $success &= $this->runConfigFile($this->xmlConfigFile);
@@ -91,6 +131,23 @@ class PhpUnit implements \PHPCI\Plugin
         if ($this->directory !== null) {
             $success &= $this->runDir($this->directory);
         }
+
+        $tapString = $this->phpci->getLastOutput();
+
+        try {
+            $tapParser = new TapParser($tapString);
+            $output = $tapParser->parse();
+        } catch (\Exception $ex) {
+            $this->phpci->logFailure($tapString);
+            throw $ex;
+        }
+
+        $failures = $tapParser->getTotalFailures();
+
+        $this->build->storeMeta('phpunit-errors', $failures);
+        $this->build->storeMeta('phpunit-data', $output);
+
+        $this->phpci->logExecOutput(true);
 
         return $success;
     }
@@ -114,7 +171,7 @@ class PhpUnit implements \PHPCI\Plugin
             }
 
 
-            $cmd = $phpunit . ' %s -c "%s" ' . $this->coverage . $this->path;
+            $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
 
             if ($this->runFrom) {
@@ -140,7 +197,7 @@ class PhpUnit implements \PHPCI\Plugin
                 return false;
             }
 
-            $cmd = $phpunit . ' %s "%s"';
+            $cmd = $phpunit . ' --tap %s "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $dirPath);
             chdir($curdir);
             return $success;

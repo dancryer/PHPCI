@@ -39,7 +39,7 @@ class ChooseBranch extends AbstractMigration
     public function down()
     {
         $project = $this->table('project');
-        if (!$project->hasColumn('default_branch')) {
+        if ($project->hasColumn('default_branch')) {
         	$project->removeColumn('default_branch')->save();
         }
     }

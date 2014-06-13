@@ -124,12 +124,12 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
-            $success &= $this->runConfigFile($this->xmlConfigFile);
+            $success &= $this->runConfigFile();
         }
 
         // Run any dirs next. Again this can be either a single value or an array.
         if ($this->directory !== null) {
-            $success &= $this->runDir($this->directory);
+            $success &= $this->runDir();
         }
 
         $tapString = $this->phpci->getLastOutput();
@@ -152,10 +152,10 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $success;
     }
 
-    protected function runConfigFile($configPath)
+    protected function runConfigFile()
     {
-        if (is_array($configPath)) {
-            return $this->recurseArg($configPath, array($this, "runConfigFile"));
+        if (is_array($this->xmlConfigFile)) {
+            return $this->recurseArg($this->xmlConfigFile, array($this, "runConfigFile"));
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
@@ -172,7 +172,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $this->xmlConfigFile);
 
             if ($this->runFrom) {
                 chdir($curdir);
@@ -182,10 +182,10 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
     }
 
-    protected function runDir($dirPath)
+    protected function runDir()
     {
-        if (is_array($dirPath)) {
-            return $this->recurseArg($dirPath, array($this, "runDir"));
+        if (is_array($this->directory)) {
+            return $this->recurseArg($this->directory, array($this, "runDir"));
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
@@ -198,7 +198,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             }
 
             $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $dirPath);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $this->directory);
             chdir($curdir);
             return $success;
         }

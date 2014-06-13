@@ -26,6 +26,7 @@ class Lint implements PHPCI\Plugin
     protected $ignore;
     protected $phpci;
     protected $build;
+    protected $failedPaths = array();
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
@@ -64,6 +65,9 @@ class Lint implements PHPCI\Plugin
         }
 
         $this->phpci->quiet = false;
+
+        $this->build->storeMeta('phplint-warnings', count($this->failedPaths));
+        $this->build->storeMeta('phplint-data', $this->failedPaths);
 
         return $success;
     }
@@ -109,11 +113,22 @@ class Lint implements PHPCI\Plugin
     {
         $success = true;
 
-        if (!$this->phpci->executeCommand($php . ' -l "%s"', $this->phpci->buildPath . $path)) {
+        if (!$this->phpci->executeCommand($php . ' -l "%s" 2>&1', $this->phpci->buildPath . $path)) {
             $this->phpci->logFailure($path);
+
+	    $output = $this->phpci->getLastOutput();
+	    preg_match('/Parse error:\s*syntax error,(.+?)\s+in\s+.+?\s*line\s+(\d+)/', $output, $matches);
+
+            $this->failedPaths[] = array(
+		'file' => $path,
+		'line' => trim($matches[2]),
+		'message' => trim($matches[1])
+	    );
+
             $success = false;
         }
 
         return $success;
     }
 }
+

@@ -166,9 +166,9 @@ class ProjectController extends \PHPCI\Controller
             $sshKey = new SshKey();
             $key = $sshKey->generate();
 
-            $values['key'] = $key['private_key'];
-            $values['pubkey'] = $key['public_key'];
-            $pub = $key['public_key'];
+            $values['key']    = $key ? $key['private_key'] : '';
+            $values['pubkey'] = $key ? $key['public_key'] : '';
+            $pub              = $key ? $key['public_key'] : '';
         }
 
         $form = $this->projectForm($values);

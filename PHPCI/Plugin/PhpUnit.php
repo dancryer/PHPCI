@@ -124,7 +124,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
-            $success &= $this->runConfigFile();
+            $success &= $this->runConfigFile($this->xmlConfigFile);
         }
 
         // Run any dirs next. Again this can be either a single value or an array.
@@ -152,10 +152,10 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $success;
     }
 
-    protected function runConfigFile()
+    protected function runConfigFile($configPath)
     {
-        if (is_array($this->xmlConfigFile)) {
-            return $this->recurseArg($this->xmlConfigFile, array($this, "runConfigFile"));
+        if (is_array($configPath)) {
+            return $this->recurseArg($configPath, array($this, "runConfigFile"));
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
@@ -172,7 +172,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $this->xmlConfigFile);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
 
             if ($this->runFrom) {
                 chdir($curdir);

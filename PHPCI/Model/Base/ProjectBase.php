@@ -33,12 +33,15 @@ class ProjectBase extends Model
     * @var array
     */
     protected $data = array(
-        'id' => null,
-        'title' => null,
-        'reference' => null,
-        'ssh_private_key' => null,
-        'ssh_public_key' => null,
-        'type' => null,
+        'id'                 => null,
+        'title'              => null,
+        'reference'          => null,
+        'default_branch'      => null,
+        'ssh_private_key'    => null,
+        'ssh_public_key'     => null,
+        'git_key'            => null,
+        'build_config'       => null,
+        'type'               => null,
         'access_information' => null,
         'last_commit' => null,
         'build_config' => null,
@@ -50,9 +53,10 @@ class ProjectBase extends Model
     */
     protected $getters = array(
         // Direct property getters:
-        'id' => 'getId',
-        'title' => 'getTitle',
-        'reference' => 'getReference',
+        'id'                 => 'getId',
+        'title'              => 'getTitle',
+        'reference'          => 'getReference',
+        'default_branch'      => 'getDefaultBranch',
         'ssh_private_key' => 'getSshPrivateKey',
         'ssh_public_key' => 'getSshPublicKey',
         'type' => 'getType',
@@ -69,12 +73,13 @@ class ProjectBase extends Model
     */
     protected $setters = array(
         // Direct property setters:
-        'id' => 'setId',
-        'title' => 'setTitle',
-        'reference' => 'setReference',
+        'id'                 => 'setId',
+        'title'              => 'setTitle',
+        'reference'          => 'setReference',
+        'default_branch'      => 'setDefaultBranch',
+        'type'               => 'setType',
         'ssh_private_key' => 'setSshPrivateKey',
         'ssh_public_key' => 'setSshPublicKey',
-        'type' => 'setType',
         'access_information' => 'setAccessInformation',
         'last_commit' => 'setLastCommit',
         'build_config' => 'setBuildConfig',
@@ -103,6 +108,11 @@ class ProjectBase extends Model
             'type' => 'varchar',
             'length' => 250,
             'default' => null,
+        ),
+        'default_branch'          => array(
+            'type'    => 'varchar',
+            'length'  => 50,
+            'default' => 'master',
         ),
         'ssh_private_key' => array(
             'type' => 'text',
@@ -189,6 +199,18 @@ class ProjectBase extends Model
     {
         $rtn    = $this->data['reference'];
 
+        return $rtn;
+    }
+
+
+    /**
+     * Get the value of Branch / branch.
+     *
+     * @return string
+     */
+    public function getDefaultBranch()
+    {
+        $rtn = $this->data['default_branch'];
         return $rtn;
     }
 
@@ -334,6 +356,25 @@ class ProjectBase extends Model
         $this->data['reference'] = $value;
 
         $this->_setModified('reference');
+    }
+
+    /**
+     * Set the value of Branch / branch.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
+    public function setDefaultBranch($value)
+    {
+        $this->_validateNotNull('DefaultBranch', $value);
+        $this->_validateString('DefaultBranch', $value);
+
+        if ($this->data['default_branch'] === $value) {
+            return;
+        }
+        $this->data['default_branch'] = $value;
+        $this->_setModified('default_branch');
     }
 
     /**

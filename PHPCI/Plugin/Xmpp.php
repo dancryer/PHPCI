@@ -81,10 +81,10 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Set recipients list
          */
-        if(!empty($options['recipients'])) {
-            if(is_string($options['recipients'])) {
+        if (!empty($options['recipients'])) {
+            if (is_string($options['recipients'])) {
                 $this->recipients = array($options['recipients']);
-            } elseif(is_array($options['recipients'])) {
+            } elseif (is_array($options['recipients'])) {
                 $this->recipients = $options['recipients'];
             }
         }
@@ -115,13 +115,13 @@ class XMPP implements \PHPCI\Plugin
     protected function getConfigFormat()
     {
         $conf = $this->username;
-        if(!empty($this->server)) {
+        if (!empty($this->server)) {
             $conf .= ';'.$this->server;
         }
 
         $conf .= ' '.$this->password;
 
-        if(!empty($this->alias)) {
+        if (!empty($this->alias)) {
             $conf .= ' '.$this->alias;
         }
 
@@ -134,7 +134,7 @@ class XMPP implements \PHPCI\Plugin
     public function findConfigFile()
     {
         if (file_exists('.sendxmpprc')) {
-            if( md5(file_get_contents('.sendxmpprc')) !==
+            if (md5(file_get_contents('.sendxmpprc')) !==
                     md5($this->getConfigFormat())) {
                 return null;
             }
@@ -167,7 +167,7 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Try to build conf file
          */
-        if(is_null($this->findConfigFile())) {
+        if (is_null($this->findConfigFile())) {
             file_put_contents('.sendxmpprc', $this->getConfigFormat());
             chmod('.sendxmpprc', 0600);
         }
@@ -176,12 +176,12 @@ class XMPP implements \PHPCI\Plugin
          * Enabled ssl for connection
          */
         $tls = '';
-        if($this->tls) {
+        if ($this->tls) {
             $tls = ' -t';
         }
 
         $message_file = uniqid('xmppmessage');
-        if($this->buildMessage($message_file) === false) {
+        if ($this->buildMessage($message_file) === false) {
             return false;
         }
 
@@ -192,7 +192,7 @@ class XMPP implements \PHPCI\Plugin
         $recipients = implode(' ', $this->recipients);
 
         $success = $this->phpci->executeCommand(
-                $cmd, $tls, $message_file, $recipients);
+            $cmd, $tls, $message_file, $recipients);
 
         print $this->phpci->getLastOutput();
 
@@ -213,7 +213,7 @@ class XMPP implements \PHPCI\Plugin
     {
         $message = '';
 
-        if($this->build->isSuccessful()) {
+        if ($this->build->isSuccessful()) {
             $message = "✔ [".$this->build->getProjectTitle()."] Build #".
                     $this->build->getId()." successful";
         } else {

@@ -7,7 +7,6 @@ config.php
 .project
 .buildpath
 .htaccess
-composer.lock
 PHPCI/config.yml
 cache
 /loggerconfig.php

@@ -53,6 +53,7 @@ class ProjectBase extends Model
         'id' => 'getId',
         'title' => 'getTitle',
         'reference' => 'getReference',
+        'branch' => 'getBranch',
         'ssh_private_key' => 'getSshPrivateKey',
         'ssh_public_key' => 'getSshPublicKey',
         'type' => 'getType',
@@ -72,6 +73,7 @@ class ProjectBase extends Model
         'id' => 'setId',
         'title' => 'setTitle',
         'reference' => 'setReference',
+        'branch' => 'setBranch',
         'ssh_private_key' => 'setSshPrivateKey',
         'ssh_public_key' => 'setSshPublicKey',
         'type' => 'setType',
@@ -100,6 +102,11 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'reference' => array(
+            'type' => 'varchar',
+            'length' => 250,
+            'default' => null,
+        ),
+        'branch' => array(
             'type' => 'varchar',
             'length' => 250,
             'default' => null,
@@ -190,6 +197,20 @@ class ProjectBase extends Model
         $rtn    = $this->data['reference'];
 
         return $rtn;
+    }
+
+    /**
+     * Get the value of Branch / branch.
+     *
+     * @return string
+     */
+    public function getBranch()
+    {
+        if (empty($this->data['branch'])) {
+            return $this->getType() === 'hg' ? 'default' : 'master';
+        } else {
+            return $this->data['branch'];
+        }
     }
 
     /**
@@ -334,6 +355,25 @@ class ProjectBase extends Model
         $this->data['reference'] = $value;
 
         $this->_setModified('reference');
+    }
+
+    /**
+    * Set the value of Branch / branch.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setBranch($value)
+    {
+        $this->_validateString('Branch', $value);
+
+        if ($this->data['branch'] === $value) {
+            return;
+        }
+
+        $this->data['branch'] = $value;
+
+        $this->_setModified('branch');
     }
 
     /**

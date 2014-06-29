@@ -70,6 +70,28 @@ h1 {
         margin-left: 90px;
     }
 
+.build-content {
+}
+
+    .build-content .sidebar {
+        width: 215px;
+    }
+
+    .build-content .sidebar > div {
+        width: 195px;
+    }
+
+    .build-content .content {
+        padding-left: 215px;
+    }
+
+#build-log {
+}
+    #build-log pre {
+        background: #262626;
+        color: white;
+    }
+
 #loading {
     background: #246;
     bottom: 25px;

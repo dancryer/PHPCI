@@ -29,29 +29,29 @@
     </div>
 </div>
 
-<div class="row">
-	<div class="col-lg-3">
-        <div class="panel panel-default affix">
-            <div class="panel-heading">
-                <h4 class="panel-title">Options</h4>
-            </div>
+<div class="row ">
+	<div class="col-lg-12 build-content">
+        <div class="sidebar">
+            <div class="panel panel-default affix">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Options</h4>
+                </div>
                 <ul class="list-group">
                     <a class="list-group-item" href="<?php echo PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a>
                     <?php if($this->User()->getIsAdmin()): ?>
                         <a class="list-group-item" href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" id="delete-build"><i class="icon-trash"></i> Delete Build</a>
                     <?php endif; ?>
                 </ul>
-            <div class="panel-heading">
-                <h4 class="panel-title">Quick links</h4>
-            </div>
+                <div class="panel-heading">
+                    <h4 class="panel-title">Quick links</h4>
+                </div>
                 <ul class="list-group" id="anchorPlugins"></ul>
-
+            </div>
         </div>
-	</div>
-
-	<div class="col-lg-9">
-		<div id="status"></div>
-        <div id="plugins" class="row"></div>
+        <div class="content">
+            <div id="status"></div>
+            <div id="plugins" class="row"></div>
+        </div>
     </div>
 </div>
 

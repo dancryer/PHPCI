@@ -98,8 +98,12 @@ class BuildController extends \PHPCI\Controller
     }
 
     /**
-    * Get build data from database and json encode it:
-    */
+     * Get build data from database and json encode it:
+     *
+     * @param \PHPCI\Model\Build $build
+     *
+     * @return string
+     */
     protected function getBuildData($build)
     {
         $data               = array();

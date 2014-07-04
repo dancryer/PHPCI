@@ -59,8 +59,8 @@ class ProjectController extends \PHPCI\Controller
         $per_page = 10;
         $page     = $this->getParam('p', 1);
         $builds   = $this->getLatestBuildsHtml($projectId, (($page - 1) * $per_page));
-        $pages    = ceil($builds[1] / $per_page);
 
+        $pages    = $builds[1]===0?1:ceil($builds[1] / $per_page);
         if ($page > $pages) {
             throw new NotFoundException('Page with number: ' . $page . ' not found');
         }

@@ -45,7 +45,7 @@ class SshKey
 
     public function canGenerateKeys()
     {
-        $keygen = @shell_exec('ssh-keygen');
+        $keygen = @shell_exec('ssh-keygen -h');
         $canGenerateKeys = !empty($keygen);
 
         return $canGenerateKeys;

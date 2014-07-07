@@ -268,7 +268,7 @@ class Builder implements LoggerAwareInterface
      */
     public function findBinary($binary)
     {
-        return $this->commandExecutor->findBinary($binary);
+        return $this->commandExecutor->findBinary($binary, $this->buildPath);
     }
 
     /**

@@ -23,6 +23,8 @@ class HipchatNotify implements \PHPCI\Plugin
     private $authToken;
     private $userAgent;
     private $cookie;
+    private $color;
+    private $notify;
 
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
@@ -41,6 +43,18 @@ class HipchatNotify implements \PHPCI\Plugin
             } else {
                 $this->message = '%PROJECT_TITLE% built at %BUILD_URI%';
             }
+
+            if (isset($options['color'])) {
+                $this->color = $options['color'];
+            } else {
+                $this->color = 'yellow';
+            }
+
+            if (isset($options['notify'])) {
+                $this->notify = $options['notify'];
+            } else {
+                $this->notify = false;
+            }
         } else {
             throw new \Exception('Please define room and authToken for hipchat_notify plugin!');
         }
@@ -52,12 +66,19 @@ class HipchatNotify implements \PHPCI\Plugin
         $hipChat = new \HipChat\HipChat($this->authToken);
         $message = $this->phpci->interpolate($this->message);
 
+        $result = true;
         if (is_array($this->room)) {
             foreach ($this->room as $room) {
-                $hipChat->message_room($room, 'PHPCI', $message);
+                if (!$hipChat->message_room($room, 'PHPCI', $message, $this->notify, $this->color)) {
+                    $result = false;
+                }
             }
         } else {
-            $hipChat->message_room($this->room, 'PHPCI', $message);
+            if (!$hipChat->message_room($this->room, 'PHPCI', $message, $this->notify, $this->color)) {
+                $result = false;
+            }
         }
+
+        return $result;
     }
 }

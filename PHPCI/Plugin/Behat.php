@@ -56,7 +56,7 @@ class Behat implements \PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($behat . ' --no-time --format="failed" %s', $this->features);
+        $success = $this->phpci->executeCommand($behat . ' %s', $this->features);
         chdir($curdir);
 
         return $success;

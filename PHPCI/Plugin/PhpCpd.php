@@ -134,4 +134,3 @@ class PhpCpd implements \PHPCI\Plugin
         return array($warnings, $data);
     }
 }
-

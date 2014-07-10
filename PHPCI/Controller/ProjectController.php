@@ -356,7 +356,7 @@ class ProjectController extends \PHPCI\Controller
         $field->setLabel('Enable public status page and image for this project?');
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
-        $field->setValue(1);
+        $field->setValue(0);
         $form->addField($field);
 
         $field = new Form\Element\Submit();

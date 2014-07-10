@@ -190,11 +190,33 @@ class ProjectBase extends Model
     /**
     * Get the value of Reference / reference.
     *
+    * @param $strip_port boolean
+    *	(optional) Whether or not to strip the port number off the beginning of
+    *	the reference. For use in situations where an URL to be printed
+    *	to the web interface is required, and the repository has been
+    *	added to PHPCI in the ssh://foo@example.com:port/user/repo.git form.
+    * 
     * @return string
     */
-    public function getReference()
+    public function getReference($strip_port = null)
     {
         $rtn    = $this->data['reference'];
+
+		if (isset($strip_port)) {
+			if ($strip_port === true) {
+				
+				/**
+				* Split the reference field into a few sections. If a port number is
+				* included, it will be in $matches[1]; regardless, $matches[2] will
+				* always be the username associated with the repo and $matches[3] will
+				* always be the repository name.
+				*/
+				
+				preg_match("#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#", $rtn, $matches);
+				$rtn = $matches[2]."/".$matches[3];
+			
+			}
+		}
 
         return $rtn;
     }

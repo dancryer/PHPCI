@@ -119,11 +119,13 @@ class RemoteGitBuild extends Build
         $commit = $this->getCommitId();
 
         if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
+            $cmd = 'cd "%s"';
 
             if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
+                $cmd = 'cd /d "%s"';
             }
+
+            $cmd .= ' && git checkout %s --quiet';
 
             $success = $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }

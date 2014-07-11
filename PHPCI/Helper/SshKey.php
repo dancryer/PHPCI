@@ -37,6 +37,14 @@ class SshKey
             $pub = file_get_contents($keyFile . '.pub');
             $prv = file_get_contents($keyFile);
 
+            if (empty($pub)) {
+                $pub = '';
+            }
+
+            if (empty($prv)) {
+                $prv = '';
+            }
+
             $return = array('private_key' => $prv, 'public_key' => $pub);
         }
 

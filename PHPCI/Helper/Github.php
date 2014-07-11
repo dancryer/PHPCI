@@ -37,7 +37,7 @@ class Github
         $http = new HttpClient('https://api.github.com');
         $res = $http->get($url, $params);
 
-        foreach ($res['body'] as $key => $item) {
+        foreach ($res['body'] as $item) {
 
             $results[] = $item;
 

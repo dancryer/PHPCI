@@ -71,4 +71,11 @@ class Controller extends \b8\Controller
 
         return $this->response;
     }
+
+    protected function requireAdmin()
+    {
+        if (!$_SESSION['user']->getIsAdmin()) {
+            throw new ForbiddenException('You do not have permission to do that.');
+        }
+    }
 }

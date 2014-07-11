@@ -108,9 +108,11 @@ abstract class BaseCommandExecutor implements CommandExecutor
     /**
      * Find a binary required by a plugin.
      * @param string $binary
+     * @param null $buildPath
      * @return null|string
      */
-    public function findBinary($binary, $buildPath = null) {
+    public function findBinary($binary, $buildPath = null)
+    {
         $binaryPath = null;
         $composerBin = $this->getComposerBinDir(realpath($buildPath));
 
@@ -154,7 +156,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param string $binary
      * @return null|string
      */
-    abstract protected function findGlobalBinary($bin);
+    abstract protected function findGlobalBinary($binary);
 
     /**
      * Try to load the composer.json file in the building project
@@ -162,12 +164,13 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param string $path Current build path
      * @return string|null
      */
-    public function getComposerBinDir($path) {
+    public function getComposerBinDir($path)
+    {
         if (is_dir($path)) {
             $composer = $path.'/composer.json';
-            if( is_file($composer) ) {
+            if (is_file($composer)) {
                 $json = json_decode(file_get_contents($composer));
-                if( isset($json->config->{"bin-dir"}) ) {
+                if (isset($json->config->{"bin-dir"})) {
                     return $path.'/'.$json->config->{"bin-dir"};
                 }
             }

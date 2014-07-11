@@ -32,7 +32,7 @@ class Github
      *
      * @return array
      */
-    public function makeRecursiveRequest($url, $params, $results=[])
+    public function makeRecursiveRequest($url, $params, $results = array())
     {
         $http = new HttpClient('https://api.github.com');
         $res = $http->get($url, $params);

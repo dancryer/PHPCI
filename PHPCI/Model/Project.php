@@ -44,6 +44,28 @@ class Project extends ProjectBase
         return null;
     }
 
+    public function cleanBuilds()
+    {
+        $buildsStore    = Store\Factory::getStore('Build');
+
+        $criteria       = array('project_id' => $this->getId());
+        $builds         = $buildsStore->getWhere($criteria, 0);
+
+        if (is_array($builds['items']) ) {
+            if (count($builds['items'])) {
+                foreach ($builds['items'] as $build) {
+                    if ($build instanceof Build) {
+                        $buildsStore->delete($build);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return true;
+    }
+
     public function getAccessInformation($key = null)
     {
         $data = unserialize($this->data['access_information']);

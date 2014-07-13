@@ -24,6 +24,44 @@ class Github
     }
 
     /**
+     * Make all GitHub requests following the Link HTTP headers.
+     *
+     * @param string $url
+     * @param mixed $params
+     * @param array $results
+     *
+     * @return array
+     */
+    public function makeRecursiveRequest($url, $params, $results = array())
+    {
+        $http = new HttpClient('https://api.github.com');
+        $res = $http->get($url, $params);
+
+        foreach ($res['body'] as $item) {
+
+            $results[] = $item;
+
+        }
+
+        foreach ($res['headers'] as $header) {
+
+            if (preg_match('/^Link: <([^>]+)>; rel="next"/', $header, $r)) {
+
+                $host = parse_url($r[1]);
+
+                parse_str($host['query'], $params);
+                $results = $this->makeRecursiveRequest($host['path'], $params, $results);
+
+                break;
+
+            }
+
+        }
+
+        return $results;
+    }
+
+    /**
      * Get an array of repositories from Github's API.
      */
     public function getRepositories()
@@ -41,12 +79,11 @@ class Github
             $orgs = $this->makeRequest('/user/orgs', array('access_token' => $token));
 
             $params = array('type' => 'all', 'access_token' => $token);
-            $repos = array();
-            $repos['user'] = $this->makeRequest('/user/repos', $params);
-
+            $repos = array('user' => array());
+            $repos['user'] = $this->makeRecursiveRequest('/user/repos', $params);
 
             foreach ($orgs as $org) {
-                $repos[$org['login']] = $this->makeRequest('/orgs/'.$org['login'].'/repos', $params);
+                $repos[$org['login']] = $this->makeRecursiveRequest('/orgs/'.$org['login'].'/repos', $params);
             }
 
             $rtn = array();

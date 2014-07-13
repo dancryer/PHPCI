@@ -54,7 +54,7 @@ class PhpCpd implements \PHPCI\Plugin
         }
 
         if (!empty($options['ignore'])) {
-            $this->ignore = $this->phpci->ignore;
+            $this->ignore = $options['ignore'];
         }
     }
 
@@ -88,10 +88,50 @@ class PhpCpd implements \PHPCI\Plugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phpcpd . ' %s "%s"', $ignore, $this->path);
+        $tmpfilename = tempnam('/tmp', 'phpcpd');
+
+        $cmd = $phpcpd . ' --log-pmd="%s" %s "%s"';
+        $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
         print $this->phpci->getLastOutput();
+        
+        list($errorCount, $data) = $this->processReport(file_get_contents($tmpfilename));
+        $this->build->storeMeta('phpcpd-warnings', $errorCount);
+        $this->build->storeMeta('phpcpd-data', $data);
+
+        unlink($tmpfilename);
 
         return $success;
+    }
+
+    protected function processReport($xmlString)
+    {
+        $xml = simplexml_load_string($xmlString);
+
+        if ($xml === false) {
+            $this->phpci->log($xmlString);
+            throw new \Exception('Could not process PHPCPD report XML.');
+        }
+
+        $warnings = 0;
+        $data = array();
+
+        foreach ($xml->duplication as $duplication) {
+            foreach ($duplication->file as $file) {
+                $fileName = (string)$file['path'];
+                $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+
+                $data[] = array(
+                    'file' => $fileName,
+                    'line_start' => (int) $file['line'],
+                    'line_end' => (int) $file['line'] + (int) $duplication['lines'],
+                    'code' => (string) $duplication->codefragment
+                );
+            }
+
+            $warnings++;
+        }
+
+        return array($warnings, $data);
     }
 }

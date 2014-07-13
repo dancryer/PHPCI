@@ -56,13 +56,20 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $page = $this->getParam('p', 1);
-        $builds = $this->getLatestBuildsHtml($projectId, (($page - 1) * 10));
+        $per_page = 10;
+        $page     = $this->getParam('p', 1);
+        $builds   = $this->getLatestBuildsHtml($projectId, (($page - 1) * $per_page));
+        $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
-        $this->view->builds = $builds[0];
-        $this->view->total = $builds[1];
+        if ($page > $pages) {
+            throw new NotFoundException('Page with number: ' . $page . ' not found');
+        }
+
+        $this->view->builds  = $builds[0];
+        $this->view->total   = $builds[1];
         $this->view->project = $project;
-        $this->view->page = $page;
+        $this->view->page    = $page;
+        $this->view->pages   = $pages;
 
         $this->config->set('page_title', $project->getTitle());
 
@@ -85,7 +92,7 @@ class ProjectController extends \PHPCI\Controller
         $build->setProjectId($projectId);
         $build->setCommitId('Manual');
         $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($project->getType() === 'hg' ? 'default' : 'master');
+        $build->setBranch($project->getBranch());
         $build->setCreated(new \DateTime());
         $build->setCommitterEmail($_SESSION['user']->getEmail());
 
@@ -145,10 +152,7 @@ class ProjectController extends \PHPCI\Controller
     public function add()
     {
         $this->config->set('page_title', 'Add Project');
-
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
 
@@ -159,7 +163,7 @@ class ProjectController extends \PHPCI\Controller
             $sshKey = new SshKey();
             $key = $sshKey->generate();
 
-            $values['key'] = $key['private_key'];
+            $values['key']    = $key['private_key'];
             $values['pubkey'] = $key['public_key'];
             $pub = $key['public_key'];
         }
@@ -174,8 +178,13 @@ class ProjectController extends \PHPCI\Controller
             $view->key      = $pub;
 
             return $view->render();
+        } else {
+            return $this->addProject($form);
         }
+    }
 
+    protected function addProject(Form $form)
+    {
         $values = $form->getValues();
 
         $matches = array();
@@ -284,61 +293,48 @@ class ProjectController extends \PHPCI\Controller
             'hg'    => 'Mercurial',
             );
 
-        $field = new Form\Element\Select('type');
-        $field->setRequired(true);
+        $field = Form\Element\Select::create('type', 'Where is your project hosted?', true);
         $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
         $field->setOptions($options);
-        $field->setLabel('Where is your project hosted?');
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
-
 
         $container = new Form\ControlGroup('github-container');
         $container->setClass('github-container');
 
-        $field = new Form\Element\Select('github');
-        $field->setLabel('Choose a Github repository:');
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $field = Form\Element\Select::create('github', 'Choose a Github repository:', false);
+        $field->setClass('form-control')->setContainerClass('form-group');
         $container->addField($field);
         $form->addField($container);
 
-        $field = new Form\Element\Text('reference');
-        $field->setRequired(true);
+        $field = Form\Element\Text::create('reference', 'Repository Name / URL (Remote) or Path (Local)', true);
         $field->setValidator($this->getReferenceValidator($values));
-        $field->setLabel('Repository Name / URL (Remote) or Path (Local)');
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Text('title');
-        $field->setRequired(true);
-        $field->setLabel('Project Title');
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $field = Form\Element\Text::create('title', 'Project Title', true);
+        $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\TextArea('key');
-        $field->setRequired(false);
-        $field->setLabel('Private key to use to access repository (leave blank for local and/or anonymous remotes)');
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $title = 'Private key to use to access repository (leave blank for local and/or anonymous remotes)';
+        $field = Form\Element\TextArea::create('key', $title, false);
+        $field->setClass('form-control')->setContainerClass('form-group');
         $field->setRows(6);
         $form->addField($field);
 
-        $field = new Form\Element\TextArea('build_config');
-        $field->setRequired(false);
         $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
-        $field->setLabel($label);
-        $field->setClass('form-control');
-        $field->setContainerClass('form-group');
+        $field = Form\Element\TextArea::create('build_config', $label, false);
+        $field->setClass('form-control')->setContainerClass('form-group');
         $field->setRows(6);
         $form->addField($field);
 
-        $field = new Form\Element\Checkbox('allow_public_status');
-        $field->setRequired(false);
-        $field->setLabel('Enable public status page and image for this project?');
+        $field = Form\Element\Text::create('branch', 'Default branch name', true);
+        $field->setValidator($this->getReferenceValidator($values));
+        $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
+        $form->addField($field);
+
+        $label = 'Enable public status page and image for this project?';
+        $field = Form\Element\Checkbox::create('allow_public_status', $label, false);
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
         $field->setValue(1);

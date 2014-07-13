@@ -26,7 +26,7 @@ class GitlabBuild extends RemoteGitBuild
     public function getCommitLink()
     {
         $domain = $this->getProject()->getAccessInformation("domain");
-        return 'http://' . $domain . '/' . $this->getProject()->getReference(true) . '/commit/' . $this->getCommitId();
+        return 'http://' . $domain . '/' . $this->getProject()->getReferenceForLink() . '/commit/' . $this->getCommitId();
     }
 
     /**
@@ -35,7 +35,7 @@ class GitlabBuild extends RemoteGitBuild
     public function getBranchLink()
     {
         $domain = $this->getProject()->getAccessInformation("domain");
-        return 'http://' . $domain . '/' . $this->getProject()->getReference(true) . '/tree/' . $this->getBranch();
+        return 'http://' . $domain . '/' . $this->getProject()->getReferenceForLink() . '/tree/' . $this->getBranch();
     }
 
     /**

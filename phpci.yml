@@ -1,5 +1,5 @@
 build_settings:
-  verbose: false
+  verbose: true
   ignore:
     - "vendor"
     - "Tests"
@@ -14,11 +14,11 @@ setup:
 
 test:
   php_mess_detector:
-    allowed_warnings: 0
+    allowed_warnings: -1
   php_code_sniffer:
     standard: "PSR2"
-    allowed_warnings: 0
-    allowed_errors: 0
+    allowed_warnings: -1
+    allowed_errors: -1
   php_loc:
   php_unit:
   php_docblock_checker:
@@ -27,4 +27,4 @@ test:
 failure:
   email:
     committer: true
-    cc: ["php-ci@googlegroups.com"]
+    cc: ["j@thelibbster.com"]

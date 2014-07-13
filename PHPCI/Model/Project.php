@@ -68,7 +68,11 @@ class Project extends ProjectBase
          * always be the repository name.
          */
         $reference = $this->getReference();
-        preg_match("#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#", $reference, $matches);
+        preg_match(
+            "#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#",
+            $reference,
+            $matches
+        );
         $rtn = $matches[2]."/".$matches[3];
 
         return $rtn;

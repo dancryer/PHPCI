@@ -20,6 +20,7 @@ use PHPCI\Helper\Github;
 use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
+use PHPCI\Service\ProjectService;
 
 /**
 * Project Controller - Allows users to create, edit and view projects.
@@ -39,10 +40,16 @@ class ProjectController extends \PHPCI\Controller
      */
     protected $projectStore;
 
+    /**
+     * @var \PHPCI\Service\ProjectService
+     */
+    protected $projectService;
+
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
         $this->projectStore = Store\Factory::getStore('Project');
+        $this->projectService = new ProjectService($this->projectStore);
     }
 
     /**
@@ -179,33 +186,21 @@ class ProjectController extends \PHPCI\Controller
 
             return $view->render();
         } else {
-            return $this->addProject($form);
+            $title = $this->getParam('title', 'New Project');
+            $reference = $this->getParam('reference', null);
+            $type = $this->getParam('type', null);
+
+            $options = array(
+                'ssh_private_key' => $this->getParam('key', null),
+                'ssh_public_key' => $this->getParam('pubkey', null),
+                'build_config' => $this->getParam('build_config', null),
+                'allow_public_status' => $this->getParam('allow_public_status', 0),
+            );
+
+            $project = $this->projectService->createProject($title, $reference, $type, $options);
+            header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
+            die;
         }
-    }
-
-    protected function addProject(Form $form)
-    {
-        $values = $form->getValues();
-
-        $matches = array();
-        if ($values['type'] == "gitlab" && preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches)) {
-            $info = array();
-            $info['user'] = $matches[1];
-            $info['domain'] = $matches[2];
-            $values['access_information'] = serialize($info);
-            $values['reference'] = $matches[3]."/".$matches[4];
-        }
-
-        $values['ssh_private_key']  = $values['key'];
-        $values['ssh_public_key']  = $values['pubkey'];
-
-        $project = new Project();
-        $project->setValues($values);
-
-        $project = $this->projectStore->save($project);
-
-        header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
-        die;
     }
 
     /**

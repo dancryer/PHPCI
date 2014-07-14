@@ -57,6 +57,7 @@ class ProjectService
         $project->setTitle($title);
         $project->setType($type);
         $project->setReference($reference);
+        $project->setAllowPublicStatus(0);
 
         // Handle extra project options:
         if (array_key_exists('ssh_private_key', $options)) {
@@ -80,6 +81,16 @@ class ProjectService
 
         // Save and return the project:
         return $this->projectStore->save($project);
+    }
+
+    /**
+     * Delete a given project.
+     * @param Project $project
+     * @return bool
+     */
+    public function deleteProject(Project $project)
+    {
+        return $this->projectStore->delete($project);
     }
 
     /**

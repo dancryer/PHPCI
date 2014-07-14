@@ -11,7 +11,6 @@ namespace PHPCI\Service\Tests;
 
 use PHPCI\Model\Project;
 use PHPCI\Service\ProjectService;
-use Tests\PHPCI\Service\MockProjectStore;
 
 /**
  * Unit tests for the ProjectService class.
@@ -32,7 +31,11 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mockProjectStore = new MockProjectStore();
+        $this->mockProjectStore = $this->getMock('PHPCI\Store\ProjectStore');
+        $this->mockProjectStore->expects($this->any())
+                               ->method('save')
+                               ->will($this->returnArgument(0));
+
         $this->testedService = new ProjectService($this->mockProjectStore);
     }
 
@@ -97,5 +100,40 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('After Title', $returnValue->getTitle());
         $this->assertEquals('After Reference', $returnValue->getReference());
         $this->assertEquals('bitbucket', $returnValue->getType());
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_EmptyPublicStatus()
+    {
+        $project = new Project();
+        $project->setAllowPublicStatus(1);
+
+        $options = array(
+            'ssh_private_key' => 'private',
+            'ssh_public_key' => 'public',
+            'build_config' => 'config',
+        );
+
+        $returnValue = $this->testedService->updateProject($project, 'Test Project', 'github', 'block8/phpci', $options);
+
+        $this->assertEquals(0, $returnValue->getAllowPublicStatus());
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_DeleteProject()
+    {
+        $store = $this->getMock('PHPCI\Store\ProjectStore');
+        $store->expects($this->once())
+            ->method('delete')
+            ->will($this->returnValue(true));
+
+        $service = new ProjectService($store);
+        $project = new Project();
+
+        $this->assertEquals(true, $service->deleteProject($project));
     }
 }

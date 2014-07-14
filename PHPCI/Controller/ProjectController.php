@@ -119,7 +119,7 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $project = $this->projectStore->getById($projectId);
-        $this->projectStore->delete($project);
+        $this->projectService->delete($project);
 
         header('Location: '.PHPCI_URL);
         exit;
@@ -197,7 +197,7 @@ class ProjectController extends \PHPCI\Controller
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
             );
 
-            $project = $this->projectService->createProject($title, $reference, $type, $options);
+            $project = $this->projectService->createProject($title, $type, $reference, $options);
             header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
             die;
         }
@@ -247,21 +247,18 @@ class ProjectController extends \PHPCI\Controller
             return $view->render();
         }
 
-        $values             = $form->getValues();
-        $values['ssh_private_key']  = $values['key'];
-        $values['ssh_public_key']  = $values['pubkey'];
+        $title = $this->getParam('title', 'New Project');
+        $reference = $this->getParam('reference', null);
+        $type = $this->getParam('type', null);
 
-        if ($values['type'] == "gitlab") {
-            preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $values['reference'], $matches);
-            $info = array();
-            $info["user"] = $matches[1];
-            $info["domain"] = $matches[2];
-            $values['access_information'] = serialize($info);
-            $values['reference'] = $matches[3] . "/" . $matches[4];
-        }
+        $options = array(
+            'ssh_private_key' => $this->getParam('key', null),
+            'ssh_public_key' => $this->getParam('pubkey', null),
+            'build_config' => $this->getParam('build_config', null),
+            'allow_public_status' => $this->getParam('allow_public_status', 0),
+        );
 
-        $project->setValues($values);
-        $project = $this->projectStore->save($project);
+        $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
 
         header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
         die;
@@ -332,7 +329,7 @@ class ProjectController extends \PHPCI\Controller
         $field = Form\Element\Checkbox::create('allow_public_status', $label, false);
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
-        $field->setValue(1);
+        $field->setValue(0);
         $form->addField($field);
 
         $field = new Form\Element\Submit();

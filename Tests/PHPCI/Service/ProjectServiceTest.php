@@ -49,6 +49,7 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Test Project', $returnValue->getTitle());
         $this->assertEquals('github', $returnValue->getType());
         $this->assertEquals('block8/phpci', $returnValue->getReference());
+        $this->assertEquals('master', $returnValue->getBranch());
     }
 
     /**
@@ -61,6 +62,7 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
             'ssh_public_key' => 'public',
             'allow_public_status' => 1,
             'build_config' => 'config',
+            'branch' => 'testbranch',
         );
 
         $returnValue = $this->testedService->createProject('Test Project', 'github', 'block8/phpci', $options);
@@ -68,6 +70,7 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('private', $returnValue->getSshPrivateKey());
         $this->assertEquals('public', $returnValue->getSshPublicKey());
         $this->assertEquals('config', $returnValue->getBuildConfig());
+        $this->assertEquals('testbranch', $returnValue->getBranch());
         $this->assertEquals(1, $returnValue->getAllowPublicStatus());
     }
 

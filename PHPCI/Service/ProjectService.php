@@ -76,6 +76,10 @@ class ProjectService
             $project->setAllowPublicStatus((int)$options['allow_public_status']);
         }
 
+        if (array_key_exists('branch', $options)) {
+            $project->setBranch($options['branch']);
+        }
+
         // Allow certain project types to set access information:
         $this->processAccessInformation($project);
 

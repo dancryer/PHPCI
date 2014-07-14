@@ -10,15 +10,27 @@
 namespace PHPCI\Model\Tests;
 
 use PHPCI\Model\Project;
+use PHPCI\Model;
 
 /**
- * Unit tests for the ProjectService class.
+ * Unit tests for the Project model class.
  * @author Dan Cryer <dan@block8.co.uk>
  */
 class ProjectTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_TestIsAValidModel()
+    {
+        $project = new Project();
+        $this->assertTrue($project instanceof \b8\Model);
+        $this->assertTrue($project instanceof Model);
+        $this->assertTrue($project instanceof Model\Base\ProjectBase);
     }
 
     /**
@@ -74,5 +86,24 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project->setType('hg');
 
         $this->assertEquals('default', $project->getBranch());
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_TestProjectAccessInformation()
+    {
+        $info = array(
+            'item1' => 'Item One',
+            'item2' => 2,
+        );
+
+        $project = new Project();
+        $project->setAccessInformation(serialize($info));
+
+        $this->assertEquals('Item One', $project->getAccessInformation('item1'));
+        $this->assertEquals(2, $project->getAccessInformation('item2'));
+        $this->assertNull($project->getAccessInformation('item3'));
+        $this->assertEquals($info, $project->getAccessInformation());
     }
 }

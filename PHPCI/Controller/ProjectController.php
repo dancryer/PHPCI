@@ -20,6 +20,7 @@ use PHPCI\Helper\Github;
 use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
+use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
 /**
@@ -31,11 +32,6 @@ use PHPCI\Service\ProjectService;
 class ProjectController extends \PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\BuildStore
-     */
-    protected $buildStore;
-
-    /**
      * @var \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
@@ -45,11 +41,22 @@ class ProjectController extends \PHPCI\Controller
      */
     protected $projectService;
 
+    /**
+     * @var \PHPCI\Store\BuildStore
+     */
+    protected $buildStore;
+
+    /**
+     * @var \PHPCI\Service\BuildService
+     */
+    protected $buildService;
+
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
         $this->projectStore = Store\Factory::getStore('Project');
         $this->projectService = new ProjectService($this->projectStore);
+        $this->buildService = new BuildService($this->buildStore);
     }
 
     /**
@@ -95,15 +102,7 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $build = new Build();
-        $build->setProjectId($projectId);
-        $build->setCommitId('Manual');
-        $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($project->getBranch());
-        $build->setCreated(new \DateTime());
-        $build->setCommitterEmail($_SESSION['user']->getEmail());
-
-        $build = $this->buildStore->save($build);
+        $build = $this->buildService->createBuild($project, null, null, $_SESSION['user']->getEmail());
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;

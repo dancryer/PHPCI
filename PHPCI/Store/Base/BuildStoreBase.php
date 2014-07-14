@@ -107,4 +107,36 @@ class BuildStoreBase extends Store
             return array('items' => array(), 'count' => 0);
         }
     }
+
+    public function getByParentId($value, $limit = null, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
+
+        $add = '';
+
+        if ($limit) {
+            $add .= ' LIMIT ' . $limit;
+        }
+
+        $count = null;
+
+        $query = 'SELECT * FROM `build` WHERE `parent_id` = :parent_id' . $add;
+        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':parent_id', $value);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return new Build($item);
+            };
+            $rtn = array_map($map, $res);
+
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
+    }
 }

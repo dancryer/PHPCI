@@ -36,6 +36,7 @@ class ProjectBase extends Model
         'id' => null,
         'title' => null,
         'reference' => null,
+        'branch' => null,
         'ssh_private_key' => null,
         'ssh_public_key' => null,
         'type' => null,
@@ -200,17 +201,15 @@ class ProjectBase extends Model
     }
 
     /**
-     * Get the value of Branch / branch.
-     *
-     * @return string
-     */
+    * Get the value of Branch / branch.
+    *
+    * @return string
+    */
     public function getBranch()
     {
-        if (empty($this->data['branch'])) {
-            return $this->getType() === 'hg' ? 'default' : 'master';
-        } else {
-            return $this->data['branch'];
-        }
+        $rtn    = $this->data['branch'];
+
+        return $rtn;
     }
 
     /**
@@ -365,6 +364,7 @@ class ProjectBase extends Model
     */
     public function setBranch($value)
     {
+        $this->_validateNotNull('Branch', $value);
         $this->_validateString('Branch', $value);
 
         if ($this->data['branch'] === $value) {

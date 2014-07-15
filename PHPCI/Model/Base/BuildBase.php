@@ -45,6 +45,8 @@ class BuildBase extends Model
         'committer_email' => null,
         'commit_message' => null,
         'extra' => null,
+        'parent_id' => null,
+        'engine' => null,
     );
 
     /**
@@ -64,9 +66,12 @@ class BuildBase extends Model
         'committer_email' => 'getCommitterEmail',
         'commit_message' => 'getCommitMessage',
         'extra' => 'getExtra',
+        'parent_id' => 'getParentId',
+        'engine' => 'getEngine',
 
         // Foreign key getters:
         'Project' => 'getProject',
+        'Parent' => 'getParent',
     );
 
     /**
@@ -86,9 +91,12 @@ class BuildBase extends Model
         'committer_email' => 'setCommitterEmail',
         'commit_message' => 'setCommitMessage',
         'extra' => 'setExtra',
+        'parent_id' => 'setParentId',
+        'engine' => 'setEngine',
 
         // Foreign key setters:
         'Project' => 'setProject',
+        'Parent' => 'setParent',
     );
 
     /**
@@ -159,6 +167,18 @@ class BuildBase extends Model
             'nullable' => true,
             'default' => null,
         ),
+        'parent_id' => array(
+            'type' => 'int',
+            'length' => 11,
+            'nullable' => true,
+            'default' => null,
+        ),
+        'engine' => array(
+            'type' => 'varchar',
+            'length' => 50,
+            'nullable' => true,
+            'default' => null,
+        ),
     );
 
     /**
@@ -168,6 +188,7 @@ class BuildBase extends Model
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'project_id' => array('columns' => 'project_id'),
             'idx_status' => array('columns' => 'status'),
+            'parent_id' => array('columns' => 'parent_id'),
     );
 
     /**
@@ -179,6 +200,13 @@ class BuildBase extends Model
                 'update' => 'CASCADE',
                 'delete' => 'CASCADE',
                 'table' => 'project',
+                'col' => 'id'
+                ),
+            'build_ibfk_2' => array(
+                'local_col' => 'parent_id',
+                'update' => 'CASCADE',
+                'delete' => 'CASCADE',
+                'table' => 'build',
                 'col' => 'id'
                 ),
     );
@@ -335,6 +363,30 @@ class BuildBase extends Model
     public function getExtra()
     {
         $rtn    = $this->data['extra'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of ParentId / parent_id.
+    *
+    * @return int
+    */
+    public function getParentId()
+    {
+        $rtn    = $this->data['parent_id'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of Engine / engine.
+    *
+    * @return string
+    */
+    public function getEngine()
+    {
+        $rtn    = $this->data['engine'];
 
         return $rtn;
     }
@@ -564,6 +616,42 @@ class BuildBase extends Model
     }
 
     /**
+    * Set the value of ParentId / parent_id.
+    *
+    * @param $value int
+    */
+    public function setParentId($value)
+    {
+        $this->_validateInt('ParentId', $value);
+
+        if ($this->data['parent_id'] === $value) {
+            return;
+        }
+
+        $this->data['parent_id'] = $value;
+
+        $this->_setModified('parent_id');
+    }
+
+    /**
+    * Set the value of Engine / engine.
+    *
+    * @param $value string
+    */
+    public function setEngine($value)
+    {
+        $this->_validateString('Engine', $value);
+
+        if ($this->data['engine'] === $value) {
+            return;
+        }
+
+        $this->data['engine'] = $value;
+
+        $this->_setModified('engine');
+    }
+
+    /**
      * Get the Project model for this Build by Id.
      *
      * @uses \PHPCI\Store\ProjectStore::getById()
@@ -618,6 +706,75 @@ class BuildBase extends Model
     public function setProjectObject(\PHPCI\Model\Project $value)
     {
         return $this->setProjectId($value->getId());
+    }
+
+    /**
+     * Get the Build model for this Build by Id.
+     *
+     * @uses \PHPCI\Store\BuildStore::getById()
+     * @uses \PHPCI\Model\Build
+     * @return \PHPCI\Model\Build
+     */
+    public function getParent()
+    {
+        $key = $this->getParentId();
+
+        if (empty($key)) {
+            return null;
+        }
+
+        $cacheKey   = 'Cache.Build.' . $key;
+        $rtn        = $this->cache->get($cacheKey, null);
+
+        if (empty($rtn)) {
+            $rtn    = Factory::getStore('Build', 'PHPCI')->getById($key);
+            $this->cache->set($cacheKey, $rtn);
+        }
+
+        return $rtn;
+    }
+
+    /**
+    * Set Parent - Accepts an ID, an array representing a Build or a Build model.
+    *
+    * @param $value mixed
+    */
+    public function setParent($value)
+    {
+        // Is this an instance of Build?
+        if ($value instanceof \PHPCI\Model\Build) {
+            return $this->setParentObject($value);
+        }
+
+        // Is this an array representing a Build item?
+        if (is_array($value) && !empty($value['id'])) {
+            return $this->setParentId($value['id']);
+        }
+
+        // Is this a scalar value representing the ID of this foreign key?
+        return $this->setParentId($value);
+    }
+
+    /**
+    * Set Parent - Accepts a Build model.
+    * 
+    * @param $value \PHPCI\Model\Build
+    */
+    public function setParentObject(\PHPCI\Model\Build $value)
+    {
+        return $this->setParentId($value->getId());
+    }
+
+    /**
+     * Get Build models by ParentId for this Build.
+     *
+     * @uses \PHPCI\Store\BuildStore::getByParentId()
+     * @uses \PHPCI\Model\Build
+     * @return \PHPCI\Model\Build[]
+     */
+    public function getParentBuilds()
+    {
+        return Factory::getStore('Build', 'PHPCI')->getByParentId($this->getId());
     }
 
     /**

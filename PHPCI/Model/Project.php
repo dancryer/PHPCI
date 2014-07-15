@@ -59,6 +59,20 @@ class Project extends ProjectBase
         return $rtn;
     }
 
+    /**
+     * Get the value of Branch / branch.
+     *
+     * @return string
+     */
+    public function getBranch()
+    {
+        if (empty($this->data['branch'])) {
+            return $this->getType() === 'hg' ? 'default' : 'master';
+        } else {
+            return $this->data['branch'];
+        }
+    }
+
     public function getReferenceForLink()
     {
         /**

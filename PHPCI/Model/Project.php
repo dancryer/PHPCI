@@ -73,6 +73,16 @@ class Project extends ProjectBase
         }
     }
 
+    /**
+     * @author Jonathan Libby <j@thelibbster.com>
+     *
+     * @method getReferenceForLink
+     *  Gets a project reference, safe for use in page links where a port
+     *  number in the ssh://foo@example.com:port/user/repo.git form would
+     *  invalidate the link.
+     *
+     * @return string
+     */
     public function getReferenceForLink()
     {
         /**

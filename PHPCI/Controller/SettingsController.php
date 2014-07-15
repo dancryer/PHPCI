@@ -41,13 +41,19 @@ class SettingsController extends Controller
         $this->view->settings = $this->settings;
 
         $emailSettings = array();
+        $authenticationSettings = array();
 
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
+        if (isset($this->settings['phpci']['authentication_settings'])) {
+            $authenticationSettings = $this->settings['phpci']['authentication_settings'];
+        }
+
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->authenticationSettings = $this->getAuthenticationForm($authenticationSettings);
         $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
@@ -85,6 +91,23 @@ class SettingsController extends Controller
 
         die;
     }
+
+    public function authentication()
+    {
+        $this->settings['phpci']['authentication_settings']['state'] = $this->getParam('disable_authentication', 0);
+        $this->settings['phpci']['authentication_settings']['user_id'] = $_SESSION['user_id'];
+
+        $error = $this->storeSettings();
+
+        if ($error) {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        } else {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
+
+        die;
+    }
+
 
     /**
      * Github redirects users back to this URL when t
@@ -224,6 +247,36 @@ class SettingsController extends Controller
         $field->setLabel('Use SMTP encryption?');
         $field->setContainerClass('form-group');
         $field->setValue(1);
+        $form->addField($field);
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
+    }
+
+    protected function getAuthenticationForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/authentication');
+        $form->addField(new Form\Element\Csrf('csrf'));
+
+        $field = new Form\Element\Checkbox('disable_authentication');
+        $field->setCheckedValue(1);
+        $field->setRequired(false);
+        $field->setLabel('Disable Authentication?');
+        $field->setContainerClass('form-group');
+        $field->setValue(0);
+
+        if (isset($values['state'])) {
+            $field->setValue((int)$values['state']);
+        }
+
         $form->addField($field);
 
         $field = new Form\Element\Submit();

@@ -14,6 +14,7 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
+use Symfony\Component\Yaml\Parser;
 
 /**
 * PHPCI Front Controller
@@ -43,11 +44,32 @@ class Application extends b8\Application
             return false;
         };
 
+        // load settings to check if there's a configured default user and auth disabled
+        $skipAuth = function () {
+            $parser = new Parser();
+            $yaml = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+            $settings = $parser->parse($yaml);
+            if ((!empty($settings['phpci']['authentication_settings']['state'])
+                    && 1 == (int)$settings['phpci']['authentication_settings']['state'])
+                && !empty($settings['phpci']['authentication_settings']['user_id'])
+            ) {
+                $user = b8\Store\Factory::getStore('User')
+                    ->getByPrimaryKey($settings['phpci']['authentication_settings']['user_id']);
+
+                if ($user) {
+                    $_SESSION['user'] = $user;
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
         // Handler for the route we're about to register, checks for a valid session where necessary:
-        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession) {
+        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession()) {
+            if (!$skipValidation && !$validateSession() && !$skipAuth()) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');

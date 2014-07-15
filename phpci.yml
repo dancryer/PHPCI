@@ -6,6 +6,7 @@ build_settings:
     - "PHPCI/Command" # PHPMD complains about un-used parameters, but they are required.
     - "public/install.php" # PHPCS really doesn't like PHP mixed with HTML (and so it shouldn't)
     - "PHPCI/Migrations" # Ignore the migrations directory, as both PHPMD and PHPCS can't cope with them.
+    - "PHPCI/Model/Base" # PHPMD doesn't like the complexity of some of the generated files
 
 setup:
   composer:

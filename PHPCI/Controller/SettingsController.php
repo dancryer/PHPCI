@@ -168,6 +168,10 @@ class SettingsController extends Controller
 
     protected function getEmailForm($values = array())
     {
+        $encryption = 1;
+        $port = 25;
+        $server = 'localhost';
+
         $form = new Form();
         $form->setMethod('POST');
         $form->setAction(PHPCI_URL . 'settings/email');
@@ -178,7 +182,10 @@ class SettingsController extends Controller
         $field->setLabel('SMTP Server');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setValue('localhost');
+        if (isset($values['phpci']['email_settings']['smtp_address'])) {
+            $server = $values['phpci']['email_settings']['smtp_address'];
+        }
+        $field->setValue($server);
         $form->addField($field);
 
         $field = new Form\Element\Text('smtp_port');
@@ -187,7 +194,10 @@ class SettingsController extends Controller
         $field->setLabel('SMTP Port');
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setValue(25);
+        if (isset($values['phpci']['email_settings']['smtp_port'])) {
+            $port = $values['phpci']['email_settings']['smtp_port'];
+        }
+        $field->setValue($port);
         $form->addField($field);
 
         $field = new Form\Element\Text('smtp_username');
@@ -219,11 +229,14 @@ class SettingsController extends Controller
         $form->addField($field);
 
         $field = new Form\Element\Checkbox('smtp_encryption');
-        $field->setCheckedValue(1);
         $field->setRequired(false);
         $field->setLabel('Use SMTP encryption?');
         $field->setContainerClass('form-group');
-        $field->setValue(1);
+        if (isset($values['phpci']['email_settings']['smtp_encryption'])) {
+            $encryption = $values['phpci']['email_settings']['smtp_encryption'];
+        }
+        $field->setValue($encryption);
+        $field->setCheckedValue((bool)$encryption);
         $form->addField($field);
 
         $field = new Form\Element\Submit();

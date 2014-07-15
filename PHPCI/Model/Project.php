@@ -92,11 +92,12 @@ class Project extends ProjectBase
          * always be the repository name.
          */
         $reference = $this->getReference();
+
+        /**
+         * This is a single regular expression split up onto multiple lines for
+         * readability.
+         */
         preg_match(
-            /**
-             * This is a single expression split up onto multiple lines for
-             * readability.
-             */
             "#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4]" .
             "[0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#",
             $reference,

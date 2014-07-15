@@ -72,4 +72,39 @@ class Project extends ProjectBase
             return $this->data['branch'];
         }
     }
+
+    /**
+     * @author Jonathan Libby <j@thelibbster.com>
+     *
+     * @method getReferenceForLink
+     *  Gets a project reference, safe for use in page links where a port
+     *  number in the ssh://foo@example.com:port/user/repo.git form would
+     *  invalidate the link.
+     *
+     * @return string
+     */
+    public function getReferenceForLink()
+    {
+        /**
+         * Split the reference field into a few sections. If a port number is
+         * included, it will be in $matches[1]; regardless, $matches[2] will
+         * always be the username associated with the repo and $matches[3] will
+         * always be the repository name.
+         */
+        $reference = $this->getReference();
+
+        /**
+         * This is a single regular expression split up onto multiple lines for
+         * readability.
+         */
+        preg_match(
+            "#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4]" .
+            "[0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#",
+            $reference,
+            $matches
+        );
+        $rtn = $matches[2]."/".$matches[3];
+
+        return $rtn;
+    }
 }

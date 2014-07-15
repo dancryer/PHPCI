@@ -93,7 +93,12 @@ class Project extends ProjectBase
          */
         $reference = $this->getReference();
         preg_match(
-            "#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#",
+            /**
+             * This is a single expression split up onto multiple lines for
+             * readability.
+             */
+            "#\b0*([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4]" .
+            "[0-9]{2}|655[0-2][0-9]|6553[0-5])?\b/?(.*)/(.*)#",
             $reference,
             $matches
         );
@@ -101,5 +106,4 @@ class Project extends ProjectBase
 
         return $rtn;
     }
-
 }

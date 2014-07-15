@@ -44,8 +44,8 @@ class BuildService
         $committerEmail = null,
         $commitMessage = null,
         $extra = null
-    // Tell phpcs to ignore this PSR-2 checkmate
-    // @codingStandardsIgnoreStart
+        // Tell phpcs to ignore this PSR-2 checkmate
+        // @codingStandardsIgnoreStart
     )
     {
         // @codingStandardsIgnoreEnd

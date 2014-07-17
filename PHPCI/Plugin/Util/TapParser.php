@@ -6,6 +6,7 @@ class TapParser
 {
     const TEST_COUNTS_PATTERN = '/([0-9]+)\.\.([0-9]+)/';
     const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
+	const TEST_SKIP_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+\#\s+SKIP([^\n]+)/i';
     const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
     const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
 
@@ -92,6 +93,20 @@ class TapParser
                 );
 
                 $rtn[] = $item;
+			} elseif (preg_match(self::TEST_SKIP_LINE_PATTERN, $line, $matches)) {
+				$ok = ($matches[1] == 'ok' ? true : false);
+
+				if (!$ok) {
+					$this->failures++;
+				}
+
+				$item = array(
+					'pass' => $ok,
+					'suite' => $matches[2],
+					'test' => $matches[2],
+				);
+
+				$rtn[] = $item;
             } elseif (preg_match(self::TEST_MESSAGE_PATTERN, $line, $matches)) {
                 $rtn[count($rtn) - 1]['message'] = $matches[1];
             }

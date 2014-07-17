@@ -43,7 +43,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $this->phpci     = $phpci;
         $this->build     = $build;
-        $this->directory = $phpci->buildPath . (isset($options['directory']) ? $options['directory'] : "");
+        $this->directory = isset($options['directory']) ? $options['directory'] : "";
     }
 
     /**
@@ -68,7 +68,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
+        $success = $this->phpci->executeCommand($phploc . ' %s %s', $ignore, $this->getTargetDirectory());
         $output = $this->phpci->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
@@ -82,4 +82,15 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         return $success;
     }
+
+    protected function getTargetDirectory()
+    {
+        $path = $this->phpci->buildPath . $this->directory;
+        if (!empty($this->directory) && $this->directory{0} == '/') {
+            $path = $this->directory;
+            return $path;
+        }
+        return $path;
+    }
+
 }

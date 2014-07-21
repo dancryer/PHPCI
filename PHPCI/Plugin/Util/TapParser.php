@@ -43,7 +43,7 @@ class TapParser
             throw new \Exception('TapParser only supports TAP version 13');
         }
 
-        if (preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
+        if (isset($lines[count($lines) - 1]) && preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
             array_pop($lines);
             if ($lines[count($lines) - 1] == "") {
                 array_pop($lines);
@@ -57,7 +57,8 @@ class TapParser
             $totalTests = (int) $matches[2];
         }
 
-        if (preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
+        if (isset($lines[count($lines) - 1]) &&
+            preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
             array_pop($lines);
             $totalTests = (int) $matches[2];
         }

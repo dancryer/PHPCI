@@ -41,7 +41,7 @@ class SshKey
                 $return['public_key']  =$pub;
             }
 
-            if (!empty($prv) ) {
+            if (!empty($prv)) {
                 $prv = '';
                 $return['private_key']  =$prv;
             }

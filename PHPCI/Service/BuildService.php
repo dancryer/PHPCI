@@ -44,8 +44,7 @@ class BuildService
         $committerEmail = null,
         $commitMessage = null,
         $extra = null
-    )
-    {
+    ) {
         $build = new Build();
         $build->setCreated(new \DateTime());
         $build->setProject($project);

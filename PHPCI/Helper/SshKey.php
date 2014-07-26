@@ -29,7 +29,10 @@ class SshKey
             mkdir($tempPath);
         }
 
-        $return = array();
+        $return = array(
+            'private_key' => null,
+            'public_key'  => null,
+        );
 
         if ($this->canGenerateKeys()) {
             shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
@@ -37,15 +40,8 @@ class SshKey
             $pub = file_get_contents($keyFile . '.pub');
             $prv = file_get_contents($keyFile);
 
-            if (empty($pub)) {
-                $pub = '';
-            }
-
-            if (empty($prv)) {
-                $prv = '';
-            }
-
-            $return = array('private_key' => $prv, 'public_key' => $pub);
+            $return['private_key'] = empty($prv) ? '' : $prv;
+            $return['public_key']  = empty($pub) ? '' : $pub;
         }
 
         return $return;

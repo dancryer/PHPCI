@@ -170,8 +170,11 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $composer = $path.'/composer.json';
             if (is_file($composer)) {
                 $json = json_decode(file_get_contents($composer));
+
                 if (isset($json->config->{"bin-dir"})) {
                     return $path.'/'.$json->config->{"bin-dir"};
+                } elseif (is_dir($path . '/vendor/bin')) {
+                    return $path  . '/vendor/bin';
                 }
             }
         }

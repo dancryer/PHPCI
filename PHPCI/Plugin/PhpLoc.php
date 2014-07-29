@@ -43,9 +43,11 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $this->phpci     = $phpci;
         $this->build     = $build;
-        $this->directory = isset($options['directory']) ?
-            $phpci->buildPath . '/' . $options['directory'] :
-            $phpci->buildPath;
+        $this->directory = $phpci->buildPath;
+
+        if (isset($options['directory'])) {
+            $this->directory .= $options['directory'];
+        }
     }
 
     /**

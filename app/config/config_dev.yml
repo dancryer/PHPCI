@@ -8,8 +8,8 @@ framework:
     profiler: { only_exceptions: false }
 
 web_profiler:
-    toolbar: %debug_toolbar%
-    intercept_redirects: %debug_redirects%
+    toolbar: "%debug_toolbar%"
+    intercept_redirects: "%debug_redirects%"
 
 monolog:
     handlers:
@@ -30,7 +30,7 @@ monolog:
         #    level:  info
 
 assetic:
-    use_controller: %use_assetic_controller%
+    use_controller: "%use_assetic_controller%"
 
 #swiftmailer:
 #    delivery_address: me@example.com

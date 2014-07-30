@@ -107,13 +107,18 @@ class ProjectService
         $matches = array();
         $reference = $project->getReference();
 
-        if ($project->getType() == 'gitlab' && preg_match('`^(.*)@(.*):(.*)/(.*)\.git`', $reference, $matches)) {
+        if ($project->getType() == 'gitlab') {
             $info = array();
-            $info['user'] = $matches[1];
-            $info['domain'] = $matches[2];
+
+            if (preg_match('`^(.*)@(.*):([0-9]+)?/?(.*)/(.*)\.git`', $reference, $matches)) {
+                $info['user'] = $matches[1];
+                $info['domain'] = $matches[2];
+                $info['port'] = $matches[3];
+
+                $project->setReference($matches[4] . '/' . $matches[5]);
+            }
 
             $project->setAccessInformation($info);
-            $project->setReference($matches[3] . '/' . $matches[4]);
         }
     }
 }

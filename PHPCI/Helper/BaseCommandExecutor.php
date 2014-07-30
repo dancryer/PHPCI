@@ -30,6 +30,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
     protected $verbose;
 
     protected $lastOutput;
+    protected $lastError;
 
     public $logExecOutput = true;
 
@@ -78,14 +79,40 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         $status = 0;
-        exec($command, $this->lastOutput, $status);
+        $descriptorSpec = array(
+            0 => array("pipe", "r"),  // stdin
+            1 => array("pipe", "w"),  // stdout
+            2 => array("pipe", "w"),  // stderr
+        );
 
-        foreach ($this->lastOutput as &$lastOutput) {
-            $lastOutput = trim($lastOutput, '"');
+        $pipes = array();
+
+        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+
+        if (is_resource($process)) {
+            fclose($pipes[0]);
+
+            $this->lastOutput = stream_get_contents($pipes[1]);
+            $this->lastError = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $status = proc_close($process);
         }
 
-        if ($this->logExecOutput && !empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
+        $this->lastOutput = explode(PHP_EOL, $this->lastOutput);
+        $this->lastError = "\033[0;31m" . $this->lastError . "\033[0m";
+
+        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
+
+        if ($shouldOutput && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);
+        }
+
+        if (!empty($this->lastError)) {
+            $this->logger->log('Error trying to execute: ' . $command);
+            $this->logger->log($this->lastError, LogLevel::ERROR);
         }
 
         $rtn = false;

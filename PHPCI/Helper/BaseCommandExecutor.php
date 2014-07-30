@@ -101,7 +101,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $status = proc_close($process);
         }
 
-        $this->lastOutput = explode(PHP_EOL, $this->lastOutput);
+        $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
 
         $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
 

@@ -66,12 +66,26 @@
 <script>
     var refreshProjectData = function()
     {
-        $('#latest-builds').load('<?php echo PHPCI_URL ?>home/latest', function () {
-            $('#latest-builds').trigger('latest-builds:reload');
+        $.ajax({
+            url: '<?php echo PHPCI_URL ?>home/latest',
+
+            success: function (data) {
+                $('#latest-builds').html(data);
+                $('#latest-builds').trigger('latest-builds:reload');
+            },
+
+            error: handleFailedAjax
         });
 
-        $('#project-overview').load('<?php echo PHPCI_URL ?>home/summary', function () {
-            $('#project-overview').trigger('project-overview:reload');
+        $.ajax({
+            url: '<?php echo PHPCI_URL ?>home/summary',
+
+            success: function (data) {
+                $('#project-overview').html(data);
+                $('#project-overview').trigger('project-overview:reload');
+            },
+
+            error: handleFailedAjax
         });
     };
 

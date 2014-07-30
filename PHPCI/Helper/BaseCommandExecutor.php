@@ -132,6 +132,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
     }
 
     /**
+     * Returns the stderr output from the last command run.
+     */
+    public function getLastError()
+    {
+        return $this->lastError;
+    }
+
+    /**
      * Find a binary required by a plugin.
      * @param string $binary
      * @param null $buildPath

@@ -99,7 +99,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         );
 
         $project = new Project();
-        $project->setAccessInformation(serialize($info));
+        $project->setAccessInformation($info);
 
         $this->assertEquals('Item One', $project->getAccessInformation('item1'));
         $this->assertEquals(2, $project->getAccessInformation('item2'));

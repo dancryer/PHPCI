@@ -20,6 +20,11 @@ class User
     public function __call($method, $params = array())
     {
         $user = $_SESSION['user'];
+
+        if (!is_object($user)) {
+            return null;
+        }
+
         return call_user_func_array(array($user, $method), $params);
     }
 }

@@ -151,7 +151,7 @@ class BuildController extends \PHPCI\Controller
             throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
         }
 
-        $this->buildService->delete($build);
+        $this->buildService->deleteBuild($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
         exit;

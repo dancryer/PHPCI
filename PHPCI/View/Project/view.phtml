@@ -114,7 +114,16 @@
 <script>
     setInterval(function()
     {
-        $('#latest-builds').load('<?php echo PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>');
+        $.ajax({
+            url: '<?php echo PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>',
+
+            success: function (data) {
+                $('#latest-builds').html(data);
+                $('#latest-builds').trigger('latest-builds:reload');
+            },
+
+            error: handleFailedAjax
+        });
     }, 10000);
 
     $(function() {

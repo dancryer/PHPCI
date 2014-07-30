@@ -47,7 +47,7 @@ function confirmDelete(url, subject, reloadAfter) {
              */
             $.ajax({
                 url: url,
-                'success': function (data) {
+                success: function (data) {
                     if (reloadAfter) {
                         dialog.onClose = function () {
                             window.location.reload();
@@ -56,8 +56,12 @@ function confirmDelete(url, subject, reloadAfter) {
 
                     dialog.showStatusMessage('Successfully deleted!', 1000);
                 },
-                'error': function (data) {
+                error: function (data) {
                     dialog.showStatusMessage('Deletion failed! Server says "' + data.statusText + '"');
+
+                    if (data.status == 401) {
+                        handleFailedAjax(data);
+                    }
                 }
             });
         }
@@ -258,24 +262,28 @@ function setupProjectForm()
 		}
 	});
 
-	$('#element-type').change(function()
-	{
+	$('#element-type').change(function() {
         if ($(this).val() == 'github') {
             $('#loading').show();
 
-            $.getJSON(window.PHPCI_URL + 'project/github-repositories', function (data) {
-                $('#loading').hide();
+            $.ajax({
+                dataType: "json",
+                url: window.PHPCI_URL + 'project/github-repositories',
+                success: function (data) {
+                    $('#loading').hide();
 
-                if (data.repos) {
-                    $('#element-github').empty();
+                    if (data.repos) {
+                        $('#element-github').empty();
 
-                    for (var i in data.repos) {
-                        var name = data.repos[i];
-                        $('#element-github').append($('<option></option>').text(name).val(name));
+                        for (var i in data.repos) {
+                            var name = data.repos[i];
+                            $('#element-github').append($('<option></option>').text(name).val(name));
+                        }
+
+                        $('.github-container').slideDown();
                     }
-
-                    $('.github-container').slideDown();
-                }
+                },
+                error: handleFailedAjax
             });
         } else {
             $('.github-container').slideUp();
@@ -342,8 +350,14 @@ var PHPCIObject = Class.extend({
         }
 
         var cb = function() {
-            $.getJSON(window.PHPCI_URL + uri, query, function(data) {
-                $(window).trigger({type: name, queryData: data});
+            $.ajax({
+                dataType: "json",
+                url: window.PHPCI_URL + uri,
+                data: query,
+                success: function(data) {
+                    $(window).trigger({type: name, queryData: data});
+                },
+                error: handleFailedAjax
             });
         };
 
@@ -454,3 +468,11 @@ var PHPCIObject = Class.extend({
         }
     })
 });
+
+
+function handleFailedAjax(xhr)
+{
+    if (xhr.status == 401) {
+        window.location.href = window.PHPCI_URL + 'session/login';
+    }
+}

@@ -44,9 +44,25 @@ class Project extends ProjectBase
         return null;
     }
 
+    public function setAccessInformation($value)
+    {
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
+
+        parent::setAccessInformation($value);
+    }
+
     public function getAccessInformation($key = null)
     {
-        $data = unserialize($this->data['access_information']);
+        $info = $this->data['access_information'];
+
+        // Handle old-format (serialized) access information first:
+        if (!empty($info) && substr($info, 0, 1) != '{') {
+            $data = unserialize($info);
+        } else {
+            $data = json_decode($info, true);
+        }
 
         if (is_null($key)) {
             $rtn = $data;

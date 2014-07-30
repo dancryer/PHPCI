@@ -112,8 +112,7 @@ class ProjectService
             $info['user'] = $matches[1];
             $info['domain'] = $matches[2];
 
-            /** @todo At a later date, we need to find a way to replace this serialized data with JSON */
-            $project->setAccessInformation(serialize($info));
+            $project->setAccessInformation($info);
             $project->setReference($matches[3] . '/' . $matches[4]);
         }
     }

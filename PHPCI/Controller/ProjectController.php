@@ -118,7 +118,7 @@ class ProjectController extends \PHPCI\Controller
         }
 
         $project = $this->projectStore->getById($projectId);
-        $this->projectService->delete($project);
+        $this->projectService->deleteProject($project);
 
         header('Location: '.PHPCI_URL);
         exit;

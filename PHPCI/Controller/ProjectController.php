@@ -194,6 +194,7 @@ class ProjectController extends \PHPCI\Controller
                 'ssh_public_key' => $this->getParam('pubkey', null),
                 'build_config' => $this->getParam('build_config', null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
+                'branch' => $this->getParam('branch', null),
             );
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
@@ -255,6 +256,7 @@ class ProjectController extends \PHPCI\Controller
             'ssh_public_key' => $this->getParam('pubkey', null),
             'build_config' => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
+            'branch' => $this->getParam('branch', null),
         );
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);

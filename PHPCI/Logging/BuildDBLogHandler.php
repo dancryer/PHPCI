@@ -9,7 +9,7 @@
 
 namespace PHPCI\Logging;
 
-use b8\Store;
+use b8\Store\Factory;
 use Monolog\Handler\AbstractProcessingHandler;
 use PHPCI\Model\Build;
 
@@ -40,5 +40,7 @@ class BuildDBLogHandler extends AbstractProcessingHandler
 
         $this->logValue .= $message . PHP_EOL;
         $this->build->setLog($this->logValue);
+
+        Factory::getStore('Build')->save($this->build);
     }
 }

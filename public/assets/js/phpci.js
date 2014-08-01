@@ -245,20 +245,25 @@ function setupProjectForm()
     {
         var el  = $(this);
         var val = el.val();
+        var type = $('#element-type').val();
+        var acceptable = {
+            'github': {
+                'ssh': /git\@github\.com\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+                'git': /git\:\/\/github.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+                'http': /https\:\/\/github\.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/
+            },
+            'bitbucket': {
+                'ssh': /git\@bitbucket\.org\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+                'http': /https\:\/\/[a-zA-Z0-9_\-]+\@bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
+                'anon': /https\:\/\/bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/
+            }
 
-        if( val === "github" || val === "bitbucket" ) {
-            var acceptable = {
-                'github_ssh': /git\@github\.com\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
-                'github_git': /git\:\/\/github.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
-                'github_http': /https\:\/\/github\.com\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/,
-                'bb_ssh': /git\@bitbucket\.org\:([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
-                'bb_http': /https\:\/\/[a-zA-Z0-9_\-]+\@bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)\.git/,
-                'bb_anon': /https\:\/\/bitbucket.org\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)(\.git)?/
-            };
+        };
 
-            for(var i in acceptable) {
-                if(val.match(acceptable[i])) {
-                    el.val(val.replace(acceptable[i], '$1'));
+        if( acceptable[type] !== undefined ) {
+            for(var i in acceptable[type]) {
+                if(val.match(acceptable[type][i])) {
+                    el.val(val.replace(acceptable[type][i], '$1'));
                 }
             }
         }
@@ -274,7 +279,7 @@ function setupProjectForm()
                 success: function (data) {
                     $('#loading').hide();
 
-                    if (data.repos) {
+                    if (data && data.repos) {
                         $('#element-github').empty();
 
                         for (var i in data.repos) {
@@ -290,6 +295,7 @@ function setupProjectForm()
         } else {
             $('.github-container').slideUp();
         }
+        $('#element-reference').trigger('change');
     });
 
     $('#element-github').change(function()

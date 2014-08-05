@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
-use PHPCI\Model\User;
+use PHPCI\Service\UserService;
 
 
 /**
@@ -236,16 +236,11 @@ class InstallCommand extends Command
         $adminName = $dialog->ask($output, 'Enter your name: ');
 
         try {
-            $user = new User();
-            $user->setEmail($adminEmail);
-            $user->setName($adminName);
-            $user->setIsAdmin(1);
-            $user->setHash(password_hash($adminPass, PASSWORD_DEFAULT));
-
             $this->reloadConfig();
 
-            $store = Factory::getStore('User');
-            $store->save($user);
+            $userStore = Factory::getStore('User');
+            $userService = new UserService($userStore);
+            $userService->createUser($adminName, $adminEmail, $adminPass, 1);
 
             $output->writeln('<info>User account created!</info>');
         } catch (\Exception $ex) {

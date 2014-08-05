@@ -30,6 +30,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
     protected $verbose;
 
     protected $lastOutput;
+    protected $lastError;
 
     public $logExecOutput = true;
 
@@ -78,14 +79,38 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         $status = 0;
-        exec($command, $this->lastOutput, $status);
+        $descriptorSpec = array(
+            0 => array("pipe", "r"),  // stdin
+            1 => array("pipe", "w"),  // stdout
+            2 => array("pipe", "w"),  // stderr
+        );
 
-        foreach ($this->lastOutput as &$lastOutput) {
-            $lastOutput = trim($lastOutput, '"');
+        $pipes = array();
+
+        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+
+        if (is_resource($process)) {
+            fclose($pipes[0]);
+
+            $this->lastOutput = stream_get_contents($pipes[1]);
+            $this->lastError = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $status = proc_close($process);
         }
 
-        if ($this->logExecOutput && !empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
+        $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
+
+        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
+
+        if ($shouldOutput && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);
+        }
+
+        if (!empty($this->lastError)) {
+            $this->logger->log("\033[0;31m" . $this->lastError . "\033[0m", LogLevel::ERROR);
         }
 
         $rtn = false;
@@ -103,6 +128,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
     public function getLastOutput()
     {
         return implode(PHP_EOL, $this->lastOutput);
+    }
+
+    /**
+     * Returns the stderr output from the last command run.
+     */
+    public function getLastError()
+    {
+        return $this->lastError;
     }
 
     /**
@@ -170,8 +203,11 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $composer = $path.'/composer.json';
             if (is_file($composer)) {
                 $json = json_decode(file_get_contents($composer));
+
                 if (isset($json->config->{"bin-dir"})) {
                     return $path.'/'.$json->config->{"bin-dir"};
+                } elseif (is_dir($path . '/vendor/bin')) {
+                    return $path  . '/vendor/bin';
                 }
             }
         }

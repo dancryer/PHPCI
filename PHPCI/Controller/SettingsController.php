@@ -81,6 +81,8 @@ class SettingsController extends Controller
     public function email()
     {
         $this->settings['phpci']['email_settings'] = $this->getParams();
+        $this->settings['phpci']['email_settings']['smtp_encryption'] = $this->getParam('smtp_encryption', 0);
+
         $error = $this->storeSettings();
 
         if ($error) {

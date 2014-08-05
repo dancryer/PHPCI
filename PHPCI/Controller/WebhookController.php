@@ -13,6 +13,7 @@ use b8;
 use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
+use PHPCI\Service\BuildService;
 
 /**
  * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
@@ -29,9 +30,21 @@ class WebhookController extends \PHPCI\Controller
      */
     protected $buildStore;
 
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
+    /**
+     * @var \PHPCI\Service\BuildService
+     */
+    protected $buildService;
+
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
+        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildService = new BuildService($this->buildStore);
     }
 
     /**
@@ -238,22 +251,15 @@ class WebhookController extends \PHPCI\Controller
             return true;
         }
 
-        // If not, create a new build job for it:
-        $build = new Build();
-        $build->setProjectId($projectId);
-        $build->setCommitId($commitId);
-        $build->setStatus(Build::STATUS_NEW);
-        $build->setLog('');
-        $build->setCreated(new \DateTime());
-        $build->setBranch($branch);
-        $build->setCommitterEmail($committer);
-        $build->setCommitMessage($commitMessage);
+        $project = $this->projectStore->getById($projectId);
 
-        if (!is_null($extra)) {
-            $build->setExtra(json_encode($extra));
+        if (empty($project)) {
+            throw new \Exception('Project does not exist:' . $projectId);
         }
 
-        $build = BuildFactory::getBuild($this->buildStore->save($build));
+        // If not, create a new build job for it:
+        $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
+        $build = BuildFactory::getBuild($build);
 
         // Send a status postback if the build type provides one:
         $build->sendStatusPostback();

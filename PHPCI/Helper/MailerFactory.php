@@ -40,7 +40,7 @@ class MailerFactory
         return \Swift_Mailer::newInstance($transport);
     }
 
-    protected function getMailConfig($configName)
+    public function getMailConfig($configName)
     {
         if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];

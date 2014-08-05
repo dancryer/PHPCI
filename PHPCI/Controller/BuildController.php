@@ -13,6 +13,7 @@ use b8;
 use b8\Exception\HttpException\NotFoundException;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
+use PHPCI\Service\BuildService;
 
 /**
 * Build Controller - Allows users to run and view builds.
@@ -26,10 +27,16 @@ class BuildController extends \PHPCI\Controller
      * @var \PHPCI\Store\BuildStore
      */
     protected $buildStore;
+
+    /**
+     * @var \PHPCI\Service\BuildService
+     */
+    protected $buildService;
     
     public function init()
     {
-        $this->buildStore      = b8\Store\Factory::getStore('Build');
+        $this->buildStore = b8\Store\Factory::getStore('Build');
+        $this->buildService = new BuildService($this->buildStore);
     }
 
     /**
@@ -123,17 +130,7 @@ class BuildController extends \PHPCI\Controller
             throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
         }
 
-        $build  = new Build();
-        $build->setProjectId($copy->getProjectId());
-        $build->setCommitId($copy->getCommitId());
-        $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($copy->getBranch());
-        $build->setCreated(new \DateTime());
-        $build->setCommitterEmail($copy->getCommitterEmail());
-        $build->setCommitMessage($copy->getCommitMessage());
-        $build->setExtra(json_encode($copy->getExtra()));
-
-        $build = $this->buildStore->save($build);
+        $build = $this->buildService->createDuplicateBuild($copy);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -154,7 +151,7 @@ class BuildController extends \PHPCI\Controller
             throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
         }
 
-        $this->buildStore->delete($build);
+        $this->buildService->deleteBuild($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
         exit;

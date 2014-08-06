@@ -312,7 +312,7 @@ class InstallCommand extends Command
     protected function writeConfigFile(array $config)
     {
         $dumper = new \Symfony\Component\Yaml\Dumper();
-        $yaml = $dumper->dump($config, 2);
+        $yaml = $dumper->dump($config, 4);
 
         file_put_contents($this->configFilePath, $yaml);
     }

@@ -119,7 +119,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * Convert config to yaml and store to file
+     * Convert config to yaml and store to file.
      *
      * @return mixed
      */

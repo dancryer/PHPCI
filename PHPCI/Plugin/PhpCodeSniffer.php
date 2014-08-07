@@ -200,7 +200,8 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     protected function processReport($output)
     {
-        $data = json_decode(trim($output), true);
+        $data = str_replace(array("\r\n", "\r", "\n"), "", $output);
+        $data = json_decode(trim($data), true);
 
         if (!is_array($data)) {
             $this->phpci->log($output);

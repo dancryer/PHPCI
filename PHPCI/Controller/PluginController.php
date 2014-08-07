@@ -110,13 +110,13 @@ class PluginController extends \PHPCI\Controller
     }
 
     /**
-     * convert array to json and save composer.json
+     * Convert array to json and save composer.json
      * 
      * @param $array
      */
     protected function setComposerJson($array)
     {
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+        if (defined('JSON_PRETTY_PRINT')) {
             $json = json_encode($array, JSON_PRETTY_PRINT);
         } else {
             $json = json_encode($array);

@@ -254,7 +254,7 @@ class UserController extends Controller
             throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
         }
 
-        $this->userService->delete($user);
+        $this->userService->deleteUser($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;

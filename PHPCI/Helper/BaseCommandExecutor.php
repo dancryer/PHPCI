@@ -110,7 +110,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         if (!empty($this->lastError)) {
-            $this->logger->log("\033[0;31m" . 'Error trying to execute: ' . $command . "\033[0m", LogLevel::ERROR);
             $this->logger->log("\033[0;31m" . $this->lastError . "\033[0m", LogLevel::ERROR);
         }
 

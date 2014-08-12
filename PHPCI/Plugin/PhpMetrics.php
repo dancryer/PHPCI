@@ -98,6 +98,11 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     ? $this->phpci->buildPath . '.phpmetrics.yml'
                     : null;
         }
+
+        $this->location = $this->phpci->buildPath . '..' . DIRECTORY_SEPARATOR . 'phpmetrics';
+        if(!file_exists($this->location)) {
+            mkdir($this->location, 0777, true);
+        }
     }
 
     /**
@@ -110,6 +115,11 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->phpci->logFailure('Could not find PhpMetrics.');
             return false;
         }
+
+        if (!is_writable($this->location)) {
+            throw new \Exception(sprintf('The location %s is not writable.', $this->location));
+        }
+
         $success = $this->executePhpMetrics($bin);
 
         if(!$success) {
@@ -119,6 +129,7 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $data = $this->processReport(trim($this->phpci->getLastOutput()));
         $this->build->storeMeta('phpmetrics', $data);
+
 
         return $success;
     }
@@ -154,7 +165,7 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $array = array();
         foreach($project->attributes() as $key => $value) {
-            $array[$keyadd] = (string) $value;
+            $array[$key] = (string) $value;
         }
         return $array;
     }
@@ -186,6 +197,8 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         $args[] = '--report-xml=php://stdout';
+        $args[] = sprintf('--chart-bubbles="%s"', $this->location.DIRECTORY_SEPARATOR.'chart-bubbles.svg');
+        $args[] = sprintf('--report-html="%s"', $this->location.DIRECTORY_SEPARATOR.'report.html');
         $args[] = '--quiet';
 
         // Disable exec output logging, as we don't want the XML report in the log:
@@ -193,11 +206,11 @@ class PhpMetrics implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         // Run PhpMetrics:
         $cmd = sprintf('%1$s %2$s %3$s', $bin, implode(' ', $args), $this->path);
-        var_dump($cmd);
         $success = $this->phpci->executeCommand($cmd);
 
         // Re-enable exec output logging:
         $this->phpci->logExecOutput(true);
+
         return $success;
     }
 }

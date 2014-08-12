@@ -1,7 +1,7 @@
 var phpmetricsPlugin = PHPCI.UiPlugin.extend({
     id: 'build-lines-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
-    title: 'PhpMetrics',
+    title: 'PhpMetrics Trend',
     lastData: null,
     displayOnUpdate: false,
     rendered: false,
@@ -73,3 +73,43 @@ var phpmetricsPlugin = PHPCI.UiPlugin.extend({
 });
 
 PHPCI.registerPlugin(new phpmetricsPlugin());
+
+
+
+// PhpMetrics Bubbles
+// --------------
+// WIP :
+//
+//var phpmetricsPlugin = PHPCI.UiPlugin.extend({
+//    id: 'build-log',
+//    css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
+//    title: 'Maintenability chart',
+//    lastData: null,
+//    displayOnUpdate: false,
+//    rendered: false,
+//
+//    register: function() {
+//        var self = this;
+//        var query = PHPCI.registerQuery('phpmetrics-bubbles', -1, {num_builds: 10, key: 'phpmetrics-bubbles'})
+//
+//        $(window).on('phpmetrics-bubbles', function(data) {
+//            self.onUpdate(data);
+//        });
+//
+//        $(window).on('build-updated', function(data) {
+//            if (data.queryData.status > 1 && !self.rendered) {
+//                query();
+//            }
+//        });
+//    },
+//
+//    render: function() {
+//        return $('<div id="phpmetrics-bubbles"><embed type="image/svg+xml" src="/build/phpmetrics/chart-bubbles.svg" style="width:100%; height:100%" /></div>');
+//    },
+//
+//    onUpdate: function(e) {
+//    }
+//});
+//
+//PHPCI.registerPlugin(new phpmetricsPlugin());
+//

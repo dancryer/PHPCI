@@ -58,6 +58,7 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
-        "hipchat/hipchat-php": "Hipchat integration"
+        "hipchat/hipchat-php": "Hipchat integration",
+        "halleck45/phpmetrics": "PhpMetrics integration"
     }
 }

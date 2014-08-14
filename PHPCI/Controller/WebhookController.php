@@ -77,30 +77,40 @@ class WebhookController extends \PHPCI\Controller
      *
      * @param string $project
      */
-    public function git($project)
-    {
-        $branch = $this->getParam('branch');
-        $commit = $this->getParam('commit');
+	public function git($project)
+	{
+		$branch = $this->getParam('branch');
+		$commit = $this->getParam('commit');
+		$commitMessage = $this->getParam('message');
+		$committer = $this->getParam('committer');
 
-        try {
-            if (empty($branch)) {
-                $branch = 'master';
-            }
+		try {
+			if (empty($branch)) {
+				$branch = 'master';
+			}
 
-            if (empty($commit)) {
-                $commit = null;
-            }
+			if (empty($commit)) {
+				$commit = null;
+			}
 
-            $this->createBuild($project, $commit, $branch, null, null);
+			if (empty($commitMessage)) {
+				$commitMessage = null;
+			}
 
-        } catch (\Exception $ex) {
-            header('HTTP/1.1 400 Bad Request');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
-        }
+			if (empty($committer)) {
+				$committer = null;
+			}
 
-        die('OK');
-    }
+			$this->createBuild($project, $commit, $branch, $committer, $commitMessage);
+
+		} catch (\Exception $ex) {
+			header('HTTP/1.1 400 Bad Request');
+			header('Ex: ' . $ex->getMessage());
+			die('FAIL');
+		}
+
+		die('OK');
+	}
 
     /**
      * Called by Github Webhooks:

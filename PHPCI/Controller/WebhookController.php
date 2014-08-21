@@ -73,7 +73,7 @@ class WebhookController extends \PHPCI\Controller
     }
 
     /**
-     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
+     * Called by POSTing to /git/webhook/<project_id>?branch=<branch>&commit=<commit>
      *
      * @param string $project
      */

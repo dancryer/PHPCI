@@ -9,7 +9,6 @@
 
 namespace PHPCI\Model\Build;
 
-use PHPCI\Model\Build;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
@@ -66,16 +65,16 @@ class GitlabBuild extends RemoteGitBuild
     public function getGilabStatus()
     {
         switch ($this->getStatus()) {
-          case Build::STATUS_NEW:
+          case self::STATUS_NEW:
             return 'pending';
             break;
-          case Build::STATUS_RUNNING:
+          case self::STATUS_RUNNING:
             return 'running';
             break;
-          case Build::STATUS_SUCCESS:
+          case self::STATUS_SUCCESS:
             return 'success';
             break;
-          case Build::STATUS_FAILED:
+          case self::STATUS_FAILED:
             return 'failed';
             break;
           default:

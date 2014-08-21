@@ -112,6 +112,56 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
+     * Return information for a specific build in JSON format using project and
+     * commit hash. This can be used to integrate a custom Gitlab CI server.
+     *
+     * @param int $projectId
+     *   The project Id
+     *
+     * @param string $commitId
+     *   The commit hash
+     *
+     * @return string
+     *   JSON date to be visible on request. Response is an object with:
+     *     - branch: branch name
+     *     - commit: commit hash
+     *     - message: commit message
+     *     - committer: committer mail
+     *     - id: build id
+     *     - project: project name configured on PHPCI
+     *     - status: build status in string format
+     *     - log: the build log result
+     *     - created: build creation time in ISO8601 format
+     *     - started: build starting time in ISO8601 format
+     *     - finished: build finishing time in ISO8601 format
+     */
+    public function status($projectId, $commitId)
+    {
+        // Find the builds.
+        $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
+
+        foreach ($builds['items'] as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        // Extract the first and unique, if no build available return false.
+        $build = reset($builds['items']);
+
+        if (!$build) {
+            $this->response->setResponseCode(404);
+        } elseif (!$build->getProject()->getAllowPublicStatus()) {
+            $this->response->setResponseCode(401);
+        } elseif ($build) {
+            $this->response->disableLayout();
+            $this->response->setResponseCode(200);
+            $this->response->setHeader('Content-Type', 'application/json');
+            $this->response->setContent($build->convertJSON());
+        }
+
+        echo $this->response->flush();
+    }
+
+    /**
      * Render latest builds for project as HTML table.
      */
     protected function getLatestBuilds($projectId)

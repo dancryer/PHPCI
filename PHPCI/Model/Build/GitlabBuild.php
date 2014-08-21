@@ -93,8 +93,6 @@ class GitlabBuild extends RemoteGitBuild
      *   Build data with:
      *     - branch: branch name
      *     - commit: commit hash
-     *     - message: commit message
-     *     - committer: committer mail
      *     - id: build id
      *     - project: project name configured on PHPCI
      *     - status: build status in string format
@@ -111,11 +109,13 @@ class GitlabBuild extends RemoteGitBuild
           // Git related informations.
           'branch' => $this->getBranch(),
           'commit' => $this->getCommitId(),
+
           // Build related informations.
           'id' => $this->getId(),
           'status' => $this->getGilabStatus(),
           'log' => $this->getLog(),
 
+          // Build timing.
           'created' => $this->getCreated()->format(\DateTime::ISO8601),
           'started' => $this->getStarted()->format(\DateTime::ISO8601),
           'finished' => $this->getFinished()->format(\DateTime::ISO8601),

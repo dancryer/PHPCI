@@ -65,20 +65,20 @@ class GitlabBuild extends RemoteGitBuild
     public function getGilabStatus()
     {
         switch ($this->getStatus()) {
-          case self::STATUS_NEW:
-            return 'pending';
-            break;
-          case self::STATUS_RUNNING:
-            return 'running';
-            break;
-          case self::STATUS_SUCCESS:
-            return 'success';
-            break;
-          case self::STATUS_FAILED:
-            return 'failed';
-            break;
-          default:
-            throw new \Exception('Status not valid');
+            case self::STATUS_NEW:
+                return 'pending';
+                break;
+            case self::STATUS_RUNNING:
+                return 'running';
+                break;
+            case self::STATUS_SUCCESS:
+                return 'success';
+                break;
+            case self::STATUS_FAILED:
+                return 'failed';
+                break;
+            default:
+                throw new \Exception('Status not valid');
         }
     }
 

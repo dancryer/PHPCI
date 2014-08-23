@@ -168,7 +168,7 @@ class BuildStatusController extends \PHPCI\Controller
 
         if (!$build) {
             throw new NotFoundException('Project with id ' . $projectId . 'or commit ' . $commitId . ' not found');
-        } elseif (!$build->getProject()->allowAccess($this->request->getParam('auth_token'))) {
+        } elseif (!$build->getProject()->isAccessAllowed($this->request->getParam('auth_token'))) {
             throw new ForbiddenException('You do not have permission to do that.');
         } elseif ($build) {
             $this->response->disableLayout();

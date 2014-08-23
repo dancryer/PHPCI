@@ -118,16 +118,16 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
 
         $project->setAuthToken(null);
         $project->setAllowPublicStatus(false);
-        $this->assertFalse($project->allowAccess());
+        $this->assertFalse($project->isAccessAllowed());
 
         $project->setAuthToken(null);
         $project->setAllowPublicStatus(true);
-        $this->assertTrue($project->allowAccess());
+        $this->assertTrue($project->isAccessAllowed());
 
         $project->setAuthToken($auth_token_0);
         $project->setAllowPublicStatus(false);
-        $this->assertFalse($project->allowAccess());
-        $this->assertFalse($project->allowAccess($auth_token_1));
-        $this->assertTrue($project->allowAccess($auth_token_0));
+        $this->assertFalse($project->isAccessAllowed());
+        $this->assertFalse($project->isAccessAllowed($auth_token_1));
+        $this->assertTrue($project->isAccessAllowed($auth_token_0));
     }
 }

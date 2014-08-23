@@ -410,13 +410,13 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-     * Validate information from project create/editing form.
+     * Create validators for project create/editing form.
      *
      * @param array $values
      *   Values to validate.
      *
-     * @return bool
-     *    Indicate if values are valid.
+     * @return callback
+     *    Validator to validate information.
      */
     protected function getReferenceValidator($values)
     {

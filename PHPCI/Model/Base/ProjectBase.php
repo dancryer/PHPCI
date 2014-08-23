@@ -37,6 +37,7 @@ class ProjectBase extends Model
         'title' => null,
         'reference' => null,
         'branch' => null,
+        'auth_token' => null,
         'ssh_private_key' => null,
         'ssh_public_key' => null,
         'type' => null,
@@ -55,6 +56,7 @@ class ProjectBase extends Model
         'title' => 'getTitle',
         'reference' => 'getReference',
         'branch' => 'getBranch',
+        'auth_token' => 'getAuthToken',
         'ssh_private_key' => 'getSshPrivateKey',
         'ssh_public_key' => 'getSshPublicKey',
         'type' => 'getType',
@@ -75,6 +77,7 @@ class ProjectBase extends Model
         'title' => 'setTitle',
         'reference' => 'setReference',
         'branch' => 'setBranch',
+        'auth_token' => 'setAuthToken',
         'ssh_private_key' => 'setSshPrivateKey',
         'ssh_public_key' => 'setSshPublicKey',
         'type' => 'setType',
@@ -108,6 +111,11 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'branch' => array(
+            'type' => 'varchar',
+            'length' => 250,
+            'default' => null,
+        ),
+        'auth_token' => array(
             'type' => 'varchar',
             'length' => 250,
             'default' => null,
@@ -208,6 +216,18 @@ class ProjectBase extends Model
     public function getBranch()
     {
         $rtn    = $this->data['branch'];
+
+        return $rtn;
+    }
+
+    /**
+     * Get the value of Auth token.
+     *
+     * @return string|null
+     */
+    public function getAuthToken()
+    {
+        $rtn    = $this->data['auth_token'];
 
         return $rtn;
     }
@@ -374,6 +394,24 @@ class ProjectBase extends Model
         $this->data['branch'] = $value;
 
         $this->_setModified('branch');
+    }
+
+    /**
+     * Set the value of authentication token.
+     *
+     * @param string|null $value
+     */
+    public function setAuthToken($value)
+    {
+        $this->_validateString('AuthToken', $value);
+
+        if ($this->data['auth_token'] === $value) {
+            return;
+        }
+
+        $this->data['auth_token'] = $value;
+
+        $this->_setModified('auth_token');
     }
 
     /**

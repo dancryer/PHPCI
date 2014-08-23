@@ -80,6 +80,10 @@ class ProjectService
             $project->setBranch($options['branch']);
         }
 
+        if (array_key_exists('auth_token', $options)) {
+            $project->setAuthToken($options['auth_token']);
+        }
+
         // Allow certain project types to set access information:
         $this->processAccessInformation($project);
 

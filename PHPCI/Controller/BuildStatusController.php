@@ -31,6 +31,9 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
     protected $buildStore;
 
+    /**
+     * Initialize the service required from this class.
+     */
     public function init()
     {
         $this->response->disableLayout();
@@ -39,8 +42,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Returns status of the last build
-     * @param $projectId
+     * Returns status of the last build.
+     *
+     * @param int $projectId
+     *   The project ID
+     *
      * @return string
      */
     protected function getStatus($projectId)
@@ -69,8 +75,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image for a given project.
-    */
+     * Returns the appropriate build status image for a given project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
@@ -79,8 +88,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
+     * Returns the appropriate build status image in SVG format for a given project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function svg($projectId)
     {
         $status = $this->getStatus($projectId);
@@ -88,6 +100,12 @@ class BuildStatusController extends \PHPCI\Controller
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
     }
 
+    /**
+     * View the page for the specified project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
@@ -163,7 +181,13 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Render latest builds for project as HTML table.
+     * Extract latest builds (maximum 10) for the specified project.
+     *
+     * @param int $projectId
+     *   The project ID
+     *
+     * @param array
+     *   Array with the latest build for the specified project.
      */
     protected function getLatestBuilds($projectId)
     {

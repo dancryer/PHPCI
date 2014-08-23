@@ -51,6 +51,9 @@ class ProjectController extends \PHPCI\Controller
      */
     protected $buildService;
 
+    /**
+     * Initialize services required from this class.
+     */
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
@@ -60,8 +63,14 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * View a specific project.
-    */
+     * View a specific project.
+     *
+     * @param int $projectId
+     *   The project id to show.
+     *
+     * @return string
+     *   The rendered project page markup.
+     */
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
@@ -91,8 +100,13 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Create a new pending build for a project.
-    */
+     * Create a new pending build for a project.
+     *
+     * After create a new build in the queue redirect the user to the build page.
+     *
+     * @param int $projectId
+     *   The project id to build.
+     */
     public function build($projectId)
     {
         /* @var \PHPCI\Model\Project $project */
@@ -109,8 +123,13 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Delete a project.
-    */
+     * Delete a project.
+     *
+     * After deleting the project redirect the user to home page.
+     *
+     * @param int $projectId
+     *   The project id to delete
+     */
     public function delete($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
@@ -125,8 +144,14 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * AJAX get latest builds.
-    */
+     * AJAX get latest builds.
+     *
+     * @param int $projectId
+     *   The project id to show.
+     *
+     * @return string
+     *   The rendered table with latest build.
+     */
     public function builds($projectId)
     {
         $builds = $this->getLatestBuildsHtml($projectId);
@@ -134,8 +159,17 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Render latest builds for project as HTML table.
-    */
+     * Render latest builds for project as HTML table.
+     *
+     * @param int $projectId
+     *   The project id to show.
+     *
+     * @param int $start
+     *   The start position for the build.
+     *
+     * @return string
+     *   Rendered html table with the latest builds for the specified project.
+     */
     protected function getLatestBuildsHtml($projectId, $start = 0)
     {
         $criteria = array('project_id' => $projectId);
@@ -153,8 +187,10 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Add a new project. Handles both the form, and processing.
-    */
+     * Add a new project. Handles both the form, and processing.
+     *
+     * @return string
+     */
     public function add()
     {
         $this->config->set('page_title', 'Add Project');
@@ -206,8 +242,13 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Edit a project. Handles both the form and processing.
-    */
+     * Edit a project. Handles both the form and processing.
+     *
+     * @param int $projectId
+     *   The project id to edit.
+     *
+     * @return string
+     */
     public function edit($projectId)
     {
         if (!$_SESSION['user']->getIsAdmin()) {
@@ -269,8 +310,17 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Create add / edit project form.
-    */
+     * Create add / edit project form.
+     *
+     * @param array $values
+     *   Values to use to prepopulate form elements.
+     *
+     * @param string $type
+     *   Type of operation to perform, can be 'add' or 'edit'.
+     *
+     * @return b8\Form
+     *   Form to display to edit a new project.
+     */
     protected function projectForm($values, $type = 'add')
     {
         $form = new Form();
@@ -351,14 +401,23 @@ class ProjectController extends \PHPCI\Controller
     }
 
     /**
-    * Get an array of repositories from Github's API.
-    */
+     * Get an array of repositories from Github's API.
+     */
     protected function githubRepositories()
     {
         $github = new Github();
         die(json_encode($github->getRepositories()));
     }
 
+    /**
+     * Validate information from project create/editing form.
+     *
+     * @param array $values
+     *   Values to validate.
+     *
+     * @return bool
+     *    Indicate if values are valid.
+     */
     protected function getReferenceValidator($values)
     {
         return function ($val) use ($values) {

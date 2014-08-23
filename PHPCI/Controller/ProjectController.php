@@ -172,6 +172,7 @@ class ProjectController extends \PHPCI\Controller
             $values['key']    = $key['private_key'];
             $values['pubkey'] = $key['public_key'];
             $pub = $key['public_key'];
+            $values['auth_token'] = $this->genrateAuthToken();
         }
 
         $form = $this->projectForm($values);
@@ -195,6 +196,7 @@ class ProjectController extends \PHPCI\Controller
                 'build_config' => $this->getParam('build_config', null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
                 'branch' => $this->getParam('branch', null),
+                'auth_token' => $this->getParam('auth_token', null),
             );
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
@@ -257,6 +259,7 @@ class ProjectController extends \PHPCI\Controller
             'build_config' => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
             'branch' => $this->getParam('branch', null),
+            'auth_token' => $this->getParam('auth_token', null),
         );
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
@@ -333,6 +336,10 @@ class ProjectController extends \PHPCI\Controller
         $field->setValue(0);
         $form->addField($field);
 
+        $field = Form\Element\Text::create('auth_token', 'Authentication token', false);
+        $field->setClass('form-control')->setContainerClass('form-group');
+        $form->addField($field);
+
         $field = new Form\Element\Submit();
         $field->setValue('Save Project');
         $field->setContainerClass('form-group');
@@ -388,5 +395,17 @@ class ProjectController extends \PHPCI\Controller
 
             return true;
         };
+    }
+
+    /**
+     * Generate an unpredictible string to use as authentication token.
+     *
+     * @return string
+     *   A random string.
+     */
+    protected function genrateAuthToken()
+    {
+        $ret = bin2hex(openssl_random_pseudo_bytes(32));
+        return $ret;
     }
 }

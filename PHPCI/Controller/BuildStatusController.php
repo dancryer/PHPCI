@@ -149,7 +149,7 @@ class BuildStatusController extends \PHPCI\Controller
 
         if (!$build) {
             $this->response->setResponseCode(404);
-        } elseif (!$build->getProject()->getAllowPublicStatus()) {
+        } elseif (!$build->getProject()->allowAccess($this->request->getParam('auth_token'))) {
             $this->response->setResponseCode(401);
         } elseif ($build) {
             $this->response->disableLayout();

@@ -88,4 +88,21 @@ class Project extends ProjectBase
             return $this->data['branch'];
         }
     }
+
+    public function allowAccess($auth_token = null)
+    {
+        if ($this->getAllowPublicStatus()) {
+            return true;
+        }
+
+        if (is_null($auth_token)) {
+            return false;
+        }
+
+        if (is_null($this->getAuthToken())) {
+            return false;
+        }
+
+        return $auth_token === $this->getAuthToken();
+    }
 }

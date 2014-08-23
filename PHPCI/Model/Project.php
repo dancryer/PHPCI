@@ -72,6 +72,12 @@ class Project extends ProjectBase
         parent::setAccessInformation($value);
     }
 
+    /**
+     * Getter for project access information property.
+     *
+     * @param string $key
+     *   Key into access information to find.
+     */
     public function getAccessInformation($key = null)
     {
         $info = $this->data['access_information'];

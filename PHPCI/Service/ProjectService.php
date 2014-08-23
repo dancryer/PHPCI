@@ -12,6 +12,12 @@ namespace PHPCI\Service;
 use PHPCI\Model\Project;
 use PHPCI\Store\ProjectStore;
 
+/**
+ * Gitlab Project Service
+ *
+ * @package      PHPCI
+ * @subpackage   Core
+ */
 class ProjectService
 {
     /**
@@ -78,6 +84,10 @@ class ProjectService
 
         if (array_key_exists('branch', $options)) {
             $project->setBranch($options['branch']);
+        }
+
+        if (array_key_exists('auth_token', $options)) {
+            $project->setAuthToken($options['auth_token']);
         }
 
         // Allow certain project types to set access information:

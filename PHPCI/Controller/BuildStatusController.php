@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
 use PHPCI\BuildFactory;
@@ -30,6 +31,9 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
     protected $buildStore;
 
+    /**
+     * Initialize the service required from this class.
+     */
     public function init()
     {
         $this->response->disableLayout();
@@ -38,8 +42,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Returns status of the last build
-     * @param $projectId
+     * Returns status of the last build.
+     *
+     * @param int $projectId
+     *   The project ID
+     *
      * @return string
      */
     protected function getStatus($projectId)
@@ -68,8 +75,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image for a given project.
-    */
+     * Returns the appropriate build status image for a given project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
@@ -78,8 +88,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
+     * Returns the appropriate build status image in SVG format for a given project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function svg($projectId)
     {
         $status = $this->getStatus($projectId);
@@ -87,6 +100,12 @@ class BuildStatusController extends \PHPCI\Controller
         die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
     }
 
+    /**
+     * View the page for the specified project.
+     *
+     * @param int $projectId
+     *   The project ID
+     */
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);
@@ -112,7 +131,63 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Render latest builds for project as HTML table.
+     * Return information for a specific build in JSON format using project and
+     * commit hash. This can be used to integrate a custom Gitlab CI server.
+     *
+     * @param int $projectId
+     *   The project Id
+     *
+     * @param string $commitId
+     *   The commit hash
+     *
+     * @return string
+     *   JSON date to be visible on request. Response is an object with:
+     *     - branch: branch name
+     *     - commit: commit hash
+     *     - message: commit message
+     *     - committer: committer mail
+     *     - id: build id
+     *     - project: project name configured on PHPCI
+     *     - status: build status in string format
+     *     - log: the build log result
+     *     - created: build creation time in ISO8601 format
+     *     - started: build starting time in ISO8601 format
+     *     - finished: build finishing time in ISO8601 format
+     */
+    public function status($projectId, $commitId)
+    {
+        // Find the builds.
+        $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
+
+        foreach ($builds['items'] as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        // Extract the first and unique, if no build available return false.
+        $build = reset($builds['items']);
+
+        if (!$build) {
+            throw new NotFoundException('Project with id ' . $projectId . 'or commit ' . $commitId . ' not found');
+        } elseif (!$build->getProject()->isAccessAllowed($this->request->getParam('auth_token'))) {
+            throw new ForbiddenException('You do not have permission to do that.');
+        } elseif ($build) {
+            $this->response->disableLayout();
+            $this->response->setResponseCode(200);
+            $this->response->setHeader('Content-Type', 'application/json');
+            $this->response->setContent($build->convertJSON());
+        }
+
+        echo $this->response->flush();
+    }
+
+    /**
+     * Extract latest builds (maximum 10) for the specified project.
+     *
+     * @param int $projectId
+     *   The project ID
+     *
+     * @param array
+     *   Array with the latest build for the specified project.
      */
     protected function getLatestBuilds($projectId)
     {

@@ -106,4 +106,28 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($project->getAccessInformation('item3'));
         $this->assertEquals($info, $project->getAccessInformation());
     }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_TestProjectAllowAccess()
+    {
+        $project = new Project();
+        $auth_token_0 = '0000000000000000000000000000000000000000000000000000000000000000';
+        $auth_token_1 = '1111111111111111111111111111111111111111111111111111111111111111';
+
+        $project->setAuthToken(null);
+        $project->setAllowPublicStatus(false);
+        $this->assertFalse($project->isAccessAllowed());
+
+        $project->setAuthToken(null);
+        $project->setAllowPublicStatus(true);
+        $this->assertTrue($project->isAccessAllowed());
+
+        $project->setAuthToken($auth_token_0);
+        $project->setAllowPublicStatus(false);
+        $this->assertFalse($project->isAccessAllowed());
+        $this->assertFalse($project->isAccessAllowed($auth_token_1));
+        $this->assertTrue($project->isAccessAllowed($auth_token_0));
+    }
 }

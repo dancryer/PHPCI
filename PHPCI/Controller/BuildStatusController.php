@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
 use PHPCI\BuildFactory;
@@ -148,9 +149,9 @@ class BuildStatusController extends \PHPCI\Controller
         $build = reset($builds['items']);
 
         if (!$build) {
-            $this->response->setResponseCode(404);
+            throw new NotFoundException('Project with id ' . $projectId . 'or commit ' . $commitId . ' not found');
         } elseif (!$build->getProject()->allowAccess($this->request->getParam('auth_token'))) {
-            $this->response->setResponseCode(401);
+            throw new ForbiddenException('You do not have permission to do that.');
         } elseif ($build) {
             $this->response->disableLayout();
             $this->response->setResponseCode(200);

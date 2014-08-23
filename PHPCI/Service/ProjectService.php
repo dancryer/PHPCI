@@ -12,6 +12,12 @@ namespace PHPCI\Service;
 use PHPCI\Model\Project;
 use PHPCI\Store\ProjectStore;
 
+/**
+ * Gitlab Project Service
+ *
+ * @package      PHPCI
+ * @subpackage   Core
+ */
 class ProjectService
 {
     /**

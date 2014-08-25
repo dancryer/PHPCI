@@ -322,7 +322,6 @@ class ProjectController extends \PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Text::create('branch', 'Default branch name', true);
-        $field->setValidator($this->getReferenceValidator($values));
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 

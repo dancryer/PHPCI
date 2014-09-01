@@ -33,7 +33,7 @@ class PackageBuild implements \PHPCI\Plugin
         $this->directory       = isset($options['directory']) ? $options['directory'] : $path;
         $this->filename        = isset($options['filename']) ? $options['filename'] : 'build';
         $this->format          = isset($options['format']) ?  $options['format'] : 'zip';
-		$this->allowedBranches = isset($options['allowedBranches']) ?  $options['allowedBranches'] : NULL;
+        $this->allowedBranches = isset($options['allowedBranches']) ?  $options['allowedBranches'] : NULL;
     }
 
     /**
@@ -48,16 +48,16 @@ class PackageBuild implements \PHPCI\Plugin
             return false;
         }
 
-		if ($this->allowedBranches === NULL || !preg_match('/' . $this->allowedBranches . '/i', $build->getBranch())) {
-			return false;
-		}
+        if ($this->allowedBranches === NULL || !preg_match('/' . $this->allowedBranches . '/i', $build->getBranch())) {
+            return false;
+        }
 
-		$directory = $this->replaceVariables($this->directory, $build, FALSE);
-		$filename = $this->replaceVariables($this->filename, $build);
+        $directory = $this->replaceVariables($this->directory, $build, FALSE);
+        $filename = $this->replaceVariables($this->filename, $build);
 
-		if (!is_dir($directory)) {
-			mkdir($directory, 0777, TRUE);
-		}
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, TRUE);
+            }
 
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
@@ -86,25 +86,25 @@ class PackageBuild implements \PHPCI\Plugin
         return $success;
     }
 
-	/**
-	 * @param string $string
-	 * @param Build $build
-	 * @param boolean $stripSpecialChars
-	 * @return mixed
-	 */
-	protected function replaceVariables($string, Build $build, $stripSpecialChars = TRUE) {
-		$branch = $build->getBranch();
-		$branch = str_replace('/', '-', $branch);
+    /**
+     * @param string $string
+     * @param Build $build
+     * @param boolean $stripSpecialChars
+     * @return mixed
+     */
+    protected function replaceVariables($string, Build $build, $stripSpecialChars = TRUE) {
+        $branch = $build->getBranch();
+        $branch = str_replace('/', '-', $branch);
 
-		$replacedString = str_replace('%build.commit%', $build->getCommitId(), $string);
-		$replacedString = str_replace('%build.id%', $build->getId(), $replacedString);
-		$replacedString = str_replace('%build.branch%', $branch, $replacedString);
-		$replacedString = str_replace('%project.title%', $build->getProject()->getTitle(), $replacedString);
-		$replacedString = str_replace('%date%', date('Y-m-d'), $replacedString);
-		$replacedString = str_replace('%time%', date('Hi'), $replacedString);
-		if ($stripSpecialChars === TRUE) {
-			$replacedString = preg_replace('/([^a-zA-Z0-9_-]+)/', '', $replacedString);
-		}
-		return $replacedString;
-	}
+        $replacedString = str_replace('%build.commit%', $build->getCommitId(), $string);
+        $replacedString = str_replace('%build.id%', $build->getId(), $replacedString);
+        $replacedString = str_replace('%build.branch%', $branch, $replacedString);
+        $replacedString = str_replace('%project.title%', $build->getProject()->getTitle(), $replacedString);
+        $replacedString = str_replace('%date%', date('Y-m-d'), $replacedString);
+        $replacedString = str_replace('%time%', date('Hi'), $replacedString);
+        if ($stripSpecialChars === TRUE) {
+            $replacedString = preg_replace('/([^a-zA-Z0-9_-]+)/', '', $replacedString);
+        }
+        return $replacedString;
+    }
 }

@@ -51,6 +51,11 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $logPath = 'tests/_output';
 
     /**
+     * @var string $path The path to the codeception tests folder.
+     */
+    protected $path;
+
+    /**
      * Set up the plugin, configure options, etc.
      *
      * @param Builder $phpci
@@ -70,8 +75,8 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->args = (string) $options['args'];
         }
 
-        if (isset($options['log_path'])) {
-            $this->logPath = $options['log_path'];
+        if (isset($options['path'])) {
+            $this->path = $options['path'];
         }
     }
 
@@ -131,6 +136,9 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, 'runConfigFile'));
         } else {
+
+            $this->phpci->logExecOutput(false);
+
             $codecept = $this->phpci->findBinary('codecept');
 
             $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --tap ' . $this->args;
@@ -141,6 +149,22 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $configPath = $this->phpci->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
+
+            try {
+                $tapString = file_get_content($this->phpci->buildPath . '/' . $this->path . '/_output/report.tap.log', false);
+                $tapParser = new TapParser($tapString);
+                $output = $tapParser->parse();
+            } catch (\Exception $ex) {
+                $this->phpci->logFailure($tapString);
+                throw $ex;
+            }
+
+            $failures = $tapParser->getTotalFailures();
+
+            $this->build->storeMeta('codeception-errors', $failures);
+            $this->build->storeMeta('codeception-data', $output);
+
+            $this->phpci->logExecOutput(true);
 
             return $success;
         }

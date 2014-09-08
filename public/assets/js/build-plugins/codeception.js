@@ -1,7 +1,7 @@
-var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
+var codeceptionPlugin = PHPCI.UiPlugin.extend({
     id: 'build-codeception-errors',
-    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: Lang.get('codeception'),
+    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
+    title: 'Codeception',
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -9,7 +9,7 @@ var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = ActiveBuild.registerQuery('codeception-data', -1, {key: 'codeception-data'})
+        var query = ActiveBuild.registerQuery('codeception-data', -1, {key: 'codeception-data'});
 
         $(window).on('codeception-data', function(data) {
             self.onUpdate(data);
@@ -24,8 +24,7 @@ var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-
-        return $('<table class="table" id="codeception-data">' +
+        return $('<table class="table table-striped" id="codeception-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>'+Lang.get('test')+'</th>' +

@@ -66,6 +66,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
+        $this->path = 'tests/';
 
         if (isset($options['config'])) {
             $this->configFile = $options['config'];
@@ -151,7 +152,8 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
             try {
-                $tapString = file_get_content($this->phpci->buildPath . '/' . $this->path . '/_output/report.tap.log', false);
+                $this->phpci->log('Codeception TAP path: '. $this->phpci->buildPath . $this->path . '_output/report.tap.log');
+                $tapString = file_get_content($this->phpci->buildPath . $this->path . '_output/report.tap.log', false);
                 $tapParser = new TapParser($tapString);
                 $output = $tapParser->parse();
             } catch (\Exception $ex) {

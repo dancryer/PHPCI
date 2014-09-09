@@ -26,10 +26,10 @@ var codeceptionPlugin = PHPCI.UiPlugin.extend({
     render: function() {
         return $('<table class="table table-striped" id="codeception-data">' +
             '<thead>' +
-            '<tr>' +
-            '   <th>'+Lang.get('test')+'</th>' +
-            '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '<tr><th>'+Lang.get('codeception_suite')+'</th>' +
+            '<th>'+Lang.get('codeception_feature')+'</th>' +
+            '<th>'+Lang.get('codeception_time')+'</th></tr>' +
+            '</thead><tbody></tbody><tfoot></tfoot></table>');
     },
 
     onUpdate: function(e) {
@@ -53,9 +53,11 @@ var codeceptionPlugin = PHPCI.UiPlugin.extend({
         for (var i in tests) {
 
             var row = $('<tr>' +
-                '<td><strong>'+tests[i].suite+'' +
-                '::'+tests[i].test+'</strong><br>' +
-                ''+(tests[i].message || '')+'</td>' +
+                '<td><strong>'+tests[i].suite+'</strong</td>' +
+                '<td>'+tests[i].feature+'</td>' +
+                '<td data-toggle="tooltip" data-html="true" data-container="body" title="'
+                    +tests[i].class+'::'+tests[i].name+(tests[i].message ? ' - '+tests[i].message : '') +
+                '">'+tests[i].time+'</td>'+
                 '</tr>');
 
             if (!tests[i].pass) {
@@ -68,7 +70,7 @@ var codeceptionPlugin = PHPCI.UiPlugin.extend({
         }
 
         $('#build-codeception-errors').show();
-    }
+        $('#build-codeception-errors td').tooltip();
 });
 
 ActiveBuild.registerPlugin(new codeceptionPlugin());

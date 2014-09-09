@@ -11,10 +11,13 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Plugin\Util\TapParser;
+use Psr\Log\LogLevel;
 
 /**
  * Codeception Plugin - Enables full acceptance, unit, and functional testing.
  * @author       Don Gilbert <don@dongilbert.net>
+ * @author       Adam Cooper <adam@networkpie.co.uk>
  * @package      PHPCI
  * @subpackage   Plugins
  */
@@ -37,16 +40,25 @@ class Codeception implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
+    /**
+     * @var string $path The path to the codeception tests folder.
+     */
+    protected $path;
+
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
         $this->build = $build;
+        $this->path = 'tests/';
 
         if (isset($options['config'])) {
             $this->xmlConfigFile = $options['config'];
         }
         if (isset($options['args'])) {
             $this->args = (string) $options['args'];
+        }
+        if (isset($options['path'])) {
+            $this->path = $options['path'];
         }
     }
 
@@ -71,6 +83,8 @@ class Codeception implements \PHPCI\Plugin
             return $this->recurseArg($configPath, array($this, "runConfigFile"));
         } else {
 
+            $this->phpci->logExecOutput(false);
+
             $codecept = $this->phpci->findBinary('codecept');
 
             if (!$codecept) {
@@ -78,13 +92,31 @@ class Codeception implements \PHPCI\Plugin
                 return false;
             }
 
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --tap '. $this->args;
             if (IS_WIN) {
-                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" '. $this->args;
+                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --tap '. $this->args;
             }
 
             $configPath = $this->phpci->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
+
+            $this->phpci->log('Codeception TAP path: '. $this->phpci->buildPath . $this->path . '_output/report.tap.log', Loglevel::DEBUG);
+            $tapString = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.tap.log', false);
+
+            try {
+                $tapParser = new TapParser($tapString);
+                $output = $tapParser->parse();
+            } catch (\Exception $ex) {
+                $this->phpci->logFailure($tapString);
+                throw $ex;
+            }
+
+            $failures = $tapParser->getTotalFailures();
+
+            $this->build->storeMeta('codeception-errors', $failures);
+            $this->build->storeMeta('codeception-data', $output);
+
+            $this->phpci->logExecOutput(true);
 
             return $success;
         }

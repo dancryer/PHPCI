@@ -30,23 +30,23 @@ class Codeception implements ParserInterface
 
         // calculate total results
         foreach($this->results->testsuite as $testsuite) {
-            $this->totalTests += $testsuite['tests'];
-            $this->totalTimeTaken += $testsuite['time'];
-            $this->totalFailures += $testsuite['failures'];
+            $this->totalTests += (int) $testsuite['tests'];
+            $this->totalTimeTaken += (float) $testsuite['time'];
+            $this->totalFailures += (int) $testsuite['failures'];
 
             foreach($testsuite->testcase as $testcase) {
                 $testresult = array(
-                    'suite' => $testsuite['name'],
-                    'name' => $testcase['name'],
-                    'class' => $testcase['class'],
-                    'feature' => $testcase['feature'],
-                    'assertions' => $testcase['assertions'],
-                    'time' => 'time'
+                    'suite' => (string) $testsuite['name'],
+                    'name' => (string) $testcase['name'],
+                    'class' => (string) $testcase['class'],
+                    'feature' => (string) $testcase['feature'],
+                    'assertions' => (int) $testcase['assertions'],
+                    'time' => (float) $testcase['time']
                 );
 
                 if (isset($testcase->failure)) {
                     $testresult['pass'] = false;
-                    $testresult['message'] = $testcase->failure;
+                    $testresult['message'] = (string) $testcase->failure;
                 } else {
                     $testresult['pass'] = true;
                 }

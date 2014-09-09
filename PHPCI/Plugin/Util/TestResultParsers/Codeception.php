@@ -37,7 +37,7 @@ class Codeception implements ParserInterface
             foreach($testsuite->testcase as $testcase) {
                 $testresult = array(
                     'suite' => (string) $testsuite['name'],
-                    'file' => (string) $testsuite['file'],
+                    'file' => (string) $testcase['file'],
                     'name' => (string) $testcase['name'],
                     'feature' => (string) $testcase['feature'],
                     'assertions' => (int) $testcase['assertions'],

@@ -13,7 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
-use PHPCI\Plugin\Util\TapParser;
+use PHPCI\Plugin\Util\TestResultParsers\Codeception as Parser;
 use Psr\Log\LogLevel;
 
 /**
@@ -144,29 +144,37 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $codecept = $this->phpci->findBinary('codecept');
 
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --tap ' . $this->args;
+            if (!$codecept) {
+                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
 
+                return false;
+            }
+
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
             if (IS_WIN) {
-                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --tap ' . $this->args;
+                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
             }
 
             $configPath = $this->phpci->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
-            $this->phpci->log('Codeception TAP path: '. $this->phpci->buildPath . $this->path . '_output/report.tap.log', Loglevel::DEBUG);
-            $tapString = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.tap.log', false);
+            $this->phpci->log('Codeception XML path: '. $this->phpci->buildPath . $this->path . '_output/report.xml', Loglevel::DEBUG);
+            $xml = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.xml', false);
 
             try {
-                $tapParser = new TapParser($tapString);
-                $output = $tapParser->parse();
+                $parser = new Parser($xml);
+                $output = $parser->parse();
             } catch (\Exception $ex) {
-                $this->phpci->logFailure($tapString);
                 throw $ex;
             }
 
-            $failures = $tapParser->getTotalFailures();
+            $meta = array(
+                'tests' => $parser->getTotalTests(),
+                'timetaken' => $parser->getTotalTimeTaken(),
+                'failures' => $parser->getTotalFailures()
+            );
 
-            $this->build->storeMeta('codeception-errors', $failures);
+            $this->build->storeMeta('codeception-meta', $meta);
             $this->build->storeMeta('codeception-data', $output);
 
             $this->phpci->logExecOutput(true);

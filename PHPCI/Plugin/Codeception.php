@@ -14,12 +14,14 @@ use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TapParser;
+use Psr\Log\LogLevel;
 
 /**
  * Codeception Plugin - Enables full acceptance, unit, and functional testing
  *
  * @author       Don Gilbert <don@dongilbert.net>
  * @author       Igor Timoshenko <contact@igortimoshenko.com>
+ * @author       Adam Cooper <adam@networkpie.co.uk>
  * @package      PHPCI
  * @subpackage   Plugins
  */
@@ -151,9 +153,10 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $configPath = $this->phpci->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
+            $this->phpci->log('Codeception TAP path: '. $this->phpci->buildPath . $this->path . '_output/report.tap.log', Loglevel::DEBUG);
+            $tapString = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.tap.log', false);
+
             try {
-                $this->phpci->log('Codeception TAP path: '. $this->phpci->buildPath . $this->path . '_output/report.tap.log');
-                $tapString = file_get_content($this->phpci->buildPath . $this->path . '_output/report.tap.log', false);
                 $tapParser = new TapParser($tapString);
                 $output = $tapParser->parse();
             } catch (\Exception $ex) {

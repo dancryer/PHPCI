@@ -2,9 +2,12 @@
 
 namespace PHPCI\Plugin\Util\TestResultParsers;
 
+use PHPCI\Builder;
+
 class Codeception implements ParserInterface
 {
-    public $resultsXml;
+    protected $phpci;
+    protected $resultsXml;
 
     protected $results;
 
@@ -12,8 +15,9 @@ class Codeception implements ParserInterface
     protected $totalTimeTaken;
     protected $totalFailures;
 
-    public function __construct($resultsXml)
+    public function __construct(Builder $phpci, $resultsXml)
     {
+        $this->phpci = $phpci;
         $this->resultsXml = $resultsXml;
 
         $this->totalTests = 0;
@@ -37,7 +41,7 @@ class Codeception implements ParserInterface
             foreach($testsuite->testcase as $testcase) {
                 $testresult = array(
                     'suite' => (string) $testsuite['name'],
-                    'file' => (string) $testcase['file'],
+                    'file' => str_replace($this->phpci->buildPath, '/', (string) $testcase['file']),
                     'name' => (string) $testcase['name'],
                     'feature' => (string) $testcase['feature'],
                     'assertions' => (int) $testcase['assertions'],

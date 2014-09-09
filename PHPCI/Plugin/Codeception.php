@@ -162,7 +162,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $xml = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.xml', false);
 
             try {
-                $parser = new Parser($xml);
+                $parser = new Parser($this->phpci, $xml);
                 $output = $parser->parse();
             } catch (\Exception $ex) {
                 throw $ex;

@@ -32,6 +32,7 @@ class BuildInterpolator
         $this->interpolation_vars = array();
         $this->interpolation_vars['%PHPCI%'] = 1;
         $this->interpolation_vars['%COMMIT%'] = $build->getCommitId();
+        $this->interpolation_vars['%BRANCH%'] = $build->getBranch();
         $this->interpolation_vars['%PROJECT%'] = $build->getProjectId();
         $this->interpolation_vars['%BUILD%'] = $build->getId();
         $this->interpolation_vars['%PROJECT_TITLE%'] = $build->getProjectTitle();

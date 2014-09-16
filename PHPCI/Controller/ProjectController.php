@@ -72,7 +72,7 @@ class ProjectController extends \PHPCI\Controller
 
         $per_page = 10;
         $page     = $this->getParam('p', 1);
-        $builds   = $this->getLatestBuildsHtml($projectId, $branch, (($page - 1) * $per_page));
+        $builds   = $this->getLatestBuildsHtml($projectId, urldecode($branch), (($page - 1) * $per_page));
         $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
         if ($page > $pages) {
@@ -82,7 +82,7 @@ class ProjectController extends \PHPCI\Controller
         $this->view->builds   = $builds[0];
         $this->view->total    = $builds[1];
         $this->view->project  = $project;
-        $this->view->branch = $branch;
+        $this->view->branch = urldecode($branch);
         $this->view->branches = $this->projectStore->getKnownBranches($projectId);
         $this->view->page     = $page;
         $this->view->pages    = $pages;
@@ -108,7 +108,7 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $build = $this->buildService->createBuild($project, null, $branch, $_SESSION['user']->getEmail());
+        $build = $this->buildService->createBuild($project, null, urldecode($branch), $_SESSION['user']->getEmail());
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -135,13 +135,18 @@ class ProjectController extends \PHPCI\Controller
     */
     public function builds($projectId, $branch = '')
     {
-        $builds = $this->getLatestBuildsHtml($projectId, $branch);
+        $builds = $this->getLatestBuildsHtml($projectId, urldecode($branch));
         die($builds[0]);
     }
 
     /**
-    * Render latest builds for project as HTML table.
-    */
+     * Render latest builds for project as HTML table.
+     *
+     * @param $projectId
+     * @param string $branch A urldecoded branch name.
+     * @param int $start
+     * @return array
+     */
     protected function getLatestBuildsHtml($projectId, $branch = '', $start = 0)
     {
         $criteria = array('project_id' => $projectId);

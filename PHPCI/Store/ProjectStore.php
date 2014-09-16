@@ -9,6 +9,7 @@
 
 namespace PHPCI\Store;
 
+use b8\Database;
 use PHPCI\Store\Base\ProjectStoreBase;
 
 /**
@@ -19,5 +20,23 @@ use PHPCI\Store\Base\ProjectStoreBase;
 */
 class ProjectStore extends ProjectStoreBase
 {
-    // This class has been left blank so that you can modify it - changes in this file will not be overwritten.
+    public function getKnownBranches($projectId)
+    {
+        $query = 'SELECT DISTINCT branch from build WHERE project_id = :pid';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return $item['branch'];
+            };
+            $rtn = array_map($map, $res);
+
+            return $rtn;
+        } else {
+            return array();
+        }
+    }
 }

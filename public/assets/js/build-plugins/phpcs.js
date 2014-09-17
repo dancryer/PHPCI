@@ -49,7 +49,7 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
 
             if (PHPCI.fileLinkTemplate) {
                 var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
-                fileLink = fileLink.replace('{LINE}', errors[i].line_start);
+                fileLink = fileLink.replace('{LINE}', errors[i].line);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
             }

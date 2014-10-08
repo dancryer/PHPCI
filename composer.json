@@ -60,5 +60,12 @@
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
         "hipchat/hipchat-php": "Hipchat integration"
-    }
+    },
+
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:guiwoda/phpci-contracts.git"
+		}
+	]
 }

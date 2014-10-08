@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class HipchatNotify implements \PHPCI\Plugin
+class HipchatNotify implements \PHPCI\Contracts\Plugin
 {
     private $authToken;
     private $userAgent;

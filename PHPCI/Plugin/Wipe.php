@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Wipe implements \PHPCI\Plugin
+class Wipe implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

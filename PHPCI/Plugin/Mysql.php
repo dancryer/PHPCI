@@ -20,7 +20,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Mysql implements \PHPCI\Plugin
+class Mysql implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

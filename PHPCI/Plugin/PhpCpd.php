@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCpd implements \PHPCI\Plugin
+class PhpCpd implements \PHPCI\Contracts\Plugin
 {
     protected $directory;
     protected $args;

@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint implements \PHPCI\Plugin
+class PhpParallelLint implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

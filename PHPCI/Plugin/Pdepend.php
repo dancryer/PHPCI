@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Pdepend implements \PHPCI\Plugin
+class Pdepend implements \PHPCI\Contracts\Plugin
 {
     protected $args;
     /**

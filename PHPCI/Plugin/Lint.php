@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint implements PHPCI\Plugin
+class Lint implements PHPCI\Contracts\Plugin
 {
     protected $directories;
     protected $recursive = true;

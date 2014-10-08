@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CopyBuild implements \PHPCI\Plugin
+class CopyBuild implements \PHPCI\Contracts\Plugin
 {
     protected $directory;
     protected $ignore;

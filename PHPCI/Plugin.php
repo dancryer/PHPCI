@@ -9,13 +9,16 @@
 
 namespace PHPCI;
 
-use PHPCI\Model\Build;
+use PHPCI\Contracts\Plugin as PluginInterface;
 
 /**
-* PHPCI Plugin Interface - Used by all build plugins.
-* @author   Dan Cryer <dan@block8.co.uk>
-*/
-interface Plugin
+ * PHPCI Plugin Interface - Used by all build plugins.
+ *
+ * This file has been kept maintain backwards compatibility.
+ * Plugins should extend \PHPCI\Contracts\Plugin
+ *
+ * @author Dan Cryer <dan@block8.co.uk>
+ */
+interface Plugin extends PluginInterface
 {
-    public function execute();
 }

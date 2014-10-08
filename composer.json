@@ -27,6 +27,7 @@
         "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "block8/phpci-contracts": "~1.0",
         "block8/b8framework": "~1.1",
         "ircmaxell/password-compat": "~1.0",
         "swiftmailer/swiftmailer": "~5.0",

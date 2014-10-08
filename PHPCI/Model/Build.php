@@ -13,6 +13,7 @@ use b8\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
 use PHPCI\Builder;
 use Symfony\Component\Yaml\Parser as YamlParser;
+use PHPCI\Contracts\Build as BuildInterface;
 
 /**
 * Build Model
@@ -21,7 +22,7 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 * @package      PHPCI
 * @subpackage   Core
 */
-class Build extends BuildBase
+class Build extends BuildBase implements BuildInterface
 {
     const STATUS_NEW = 0;
     const STATUS_RUNNING = 1;

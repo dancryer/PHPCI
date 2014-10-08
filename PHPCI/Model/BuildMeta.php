@@ -9,13 +9,14 @@
 
 namespace PHPCI\Model;
 
+use PHPCI\Contracts\BuildMeta as BuildMetaInterface;
 use PHPCI\Model\Base\BuildMetaBase;
 
 /**
  * BuildMeta Model
  * @uses PHPCI\Model\Base\BuildMetaBase
  */
-class BuildMeta extends BuildMetaBase
+class BuildMeta extends BuildMetaBase implements BuildMetaInterface
 {
     // This class has been left blank so that you can modify it - changes in this file will not be overwritten.
 }

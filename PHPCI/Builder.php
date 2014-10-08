@@ -19,12 +19,13 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use PHPCI\Plugin\Util\Factory as PluginFactory;
+use PHPCI\Contracts\Builder as BuilderInterface;
 
 /**
  * PHPCI Build Runner
  * @author   Dan Cryer <dan@block8.co.uk>
  */
-class Builder implements LoggerAwareInterface
+class Builder implements LoggerAwareInterface, BuilderInterface
 {
     /**
      * @var string

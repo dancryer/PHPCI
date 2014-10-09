@@ -34,10 +34,24 @@ class Phar implements \PHPCI\Plugin
     protected $filename;
 
     /**
+     * Regular Expression Filename Capture
+     * @var string
+     */
+    protected $regexp;
+
+    /**
+     * Stub Filename
+     * @var string
+     */
+    protected $stub;
+
+    /**
      * Standard Constructor
      *
      * $options['directory'] Output Directory. Default: %BUILDPATH%
      * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
      *
      * @param Builder $phpci
      * @param Build   $build
@@ -57,6 +71,16 @@ class Phar implements \PHPCI\Plugin
         // Filename?
         if (isset($options['filename'])) {
             $this->setFilename($options['filename']);
+        }
+
+        // RegExp?
+        if (isset($options['regexp'])) {
+            $this->setRegExp($options['regexp']);
+        }
+
+        // Stub?
+        if (isset($options['stub'])) {
+            $this->setStub($options['stub']);
         }
     }
 
@@ -128,6 +152,53 @@ class Phar implements \PHPCI\Plugin
             $this->setFilename('build.phar');
         }
         return $this->filename;
+    }
+
+    /**
+     * Regular Expression Setter
+     *
+     * @param  string $regexp Configuration Value
+     * @return Phar   Fluent Interface
+     */
+    public function setRegExp($regexp)
+    {
+        $this->regexp = $regexp;
+        return $this;
+    }
+
+    /**
+     * Regular Expression Getter
+     *
+     * @return string Configurated or Default Value
+     */
+    public function getRegExp()
+    {
+        if (!isset($this->regexp)) {
+            $this->setRegExp('/\.php$/');
+        }
+        return $this->regexp;
+    }
+
+    /**
+     * Stub Filename Setter
+     *
+     * @param  string $stub Configuration Value
+     * @return Phar   Fluent Interface
+     */
+    public function setStub($stub)
+    {
+        $this->stub = $stub;
+        return $this;
+    }
+
+    /**
+     * Stub Filename Getter
+     *
+     * @return string Configurated Value
+     */
+    public function getStub()
+    {
+        return $this->stub;
     }
 
     // Execution

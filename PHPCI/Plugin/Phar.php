@@ -1,8 +1,10 @@
 <?php
 namespace PHPCI\Plugin;
 
+use Exception;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use Phar as PHPPhar;
 
 /**
  * Phar Plugin
@@ -201,8 +203,38 @@ class Phar implements \PHPCI\Plugin
         return $this->stub;
     }
 
+    public function getStubContent()
+    {
+        $content  = '';
+        $filename = $this->getStub();
+        if ($filename) {
+            $content = file_get_contents($this->getPHPCI()->buildPath . '/' . $this->getStub());
+        }
+        return $content;
+    }
+
     // Execution
     public function execute()
     {
+        $success = false;
+
+        try {
+
+            $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
+            $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
+
+            $stub = $this->getStubContent();
+            if ($stub) {
+                $phar->setStub($stub);
+            }
+
+            $success = true;
+
+        } catch (Exception $e) {
+            $this->getPHPCI()->log('Phar Plugin Internal Error');
+            $this->getPHPCI()->log($e->getMessage());
+        }
+
+        return $success;
     }
 }

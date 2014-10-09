@@ -2,6 +2,8 @@
 namespace PHPCI\Plugin\Tests;
 
 use PHPCI\Plugin\Phar as PharPlugin;
+use Phar as PHPPhar;
+use RuntimeException;
 
 class PharTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,6 +20,33 @@ class PharTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         return new PharPlugin($phpci, $build, $options);
+    }
+
+    protected function buildTemp()
+    {
+        return tempnam(APPLICATION_PATH . '/Tests/temp', 'source');
+    }
+
+    protected function buildSource()
+    {
+        $directory = $this->buildTemp();
+        unlink($directory);
+        mkdir($directory);
+        file_put_contents($directory . '/one.php', '<?php echo "one";');
+        file_put_contents($directory . '/two.php', '<?php echo "two";');
+        mkdir($directory . '/config');
+        file_put_contents($directory . '/config/config.ini', '[config]');
+        mkdir($directory . '/views');
+        file_put_contents($directory . '/views/index.phtml', '<?php echo "hello";');
+        return $directory;
+    }
+
+    protected function checkReadonly()
+    {
+        if (ini_get('phar.readonly')) {
+            $this->markTestSkipped();
+            throw new RuntimeException('Readonly Phar');
+        }
     }
 
     public function testPlugin()
@@ -63,5 +92,77 @@ class PharTest extends \PHPUnit_Framework_TestCase
 
         $plugin = $this->getPlugin(array('stub' => 'stub.php'));
         $this->assertEquals('stub.php', $plugin->getStub());
+    }
+
+    public function testExecute()
+    {
+        $this->checkReadonly();
+
+        $plugin = $this->getPlugin();
+        $path   = $this->buildSource();
+        $plugin->getPHPCI()->buildPath = $path;
+
+        $this->assertTrue($plugin->execute());
+
+        $this->assertFileExists($path . '/build.phar');
+        PHPPhar::loadPhar($path . '/build.phar');
+        $this->assertFileEquals($path . '/one.php', 'phar://build.phar/one.php');
+        $this->assertFileEquals($path . '/two.php', 'phar://build.phar/two.php');
+        $this->assertFileNotExists('phar://build.phar/config/config.ini');
+        $this->assertFileNotExists('phar://build.phar/views/index.phtml');
+    }
+
+    public function testExecuteRegExp()
+    {
+        $this->checkReadonly();
+
+        $plugin = $this->getPlugin(array('regexp' => '/\.(php|phtml)$/'));
+        $path   = $this->buildSource();
+        $plugin->getPHPCI()->buildPath = $path;
+
+        $this->assertTrue($plugin->execute());
+
+        $this->assertFileExists($path . '/build.phar');
+        PHPPhar::loadPhar($path . '/build.phar');
+        $this->assertFileEquals($path . '/one.php', 'phar://build.phar/one.php');
+        $this->assertFileEquals($path . '/two.php', 'phar://build.phar/two.php');
+        $this->assertFileNotExists('phar://build.phar/config/config.ini');
+        $this->assertFileEquals($path . '/views/index.phtml', 'phar://build.phar/views/index.phtml');
+    }
+
+    public function testExecuteStub()
+    {
+        $this->checkReadonly();
+
+        $content = <<<STUB
+<?php
+Phar::mapPhar();
+__HALT_COMPILER(); ?>
+STUB;
+
+        $path = $this->buildSource();
+        file_put_contents($path . '/stub.php', $content);
+
+        $plugin = $this->getPlugin(array('stub' => 'stub.php'));
+        $plugin->getPHPCI()->buildPath = $path;
+
+        $this->assertTrue($plugin->execute());
+
+        $this->assertFileExists($path . '/build.phar');
+        $phar = new PHPPhar($path . '/build.phar');
+        $this->assertEquals($content, trim($phar->getStub())); // + trim because PHP adds newline char
+    }
+
+    public function testExecuteUnknownDirectory()
+    {
+        $this->checkReadonly();
+
+        $directory = $this->buildTemp();
+        unlink($directory); // temporary file; force unknown
+
+        $plugin = $this->getPlugin(array('directory' => $directory));
+        $plugin->getPHPCI()->buildPath = $this->buildSource();
+
+        $this->assertFalse($plugin->execute());
     }
 }

@@ -46,4 +46,22 @@ class PharTest extends \PHPUnit_Framework_TestCase
         $plugin = $this->getPlugin(array('filename' => 'another.phar'));
         $this->assertEquals('another.phar', $plugin->getFilename());
     }
+
+    public function testRegExp()
+    {
+        $plugin = $this->getPlugin();
+        $this->assertEquals('/\.php$/', $plugin->getRegExp());
+
+        $plugin = $this->getPlugin(array('regexp' => '/\.(php|phtml)$/'));
+        $this->assertEquals('/\.(php|phtml)$/', $plugin->getRegExp());
+    }
+
+    public function testStub()
+    {
+        $plugin = $this->getPlugin();
+        $this->assertNull($plugin->getStub());
+
+        $plugin = $this->getPlugin(array('stub' => 'stub.php'));
+        $this->assertEquals('stub.php', $plugin->getStub());
+    }
 }

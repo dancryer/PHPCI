@@ -1,5 +1,6 @@
 PHPCI
 =====
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Block8/PHPCI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 PHPCI is a free and open source (BSD License) continuous integration tool specifically designed for PHP. We've  built it with simplicity in mind, so whilst it doesn't do *everything* Jenkins can do, it is a breeze to set up and use.
 

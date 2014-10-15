@@ -39,20 +39,16 @@ class Build extends BuildBase
     }
 
     /**
-     * @return string
-     */
-    public function getProjectTitle()
-    {
-        $project = $this->getProject();
-        return $project ? $project->getTitle() : "";
-    }
-
-    /**
     * Get link to branch from another source (i.e. Github)
     */
     public function getBranchLink()
     {
         return '#';
+    }
+
+    public function getFileLinkTemplate()
+    {
+        return null;
     }
 
     /**
@@ -61,6 +57,15 @@ class Build extends BuildBase
     public function sendStatusPostback()
     {
         return;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectTitle()
+    {
+        $project = $this->getProject();
+        return $project ? $project->getTitle() : "";
     }
 
     /**
@@ -158,11 +163,6 @@ class Build extends BuildBase
         }
 
         return $config;
-    }
-
-    public function getFileLinkTemplate()
-    {
-        return null;
     }
 
     public function getExtra($key = null)

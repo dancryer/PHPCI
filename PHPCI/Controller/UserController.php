@@ -15,6 +15,7 @@ use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
 use PHPCI\Model\User;
+use PHPCI\Service\UserService;
 
 /**
 * User Controller - Allows an administrator to view, add, edit and delete users.
@@ -29,9 +30,15 @@ class UserController extends Controller
      */
     protected $userStore;
 
+    /**
+     * @var \PHPCI\Service\UserService
+     */
+    protected $userService;
+
     public function init()
     {
         $this->userStore = b8\Store\Factory::getStore('User');
+        $this->userService = new UserService($this->userStore);
     }
 
     /**
@@ -53,16 +60,11 @@ class UserController extends Controller
         $values = $user->getDataArray();
 
         if ($this->request->getMethod() == 'POST') {
-            $values = $this->getParams();
+            $name = $this->getParam('name', null);
+            $email = $this->getParam('email', null);
+            $password = $this->getParam('password', null);
 
-            if (!empty($values['password'])) {
-                $values['hash'] = password_hash($values['password'], PASSWORD_DEFAULT);
-            }
-
-            $this->view->updated = true;
-
-            $user->setValues($values);
-            $_SESSION['user'] = $this->userStore->save($user);
+            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
         }
 
         $form = new Form();
@@ -132,13 +134,13 @@ class UserController extends Controller
             return $view->render();
         }
 
-        $values             = $form->getValues();
-        $values['hash']     = password_hash($values['password'], PASSWORD_DEFAULT);
 
-        $user = new User();
-        $user->setValues($values);
+        $name = $this->getParam('name', null);
+        $email = $this->getParam('email', null);
+        $password = $this->getParam('password', null);
+        $isAdmin = (int)$this->getParam('is_admin', 0);
 
-        $user = $this->userStore->save($user);
+        $this->userService->createUser($name, $email, $password, $isAdmin);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -172,18 +174,12 @@ class UserController extends Controller
             return $view->render();
         }
 
-        if (!empty($values['password'])) {
-            $values['hash'] = password_hash($values['password'], PASSWORD_DEFAULT);
-        }
+        $name = $this->getParam('name', null);
+        $email = $this->getParam('email', null);
+        $password = $this->getParam('password', null);
+        $isAdmin = (int)$this->getParam('is_admin', 0);
 
-        $user->setValues($values);
-
-        $isAdmin = $this->getParam('is_admin');
-        if (empty($isAdmin)) {
-            $user->setIsAdmin(0);
-        }
-
-        $this->userStore->save($user);
+        $this->userService->updateUser($user, $name, $email, $password, $isAdmin);
 
         header('Location: '.PHPCI_URL.'user');
         die;
@@ -258,7 +254,7 @@ class UserController extends Controller
             throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
         }
 
-        $this->userStore->delete($user);
+        $this->userService->deleteUser($user);
 
         header('Location: '.PHPCI_URL.'user');
         die;

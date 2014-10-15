@@ -9,6 +9,7 @@
 
 namespace PHPCI\Command;
 
+use PHPCI\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,7 +38,9 @@ class CreateAdminCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
+        $userStore = Factory::getStore('User');
+        $userService = new UserService($userStore);
+
         require(PHPCI_DIR . 'bootstrap.php');
 
         // Try to create a user account:
@@ -51,15 +54,7 @@ class CreateAdminCommand extends Command
         $adminName = $this->ask('Admin name: ');
 
         try {
-            $user = new \PHPCI\Model\User();
-            $user->setEmail($adminEmail);
-            $user->setName($adminName);
-            $user->setIsAdmin(1);
-            $user->setHash(password_hash($adminPass, PASSWORD_DEFAULT));
-
-            $store = \b8\Store\Factory::getStore('User');
-            $store->save($user);
-
+            $userService->createUser($adminName, $adminEmail, $adminPass, 1);
             print 'User account created!' . PHP_EOL;
         } catch (\Exception $ex) {
             print 'There was a problem creating your account. :(' . PHP_EOL;

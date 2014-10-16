@@ -8,6 +8,7 @@ PHPCI is a free and open source (BSD License) continuous integration tool specif
 [![Build Status](http://phpci.block8.net/build-status/image/2?branch=master)](http://phpci.block8.net/build-status/view/2?branch=master)
 
 **Chat Room**
+
 We have a chat room for discussing PHPCI, you can access it here: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Block8/PHPCI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
 
 ##What it does:

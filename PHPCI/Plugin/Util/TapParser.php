@@ -8,6 +8,7 @@ class TapParser
     const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
     const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
     const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
+    const TEST_SKIP_PATTERN = '/ok\s+[0-9]+\s+\-\s+#\s+SKIP/';
 
     /**
      * @var string
@@ -92,6 +93,8 @@ class TapParser
                 );
 
                 $rtn[] = $item;
+            } elseif (preg_match(self::TEST_SKIP_PATTERN, $line, $matches)) {
+                $rtn[] = array('message' => 'SKIP');
             } elseif (preg_match(self::TEST_MESSAGE_PATTERN, $line, $matches)) {
                 $rtn[count($rtn) - 1]['message'] = $matches[1];
             }

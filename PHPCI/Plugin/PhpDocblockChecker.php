@@ -44,7 +44,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     protected $skipClasses = false;
     protected $skipMethods = false;
-    protected $skipAnonymousFunctions = false;
+    protected $skipAnonFunctions = false;
 
     public static function canExecute($stage, Builder $builder, Build $build)
     {
@@ -118,7 +118,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $add .= ' --skip-methods';
         }
 
-        if ($this->skipAnonymousFunctions) {
+        if ($this->skipAnonFunctions) {
             $add .= ' --skip-anonymous-functions';
         }
 

@@ -64,7 +64,7 @@ class UserController extends Controller
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
+            $_SESSION['user'] = $this->userService->updateUser($user, $name, $email, $password);
         }
 
         $form = new Form();

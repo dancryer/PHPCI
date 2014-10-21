@@ -57,15 +57,16 @@ class UserController extends Controller
     public function profile()
     {
         $user = $_SESSION['user'];
-        $values = $user->getDataArray();
-
+        
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
+            $_SESSION['user'] = $this->userService->updateUser($user, $name, $email, $password);
         }
+        
+        $values = $user->getDataArray();
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');

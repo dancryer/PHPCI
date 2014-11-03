@@ -33,12 +33,12 @@ class Codeception implements ParserInterface
         $this->results = new \SimpleXMLElement($this->resultsXml);
 
         // calculate total results
-        foreach($this->results->testsuite as $testsuite) {
+        foreach ($this->results->testsuite as $testsuite) {
             $this->totalTests += (int) $testsuite['tests'];
             $this->totalTimeTaken += (float) $testsuite['time'];
             $this->totalFailures += (int) $testsuite['failures'];
 
-            foreach($testsuite->testcase as $testcase) {
+            foreach ($testsuite->testcase as $testcase) {
                 $testresult = array(
                     'suite' => (string) $testsuite['name'],
                     'file' => str_replace($this->phpci->buildPath, '/', (string) $testcase['file']),

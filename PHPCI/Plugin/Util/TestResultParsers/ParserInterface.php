@@ -2,7 +2,8 @@
 
 namespace PHPCI\Plugin\Util\TestResultParsers;
 
-interface ParserInterface {
+interface ParserInterface
+{
 
     /**
      * @return array An array of key/value pairs for storage in the plugins result metadata
@@ -12,4 +13,4 @@ interface ParserInterface {
     public function getTotalTests();
     public function getTotalTimeTaken();
     public function getTotalFailures();
-} 
+}

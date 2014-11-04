@@ -56,6 +56,12 @@ class RemoteGitBuild extends Build
     {
         $cmd = 'git clone ';
 
+        // recursive is to include the submodules
+        $recursive = $builder->getConfig('recursive');
+        if ($recursive) {
+            $cmd .= ' --recursive ';
+        }
+        
         $depth = $builder->getConfig('clone_depth');
 
         if (!is_null($depth)) {
@@ -85,6 +91,12 @@ class RemoteGitBuild extends Build
 
         // Do the git clone:
         $cmd = 'git clone ';
+
+        // recursive is to include the submodules
+        $recursive = $builder->getConfig('recursive');
+        if ($recursive) {
+            $cmd .= ' --recursive ';
+        }
 
         $depth = $builder->getConfig('clone_depth');
 

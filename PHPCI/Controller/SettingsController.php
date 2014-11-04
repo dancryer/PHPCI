@@ -220,8 +220,8 @@ class SettingsController extends Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Checkbox('smtp_encryption');
-        $field->setCheckedValue(1);
+        $field = new Form\Element\Select('smtp_encryption');
+        $field->setOptions(['' => 'None', 'tls' => 'TLS', 'ssl' => 'SSL']);
         $field->setRequired(false);
         $field->setLabel('Use SMTP encryption?');
         $field->setContainerClass('form-group');

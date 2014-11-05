@@ -40,8 +40,8 @@ class Executor
             $this->logger->log('RUNNING PLUGIN: ' . $plugin);
 
             // Is this plugin allowed to fail?
-            if ($stage == 'test' && !isset($options['allow_failures'])) {
-                $options['allow_failures'] = false;
+            if (!array_key_exists('allow_failures', $options)) {
+                $options['allow_failures'] = true;
             }
 
             // Try and execute it:
@@ -52,16 +52,15 @@ class Executor
 
             } else {
 
-                // If we're in the "test" stage and the plugin is not allowed to fail,
+                // If the plugin is not allowed to fail,
                 // then mark the build as failed:
-                if ($stage == 'test' && !$options['allow_failures']) {
+                if (!$options['allow_failures']) {
                     $success = false;
                 }
 
                 $this->logger->logFailure('PLUGIN STATUS: FAILED');
             }
         }
-
         return $success;
     }
 

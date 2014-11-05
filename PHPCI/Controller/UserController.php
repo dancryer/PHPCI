@@ -56,16 +56,16 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = $_SESSION['user'];
-        $values = $user->getDataArray();
-
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
+            $user = $_SESSION['user'];
+            $_SESSION['user'] = $this->userService->updateUser($user, $name, $email, $password);
         }
+        $user = $_SESSION['user'];
+        $values = $user->getDataArray();
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');
@@ -247,7 +247,7 @@ class UserController extends Controller
         if (!$_SESSION['user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
-        
+
         $user   = $this->userStore->getById($userId);
 
         if (empty($user)) {

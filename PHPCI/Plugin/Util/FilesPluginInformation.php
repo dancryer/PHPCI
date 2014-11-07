@@ -67,7 +67,7 @@ class FilesPluginInformation implements InstalledPluginInformation
         $this->pluginInfo = array();
         foreach ($this->files as $fileInfo) {
             if ($fileInfo instanceof \SplFileInfo) {
-                if ($fileInfo->isFile()) {
+                if ($fileInfo->isFile() && $fileInfo->getExtension()=='php') {
                     $this->addPluginFromFile($fileInfo);
                 }
             }
@@ -93,12 +93,17 @@ class FilesPluginInformation implements InstalledPluginInformation
 
         $matches = array();
         preg_match('#class +([A-Za-z]+) +implements#i', $contents, $matches);
-        $className = $matches[1];
-
-        $matches = array();
-        preg_match('#namespace +([A-Za-z\\\\]+);#i', $contents, $matches);
-        $namespace = $matches[1];
-
-        return $namespace . '\\' . $className;
+        if(isset($matches[1])){
+            $className = $matches[1];
+    
+            $matches = array();
+            preg_match('#namespace +([A-Za-z\\\\]+);#i', $contents, $matches);
+            $namespace = $matches[1];
+    
+            return $namespace . '\\' . $className;
+        }
+        else{
+            echo 'Unable to load plugin info from '.$fileInfo->getRealPath();
+        }
     }
 }

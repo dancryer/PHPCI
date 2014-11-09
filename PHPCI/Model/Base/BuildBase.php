@@ -45,6 +45,7 @@ class BuildBase extends Model
         'committer_email' => null,
         'commit_message' => null,
         'extra' => null,
+        'progress' => null,
     );
 
     /**
@@ -64,6 +65,7 @@ class BuildBase extends Model
         'committer_email' => 'getCommitterEmail',
         'commit_message' => 'getCommitMessage',
         'extra' => 'getExtra',
+        'progress' => 'getProgress',
 
         // Foreign key getters:
         'Project' => 'getProject',
@@ -86,6 +88,7 @@ class BuildBase extends Model
         'committer_email' => 'setCommitterEmail',
         'commit_message' => 'setCommitMessage',
         'extra' => 'setExtra',
+        'progress' => 'setProgress',
 
         // Foreign key setters:
         'Project' => 'setProject',
@@ -157,6 +160,11 @@ class BuildBase extends Model
         'extra' => array(
             'type' => 'longtext',
             'nullable' => true,
+            'default' => null,
+        ),
+        'progress' => array(
+            'type' => 'varchar',
+            'length' => 10,
             'default' => null,
         ),
     );
@@ -335,6 +343,18 @@ class BuildBase extends Model
     public function getExtra()
     {
         $rtn    = $this->data['extra'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of Progress / progress.
+    *
+    * @return string
+    */
+    public function getProgress()
+    {
+        $rtn    = $this->data['progress'];
 
         return $rtn;
     }
@@ -561,6 +581,26 @@ class BuildBase extends Model
         $this->data['extra'] = $value;
 
         $this->_setModified('extra');
+    }
+
+    /**
+    * Set the value of Progress / progress.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setProgress($value)
+    {
+        $this->_validateNotNull('Progress', $value);
+        $this->_validateString('Progress', $value);
+
+        if ($this->data['progress'] === $value) {
+            return;
+        }
+
+        $this->data['progress'] = $value;
+
+        $this->_setModified('progress');
     }
 
     /**

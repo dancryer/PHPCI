@@ -22,6 +22,10 @@
             <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>
             <strong>Committer: </strong> <?php print $build->getCommitterEmail(); ?>
 
+            <?php if ($build->getStatus() == 1): ?>
+                <br/><strong>Progress: </strong> <span id="progress"><?php print $build->getProgress() ?></span>
+            <?php endif; ?>
+
             <?php if ($build->getCommitId() != 'Manual'): ?>
                 <br><strong>Commit ID: </strong> <?php print $build->getCommitId(); ?><br>
             <?php endif; ?>
@@ -79,13 +83,13 @@ foreach ($plugins as $plugin) {
         });
 
         $(window).on('build-updated', function(data) {
-            updateBuildStatus(data.queryData.status);
+            updateBuildStatus(data.queryData.status, data.queryData.progress);
         });
 
-        updateBuildStatus(<?php print $build->getStatus(); ?>);
+        updateBuildStatus(<?php print $build->getStatus(); ?>, '<?php print $build->getProgress(); ?>');
     });
 
-    function updateBuildStatus(status) {
+    function updateBuildStatus(status, progress) {
         var statusClass = null;
         var statusText = null;
 
@@ -122,5 +126,7 @@ foreach ($plugins as $plugin) {
             .removeClass('label-danger')
             .addClass('label-' + statusClass)
             .text(statusText);
+
+        $('#progress').text(progress);
     }
 </script>

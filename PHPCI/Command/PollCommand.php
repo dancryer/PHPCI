@@ -75,7 +75,6 @@ class PollCommand extends Command
 
             $last_commit = $commits['body'][0]['sha'];
             $last_committer = $commits['body'][0]['commit']['committer']['email'];
-            $message = $commits['body'][0]['commit']['message'];
 
             $this->logger->info("Last commit to github for " . $project->getTitle() . " is " . $last_commit);
 
@@ -90,7 +89,6 @@ class PollCommand extends Command
                 $build->setStatus(Build::STATUS_NEW);
                 $build->setBranch($project->getBranch());
                 $build->setCreated(new \DateTime());
-		$build->setCommitMessage($message);
                 if (!empty($last_committer)) {
                     $build->setCommitterEmail($last_committer);
                 }

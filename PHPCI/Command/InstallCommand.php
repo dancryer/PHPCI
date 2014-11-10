@@ -36,6 +36,18 @@ class InstallCommand extends Command
     {
         $this
             ->setName('phpci:install')
+
+            ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'PHPCI Installation URL')
+
+            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'Database hostname')
+            ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, 'Database name')
+            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'Database username')
+            ->addOption('db-pass', null, InputOption::VALUE_OPTIONAL, 'Database password')
+
+            ->addOption('admin-name', null, InputOption::VALUE_OPTIONAL, 'Admin username')
+            ->addOption('admin-pass', null, InputOption::VALUE_OPTIONAL, 'Admin password')
+            ->addOption('admin-mail', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail')
+
             ->setDescription('Install PHPCI.');
     }
 

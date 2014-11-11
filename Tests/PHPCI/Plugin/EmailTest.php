@@ -34,11 +34,28 @@ class EmailTest extends \PHPUnit_Framework_TestCase
      */
     protected $mockBuild;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject $mockProject
+     */
+    protected $mockProject;
+
     public function setUp()
     {
+        $this->mockProject = $this->getMock(
+            '\PHPCI\Model\Project',
+            array('getTitle'),
+            array(),
+            "mockProject",
+            false
+        );
+
+        $this->mockProject->expects($this->any())
+            ->method('getTitle')
+            ->will($this->returnValue("Test project"));
+
         $this->mockBuild = $this->getMock(
             '\PHPCI\Model\Build',
-            array('getLog', 'getStatus'),
+            array('getLog', 'getStatus', 'getProject'),
             array(),
             "mockBuild",
             false
@@ -51,6 +68,10 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->mockBuild->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue(\PHPCI\Model\Build::STATUS_SUCCESS));
+
+        $this->mockBuild->expects($this->any())
+            ->method('getProject')
+            ->will($this->returnValue($this->mockProject));
 
         $this->mockCiBuilder = $this->getMock(
             '\PHPCI\Builder',

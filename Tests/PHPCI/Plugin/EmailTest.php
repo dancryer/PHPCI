@@ -34,11 +34,28 @@ class EmailTest extends \PHPUnit_Framework_TestCase
      */
     protected $mockBuild;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject $mockProject
+     */
+    protected $mockProject;
+
     public function setUp()
     {
+        $this->mockProject = $this->getMock(
+            '\PHPCI\Model\Project',
+            array('getTitle'),
+            array(),
+            "mockProject",
+            false
+        );
+
+        $this->mockProject->expects($this->any())
+            ->method('getTitle')
+            ->will($this->returnValue("Test project"));
+
         $this->mockBuild = $this->getMock(
             '\PHPCI\Model\Build',
-            array('getLog', 'getStatus'),
+            array('getLog', 'getStatus', 'getProject'),
             array(),
             "mockBuild",
             false
@@ -53,8 +70,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(\PHPCI\Model\Build::STATUS_SUCCESS));
 
         $this->mockBuild->expects($this->any())
-            ->method('getCommitterEmail')
-            ->will($this->returnValue("committer@test.com"));
+            ->method('getProject')
+            ->will($this->returnValue($this->mockProject));
 
         $this->mockCiBuilder = $this->getMock(
             '\PHPCI\Builder',
@@ -149,53 +166,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expectedReturn, $returnValue);
-    }
 
-    /**
-     * @covers PHPUnit::execute
-     */
-    public function testExecute_UniqueRecipientsFromWithCommitter()
-    {
-        $this->loadEmailPluginWithOptions(
-            array(
-                'addresses' => array('test-receiver@example.com', 'test-receiver2@example.com')
-            )
-        );
 
-        $actualMails = [];
-        $this->catchMailPassedToSend($actualMails);
-
-        $returnValue = $this->testedEmailPlugin->execute();
-        $this->assertTrue($returnValue);
-
-        $this->assertCount(2, $actualMails);
-
-        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
-        $this->assertContains('test-receiver@example.com', $actualTos);
-        $this->assertContains('test-receiver2@example.com', $actualTos);
-    }
-
-    /**
-     * @covers PHPUnit::execute
-     */
-    public function testExecute_UniqueRecipientsWithCommiter()
-    {
-        $this->loadEmailPluginWithOptions(
-            array(
-                'commiter'  => true,
-                'addresses' => array('test-receiver@example.com', 'committer@test.com')
-            )
-        );
-
-        $actualMails = [];
-        $this->catchMailPassedToSend($actualMails);
-
-        $returnValue = $this->testedEmailPlugin->execute();
-        $this->assertTrue($returnValue);
-
-        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
-        $this->assertContains('test-receiver@example.com', $actualTos);
-        $this->assertContains('committer@test.com', $actualTos);
     }
 
     /**

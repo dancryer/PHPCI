@@ -30,12 +30,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     protected $mockCiBuilder;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject $mockMailer
-     */
-    protected $mockMailer;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject $mockMailer
+     * @var \PHPUnit_Framework_MockObject_MockObject $mockBuild
      */
     protected $mockBuild;
 
@@ -107,7 +102,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->testedEmailPlugin = new EmailPlugin(
             $this->mockCiBuilder,
             $this->mockBuild,
-            $this->mockMailer,
             $arrOptions
         );
     }

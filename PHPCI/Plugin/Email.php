@@ -60,8 +60,8 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $buildStatus = $this->build->isSuccessful() ? "Failing Build" : "Passing Build";
-        $projectName = $this->phpci->getBuildProjectTitle();
+        $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
+        $projectName  = $this->build->getProject()->getTitle();
         $mailTemplate = $this->build->isSuccessful() ? 'Email/success' : 'Email/failed';
 
         $view = new View($mailTemplate);

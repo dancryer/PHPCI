@@ -59,89 +59,88 @@ class PhpSpec implements PHPCI\Plugin
         }
 
         $success = $this->phpci->executeCommand($phpspec . ' --format=junit --no-code-generation run');
-		$output = $this->phpci->getLastOutput();
+        $output = $this->phpci->getLastOutput();
 
         chdir($curdir);
 
-		/*
-		 * process xml output
-		 *
-		 * <testsuites time=FLOAT tests=INT failures=INT errors=INT>
-		 *   <testsuite name=STRING time=FLOAT tests=INT failures=INT errors=INT skipped=INT>
-		 *     <testcase name=STRING time=FLOAT classname=STRING status=STRING/>
-		 *   </testsuite>
-		 * </testsuites
-		 */
+        /*
+         * process xml output
+         *
+         * <testsuites time=FLOAT tests=INT failures=INT errors=INT>
+         *   <testsuite name=STRING time=FLOAT tests=INT failures=INT errors=INT skipped=INT>
+         *     <testcase name=STRING time=FLOAT classname=STRING status=STRING/>
+         *   </testsuite>
+         * </testsuites
+         */
 
-		$xml = new \SimpleXMLElement($output);
-		$attr = $xml->attributes();
-		$data = array(
-			'time' => (float)$attr['time'],
-			'tests' => (int)$attr['tests'],
-			'failures' => (int)$attr['failures'],
-			'errors' => (int)$attr['errors'],
+        $xml = new \SimpleXMLElement($output);
+        $attr = $xml->attributes();
+        $data = array(
+            'time' => (float)$attr['time'],
+            'tests' => (int)$attr['tests'],
+            'failures' => (int)$attr['failures'],
+            'errors' => (int)$attr['errors'],
 
-			// now all the tests
-			'suites' => array()
-		);
+            // now all the tests
+            'suites' => array()
+        );
 
-		/**
-		 * @var \SimpleXMLElement $group
-		 */
-		foreach($xml->xpath('testsuite') as $group){
-			$attr = $group->attributes();
-			$suite = array(
-				'name' => (String)$attr['name'],
-				'time' => (float)$attr['time'],
-				'tests' => (int)$attr['tests'],
-				'failures' => (int)$attr['failures'],
-				'errors' => (int)$attr['errors'],
-				'skipped' => (int)$attr['skipped'],
+        /**
+         * @var \SimpleXMLElement $group
+         */
+        foreach ($xml->xpath('testsuite') as $group) {
+            $attr = $group->attributes();
+            $suite = array(
+                'name' => (String)$attr['name'],
+                'time' => (float)$attr['time'],
+                'tests' => (int)$attr['tests'],
+                'failures' => (int)$attr['failures'],
+                'errors' => (int)$attr['errors'],
+                'skipped' => (int)$attr['skipped'],
 
-				// now the cases
-				'cases' => array()
-			);
+                // now the cases
+                'cases' => array()
+            );
 
-			/**
-			 * @var \SimpleXMLElement $child
-			 */
-			foreach($group->xpath('testcase') as $child){
-				$attr = $child->attributes();
-				$case = array(
-					'name' => (String)$attr['name'],
-					'classname' => (String)$attr['classname'],
-					'time' => (float)$attr['time'],
-					'status' => (String)$attr['status'],
-				);
+            /**
+             * @var \SimpleXMLElement $child
+             */
+            foreach ($group->xpath('testcase') as $child) {
+                $attr = $child->attributes();
+                $case = array(
+                    'name' => (String)$attr['name'],
+                    'classname' => (String)$attr['classname'],
+                    'time' => (float)$attr['time'],
+                    'status' => (String)$attr['status'],
+                );
 
-				if($case['status']=='failed'){
-					$error = array();
-					/*
-					 * ok, sad, we had an error
-					 *
-					 * there should be one - foreach makes this easier
-					 */
-					foreach($child->xpath('failure') as $failure){
-						$attr = $failure->attributes();
-						$error['type'] = (String)$attr['type'];
-						$error['message'] = (String)$attr['message'];
-					}
+                if ($case['status']=='failed') {
+                    $error = array();
+                    /*
+                     * ok, sad, we had an error
+                     *
+                     * there should be one - foreach makes this easier
+                     */
+                    foreach ($child->xpath('failure') as $failure) {
+                        $attr = $failure->attributes();
+                        $error['type'] = (String)$attr['type'];
+                        $error['message'] = (String)$attr['message'];
+                    }
 
-					foreach($child->xpath('system-err') as $system_err){
-						$error['raw'] = (String)$system_err;
-					}
+                    foreach ($child->xpath('system-err') as $system_err) {
+                        $error['raw'] = (String)$system_err;
+                    }
 
-					$case['error'] = $error;
-				}
+                    $case['error'] = $error;
+                }
 
-				$suite['cases'][] = $case;
-			}
-			//var_dump($child->attributes()['name']);
+                $suite['cases'][] = $case;
+            }
 
-			$data['suites'][] = $suite;
-		}
+            $data['suites'][] = $suite;
+        }
 
-		$this->build->storeMeta('phpspec', $data);
+        $this->build->storeMeta('phpspec', $data);
 
 
         return $success;

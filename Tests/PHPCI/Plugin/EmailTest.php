@@ -12,7 +12,6 @@ namespace PHPCI\Plugin\Tests;
 use PHPCI\Plugin\Email as EmailPlugin;
 use PHPCI\Model\Build;
 
-
 /**
  * Unit test for the PHPUnit plugin.
  * @author meadsteve
@@ -158,14 +157,13 @@ class EmailTest extends \PHPUnit_Framework_TestCase
                 $this->message['body'] = $body;
 
                 return $this->mailDelivered;
-            })
-        );
+            }));
     }
 
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_ReturnsFalseWithoutArgs()
+    public function testReturnsFalseWithoutArgs()
     {
         $this->loadEmailPluginWithOptions();
 
@@ -180,7 +178,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_BuildsBasicEmails()
+    public function testBuildsBasicEmails()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -197,7 +195,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_BuildsDefaultEmails()
+    public function testBuildsDefaultEmails()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -214,7 +212,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_CcDefaultEmails()
+    public function testCcDefaultEmails()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -243,7 +241,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_BuildsCommitterEmails()
+    public function testBuildsCommitterEmails()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -260,7 +258,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailSuccessfulBuildHaveProjectName()
+    public function testMailSuccessfulBuildHaveProjectName()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -278,7 +276,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailFailingBuildHaveProjectName()
+    public function testMailFailingBuildHaveProjectName()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -296,7 +294,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailSuccessfulBuildHaveStatus()
+    public function testMailSuccessfulBuildHaveStatus()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -314,7 +312,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailFailingBuildHaveStatus()
+    public function testMailFailingBuildHaveStatus()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -332,7 +330,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailDeliverySuccess()
+    public function testMailDeliverySuccess()
     {
         $this->loadEmailPluginWithOptions(
             array(
@@ -350,7 +348,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_MailDeliveryFail()
+    public function testMailDeliveryFail()
     {
         $this->loadEmailPluginWithOptions(
             array(

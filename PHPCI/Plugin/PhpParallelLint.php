@@ -48,7 +48,7 @@ class PhpParallelLint implements \PHPCI\Plugin
         $this->ignore       = $this->phpci->ignore;
 
         if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
+            $this->directory = $phpci->buildPath.$options['directory'];
         }
 
         if (isset($options['ignore'])) {

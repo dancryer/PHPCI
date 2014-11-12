@@ -187,7 +187,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_SUCCESS
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('test-receiver@example.com', $this->message['to']);
     }
@@ -204,7 +204,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_SUCCESS
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('default-mailto-address@example.com', $this->message['to']);
     }
@@ -267,7 +267,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_SUCCESS
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('Test-Project', $this->message['subject']);
         $this->assertContains('Test-Project', $this->message['body']);
@@ -285,7 +285,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_FAILED
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('Test-Project', $this->message['subject']);
         $this->assertContains('Test-Project', $this->message['body']);
@@ -303,7 +303,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_SUCCESS
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('Passing', $this->message['subject']);
         $this->assertContains('successfull', $this->message['body']);
@@ -321,7 +321,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             Build::STATUS_FAILED
         );
 
-        $returnValue = $this->testedEmailPlugin->execute();
+        $this->testedEmailPlugin->execute();
 
         $this->assertContains('Failing', $this->message['subject']);
         $this->assertContains('failed', $this->message['body']);

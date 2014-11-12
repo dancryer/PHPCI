@@ -100,7 +100,7 @@ class Email implements \PHPCI\Plugin
 
         if (is_array($ccList) && count($ccList)) {
             foreach ($ccList as $address) {
-                $message->addCc($address, $address);
+                $email->addCc($address, $address);
             }
         }
 

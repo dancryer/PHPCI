@@ -30,5 +30,6 @@ $application->add(new GenerateCommand);
 $application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
 $application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
 $application->add(new CreateAdminCommand);
+$application->add(new \PHPCI\Command\CreateDockerAgentCommand());
 
 $application->run();

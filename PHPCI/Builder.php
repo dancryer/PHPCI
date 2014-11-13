@@ -198,7 +198,10 @@ class Builder implements LoggerAwareInterface
 
             // Run the core plugin stages:
             foreach (array('setup', 'test') as $stage) {
-                $success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+                $success = $this->pluginExecutor->executePlugins($this->config, $stage);
+                if (! $success) {
+                    break;
+                }
             }
 
             // Set the status so this can be used by complete, success and failure
@@ -227,7 +230,9 @@ class Builder implements LoggerAwareInterface
             if (IS_WIN) {
                 $cmd = 'rmdir /S /Q "%s"';
             }
+
             $this->executeCommand($cmd, $this->buildPath);
+
         } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
             $this->buildLogger->logFailure('Exception: ' . $ex->getMessage());
@@ -287,10 +292,26 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $buildId = 'project' . $this->build->getProject()->getId()
-                 . '-build' . $this->build->getId();
-        $this->ciDir = dirname(dirname(__FILE__) . '/../') . '/';
-        $this->buildPath = $this->ciDir . 'build/' . $buildId . '/';
+        $buildId = sprintf(
+            "prj%sBuild%s",
+            $this->build->getProject()->getId(),
+            $this->build->getId()
+        );
+
+        $this->ciDir = sprintf(
+            "%s%s",
+            dirname(dirname(__FILE__)),
+            '/PHPCI/'
+
+        );
+        $this->buildPath = sprintf(
+            "%s%s%s%s",
+            $this->ciDir,
+            'build/',
+            $buildId,
+            '/'
+        );
+
         $this->build->currentBuildPath = $this->buildPath;
 
         $this->interpolator->setupInterpolationVars(

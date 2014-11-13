@@ -14,6 +14,7 @@ class TapParser
      */
     protected $tapString;
     protected $failures = 0;
+    protected $success = 0;
 
     /**
      * Create a new TAP parser for a given string.
@@ -84,6 +85,9 @@ class TapParser
                 if (!$ok) {
                     $this->failures++;
                 }
+                else{
+                    $this->success++;
+                }
 
                 $item = array(
                     'pass' => $ok,
@@ -103,5 +107,10 @@ class TapParser
     public function getTotalFailures()
     {
         return $this->failures;
+    }
+    
+    public function getTotalSuccess()
+    {
+        return $this->success;
     }
 }

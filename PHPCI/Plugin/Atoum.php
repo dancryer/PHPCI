@@ -12,7 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
-class Atoum implements \PHPCI\Plugin
+class Atoum implements \PHPCI\Contracts\Plugin
 {
     private $args;
     private $config;

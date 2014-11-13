@@ -9,13 +9,15 @@
 
 namespace PHPCI;
 
-use PHPCI\Model\Build;
-
+use PHPCI\Contracts\ZeroConfigPlugin as ZeroConfigPluginInterface;
 /**
  * PHPCI Plugin Interface - Used by all build plugins.
- * @author   Dan Cryer <dan@block8.co.uk>
+ *
+ * This file has been kept maintain backwards compatibility.
+ * Plugins should extend \PHPCI\Contracts\ZeroConfigPlugin
+ *
+ * @author Dan Cryer <dan@block8.co.uk>
  */
-interface ZeroConfigPlugin
+interface ZeroConfigPlugin extends ZeroConfigPluginInterface
 {
-    public static function canExecute($stage, Builder $builder, Build $build);
 }

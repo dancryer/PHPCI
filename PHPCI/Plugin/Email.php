@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Email implements \PHPCI\Plugin
+class Email implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Composer implements PHPCI\Contracts\Plugin, PHPCI\Contracts\ZeroConfigPlugin
 {
     protected $directory;
     protected $action;

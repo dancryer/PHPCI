@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Git implements \PHPCI\Plugin
+class Git implements \PHPCI\Contracts\Plugin
 {
     protected $phpci;
     protected $build;

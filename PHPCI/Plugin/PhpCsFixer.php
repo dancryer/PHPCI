@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCsFixer implements \PHPCI\Plugin
+class PhpCsFixer implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

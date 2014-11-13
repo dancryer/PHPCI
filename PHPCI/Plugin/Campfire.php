@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Campfire implements \PHPCI\Plugin
+class Campfire implements \PHPCI\Contracts\Plugin
 {
     private $url;
     private $authToken;

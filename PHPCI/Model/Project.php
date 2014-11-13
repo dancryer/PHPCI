@@ -12,6 +12,7 @@ namespace PHPCI\Model;
 use PHPCI\Model\Base\ProjectBase;
 use PHPCI\Model\Build;
 use b8\Store;
+use PHPCI\Contracts\Project as ProjectInterface;
 
 /**
 * Project Model
@@ -20,7 +21,7 @@ use b8\Store;
 * @package      PHPCI
 * @subpackage   Core
 */
-class Project extends ProjectBase
+class Project extends ProjectBase implements ProjectInterface
 {
     public function getLatestBuild($branch = 'master', $status = null)
     {

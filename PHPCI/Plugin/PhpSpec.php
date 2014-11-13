@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec implements PHPCI\Plugin
+class PhpSpec implements PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

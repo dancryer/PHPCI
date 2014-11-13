@@ -3,7 +3,7 @@ namespace PHPCI\Plugin\Tests\Util;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
-use PHPCI\Plugin;
+use PHPCI\Contracts\Plugin;
 
 class ExamplePluginWithNoConstructorArgs implements Plugin
 {

@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Pgsql implements \PHPCI\Plugin
+class Pgsql implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var \PHPCI\Builder

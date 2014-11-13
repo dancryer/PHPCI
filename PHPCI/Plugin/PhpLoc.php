@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpLoc implements PHPCI\Contracts\Plugin, PHPCI\Contracts\ZeroConfigPlugin
 {
     /**
      * @var string

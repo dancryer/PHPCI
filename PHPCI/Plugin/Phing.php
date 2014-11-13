@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Phing implements \PHPCI\Plugin
+class Phing implements \PHPCI\Contracts\Plugin
 {
 
     private $directory;

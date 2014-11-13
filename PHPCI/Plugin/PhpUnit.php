@@ -20,7 +20,7 @@ use PHPCI\Plugin\Util\TapParser;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpUnit implements PHPCI\Contracts\Plugin, PHPCI\Contracts\ZeroConfigPlugin
 {
     protected $args;
     protected $phpci;

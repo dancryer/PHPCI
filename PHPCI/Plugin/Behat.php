@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Behat implements \PHPCI\Plugin
+class Behat implements \PHPCI\Contracts\Plugin
 {
     protected $phpci;
     protected $build;

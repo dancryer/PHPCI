@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Grunt implements \PHPCI\Plugin
+class Grunt implements \PHPCI\Contracts\Plugin
 {
     protected $directory;
     protected $task;

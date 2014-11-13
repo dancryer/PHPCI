@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpCodeSniffer implements PHPCI\Contracts\Plugin, PHPCI\Contracts\ZeroConfigPlugin
 {
     /**
      * @var \PHPCI\Builder

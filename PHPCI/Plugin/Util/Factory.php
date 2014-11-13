@@ -71,7 +71,7 @@ class Factory
      * @param $className
      * @param array $options
      * @throws \InvalidArgumentException if $className doesn't represent a valid plugin
-     * @return \PHPCI\Plugin
+     * @return \PHPCI\Contracts\Plugin
      */
     public function buildPlugin($className, array $options = array())
     {

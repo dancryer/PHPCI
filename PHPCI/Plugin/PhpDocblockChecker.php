@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpDocblockChecker implements PHPCI\Contracts\Plugin, PHPCI\Contracts\ZeroConfigPlugin
 {
     /**
      * @var \PHPCI\Builder

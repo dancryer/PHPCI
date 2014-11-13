@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Codeception implements \PHPCI\Plugin
+class Codeception implements \PHPCI\Contracts\Plugin
 {
     /**
      * @var string

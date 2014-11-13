@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Irc implements \PHPCI\Plugin
+class Irc implements \PHPCI\Contracts\Plugin
 {
     protected $phpci;
     protected $build;

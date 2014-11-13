@@ -397,8 +397,6 @@ class ProjectController extends \PHPCI\Controller
 
             if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
                 throw new \Exception($validators[$type]['message']);
-            } elseif ($type == 'local' && !is_dir($val)) {
-                throw new \Exception('The path you specified does not exist.');
             }
 
             return true;

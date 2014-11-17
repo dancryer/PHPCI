@@ -82,7 +82,7 @@ class WebhookController extends \PHPCI\Controller
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
         $email = $this->getParam('email');
-		$message = $this->getParam('message');
+	$message = $this->getParam('message');
 
         try {
             if (empty($branch)) {
@@ -91,10 +91,10 @@ class WebhookController extends \PHPCI\Controller
             if (empty($commit)) {
                 $commit = null;
             }
-			if (empty($email)) {
+            if (empty($email)) {
                 $email = null;
             }
-			if (empty($message)) {
+            if (empty($message)) {
                 $message = null;
             }
 

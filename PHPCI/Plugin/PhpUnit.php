@@ -142,9 +142,8 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             throw $ex;
         }
 
-        $failures = $tapParser->getTotalFailures();
-
-        $this->build->storeMeta('phpunit-errors', $failures);
+        $this->build->storeMeta('phpunit-errors', $tapParser->getTotalFailures());
+        $this->build->storeMeta('phpunit-success', $tapParser->getTotalSuccess());
         $this->build->storeMeta('phpunit-data', $output);
 
         $this->phpci->logExecOutput(true);

@@ -56,7 +56,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = $_SESSION['user'];
+        $user = \PHPCI\Helper\Session::get('user');
         $values = $user->getDataArray();
 
         if ($this->request->getMethod() == 'POST') {
@@ -64,7 +64,7 @@ class UserController extends Controller
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
+            \PHPCI\Helper\Session::set('user', $this->userService->updateUser($name, $email, $password));
         }
 
         $form = new Form();
@@ -109,7 +109,7 @@ class UserController extends Controller
     */
     public function add()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -151,7 +151,7 @@ class UserController extends Controller
     */
     public function edit($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -244,7 +244,7 @@ class UserController extends Controller
     */
     public function delete($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
         

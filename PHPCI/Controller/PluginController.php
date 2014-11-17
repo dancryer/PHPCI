@@ -39,7 +39,7 @@ class PluginController extends \PHPCI\Controller
 
     public function index()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
@@ -67,7 +67,7 @@ class PluginController extends \PHPCI\Controller
 
     public function remove()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session['user']->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 
@@ -88,7 +88,7 @@ class PluginController extends \PHPCI\Controller
 
     public function install()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 

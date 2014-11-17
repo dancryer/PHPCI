@@ -17,6 +17,7 @@ use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
+use PHPCI\Helper\Session;
 use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
@@ -108,7 +109,7 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $build = $this->buildService->createBuild($project, null, urldecode($branch), $_SESSION['user']->getEmail());
+        $build = $this->buildService->createBuild($project, null, urldecode($branch), \PHPCI\Helper\Session::get('user')->getEmail());
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -119,7 +120,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function delete($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -223,7 +224,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function edit($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -337,6 +338,7 @@ class ProjectController extends \PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Text::create('branch', 'Default branch name', true);
+        $field->setValidator($this->getReferenceValidator($values));
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 
@@ -396,8 +398,6 @@ class ProjectController extends \PHPCI\Controller
 
             if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
                 throw new \Exception($validators[$type]['message']);
-            } elseif ($type == 'local' && !is_dir($val)) {
-                throw new \Exception('The path you specified does not exist.');
             }
 
             return true;

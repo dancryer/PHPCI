@@ -73,7 +73,7 @@ class WebhookController extends \PHPCI\Controller
     }
 
     /**
-     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
+     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>&email=<email>&message=<message>
      *
      * @param string $project
      */
@@ -82,7 +82,7 @@ class WebhookController extends \PHPCI\Controller
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
         $email = $this->getParam('email');
-	$message = $this->getParam('message');
+        $message = $this->getParam('message');
 
         try {
             if (empty($branch)) {

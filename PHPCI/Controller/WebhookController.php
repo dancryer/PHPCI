@@ -73,7 +73,7 @@ class WebhookController extends \PHPCI\Controller
     }
 
     /**
-     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
+     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>&email=<email>&message=<message>
      *
      * @param string $project
      */
@@ -81,17 +81,24 @@ class WebhookController extends \PHPCI\Controller
     {
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
+        $email = $this->getParam('email');
+        $message = $this->getParam('message');
 
         try {
             if (empty($branch)) {
                 $branch = 'master';
             }
-
             if (empty($commit)) {
                 $commit = null;
             }
+            if (empty($email)) {
+                $email = null;
+            }
+            if (empty($message)) {
+                $message = null;
+            }
 
-            $this->createBuild($project, $commit, $branch, null, null);
+            $this->createBuild($project, $commit, $branch, $email, $message);
 
         } catch (\Exception $ex) {
             header('HTTP/1.1 400 Bad Request');

@@ -1,4 +1,23 @@
-<h1><i class="glyphicon glyphicon-th-list"></i> <?php print htmlspecialchars($project->getTitle()); ?></h1>
+<h1>
+    <i class="glyphicon glyphicon-th-list"></i> <?php print htmlspecialchars($project->getTitle()); ?>
+    <small><?php echo $branch ?></small>
+    <div class="btn-group pull-right branch-btn">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+            Branch&nbsp;&nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <?php foreach ($branches as $curbranch) : ?>
+            <li <?php echo ($curbranch == $branch) ? 'class="active"' : ''?>>
+                <a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>/<?php echo urlencode($curbranch) ?>">
+                    <?php echo $curbranch ?>
+                </a>
+            </li>
+            <?php endforeach; ?>
+            <li class="divider"></li>
+            <li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>">All</a></li>
+        </ul>
+    </div>
+</h1>
 
 
 <div class="row">
@@ -9,7 +28,10 @@
             </div>
 
             <div class="list-group">
-                <a class="list-group-item" href="<?php echo PHPCI_URL ?>project/build/<?php print $project->getId(); ?>"><i class="glyphicon glyphicon-cog"></i> Build Now</a>
+                <a class="list-group-item"
+                   href="<?php echo PHPCI_URL ?>project/build/<?php print $project->getId() . ((!empty($branch)) ? '/' . urlencode($branch) : ''); ?>">
+                    <i class="glyphicon glyphicon-cog"></i> Build <?php print (!empty($branch)) ? 'Branch' : ''; ?> Now
+                </a>
 
                 <?php if($this->User()->getIsAdmin()): ?>
                     <a class="list-group-item" href="<?php echo PHPCI_URL ?>project/edit/<?php print $project->getId(); ?>"><i class="glyphicon glyphicon-edit"></i> Edit Project</a>
@@ -60,8 +82,15 @@
         <?php endif; ?>
 	</div>
 	<div class="col-lg-9">
+
+
+
+
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Builds</h3></div>
+            <div class="panel-heading">
+
+                <h3 class="panel-title">Builds</h3>
+            </div>
 		<table class="table table-striped table-bordered">
 			<thead>
 			<tr>
@@ -83,8 +112,10 @@
 
         print '<div><ul class="pagination">';
 
+        $project_url = PHPCI_URL . 'project/view/' . $project->getId() . ((!empty($branch)) ? '/' . urlencode($branch) : '');
+
         if ($page > 1) {
-            print '<li><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == 1 ? '1' : $page - 1).'">&laquo; Prev</a></li>';
+            print '<li><a href="' . $project_url . '?p='.($page == 1 ? '1' : $page - 1).'">&laquo; Prev</a></li>';
         }
 
         if ($pages > 1) {
@@ -93,13 +124,13 @@
                 if ($i == $page) {
                     print '<li><span>' . $i . '</span></li>';
                 } else {
-                    print '<li><a href="' . PHPCI_URL . 'project/view/' . $project->getId() . '?p=' . $i . '">' . $i . '</a></li>';
+                    print '<li><a href="' . $project_url . '?p=' . $i . '">' . $i . '</a></li>';
                 }
             }
         }
 
         if ($page < $pages) {
-            print '<li><a href="' . PHPCI_URL . 'project/view/'.$project->getId().'?p='.($page == $pages ? $pages : $page + 1).'">Next &raquo;</a></li>';
+            print '<li><a href="' . $project_url . '?p='.($page == $pages ? $pages : $page + 1).'">Next &raquo;</a></li>';
         }
 
         print '</ul></div>';
@@ -115,7 +146,7 @@
     setInterval(function()
     {
         $.ajax({
-            url: '<?php echo PHPCI_URL ?>project/builds/<?php print $project->getId(); ?>',
+            url: '<?php echo PHPCI_URL ?>project/builds/<?php print $project->getId() . ((!empty($branch)) ? '/' . urlencode($branch) : ''); ?>',
 
             success: function (data) {
                 $('#latest-builds').html(data);

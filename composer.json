@@ -22,6 +22,12 @@
         "source": "https://github.com/Block8/PHPCI"
     },
 
+    "autoload": {
+        "psr-4": {
+            "PHPCI\\": "PHPCI"
+        }
+    },
+
     "require": {
         "php": ">=5.3.8",
         "ext-mcrypt": "*",

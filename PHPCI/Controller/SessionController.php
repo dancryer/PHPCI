@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use PHPCI\Helper\Session;
 use PHPCI\Helper\Email;
 
 /**
@@ -41,7 +42,7 @@ class SessionController extends \PHPCI\Controller
         if ($this->request->getMethod() == 'POST') {
             $user = $this->userStore->getByEmail($this->getParam('email'));
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
-                \PHPCI\Helper\Session::set('user_id',$user->getId());
+                Session::set('user_id',$user->getId());
                 header('Location: ' . $this->getLoginRedirect());
                 die;
             } else {
@@ -83,8 +84,8 @@ class SessionController extends \PHPCI\Controller
     */
     public function logout()
     {
-        \PHPCI\Helper\Session::remove('user');
-        \PHPCI\Helper\Session::remove('user_id');
+        Session::remove('user');
+        Session::remove('user_id');
         session_destroy();
         header('Location: ' . PHPCI_URL);
         die;
@@ -147,8 +148,8 @@ MSG;
             $hash = password_hash($this->getParam('password'), PASSWORD_DEFAULT);
             $user->setHash($hash);
 
-            \PHPCI\Helper\Session::set('user', $this->userStore->save($user));
-            \PHPCI\Helper\Session::set('user_id', $user->getId());
+            Session::set('user', $this->userStore->save($user));
+            Session::set('user_id', $user->getId());
 
             header('Location: ' . PHPCI_URL);
             die;
@@ -164,9 +165,9 @@ MSG;
     {
         $rtn = PHPCI_URL;
 
-        if (!empty(\PHPCI\Helper\Session::get('login_redirect'))) {
-            $rtn .= \PHPCI\Helper\Session::get('login_redirect');
-            \PHPCI\Helper\Session::remove('login_redirect');
+        if (!empty(Session::get('login_redirect'))) {
+            $rtn .= Session::get('login_redirect');
+            Session::remove('login_redirect');
         }
 
         return $rtn;

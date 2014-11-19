@@ -29,15 +29,15 @@ class Application extends b8\Application
 
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
-            if (!empty(\PHPCI\Helper\Session::get('user_id'))) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey(\PHPCI\Helper\Session::get('user_id'));
+            if (!empty(Helper\Session::get('user_id'))) {
+                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey(Helper\Session::get('user_id'));
 
                 if ($user) {
-                    \PHPCI\Helper\Session::set('user',$user);
+                    Helper\Session::set('user',$user);
                     return true;
                 }
 
-                \PHPCI\Helper\Session::remove('user_id');
+                Helper\Session::remove('user_id');
             }
 
             return false;
@@ -52,7 +52,7 @@ class Application extends b8\Application
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
-                    \PHPCI\Helper\Session::set('login_redirect', substr($request->getPath(), 1));
+                    Helper\Session::set('login_redirect', substr($request->getPath(), 1));
                     $response = new RedirectResponse($response);
                     $response->setHeader('Location', PHPCI_URL.'session/login');
                 }

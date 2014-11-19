@@ -14,7 +14,7 @@ use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
-use PHPCI\Model\User;
+use PHPCI\Helper\Session;
 use PHPCI\Service\UserService;
 
 /**
@@ -56,7 +56,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = $_SESSION['user'];
+        $user = Session::get('user');
         $values = $user->getDataArray();
 
         if ($this->request->getMethod() == 'POST') {
@@ -64,7 +64,7 @@ class UserController extends Controller
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($user, $name, $email, $password);
+            Session::set('user', $this->userService->updateUser($name, $email, $password));
         }
 
         $form = new Form();
@@ -109,7 +109,7 @@ class UserController extends Controller
     */
     public function add()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -151,7 +151,7 @@ class UserController extends Controller
     */
     public function edit($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -244,7 +244,7 @@ class UserController extends Controller
     */
     public function delete($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
         

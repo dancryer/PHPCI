@@ -74,7 +74,7 @@ class Controller extends \b8\Controller
 
     protected function requireAdmin()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!Helper\Session::get('user')->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
     }

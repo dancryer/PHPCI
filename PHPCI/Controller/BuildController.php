@@ -141,7 +141,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function delete($buildId)
     {
-        if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
+        if (empty(\PHPCI\Helper\Session::get('user')) || !\PHPCI\Helper\Session::get('user')->getIsAdmin()) {
             throw new \Exception('You do not have permission to do that.');
         }
 

@@ -14,6 +14,7 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
+use PHPCI\Helper\Session;
 
 /**
 * PHPCI Front Controller
@@ -29,15 +30,15 @@ class Application extends b8\Application
 
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
-            if (!empty($_SESSION['user_id'])) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['user_id']);
+            if (!empty(Session::get('user_id'))) {
+                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey(Session::get('user_id'));
 
                 if ($user) {
-                    $_SESSION['user'] = $user;
+                    Session::set('user',$user);
                     return true;
                 }
 
-                unset($_SESSION['user_id']);
+                Session::remove('user_id');
             }
 
             return false;
@@ -52,7 +53,7 @@ class Application extends b8\Application
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
-                    $_SESSION['login_redirect'] = substr($request->getPath(), 1);
+                    Session::set('login_redirect', substr($request->getPath(), 1));
                     $response = new RedirectResponse($response);
                     $response->setHeader('Location', PHPCI_URL.'session/login');
                 }

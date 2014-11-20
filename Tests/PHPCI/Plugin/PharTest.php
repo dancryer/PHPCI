@@ -7,6 +7,13 @@ use RuntimeException;
 
 class PharTest extends \PHPUnit_Framework_TestCase
 {
+    protected $directory;
+
+    protected function tearDown()
+    {
+        $this->cleanSource();
+    }
+
     protected function getPlugin(array $options = array())
     {
         $build = $this
@@ -24,13 +31,14 @@ class PharTest extends \PHPUnit_Framework_TestCase
 
     protected function buildTemp()
     {
-        return tempnam(APPLICATION_PATH . '/Tests/temp', 'source');
+        $directory = tempnam(APPLICATION_PATH . '/Tests/temp', 'source');
+        unlink($directory);
+        return $directory;
     }
 
     protected function buildSource()
     {
         $directory = $this->buildTemp();
-        unlink($directory);
         mkdir($directory);
         file_put_contents($directory . '/one.php', '<?php echo "one";');
         file_put_contents($directory . '/two.php', '<?php echo "two";');
@@ -38,7 +46,33 @@ class PharTest extends \PHPUnit_Framework_TestCase
         file_put_contents($directory . '/config/config.ini', '[config]');
         mkdir($directory . '/views');
         file_put_contents($directory . '/views/index.phtml', '<?php echo "hello";');
+        $this->directory = $directory;
         return $directory;
+    }
+
+    protected function cleanSource()
+    {
+        if ($this->directory) {
+            $filenames = array(
+                '/build.phar',
+                '/stub.php',
+                '/views/index.phtml',
+                '/views',
+                '/config/config.ini',
+                '/config',
+                '/two.php',
+                '/one.php',
+            );
+            foreach ($filenames as $filename) {
+                if (is_dir($this->directory . $filename)) {
+                    rmdir($this->directory . $filename);
+                } else if (is_file($this->directory . $filename)) {
+                    unlink($this->directory . $filename);
+                }
+            }
+            rmdir($this->directory);
+            $this->directory = null;
+        }
     }
 
     protected function checkReadonly()
@@ -158,7 +192,6 @@ STUB;
         $this->checkReadonly();
 
         $directory = $this->buildTemp();
-        unlink($directory); // temporary file; force unknown
 
         $plugin = $this->getPlugin(array('directory' => $directory));
         $plugin->getPHPCI()->buildPath = $this->buildSource();

@@ -76,8 +76,8 @@ class WebhookController extends \PHPCI\Controller
      *
      * @param string $project
      */
-	public function git($project)
-	{
+    public function git($project)
+    {
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
         $commitMessage = $this->getParam('message');
@@ -108,7 +108,7 @@ class WebhookController extends \PHPCI\Controller
         }
 
         die('OK');
-	}
+    }
 
     /**
      * Called by Github Webhooks:

@@ -52,20 +52,7 @@ class WebhookController extends \PHPCI\Controller
      */
     public function bitbucket($project)
     {
-        switch ($_SERVER['CONTENT_TYPE']) {
-            case 'application/json':
-                $payload = json_decode(file_get_contents('php://input'), true);
-                break;
-
-            case 'application/x-www-form-urlencoded':
-                $payload = json_decode($this->getParam('payload'), true);
-                break;
-
-            default:
-                header('HTTP/1.1 400 Bad Request');
-                die('Request content type not supported');
-        }
-
+        $payload = json_decode($this->getParam('payload'), true);
 
         foreach ($payload['commits'] as $commit) {
             try {
@@ -119,7 +106,19 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
-        $payload = json_decode($this->getParam('payload'), true);
+        switch ($_SERVER['CONTENT_TYPE']) {
+            case 'application/json':
+                $payload = json_decode(file_get_contents('php://input'), true);
+                break;
+
+            case 'application/x-www-form-urlencoded':
+                $payload = json_decode($this->getParam('payload'), true);
+                break;
+
+            default:
+                header('HTTP/1.1 400 Bad Request');
+                die('Request content type not supported');
+        }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {

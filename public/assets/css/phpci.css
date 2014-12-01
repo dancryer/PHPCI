@@ -10,9 +10,9 @@ body {
     background-color: #eee;
 }
 
-    .navbar-brand {
-        padding: 10px 15px;
-    }
+.navbar-brand {
+    padding: 10px 15px;
+}
 
 #latest-builds td,
 #project-overview td,
@@ -31,44 +31,42 @@ body {
     border-bottom: 1px solid #CDCDCD;
 }
 
-
 h1 {
     border-bottom: 1px solid #ddd;
     font-size: 2em;
     padding: 10px 0;
 }
 
-    h1 i {
-        font-size: 23px;
-        margin-right: 10px;
-    }
-
+h1 i {
+    font-size: 23px;
+    margin-right: 10px;
+}
 
 .build-info-panel {
 
 }
 
-    .build-info-panel h1.panel-title {
-        border: 0;
-        font-size: 2em;
-        font-weight: bold;
-        padding: 0;
-    }
+.build-info-panel h1.panel-title {
+    border: 0;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0;
+}
 
-        .build-info-panel h1.panel-title span {
-            font-weight: normal;
-        }
+.build-info-panel h1.panel-title span {
+    font-weight: normal;
+}
 
-    .build-info-panel img {
-        border: 1px solid #fff;
-        border-radius: 50%;
-        box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
-        margin: 7px 15px 15px 7px;
-    }
+.build-info-panel img {
+    border: 1px solid #fff;
+    border-radius: 50%;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+    margin: 7px 15px 15px 7px;
+}
 
-    .build-info-panel #build-info {
-        margin-left: 90px;
-    }
+.build-info-panel #build-info {
+    margin-left: 90px;
+}
 
 #loading {
     background: #246;
@@ -90,12 +88,16 @@ ul.pagination {
 
 }
 
-    ul.pagination > li > span {
-        color: #333;
-    }
+ul.pagination > li > span {
+    color: #333;
+}
 
-    ul.pagination > li > span:hover,
-    ul.pagination > li > span:focus {
-        color:            #333;
-        background-color: #fff;
-    }
+ul.pagination > li > span:hover,
+ul.pagination > li > span:focus {
+    color: #333;
+    background-color: #fff;
+}
+
+#phpunit-data tr td{
+    padding:1px 10px;
+}

@@ -75,7 +75,7 @@ class InstallCommand extends Command
         $connectionVerified = false;
 
         while (!$connectionVerified) {
-            $db = $this->getDatabaseInforamtion($input, $output);
+            $db = $this->getDatabaseInformation($input, $output);
 
             $connectionVerified = $this->verifyDatabaseDetails($db, $output);
         }
@@ -237,7 +237,7 @@ class InstallCommand extends Command
      * @param OutputInterface $output
      * @return array
      */
-    protected function getDatabaseInforamtion(InputInterface $input, OutputInterface $output)
+    protected function getDatabaseInformation(InputInterface $input, OutputInterface $output)
     {
         $db = array();
 

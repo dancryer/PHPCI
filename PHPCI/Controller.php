@@ -74,7 +74,7 @@ class Controller extends \b8\Controller
 
     protected function requireAdmin()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
     }

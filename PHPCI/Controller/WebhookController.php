@@ -56,7 +56,6 @@ class WebhookController extends \PHPCI\Controller
 
         foreach ($payload['commits'] as $commit) {
             try {
-
                 $email = $commit['raw_author'];
                 $email = substr($email, 0, strpos($email, '>'));
                 $email = substr($email, strpos($email, '<') + 1);
@@ -107,7 +106,19 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
-        $payload = json_decode($this->getParam('payload'), true);
+        switch ($_SERVER['CONTENT_TYPE']) {
+            case 'application/json':
+                $payload = json_decode(file_get_contents('php://input'), true);
+                break;
+
+            case 'application/x-www-form-urlencoded':
+                $payload = json_decode($this->getParam('payload'), true);
+                break;
+
+            default:
+                header('HTTP/1.1 400 Bad Request');
+                die('Request content type not supported');
+        }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {

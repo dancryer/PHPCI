@@ -41,13 +41,18 @@ class SettingsController extends Controller
         $this->view->settings = $this->settings;
 
         $emailSettings = array();
-
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
+        $buildSettings = array();
+        if (isset($this->settings['phpci']['build'])) {
+            $buildSettings = $this->settings['phpci']['build'];
+        }
+
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
@@ -76,6 +81,21 @@ class SettingsController extends Controller
     {
         $this->settings['phpci']['email_settings'] = $this->getParams();
         $this->settings['phpci']['email_settings']['smtp_encryption'] = $this->getParam('smtp_encryption', 0);
+
+        $error = $this->storeSettings();
+
+        if ($error) {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        } else {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
+
+        die;
+    }
+
+    public function build()
+    {
+        $this->settings['phpci']['build'] = $this->getParams();
 
         $error = $this->storeSettings();
 
@@ -249,5 +269,37 @@ class SettingsController extends Controller
     protected function canWriteConfig()
     {
         return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
+    }
+
+    protected function getBuildForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/build');
+
+        $field = new Form\Element\Select('failed_after');
+        $field->setRequired(false);
+        $field->setLabel('Consider a build failed after');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setOptions([
+            300 => '5 Minutes',
+            900 => '15 Minutes',
+            1800 => '30 Minutes',
+            3600 => '1 Hour',
+            10800 => '3 Hours',
+        ]);
+        $field->setValue(1800);
+        $form->addField($field);
+
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
     }
 }

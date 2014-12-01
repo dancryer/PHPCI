@@ -56,16 +56,18 @@ class UserController extends Controller
 
     public function profile()
     {
-        $user = $_SESSION['user'];
-        $values = $user->getDataArray();
+        $user = $_SESSION['phpci_user'];
 
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($user, $name, $email, $password);
+            $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
+            $user = $_SESSION['phpci_user'];
         }
+
+        $values = $user->getDataArray();
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');
@@ -109,7 +111,7 @@ class UserController extends Controller
     */
     public function add()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -151,7 +153,7 @@ class UserController extends Controller
     */
     public function edit($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -244,7 +246,7 @@ class UserController extends Controller
     */
     public function delete($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
         

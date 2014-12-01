@@ -108,7 +108,8 @@ class ProjectController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $build = $this->buildService->createBuild($project, null, urldecode($branch), $_SESSION['user']->getEmail());
+        $email = $_SESSION['phpci_user']->getEmail();
+        $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -119,7 +120,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function delete($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 
@@ -223,7 +224,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function edit($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
+        if (!$_SESSION['phpci_user']->getIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
 

@@ -9,6 +9,7 @@
 
 namespace PHPCI\Command;
 
+use b8\Config;
 use Monolog\Logger;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
@@ -61,7 +62,8 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.');
+            ->setDescription('Run all pending PHPCI builds.')
+            ->addOption('verbose', 'v', InputOption::VALUE_NONE);
     }
 
     /**
@@ -73,14 +75,15 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->hasOption('verbose')) {
+        if ($input->getOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
         }
 
-        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+        $running = $this->validateRunningBuilds();
 
+        $this->logger->pushProcessor(new LoggedBuildContextTidier());
         $this->logger->addInfo("Finding builds to process");
         $store = Factory::getStore('Build');
         $result = $store->getByStatus(0, $this->maxBuilds);
@@ -89,9 +92,16 @@ class RunCommand extends Command
         $builds = 0;
 
         foreach ($result['items'] as $build) {
-            $builds++;
 
             $build = BuildFactory::getBuild($build);
+
+            // Skip build (for now) if there's already a build running in that project:
+            if (in_array($build->getProjectId(), $running)) {
+                $this->logger->addInfo('Skipping Build #'.$build->getId() . ' - Project build already in progress.');
+                continue;
+            }
+
+            $builds++;
 
             try {
                 // Logging relevant to this build should be stored
@@ -118,8 +128,53 @@ class RunCommand extends Command
         return $builds;
     }
 
-    public function setBaxBuilds($numBuilds)
+    public function setMaxBuilds($numBuilds)
     {
         $this->maxBuilds = (int)$numBuilds;
+    }
+
+    protected function validateRunningBuilds()
+    {
+        /** @var \PHPCI\Store\BuildStore $store */
+        $store = Factory::getStore('Build');
+        $running = $store->getByStatus(1);
+        $rtn = array();
+
+        $timeout = Config::getInstance()->get('phpci.build.failed_after', 1800);
+
+        foreach ($running['items'] as $build) {
+            /** @var \PHPCI\Model\Build $build */
+            $build = BuildFactory::getBuild($build);
+
+            $now = time();
+            $start = $build->getStarted()->getTimestamp();
+
+            if (($now - $start) > $timeout) {
+                $this->logger->addInfo('Build #'.$build->getId().' marked as failed due to timeout.');
+                $build->setStatus(Build::STATUS_FAILED);
+                $store->save($build);
+                $this->removeBuildDirectory($build);
+                continue;
+            }
+
+            $rtn[$build->getProjectId()] = true;
+        }
+
+        return $rtn;
+    }
+
+    protected function removeBuildDirectory($build)
+    {
+        $buildPath = PHPCI_DIR . 'PHPCI/build/' . $build->getId() . '/';
+
+        if (is_dir($buildPath)) {
+            $cmd = 'rm -Rf "%s"';
+
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
+
+            shell_exec($cmd);
+        }
     }
 }

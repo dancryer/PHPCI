@@ -62,7 +62,8 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.');
+            ->setDescription('Run all pending PHPCI builds.')
+            ->addOption('verbose', 'v', InputOption::VALUE_NONE);
     }
 
     /**

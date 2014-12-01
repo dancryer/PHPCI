@@ -41,7 +41,6 @@ class SettingsController extends Controller
         $this->view->settings = $this->settings;
 
         $emailSettings = array();
-
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
         }

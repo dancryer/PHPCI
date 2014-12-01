@@ -57,7 +57,6 @@ class UserController extends Controller
     public function profile()
     {
         $user = $_SESSION['phpci_user'];
-        $values = $user->getDataArray();
 
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
@@ -65,7 +64,10 @@ class UserController extends Controller
             $password = $this->getParam('password', null);
 
             $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
+            $user = $_SESSION['phpci_user'];
         }
+
+        $values = $user->getDataArray();
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');

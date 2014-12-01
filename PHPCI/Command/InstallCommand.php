@@ -23,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 use PHPCI\Service\UserService;
 
-
 /**
  * Install console command - Installs PHPCI.
  * @author       Dan Cryer <dan@block8.co.uk>
@@ -36,6 +35,18 @@ class InstallCommand extends Command
     {
         $this
             ->setName('phpci:install')
+
+            ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'PHPCI Installation URL')
+
+            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'Database hostname')
+            ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, 'Database name')
+            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'Database username')
+            ->addOption('db-pass', null, InputOption::VALUE_OPTIONAL, 'Database password')
+
+            ->addOption('admin-name', null, InputOption::VALUE_OPTIONAL, 'Admin username')
+            ->addOption('admin-pass', null, InputOption::VALUE_OPTIONAL, 'Admin password')
+            ->addOption('admin-mail', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail')
+
             ->setDescription('Install PHPCI.');
     }
 
@@ -58,60 +69,39 @@ class InstallCommand extends Command
         $output->writeln('-------------------------------------');
         $output->writeln('');
 
-
-        /**
-         * @var \Symfony\Component\Console\Helper\DialogHelper
-         */
-        $dialog = $this->getHelperSet()->get('dialog');
-
         // ----
         // Get MySQL connection information and verify that it works:
         // ----
         $connectionVerified = false;
 
         while (!$connectionVerified) {
-            $db = array();
-            $db['servers']['read'] = $dialog->ask($output, 'Please enter your MySQL host [localhost]: ', 'localhost');
-            $db['servers']['write'] = $db['servers']['read'];
-            $db['name'] = $dialog->ask($output, 'Please enter your database name [phpci]: ', 'phpci');
-            $db['username'] = $dialog->ask($output, 'Please enter your database username [phpci]: ', 'phpci');
-            $db['password'] = $dialog->askHiddenResponse($output, 'Please enter your database password: ');
+            $db = $this->getDatabaseInformation($input, $output);
 
             $connectionVerified = $this->verifyDatabaseDetails($db, $output);
         }
 
         $output->writeln('');
 
+        $conf = array();
+        $conf['b8']['database'] = $db;
+
         // ----
         // Get basic installation details (URL, etc)
         // ----
-
-        $conf = array();
-        $conf['b8']['database'] = $db;
-        $conf['phpci']['url'] = $dialog->askAndValidate(
-            $output,
-            'Your PHPCI URL ("http://phpci.local" for example): ',
-            function ($answer) {
-                if (!filter_var($answer, FILTER_VALIDATE_URL)) {
-                    throw new Exception('Must be a valid URL');
-                }
-
-                return rtrim($answer, '/');
-            },
-            false
-        );
+        $conf['phpci'] = $this->getPhpciConfigInformation($input, $output);
 
         $this->writeConfigFile($conf);
         $this->setupDatabase($output);
-        $this->createAdminUser($output, $dialog);
+        $admin = $this->getAdminInforamtion($input, $output);
+        $this->createAdminUser($admin, $output);
     }
 
     /**
      * Check PHP version, required modules and for disabled functions.
+     *
      * @param  OutputInterface $output
      * @throws \Exception
      */
-
     protected function checkRequirements(OutputInterface $output)
     {
         $output->write('Checking requirements...');
@@ -158,6 +148,127 @@ class InstallCommand extends Command
 
         $output->writeln(' <info>OK</info>');
         $output->writeln('');
+    }
+
+    /**
+     * Load information for admin user form CLI options or ask info to user.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return array
+     */
+    protected function getAdminInforamtion(InputInterface $input, OutputInterface $output)
+    {
+        $admin = array();
+
+        /**
+         * @var \Symfony\Component\Console\Helper\DialogHelper
+         */
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        // Function to validate mail address.
+        $mailValidator =function ($answer) {
+            if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
+                throw new Exception('Must be a valid email address.');
+            }
+
+            return $answer;
+        };
+
+        if ($adminEmail = $input->getOption('admin-mail')) {
+            $adminEmail = $mailValidator($adminEmail);
+        } else {
+            $adminEmail = $dialog->askAndValidate($output, 'Your email address: ', $mailValidator, false);
+        }
+        if (!$adminName = $input->getOption('admin-name')) {
+            $adminName = $dialog->ask($output, 'Enter your name: ');
+        }
+        if (!$adminPass = $input->getOption('admin-pass')) {
+            $adminPass = $dialog->askHiddenResponse($output, 'Enter your desired admin password: ');
+        }
+
+        $admin['mail'] = $adminEmail;
+        $admin['name'] = $adminName;
+        $admin['pass'] = $adminPass;
+
+        return $admin;
+    }
+
+    /**
+     * Load configuration for PHPCI form CLI options or ask info to user.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return array
+     */
+    protected function getPhpciConfigInformation(InputInterface $input, OutputInterface $output)
+    {
+        $phpci = array();
+
+        /**
+         * @var \Symfony\Component\Console\Helper\DialogHelper
+         */
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        // FUnction do validate URL.
+        $urlValidator = function ($answer) {
+            if (!filter_var($answer, FILTER_VALIDATE_URL)) {
+                throw new Exception('Must be a valid URL');
+            }
+
+            return rtrim($answer, '/');
+        };
+
+        if ($url = $input->getOption('url')) {
+            $url = $urlValidator($url);
+        } else {
+            $url = $dialog->askAndValidate($output, 'Your PHPCI URL ("http://phpci.local" for example): ', $urlValidator, false);
+        }
+
+        $phpci['url'] = $url;
+
+        return $phpci;
+    }
+
+    /**
+     * Load configuration for DB form CLI options or ask info to user.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return array
+     */
+    protected function getDatabaseInformation(InputInterface $input, OutputInterface $output)
+    {
+        $db = array();
+
+        /**
+         * @var \Symfony\Component\Console\Helper\DialogHelper
+         */
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        if (!$dbHost = $input->getOption('db-host')) {
+            $dbHost = $dialog->ask($output, 'Please enter your MySQL host [localhost]: ', 'localhost');
+        }
+
+        if (!$dbName = $input->getOption('db-name')) {
+            $dbName = $dialog->ask($output, 'Please enter your database name [phpci]: ', 'phpci');
+        }
+
+        if (!$dbUser = $input->getOption('db-user')) {
+            $dbUser = $dialog->ask($output, 'Please enter your database username [phpci]: ', 'phpci');
+        }
+
+        if (!$dbPass = $input->getOption('db-pass')) {
+            $dbPass = $dialog->askHiddenResponse($output, 'Please enter your database password: ');
+        }
+
+        $db['servers']['read'] = $dbHost;
+        $db['servers']['write'] = $dbHost;
+        $db['name'] = $dbName;
+        $db['username'] = $dbUser;
+        $db['password'] = $dbPass;
+
+        return $db;
     }
 
     /**
@@ -213,34 +324,19 @@ class InstallCommand extends Command
     }
 
     /**
+     * Create admin user using information loaded before.
+     *
+     * @param array $admin
      * @param OutputInterface $output
-     * @param DialogHelper    $dialog
      */
-    protected function createAdminUser(OutputInterface $output, DialogHelper $dialog)
+    protected function createAdminUser($admin, $output)
     {
-        // Try to create a user account:
-        $adminEmail = $dialog->askAndValidate(
-            $output,
-            'Your email address: ',
-            function ($answer) {
-                if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
-                    throw new Exception('Must be a valid email address.');
-                }
-
-                return $answer;
-            },
-            false
-        );
-
-        $adminPass = $dialog->askHiddenResponse($output, 'Enter your desired admin password: ');
-        $adminName = $dialog->ask($output, 'Enter your name: ');
-
         try {
             $this->reloadConfig();
 
             $userStore = Factory::getStore('User');
             $userService = new UserService($userStore);
-            $userService->createUser($adminName, $adminEmail, $adminPass, 1);
+            $userService->createUser($admin['name'], $admin['mail'], $admin['pass'], 1);
 
             $output->writeln('<info>User account created!</info>');
         } catch (\Exception $ex) {

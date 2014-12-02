@@ -70,7 +70,7 @@
                     {
                         case 'github':
                             $url	= PHPCI_URL . 'webhook/github/' . $project->getId();
-                            print ' as a "WebHook URL" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Service Hooks</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+                            print ' as a new "Webhook" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Webhooks and Services</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
                             break;
 
                         case 'gitlab':

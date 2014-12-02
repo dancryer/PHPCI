@@ -36,6 +36,7 @@ class ProjectBase extends Model
         'id' => null,
         'title' => null,
         'reference' => null,
+        'branch' => null,
         'ssh_private_key' => null,
         'type' => null,
         'access_information' => null,
@@ -53,6 +54,7 @@ class ProjectBase extends Model
         'id' => 'getId',
         'title' => 'getTitle',
         'reference' => 'getReference',
+        'branch' => 'getBranch',
         'ssh_private_key' => 'getSshPrivateKey',
         'type' => 'getType',
         'access_information' => 'getAccessInformation',
@@ -72,6 +74,7 @@ class ProjectBase extends Model
         'id' => 'setId',
         'title' => 'setTitle',
         'reference' => 'setReference',
+        'branch' => 'setBranch',
         'ssh_private_key' => 'setSshPrivateKey',
         'type' => 'setType',
         'access_information' => 'setAccessInformation',
@@ -104,6 +107,11 @@ class ProjectBase extends Model
             'length' => 250,
             'default' => null,
         ),
+        'branch' => array(
+            'type' => 'varchar',
+            'length' => 50,
+            'default' => 'master',
+        ),
         'ssh_private_key' => array(
             'type' => 'text',
             'nullable' => true,
@@ -112,7 +120,7 @@ class ProjectBase extends Model
         'type' => array(
             'type' => 'varchar',
             'length' => 50,
-            'default' => 1,
+            'default' => null,
         ),
         'access_information' => array(
             'type' => 'varchar',
@@ -137,9 +145,8 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'allow_public_status' => array(
-            'type' => 'tinyint',
-            'length' => 4,
-            'default' => null,
+            'type' => 'int',
+            'length' => 11,
         ),
     );
 
@@ -189,6 +196,18 @@ class ProjectBase extends Model
     public function getReference()
     {
         $rtn    = $this->data['reference'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of Branch / branch.
+    *
+    * @return string
+    */
+    public function getBranch()
+    {
+        $rtn    = $this->data['branch'];
 
         return $rtn;
     }
@@ -335,6 +354,26 @@ class ProjectBase extends Model
         $this->data['reference'] = $value;
 
         $this->_setModified('reference');
+    }
+
+    /**
+    * Set the value of Branch / branch.
+    *
+    * Must not be null.
+    * @param $value string
+    */
+    public function setBranch($value)
+    {
+        $this->_validateNotNull('Branch', $value);
+        $this->_validateString('Branch', $value);
+
+        if ($this->data['branch'] === $value) {
+            return;
+        }
+
+        $this->data['branch'] = $value;
+
+        $this->_setModified('branch');
     }
 
     /**

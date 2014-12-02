@@ -40,7 +40,7 @@ class SessionController extends \PHPCI\Controller
 
         if ($this->request->getMethod() == 'POST') {
             $user = $this->userStore->getByEmail($this->getParam('email'));
-            
+
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['phpci_user_id']    = $user->getId();
                 header('Location: ' . $this->getLoginRedirect());

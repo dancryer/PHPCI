@@ -62,8 +62,9 @@ class ProjectController extends \PHPCI\Controller
     /**
     * View a specific project.
     */
-    public function view($projectId, $branch = '')
+    public function view($projectId)
     {
+        $branch = $this->getParam('branch', '');
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
@@ -87,7 +88,8 @@ class ProjectController extends \PHPCI\Controller
         $this->view->page     = $page;
         $this->view->pages    = $pages;
 
-        $this->config->set('page_title', $project->getTitle());
+        $this->layout->title = $project->getTitle();
+        $this->layout->subtitle = $this->view->branch;
 
         return $this->view->render();
     }
@@ -120,9 +122,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function delete($projectId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $project = $this->projectStore->getById($projectId);
         $this->projectService->deleteProject($project);
@@ -134,8 +134,9 @@ class ProjectController extends \PHPCI\Controller
     /**
     * AJAX get latest builds.
     */
-    public function builds($projectId, $branch = '')
+    public function builds($projectId)
     {
+        $branch = $this->getParam('branch', '');
         $builds = $this->getLatestBuildsHtml($projectId, urldecode($branch));
         die($builds[0]);
     }
@@ -173,7 +174,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
-        $this->config->set('page_title', 'Add Project');
+        $this->layout->title = 'Add Project';
         $this->requireAdmin();
 
         $method = $this->request->getMethod();
@@ -224,9 +225,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function edit($projectId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
         $project = $this->projectStore->getById($projectId);

@@ -1,4 +1,4 @@
-var phpspecPlugin = PHPCI.UiPlugin.extend({
+var phpspecPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpspec-errors',
     css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
     title: 'PHPSpec',
@@ -9,7 +9,7 @@ var phpspecPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpspec', -1, {key: 'phpspec'})
+        var query = ActiveBuild.registerQuery('phpspec', -1, {key: 'phpspec'})
 
         $(window).on('phpspec', function(data) {
             self.onUpdate(data);
@@ -77,4 +77,4 @@ var phpspecPlugin = PHPCI.UiPlugin.extend({
     }
 });
 
-PHPCI.registerPlugin(new phpspecPlugin());
+ActiveBuild.registerPlugin(new phpspecPlugin());

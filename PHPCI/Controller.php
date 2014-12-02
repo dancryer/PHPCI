@@ -72,10 +72,23 @@ class Controller extends \b8\Controller
         return $this->response;
     }
 
+    /**
+     * Require that the currently logged in user is an administrator.
+     * @throws ForbiddenException
+     */
     protected function requireAdmin()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
+        if (!$this->currentUserIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
+    }
+
+    /**
+     * Check if the currently logged in user is an administrator.
+     * @return bool
+     */
+    protected function currentUserIsAdmin()
+    {
+        return $_SESSION['phpci_user']->getIsAdmin();
     }
 }

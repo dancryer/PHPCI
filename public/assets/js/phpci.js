@@ -1,3 +1,86 @@
+
+var PHPCI = {
+    intervals: {},
+
+    init: function () {
+        $(document).ready(function () {
+            // Update latest builds every 5 seconds:
+            PHPCI.getBuilds();
+            PHPCI.intervals.getBuilds = setInterval(PHPCI.getBuilds, 5000);
+
+            // Update latest project builds every 10 seconds:
+            if (typeof PHPCI_PROJECT_ID != 'undefined') {
+                PHPCI.intervals.getProjectBuilds = setInterval(PHPCI.getProjectBuilds, 10000);
+            }
+        });
+
+        $(window).on('builds-updated', function (e, data) {
+            PHPCI.updateHeaderBuilds(data);
+        });
+    },
+
+    getBuilds: function () {
+        $.ajax({
+            url: PHPCI_URL + 'build/latest',
+
+            success: function (data) {
+                $(window).trigger('builds-updated', [JSON.parse(data)]);
+            },
+
+            error: PHPCI.handleFailedAjax
+        });
+    },
+
+    getProjectBuilds: function () {
+        $.ajax({
+            url: PHPCI_URL + 'project/builds/' + PHPCI_PROJECT_ID + '?branch=' + PHPCI_PROJECT_BRANCH,
+
+            success: function (data) {
+                $('#latest-builds').html(data);
+            },
+
+            error: PHPCI.handleFailedAjax
+        });
+    },
+
+    updateHeaderBuilds: function (data) {
+        $('.phpci-pending-list').empty();
+        $('.phpci-running-list').empty();
+
+        if (!data.pending.count) {
+            $('.phpci-pending').hide();
+        } else {
+            $('.phpci-pending').show();
+            $('.phpci-pending-count').text(data.pending.count);
+
+            $.each(data.pending.items, function (idx, build) {
+                $('.phpci-pending-list').append(build.header_row);
+            });
+        }
+
+        if (!data.running.count) {
+            $('.phpci-running').hide();
+        } else {
+            $('.phpci-running').show();
+            $('.phpci-running-count').text(data.running.count);
+
+            $.each(data.running.items, function (idx, build) {
+                $('.phpci-running-list').append(build.header_row);
+            });
+        }
+
+    }
+};
+
+PHPCI.init();
+
+function handleFailedAjax(xhr)
+{
+    if (xhr.status == 401) {
+        window.location.href = window.PHPCI_URL + 'session/login';
+    }
+}
+
 /**
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
  * for the details of code below
@@ -28,8 +111,8 @@ if (!Function.prototype.bind) {
 }
 
 /**
-* Used for delete buttons in the system, just to prevent accidental clicks.
-*/
+ * Used for delete buttons in the system, just to prevent accidental clicks.
+ */
 function confirmDelete(url, subject, reloadAfter) {
 
     var dialog = new PHPCIConfirmDialog({
@@ -172,7 +255,7 @@ var PHPCIConfirmDialog = Class.extend({
         }.bind(this));
 
         /*
-        Restore state if was changed previously
+         Restore state if was changed previously
          */
         this.$cancelBtn.show();
         this.$confirmBtn.show();
@@ -219,7 +302,7 @@ var PHPCIConfirmDialog = Class.extend({
         this.$cancelBtn.html('Close');
 
         /*
-        Status message
+         Status message
          */
         this.$body.html(message);
 
@@ -235,8 +318,8 @@ var PHPCIConfirmDialog = Class.extend({
 });
 
 /**
-* Used to initialise the project form:
-*/
+ * Used to initialise the project form:
+ */
 function setupProjectForm()
 {
     $('.github-container').hide();
@@ -324,163 +407,114 @@ function setupProjectForm()
     });
 }
 
-var PHPCIObject = Class.extend({
-    buildId: null,
-    plugins: {},
-    observers: {},
-    buildData: {},
-    queries: {},
-    updateInterval: null,
-
-    init: function(build) {
-        var self = this;
-        this.buildId = build;
-        this.registerQuery('build-updated', 10);
-
-        $(window).on('build-updated', function(data) {
-
-            // If the build has finished, stop updating every 10 seconds:
-            if (data.queryData.status > 1) {
-                self.cancelQuery('build-updated');
-                $(window).trigger({type: 'build-complete'});
-            }
-
-        });
-    },
-
-    registerQuery: function(name, seconds, query) {
-        var self = this;
-        var uri = 'build/meta/' + self.buildId;
-        var query = query || {};
-
-        if (name == 'build-updated') {
-            uri = 'build/data/' + self.buildId;
-        }
-
-        var cb = function() {
-            $.ajax({
-                dataType: "json",
-                url: window.PHPCI_URL + uri,
-                data: query,
-                success: function(data) {
-                    $(window).trigger({type: name, queryData: data});
-                },
-                error: handleFailedAjax
-            });
+var dateFormat = function () {
+    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+        timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+        timezoneClip = /[^-+\dA-Z]/g,
+        pad = function (val, len) {
+            val = String(val);
+            len = len || 2;
+            while (val.length < len) val = "0" + val;
+            return val;
         };
 
-        if (seconds != -1) {
-            self.queries[name] = setInterval(cb, seconds * 1000);
+    // Regexes and supporting functions are cached through closure
+    return function (date, mask, utc) {
+        var dF = dateFormat;
+
+        // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+        if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+            mask = date;
+            date = undefined;
         }
 
-        return cb;
-    },
+        // Passing date through Date applies Date.parse, if necessary
+        date = date ? new Date(date) : new Date;
+        if (isNaN(date)) throw SyntaxError("invalid date");
 
-    cancelQuery: function (name) {
-        clearInterval(this.queries[name]);
-    },
+        mask = String(dF.masks[mask] || mask || dF.masks["default"]);
 
-    registerPlugin: function(plugin) {
-        this.plugins[plugin.id] = plugin;
-        plugin.register();
-    },
+        // Allow setting the utc argument via the mask
+        if (mask.slice(0, 4) == "UTC:") {
+            mask = mask.slice(4);
+            utc = true;
+        }
 
-    storePluginOrder: function () {
-        var renderOrder = [];
+        var _ = utc ? "getUTC" : "get",
+            d = date[_ + "Date"](),
+            D = date[_ + "Day"](),
+            m = date[_ + "Month"](),
+            y = date[_ + "FullYear"](),
+            H = date[_ + "Hours"](),
+            M = date[_ + "Minutes"](),
+            s = date[_ + "Seconds"](),
+            L = date[_ + "Milliseconds"](),
+            o = utc ? 0 : date.getTimezoneOffset(),
+            flags = {
+                d:    d,
+                dd:   pad(d),
+                ddd:  dF.i18n.dayNames[D],
+                dddd: dF.i18n.dayNames[D + 7],
+                m:    m + 1,
+                mm:   pad(m + 1),
+                mmm:  dF.i18n.monthNames[m],
+                mmmm: dF.i18n.monthNames[m + 12],
+                yy:   String(y).slice(2),
+                yyyy: y,
+                h:    H % 12 || 12,
+                hh:   pad(H % 12 || 12),
+                H:    H,
+                HH:   pad(H),
+                M:    M,
+                MM:   pad(M),
+                s:    s,
+                ss:   pad(s),
+                l:    pad(L, 3),
+                L:    pad(L > 99 ? Math.round(L / 10) : L),
+                t:    H < 12 ? "a"  : "p",
+                tt:   H < 12 ? "am" : "pm",
+                T:    H < 12 ? "A"  : "P",
+                TT:   H < 12 ? "AM" : "PM",
+                Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+                o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+                S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+            };
 
-        $('.ui-plugin > div').each(function() {
-            renderOrder.push($(this).attr('id'));
+        return mask.replace(token, function ($0) {
+            return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
         });
+    };
+}();
 
-        localStorage.setItem('phpci-plugin-order', JSON.stringify(renderOrder));
-    },
+// Some common format strings
+dateFormat.masks = {
+    "default":      "ddd mmm dd yyyy HH:MM:ss",
+    shortDate:      "m/d/yy",
+    mediumDate:     "mmm d, yyyy",
+    longDate:       "mmmm d, yyyy",
+    fullDate:       "dddd, mmmm d, yyyy",
+    shortTime:      "h:MM TT",
+    mediumTime:     "h:MM:ss TT",
+    longTime:       "h:MM:ss TT Z",
+    isoDate:        "yyyy-mm-dd",
+    isoTime:        "HH:MM:ss",
+    isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
+    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+};
 
-    renderPlugins: function() {
-        var self = this;
-        var rendered = [];
-        var renderOrder = localStorage.getItem('phpci-plugin-order');
+// Internationalization strings
+dateFormat.i18n = {
+    dayNames: [
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ],
+    monthNames: [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ]
+};
 
-        if (renderOrder) {
-            renderOrder = JSON.parse(renderOrder);
-        } else {
-            renderOrder = ['build-time', 'build-lines-chart', 'build-warnings-chart', 'build-log'];
-        }
-
-        for (var idx in renderOrder) {
-            var key = renderOrder[idx];
-            self.renderPlugin(self.plugins[key]);
-            rendered.push(key);
-        }
-
-        for (var key in this.plugins) {
-            if (rendered.indexOf(key) == -1) {
-                self.renderPlugin(self.plugins[key]);
-            }
-        }
-
-        $('#plugins').sortable({
-            handle: '.panel-title',
-            connectWith: '#plugins',
-            update: self.storePluginOrder
-        });
-
-        $(window).trigger({type: 'build-updated', queryData: self.buildData});
-    },
-
-    renderPlugin: function(plugin) {
-        var output = plugin.render();
-
-        if (!plugin.box) {
-            output = $('<div class="panel-body"></div>').append(output);
-        }
-
-        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
-        var content = $('<div></div>').attr('id', plugin.id).append(output);
-        content.addClass('panel panel-default');
-
-        if(plugin.title != undefined) {
-            $('<a>').attr({'class':'list-group-item', 'href':'#'+plugin.id}).html(plugin.title).appendTo($('#anchorPlugins'));
-        }
-
-        if (plugin.title) {
-            content.prepend('<div class="panel-heading"><h3 class="panel-title">'+plugin.title+'</h3></div>');
-        }
-
-        container.append(content);
-
-        $('#plugins').append(container);
-    },
-
-    UiPlugin: Class.extend({
-        id: null,
-        css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
-        box: false,
-
-        init: function(){
-        },
-
-        register: function() {
-            var self = this;
-
-            $(window).on('build-updated', function(data) {
-                self.onUpdate(data);
-            });
-        },
-
-        render: function () {
-            return '';
-        },
-
-        onUpdate: function (build) {
-
-        }
-    })
-});
-
-
-function handleFailedAjax(xhr)
-{
-    if (xhr.status == 401) {
-        window.location.href = window.PHPCI_URL + 'session/login';
-    }
-}
+// For convenience...
+Date.prototype.format = function (mask, utc) {
+    return dateFormat(this, mask, utc);
+};

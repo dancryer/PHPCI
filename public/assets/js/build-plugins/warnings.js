@@ -1,4 +1,4 @@
-var warningsPlugin = PHPCI.UiPlugin.extend({
+var warningsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-warnings-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: 'Quality Trend',
@@ -19,7 +19,7 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
 
         var queries = [];
         for (var key in self.keys) {
-          queries.push(PHPCI.registerQuery(key, -1, {num_builds: 10, key: key}));
+          queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
         $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
@@ -98,9 +98,11 @@ var warningsPlugin = PHPCI.UiPlugin.extend({
             pointSize: 3
         };
 
+        $('#build-warnings-chart').show();
+
         var chart = new google.visualization.LineChart(document.getElementById('build-warnings'));
         chart.draw(data, options);
     }
 });
 
-PHPCI.registerPlugin(new warningsPlugin());
+ActiveBuild.registerPlugin(new warningsPlugin());

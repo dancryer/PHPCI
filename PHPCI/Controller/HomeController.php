@@ -11,6 +11,7 @@ namespace PHPCI\Controller;
 
 use b8;
 use PHPCI\BuildFactory;
+use PHPCI\Model\Build;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -41,13 +42,19 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
+        $this->layout->title = 'Dashboard';
+
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
-        $this->view->builds   = $this->getLatestBuildsHtml();
+        $builds = $this->buildStore->getLatestBuilds(null, 10);
+
+        foreach ($builds as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        $this->view->builds   = $builds;
         $this->view->projects = $projects['items'];
         $this->view->summary  = $this->getSummaryHtml($projects);
-
-        $this->config->set('page_title', 'Dashboard');
 
         return $this->view->render();
     }
@@ -69,13 +76,24 @@ class HomeController extends \PHPCI\Controller
     protected function getSummaryHtml($projects)
     {
         $summaryBuilds = array();
+        $successes = array();
+        $failures = array();
+
         foreach ($projects['items'] as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+
+            $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
+            $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
+
+            $successes[$project->getId()] = $success;
+            $failures[$project->getId()] = $failure;
         }
 
         $summaryView = new b8\View('SummaryTable');
         $summaryView->projects = $projects['items'];
         $summaryView->builds = $summaryBuilds;
+        $summaryView->successful = $successes;
+        $summaryView->failed = $failures;
 
         return $summaryView->render();
     }

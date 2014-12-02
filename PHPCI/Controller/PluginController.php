@@ -24,6 +24,10 @@ use PHPCI\Plugin\Util\PluginInformationCollection;
 class PluginController extends \PHPCI\Controller
 {
     protected $required = array(
+        'php',
+        'ext-mcrypt',
+        'ext-pdo',
+        'ext-pdo_mysql',
         'block8/b8framework',
         'ircmaxell/password-compat',
         'swiftmailer/swiftmailer',
@@ -31,7 +35,8 @@ class PluginController extends \PHPCI\Controller
         'symfony/console',
         'psr/log',
         'monolog/monolog',
-        'pimple/pimple'
+        'pimple/pimple',
+        'robmorgan/phinx',
     );
 
     protected $canInstall;
@@ -39,9 +44,7 @@ class PluginController extends \PHPCI\Controller
 
     public function index()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $this->view->canWrite = is_writable(APPLICATION_PATH . 'composer.json');
         $this->view->required = $this->required;
@@ -60,16 +63,14 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
-        $this->config->set('page_title', 'Plugins');
+        $this->layout->title = 'Plugins';
 
         return $this->view->render();
     }
 
     public function remove()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $json = $this->getComposerJson();
@@ -88,9 +89,7 @@ class PluginController extends \PHPCI\Controller
 
     public function install()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $version = $this->getParam('version', '*');

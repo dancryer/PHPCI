@@ -56,7 +56,6 @@ class ProjectStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $count = null;
 
         $query = 'SELECT * FROM `project` WHERE `title` = :title' . $add;
         $stmt = Database::getConnection($useConnection)->prepare($query);
@@ -69,6 +68,9 @@ class ProjectStoreBase extends Store
                 return new Project($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
 
             return array('items' => $rtn, 'count' => $count);
         } else {

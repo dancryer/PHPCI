@@ -4,6 +4,9 @@ namespace PHPCI\Plugin;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
+/**
+ * PHPCI ApiGen Plugin
+ */
 class ApiGen implements \PHPCI\Plugin
 {
     /**
@@ -23,9 +26,8 @@ class ApiGen implements \PHPCI\Plugin
      *
      * @param Builder $phpci
      * @param Build   $build
-     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build)
     {
         // Basic
         $this->phpci = $phpci;
@@ -52,9 +54,35 @@ class ApiGen implements \PHPCI\Plugin
         return $this->build;
     }
 
-    // Execution
+    /**
+     * Plugin Execution
+     *
+     * @return boolean Result
+     */
     public function execute()
     {
-        return true;
+        $phpci      = $this->getPHPCI();
+        $executable = $phpci->findBinary('apigen');
+
+        if (!$executable) {
+            $phpci->logFailure('Could not find ApiGen executable.');
+            return false;
+        }
+
+        if (!is_readable($phpci->buildPath . '/apigen.neon')) {
+            $phpci->logFailure('Could not find ApiGen configuration file.');
+            return false;
+        }
+
+        // Push Path
+        $path = getcwd();
+        chdir($phpci->buildPath);
+
+        $result = $phpci->executeCommand($executable . ' generate');
+
+        // Pop Path
+        chdir($path);
+
+        return $result;
     }
 }

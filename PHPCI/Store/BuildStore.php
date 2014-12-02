@@ -10,6 +10,7 @@
 namespace PHPCI\Store;
 
 use b8\Database;
+use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 use PHPCI\Store\Base\BuildStoreBase;
 
@@ -21,11 +22,22 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
-    public function getLatestBuilds($projectId)
+    public function getLatestBuilds($projectId = null, $limit = 5)
     {
-        $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
+        $where = '';
+
+        if (!is_null($projectId)) {
+            $where = ' WHERE `project_id` = :pid ';
+        }
+
+        $query = 'SELECT * FROM build '.$where.' ORDER BY id DESC LIMIT :limit';
         $stmt = Database::getConnection('read')->prepare($query);
-        $stmt->bindValue(':pid', $projectId);
+
+        if (!is_null($projectId)) {
+            $stmt->bindValue(':pid', $projectId);
+        }
+
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);

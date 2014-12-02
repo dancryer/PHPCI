@@ -53,12 +53,12 @@ foreach($projects as $project):
                 case 2:
                     $successes++;
                     $statuses[] = 'ok';
-                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $success;
+                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $success;
                     break;
                 case 3:
                     $failures++;
                     $statuses[] = 'failed';
-                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $failure;
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $failure;
                     break;
             }
         }
@@ -78,20 +78,25 @@ foreach($projects as $project):
 ?>
 <tr class="<?php print $cls; ?>">
     <td>
+        <a href='<?php echo PHPCI_URL ?>project/view/<?php echo $project->getId() ?>'><strong><?php echo htmlspecialchars($project->getTitle()) ?></strong></a>
+        <br>
+        Last Success: <?php print is_null($success) ? 'Never' : $success; ?>
+        <br>
+        Last Failure: <?php print is_null($failure) ? 'Never' : $failure; ?>
+    </td>
+
+    <td>
         <span class='label label-<?php echo $subcls ?>'>
             <?php echo $health ?>
         </span>
-    </td>
-    <td><a href='<?php echo PHPCI_URL ?>project/view/<?php echo $project->getId() ?>'><?php echo htmlspecialchars($project->getTitle()) ?></a></td>
-    <td><?php print is_null($success) ? 'Never' : $success; ?></td>
-    <td><?php print is_null($failure) ? 'Never' : $failure; ?></td>
-    <td>
+        <br>
         <?php
         foreach ($statuses as $status) {
             print '<img alt="'.$status.'" src="' . PHPCI_URL . 'assets/img/icon-build-' . $status . '.png">';
         }
         ?>
     </td>
+
     <td><a class="btn btn-default btn-sm" href='<?php echo PHPCI_URL ?>project/build/<?php echo $project->getId(); ?>'>build now &raquo;</a></td>
 </tr>
 <?php endforeach; ?>

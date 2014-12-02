@@ -11,6 +11,7 @@ namespace PHPCI\Controller;
 
 use b8;
 use PHPCI\BuildFactory;
+use PHPCI\Model\Build;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -41,13 +42,13 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
+        $this->layout->title = 'Dashboard';
+
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
-        $this->view->builds   = $this->getLatestBuildsHtml();
+        $this->view->builds   = $this->buildStore->getLatestBuilds(null, 10);
         $this->view->projects = $projects['items'];
         $this->view->summary  = $this->getSummaryHtml($projects);
-
-        $this->config->set('page_title', 'Dashboard');
 
         return $this->view->render();
     }

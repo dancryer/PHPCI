@@ -62,8 +62,7 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.')
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE);
+            ->setDescription('Run all pending PHPCI builds.');
     }
 
     /**
@@ -75,7 +74,7 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->getOption('verbose')) {
+        if ($input->hasOption('verbose') && $input->getOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
@@ -117,6 +116,7 @@ class RunCommand extends Command
                 $this->logger->popHandler($buildDbLog);
             } catch (\Exception $ex) {
                 $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
                 $build->setLog($build->getLog() . PHP_EOL . PHP_EOL . $ex->getMessage());
                 $store->save($build);
             }

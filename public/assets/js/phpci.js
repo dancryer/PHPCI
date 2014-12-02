@@ -1,3 +1,86 @@
+
+var PHPCI = {
+    intervals: {},
+
+    init: function () {
+        $(document).ready(function () {
+            // Update latest builds every 5 seconds:
+            PHPCI.getBuilds();
+            PHPCI.intervals.getBuilds = setInterval(PHPCI.getBuilds, 5000);
+
+            // Update latest project builds every 10 seconds:
+            if (typeof PHPCI_PROJECT_ID != 'undefined') {
+                PHPCI.intervals.getProjectBuilds = setInterval(PHPCI.getProjectBuilds, 10000);
+            }
+        });
+
+        $(window).on('builds-updated', function (e, data) {
+            PHPCI.updateHeaderBuilds(data);
+        });
+    },
+
+    getBuilds: function () {
+        $.ajax({
+            url: PHPCI_URL + 'build/latest',
+
+            success: function (data) {
+                $(window).trigger('builds-updated', [JSON.parse(data)]);
+            },
+
+            error: PHPCI.handleFailedAjax
+        });
+    },
+
+    getProjectBuilds: function () {
+        $.ajax({
+            url: PHPCI_URL + 'project/builds/' + PHPCI_PROJECT_ID + '?branch=' + PHPCI_PROJECT_BRANCH,
+
+            success: function (data) {
+                $('#latest-builds').html(data);
+            },
+
+            error: PHPCI.handleFailedAjax
+        });
+    },
+
+    updateHeaderBuilds: function (data) {
+        $('.phpci-pending-list').empty();
+        $('.phpci-running-list').empty();
+
+        if (!data.pending.count) {
+            $('.phpci-pending').hide();
+        } else {
+            $('.phpci-pending').show();
+            $('.phpci-pending-count').text(data.pending.count);
+
+            $.each(data.pending.items, function (idx, build) {
+                $('.phpci-pending-list').append(build.header_row);
+            });
+        }
+
+        if (!data.running.count) {
+            $('.phpci-running').hide();
+        } else {
+            $('.phpci-running').show();
+            $('.phpci-running-count').text(data.running.count);
+
+            $.each(data.running.items, function (idx, build) {
+                $('.phpci-running-list').append(build.header_row);
+            });
+        }
+
+    }
+};
+
+PHPCI.init();
+
+function handleFailedAjax(xhr)
+{
+    if (xhr.status == 401) {
+        window.location.href = window.PHPCI_URL + 'session/login';
+    }
+}
+
 /**
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
  * for the details of code below
@@ -28,8 +111,8 @@ if (!Function.prototype.bind) {
 }
 
 /**
-* Used for delete buttons in the system, just to prevent accidental clicks.
-*/
+ * Used for delete buttons in the system, just to prevent accidental clicks.
+ */
 function confirmDelete(url, subject, reloadAfter) {
 
     var dialog = new PHPCIConfirmDialog({
@@ -172,7 +255,7 @@ var PHPCIConfirmDialog = Class.extend({
         }.bind(this));
 
         /*
-        Restore state if was changed previously
+         Restore state if was changed previously
          */
         this.$cancelBtn.show();
         this.$confirmBtn.show();
@@ -219,7 +302,7 @@ var PHPCIConfirmDialog = Class.extend({
         this.$cancelBtn.html('Close');
 
         /*
-        Status message
+         Status message
          */
         this.$body.html(message);
 
@@ -235,8 +318,8 @@ var PHPCIConfirmDialog = Class.extend({
 });
 
 /**
-* Used to initialise the project form:
-*/
+ * Used to initialise the project form:
+ */
 function setupProjectForm()
 {
     $('.github-container').hide();
@@ -324,163 +407,3 @@ function setupProjectForm()
     });
 }
 
-var PHPCIObject = Class.extend({
-    buildId: null,
-    plugins: {},
-    observers: {},
-    buildData: {},
-    queries: {},
-    updateInterval: null,
-
-    init: function(build) {
-        var self = this;
-        this.buildId = build;
-        this.registerQuery('build-updated', 10);
-
-        $(window).on('build-updated', function(data) {
-
-            // If the build has finished, stop updating every 10 seconds:
-            if (data.queryData.status > 1) {
-                self.cancelQuery('build-updated');
-                $(window).trigger({type: 'build-complete'});
-            }
-
-        });
-    },
-
-    registerQuery: function(name, seconds, query) {
-        var self = this;
-        var uri = 'build/meta/' + self.buildId;
-        var query = query || {};
-
-        if (name == 'build-updated') {
-            uri = 'build/data/' + self.buildId;
-        }
-
-        var cb = function() {
-            $.ajax({
-                dataType: "json",
-                url: window.PHPCI_URL + uri,
-                data: query,
-                success: function(data) {
-                    $(window).trigger({type: name, queryData: data});
-                },
-                error: handleFailedAjax
-            });
-        };
-
-        if (seconds != -1) {
-            self.queries[name] = setInterval(cb, seconds * 1000);
-        }
-
-        return cb;
-    },
-
-    cancelQuery: function (name) {
-        clearInterval(this.queries[name]);
-    },
-
-    registerPlugin: function(plugin) {
-        this.plugins[plugin.id] = plugin;
-        plugin.register();
-    },
-
-    storePluginOrder: function () {
-        var renderOrder = [];
-
-        $('.ui-plugin > div').each(function() {
-            renderOrder.push($(this).attr('id'));
-        });
-
-        localStorage.setItem('phpci-plugin-order', JSON.stringify(renderOrder));
-    },
-
-    renderPlugins: function() {
-        var self = this;
-        var rendered = [];
-        var renderOrder = localStorage.getItem('phpci-plugin-order');
-
-        if (renderOrder) {
-            renderOrder = JSON.parse(renderOrder);
-        } else {
-            renderOrder = ['build-time', 'build-lines-chart', 'build-warnings-chart', 'build-log'];
-        }
-
-        for (var idx in renderOrder) {
-            var key = renderOrder[idx];
-            self.renderPlugin(self.plugins[key]);
-            rendered.push(key);
-        }
-
-        for (var key in this.plugins) {
-            if (rendered.indexOf(key) == -1) {
-                self.renderPlugin(self.plugins[key]);
-            }
-        }
-
-        $('#plugins').sortable({
-            handle: '.panel-title',
-            connectWith: '#plugins',
-            update: self.storePluginOrder
-        });
-
-        $(window).trigger({type: 'build-updated', queryData: self.buildData});
-    },
-
-    renderPlugin: function(plugin) {
-        var output = plugin.render();
-
-        if (!plugin.box) {
-            output = $('<div class="panel-body"></div>').append(output);
-        }
-
-        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
-        var content = $('<div></div>').attr('id', plugin.id).append(output);
-        content.addClass('panel panel-default');
-
-        if(plugin.title != undefined) {
-            $('<a>').attr({'class':'list-group-item', 'href':'#'+plugin.id}).html(plugin.title).appendTo($('#anchorPlugins'));
-        }
-
-        if (plugin.title) {
-            content.prepend('<div class="panel-heading"><h3 class="panel-title">'+plugin.title+'</h3></div>');
-        }
-
-        container.append(content);
-
-        $('#plugins').append(container);
-    },
-
-    UiPlugin: Class.extend({
-        id: null,
-        css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
-        box: false,
-
-        init: function(){
-        },
-
-        register: function() {
-            var self = this;
-
-            $(window).on('build-updated', function(data) {
-                self.onUpdate(data);
-            });
-        },
-
-        render: function () {
-            return '';
-        },
-
-        onUpdate: function (build) {
-
-        }
-    })
-});
-
-
-function handleFailedAjax(xhr)
-{
-    if (xhr.status == 401) {
-        window.location.href = window.PHPCI_URL + 'session/login';
-    }
-}

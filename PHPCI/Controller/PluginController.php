@@ -24,6 +24,10 @@ use PHPCI\Plugin\Util\PluginInformationCollection;
 class PluginController extends \PHPCI\Controller
 {
     protected $required = array(
+        'php',
+        'ext-mcrypt',
+        'ext-pdo',
+        'ext-pdo_mysql',
         'block8/b8framework',
         'ircmaxell/password-compat',
         'swiftmailer/swiftmailer',
@@ -31,7 +35,8 @@ class PluginController extends \PHPCI\Controller
         'symfony/console',
         'psr/log',
         'monolog/monolog',
-        'pimple/pimple'
+        'pimple/pimple',
+        'robmorgan/phinx',
     );
 
     protected $canInstall;
@@ -60,7 +65,7 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
-        $this->config->set('page_title', 'Plugins');
+        $this->layout->title = 'Plugins';
 
         return $this->view->render();
     }

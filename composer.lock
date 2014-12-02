@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d97c4373b84222bb233cb510044650b4",
+    "hash": "650fe5576922dea4ac3b1be72d882a58",
     "packages": [
         {
             "name": "block8/b8framework",
-            "version": "1.1.8",
+            "version": "1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Block8/b8framework.git",
-                "reference": "cfb0bbd87a2ff71f9ebdfa53fca139d50407e0e0"
+                "reference": "3952dabee84cbf5be3dd8d20eadd13b6219e7a6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Block8/b8framework/zipball/cfb0bbd87a2ff71f9ebdfa53fca139d50407e0e0",
-                "reference": "cfb0bbd87a2ff71f9ebdfa53fca139d50407e0e0",
+                "url": "https://api.github.com/repos/Block8/b8framework/zipball/3952dabee84cbf5be3dd8d20eadd13b6219e7a6a",
+                "reference": "3952dabee84cbf5be3dd8d20eadd13b6219e7a6a",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "mvc",
                 "php"
             ],
-            "time": "2014-07-29 15:49:02"
+            "time": "2014-12-01 21:02:58"
         },
         {
             "name": "ircmaxell/password-compat",

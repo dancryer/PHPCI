@@ -38,6 +38,7 @@ class SettingsController extends Controller
 
     public function index()
     {
+        $this->layout->title = 'Settings';
         $this->view->settings = $this->settings;
 
         $emailSettings = array();

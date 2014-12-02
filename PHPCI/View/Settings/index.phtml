@@ -28,16 +28,16 @@
     </p>
 <?php endif; ?>
 
-<div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title">Build Settings</h3></div>
-    <div class="panel-body">
+<div class="box box-primary">
+    <div class="box-header"><h3 class="box-title">Build Settings</h3></div>
+    <div class="box-body clearfix">
         <?php print $buildSettings; ?>
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title">Github Application</h3></div>
-    <div class="panel-body">
+<div class="box box-primary">
+    <div class="box-header"><h3 class="box-title">Github Application</h3></div>
+    <div class="box-body clearfix">
 
         <div class="row">
             <div class="col-lg-12">
@@ -72,12 +72,12 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Where to find these...</h3>
+                <div class="box box-info">
+                    <div class="box-header">
+                        <h3 class="box-title">Where to find these...</h3>
                     </div>
 
-                    <div class="panel-body">
+                    <div class="box-body">
                         <p>If you own the application you would like to use, you can find this information within your
                             <a href="https://github.com/settings/applications">applications</a> settings area.</p>
                     </div>
@@ -89,12 +89,12 @@
 </div>
 
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Email Settings</h3>
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title">Email Settings</h3>
     </div>
 
-    <div class="panel-body">
+    <div class="box-body clearfix">
         <?php if (!isset($settings['phpci']['email_settings'])): ?>
             <p class="alert alert-warning clearfix">
                 Before PHPCI can send build status emails, you need to configure your SMTP settings below.

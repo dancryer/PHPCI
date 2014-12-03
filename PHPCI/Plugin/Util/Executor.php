@@ -28,7 +28,7 @@ class Executor
      * @param string $stage
      * @return bool
      */
-    public function executePlugins(&$config, $stage)
+    public function executePlugins(&$config, $stage, $callback = null)
     {
         $success = true;
         // Ignore any stages for which we don't have plugins set:
@@ -59,6 +59,10 @@ class Executor
                 }
 
                 $this->logger->logFailure('PLUGIN STATUS: FAILED');
+            }
+
+            if ($callback && is_callable($callback)) {
+                call_user_func($callback);
             }
         }
 

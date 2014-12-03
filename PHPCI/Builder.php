@@ -97,6 +97,16 @@ class Builder implements LoggerAwareInterface
     protected $buildLogger;
 
     /**
+     * @var int
+     */
+    protected $totalSteps;
+
+    /**
+     * @var int
+     */
+    protected $doneSteps;
+
+    /**
      * Set up the builder.
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
@@ -182,18 +192,32 @@ class Builder implements LoggerAwareInterface
     {
         // Update the build in the database, ping any external services.
         $this->build->setStatus(Build::STATUS_RUNNING);
+        $this->build->setProgress("Init");
         $this->build->setStarted(new \DateTime());
         $this->store->save($this->build);
         $this->build->sendStatusPostback();
         $success = true;
+        $this->totalSteps = 1;
+        $this->doneSteps = 0;
 
         try {
             // Set up the build:
             $this->setupBuild();
 
+            $this->doneSteps++;
+
+            $this->totalSteps += count($this->config['setup']);
+            $this->totalSteps += count($this->config['test']);
+            $this->totalSteps += count($this->config['complete']);
+
+            $this->updateProgress();
+
             // Run the core plugin stages:
             foreach (array('setup', 'test') as $stage) {
-                $success &= $this->pluginExecutor->executePlugins($this->config, $stage);
+                $success &= $this->pluginExecutor->executePlugins($this->config, $stage, function() {
+                    $this->doneSteps++;
+                    $this->updateProgress();
+                });
             }
 
             // Set the status so this can be used by complete, success and failure
@@ -205,7 +229,10 @@ class Builder implements LoggerAwareInterface
             }
 
             // Complete stage plugins are always run
-            $this->pluginExecutor->executePlugins($this->config, 'complete');
+            $this->pluginExecutor->executePlugins($this->config, 'complete', function() {
+                $this->doneSteps++;
+                $this->updateProgress();
+            });
 
             if ($success) {
                 $this->pluginExecutor->executePlugins($this->config, 'success');
@@ -390,5 +417,11 @@ class Builder implements LoggerAwareInterface
         );
 
         return $pluginFactory;
+    }
+
+    private function updateProgress()
+    {
+        $this->build->setProgress($this->doneSteps . "/" . $this->totalSteps);
+        $this->store->save($this->build);
     }
 }

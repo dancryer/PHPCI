@@ -75,7 +75,53 @@ foreach($projects as $project):
         $subcls = 'yellow';
     }
 
+
+    $buildCount = count($builds[$project->getId()]);
+    $lastSuccess = $successful[$project->getId()];
+    $lastFailure = $failed[$project->getId()];
+    $message = 'No builds yet!';
+    $shortMessage = 'No builds yet!';
+
+    if ($buildCount > 0) {
+        if ($failures > 0) {
+            $shortMessage = $failures . ' / ' . $buildCount . ' failed.';
+            $message = $failures . ' out of the last ' . $buildCount . ' builds failed.';
+
+            if (!is_null($lastSuccess) && !is_null($lastSuccess->getFinished())) {
+                $message .= ' The last successful build was ' . $lastSuccess->getFinished()->format('M j Y') . '.';
+            } else {
+                $message .= ' This project has never built successfully.';
+            }
+        } else {
+            $shortMessage = $buildCount . ' / ' . $buildCount . ' passed.';
+            $message = 'All of the last ' . $buildCount . ' builds passed.';
+
+            if (!is_null($lastFailure) && !is_null($lastFailure->getFinished())) {
+                $message .= ' The last failed build was ' . $lastFailure->getFinished()->format('M j Y') . '.';
+            } else {
+                $message .= ' This project has never failed to build.';
+            }
+        }
+    }
+
 ?>
+
+    <?php if (count($projects) > 10): ?>
+
+        <div class="small-box bg-<?php print $subcls; ?>">
+            <div class="inner">
+                <h4>
+                    <strong>
+                        <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
+                            <?php print $project->getTitle(); ?>
+                        </a>
+                    </strong> -
+                    <?php print $shortMessage; ?>
+                </h4>
+            </div>
+        </div>
+
+    <?php else: ?>
 
     <div class="small-box bg-<?php print $subcls; ?>">
         <div class="inner">
@@ -84,28 +130,11 @@ foreach($projects as $project):
                     <?php print $project->getTitle(); ?>
                 </a>
             </h3>
+
             <p>
-                <?php if ($failures > 0): ?>
-                    <?php print $failures; ?> out of the last
-                    <?php print count($builds[$project->getId()]); ?> builds have failed.
-
-                    <?php if (!is_null($successful[$project->getId()])): ?>
-                        The last successful build was
-                        <?php print $successful[$project->getId()]->getFinished()->format('M j Y'); ?>
-                    <?php else: ?>
-                        This project has never built successfully.
-                    <?php endif; ?>
-                <?php else: ?>
-                    All of the last <?php print count($builds[$project->getId()]); ?> builds passed.
-
-                    <?php if (!is_null($failed[$project->getId()])): ?>
-                        The last failed build was
-                        <?php print $failed[$project->getId()]->getFinished()->format('M j Y'); ?>
-                    <?php else: ?>
-                        This project has never failed to build.
-                    <?php endif; ?>
-                <?php endif; ?>
+                <?php print $message; ?>
             </p>
+
         </div>
         <div class="icon">
             <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
@@ -115,4 +144,5 @@ foreach($projects as $project):
         </a>
     </div>
 
+    <?php endif; ?>
 <?php endforeach; ?>

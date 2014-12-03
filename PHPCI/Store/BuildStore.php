@@ -61,8 +61,9 @@ class BuildStore extends BuildStoreBase
         $stmt->bindValue(':status', $status);
 
         if ($stmt->execute()) {
-            $res = $stmt->fetch(\PDO::FETCH_ASSOC);
-            return new Build($res);
+            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                return new Build($data);
+            }
         } else {
             return array();
         }

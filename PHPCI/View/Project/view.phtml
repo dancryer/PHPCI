@@ -108,19 +108,46 @@ if ($page > 1) {
 }
 
 if ($pages > 1) {
-    for($i = 1; $i <= $pages; $i++)
+
+    $start = $page - 3;
+
+    if ($start <= 0) {
+        $start = 1;
+    }
+
+    $end = $page + 3;
+
+    if ($end > $pages) {
+        $end = $pages;
+    }
+
+    if ($start > 1) {
+        print '<li><a href="' . $project_url . '">1...</a></li>';
+    }
+
+    for($i = $start; $i <= $end; $i++)
     {
+        if ($pages > $end && $i == $pages) continue;
+
         if ($i == $page) {
-            print '<li><span>' . $i . '</span></li>';
+            print '<li class="bg-blue"><span>' . $i . '</span></li>';
         } else {
             print '<li><a href="' . $project_url . '?p=' . $i . '">' . $i . '</a></li>';
         }
     }
+
+    if ($pages > $end) {
+        print '<li><a href="' . $project_url . '?p='.$pages.'">...'.$pages.'</a></li>';
+    }
 }
 
-if ($page < $pages) {
+
+
+if ($page < $pages - 1) {
     print '<li><a href="' . $project_url . '?p='.($page == $pages ? $pages : $page + 1).'">Next &raquo;</a></li>';
 }
+
+
 
 print '</ul></div>';
 

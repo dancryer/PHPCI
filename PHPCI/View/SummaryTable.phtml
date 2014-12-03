@@ -67,7 +67,7 @@ foreach($projects as $project):
     if ($failures == 0) {
         $health = 'Good';
         $subcls = 'green';
-    } elseif ($failures > $successes) {
+    } elseif ($successes == 0) {
         $health = 'Bad';
         $subcls = 'red';
     } else {

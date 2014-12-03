@@ -20,25 +20,25 @@
                         switch ($build->getStatus()) {
                             case \PHPCI\Model\Build::STATUS_NEW:
                                 $updated = $build->getCreated();
-                                $label = 'created';
+                                $label = 'Created';
                                 $color = 'blue';
                                 break;
 
                             case \PHPCI\Model\Build::STATUS_RUNNING:
                                 $updated = $build->getStarted();
-                                $label = 'started';
+                                $label = 'Started';
                                 $color = 'yellow';
                                 break;
 
                             case \PHPCI\Model\Build::STATUS_SUCCESS:
                                 $updated = $build->getFinished();
-                                $label = 'success';
+                                $label = 'Successful';
                                 $color = 'green';
                                 break;
 
                             case \PHPCI\Model\Build::STATUS_FAILED:
                                 $updated = $build->getFinished();
-                                $label = 'failed';
+                                $label = 'Failed';
                                 $color = 'red';
                                 break;
                         }
@@ -66,10 +66,24 @@
                                     <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
                                         Build #<?php print $build->getId(); ?>
                                     </a>
+                                    -
+                                    <?php print $label; ?>
                                 </h3>
 
                                 <div class="timeline-body">
-                                    Build <?php print $label; ?>
+                                    <?php
+                                    if ($build->getCommitId() !== 'Manual') {
+                                        print sprintf(
+                                            '<a href="%s">%s (%s)</a>',
+                                            $build->getCommitLink(),
+                                            substr($build->getCommitId(), 0, 7),
+                                            $build->getCommitterEmail()
+                                        );
+                                    } else {
+                                        print 'Manual Build';
+                                    }
+                                    ?>
+                                    - <?php print $build->getCommitMessage(); ?>
                                 </div>
                             </div>
                         </li>

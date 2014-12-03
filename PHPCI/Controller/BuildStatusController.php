@@ -68,23 +68,15 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image for a given project.
+    * Returns the appropriate build status image in SVG format for a given project.
     */
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
-        header('Content-Type: image/png');
-        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
-    }
-
-    /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
-    public function svg($projectId)
-    {
-        $status = $this->getStatus($projectId);
+        $color = ($status == 'passing') ? 'green' : 'red';
+        
         header('Content-Type: image/svg+xml');
-        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
+        die(file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg'));
     }
 
     public function view($projectId)

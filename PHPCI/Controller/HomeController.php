@@ -46,7 +46,13 @@ class HomeController extends \PHPCI\Controller
 
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
-        $this->view->builds   = $this->buildStore->getLatestBuilds(null, 10);
+        $builds = $this->buildStore->getLatestBuilds(null, 10);
+
+        foreach ($builds as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        $this->view->builds   = $builds;
         $this->view->projects = $projects['items'];
         $this->view->summary  = $this->getSummaryHtml($projects);
 

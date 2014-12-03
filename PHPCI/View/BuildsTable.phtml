@@ -51,7 +51,7 @@ switch($build->getStatus())
         <?php
             if ($build->getCommitId() !== 'Manual') {
                 print sprintf(
-                    '<a href="%s">%s (%s)</a>',
+                    '<a href="%s" target="_blank">%s (%s)</a>',
                     $build->getCommitLink(),
                     substr($build->getCommitId(), 0, 7),
                     $build->getCommitterEmail()

@@ -50,11 +50,14 @@ switch($build->getStatus())
     <td class="hidden-md hidden-sm hidden-xs">
         <?php
             if ($build->getCommitId() !== 'Manual') {
-                print '<a href="' . $build->getCommitLink() . '" target="_blank">';
-            }
-            print $build->getCommitId();
-            if ($build->getCommitId() !== 'Manual') {
-                print '</a>';
+                print sprintf(
+                    '<a href="%s">%s (%s)</a>',
+                    $build->getCommitLink(),
+                    substr($build->getCommitId(), 0, 7),
+                    $build->getCommitterEmail()
+                );
+            } else {
+                print 'Manual Build';
             }
         ?>
     </td>

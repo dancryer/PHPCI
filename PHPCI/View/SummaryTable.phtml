@@ -99,8 +99,10 @@ foreach($projects as $project):
                     All of the last <?php print count($builds[$project->getId()]); ?> builds passed.
 
                     <?php if (!is_null($failed[$project->getId()])): ?>
-                        The last failed build was
-                        <?php print $failed[$project->getId()]->getFinished()->format('M j Y'); ?>
+                        <?php if (!is_null($failed[$project->getId()]->getFinished())): ?>
+                            The last failed build was
+                            <?php print $failed[$project->getId()]->getFinished()->format('M j Y'); ?>
+                        <?php endif; ?>
                     <?php else: ?>
                         This project has never failed to build.
                     <?php endif; ?>

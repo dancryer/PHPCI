@@ -44,9 +44,7 @@ class PluginController extends \PHPCI\Controller
 
     public function index()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $this->view->canWrite = is_writable(APPLICATION_PATH . 'composer.json');
         $this->view->required = $this->required;
@@ -72,9 +70,7 @@ class PluginController extends \PHPCI\Controller
 
     public function remove()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $json = $this->getComposerJson();
@@ -93,9 +89,7 @@ class PluginController extends \PHPCI\Controller
 
     public function install()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $version = $this->getParam('version', '*');

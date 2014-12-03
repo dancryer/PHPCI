@@ -122,9 +122,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function delete($projectId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $project = $this->projectStore->getById($projectId);
         $this->projectService->deleteProject($project);
@@ -227,9 +225,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function edit($projectId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
         $project = $this->projectStore->getById($projectId);

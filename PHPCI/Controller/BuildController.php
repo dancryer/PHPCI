@@ -70,7 +70,7 @@ class BuildController extends \PHPCI\Controller
             ),
         );
 
-        if ($_SESSION['phpci_user']->getIsAdmin()) {
+        if ($this->currentUserIsAdmin()) {
             $nav['links']['build/delete/' . $build->getId()] = 'Delete Build';
         }
 
@@ -156,9 +156,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function delete($buildId)
     {
-        if (empty($_SESSION['phpci_user']) || !$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $build = BuildFactory::getBuildById($buildId);
 

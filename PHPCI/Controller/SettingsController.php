@@ -38,6 +38,8 @@ class SettingsController extends Controller
 
     public function index()
     {
+        $this->requireAdmin();
+
         $this->layout->title = 'Settings';
         $this->view->settings = $this->settings;
 
@@ -65,6 +67,8 @@ class SettingsController extends Controller
 
     public function github()
     {
+        $this->requireAdmin();
+
         $this->settings['phpci']['github']['id'] = $this->getParam('githubid', '');
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error = $this->storeSettings();
@@ -80,6 +84,8 @@ class SettingsController extends Controller
 
     public function email()
     {
+        $this->requireAdmin();
+
         $this->settings['phpci']['email_settings'] = $this->getParams();
         $this->settings['phpci']['email_settings']['smtp_encryption'] = $this->getParam('smtp_encryption', 0);
 
@@ -96,6 +102,8 @@ class SettingsController extends Controller
 
     public function build()
     {
+        $this->requireAdmin();
+
         $this->settings['phpci']['build'] = $this->getParams();
 
         $error = $this->storeSettings();

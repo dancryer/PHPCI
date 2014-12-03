@@ -115,9 +115,7 @@ class UserController extends Controller
     */
     public function add()
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $this->layout->title = 'Add User';
 
@@ -157,9 +155,7 @@ class UserController extends Controller
     */
     public function edit($userId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
         $user = $this->userStore->getById($userId);
@@ -253,10 +249,8 @@ class UserController extends Controller
     */
     public function delete($userId)
     {
-        if (!$_SESSION['phpci_user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
-        
+        $this->requireAdmin();
+
         $user   = $this->userStore->getById($userId);
 
         if (empty($user)) {

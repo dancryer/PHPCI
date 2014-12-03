@@ -37,7 +37,7 @@ var phpspecPlugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         if (!e.queryData) {
-            $('#build-phpcs').hide();
+            $('#build-phpspec-errors').hide();
             return;
         }
 

@@ -9,6 +9,8 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
+        var created = new Date(ActiveBuild.buildData.created);
+
         return '<table class="table table-striped table-bordered">' +
             '<thead>' +
             '<tr>' +
@@ -19,7 +21,7 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
             '</thead>' +
         '<tbody>' +
             '<tr>' +
-            '<td id="created">' + ActiveBuild.buildData.created + '</td>' +
+            '<td id="created">' + created.format('mmm d yyyy, H:MM') + '</td>' +
             '<td id="started">' + ActiveBuild.buildData.started + '</td>' +
             '<td id="finished">' + ActiveBuild.buildData.finished + '</td>' +
             '</tr>' +
@@ -30,9 +32,22 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
     onUpdate: function(e) {
         var build = e.queryData;
 
-        $('#created').text(build.created);
-        $('#started').text(build.started);
-        $('#finished').text(build.finished);
+        var created = new Date(build.created);
+
+        var started = '';
+        if (build.started) {
+            var started = new Date(build.started);
+            started = started.format('mmm d yyyy, H:MM');
+        }
+
+        var finished = '';
+        if (build.finished) {
+            var finished = new Date(build.finished);
+            finished = finished.format('mmm d yyyy, H:MM');
+        }
+        $('#created').text(created.format('mmm d yyyy, H:MM'));
+        $('#started').text(started);
+        $('#finished').text(finished);
     }
 });
 

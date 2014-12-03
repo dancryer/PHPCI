@@ -49,6 +49,11 @@ class RunCommand extends Command
     protected $maxBuilds = null;
 
     /**
+     * @var bool
+     */
+    protected $isFromDaemon = false;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -90,13 +95,17 @@ class RunCommand extends Command
 
         $builds = 0;
 
-        foreach ($result['items'] as $build) {
-
+        while (count($result['items'])) {
+            $build = array_shift($result['items']);
             $build = BuildFactory::getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
-            if (in_array($build->getProjectId(), $running)) {
+            if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
                 $this->logger->addInfo('Skipping Build #'.$build->getId() . ' - Project build already in progress.');
+                $result['items'][] = $build;
+
+                // Re-run build validator:
+                $running = $this->validateRunningBuilds();
                 continue;
             }
 
@@ -133,6 +142,11 @@ class RunCommand extends Command
         $this->maxBuilds = (int)$numBuilds;
     }
 
+    public function setIsDaemon($fromDaemon)
+    {
+        $this->isFromDaemon = (bool)$fromDaemon;
+    }
+
     protected function validateRunningBuilds()
     {
         /** @var \PHPCI\Store\BuildStore $store */
@@ -152,6 +166,7 @@ class RunCommand extends Command
             if (($now - $start) > $timeout) {
                 $this->logger->addInfo('Build #'.$build->getId().' marked as failed due to timeout.');
                 $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
                 $store->save($build);
                 $this->removeBuildDirectory($build);
                 continue;

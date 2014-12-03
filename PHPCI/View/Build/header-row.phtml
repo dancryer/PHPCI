@@ -1,5 +1,5 @@
 <li>
-    <a href="#">
+    <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
         <?php if ($build->getCommitterEmail()): ?>
             <div class="pull-left">
                 <img src="https://www.gravatar.com/avatar/<?php print md5($build->getCommitterEmail()); ?>?d=mm&s=40" class="img-circle" alt="">

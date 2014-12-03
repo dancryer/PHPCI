@@ -1,6 +1,6 @@
 var timePlugin = PHPCI.UiPlugin.extend({
     id: 'build-time',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
+    css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: null,
     box: true,
 
@@ -10,18 +10,17 @@ var timePlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
         return '<table class="table table-striped table-bordered">' +
-            '<thead>' +
-            '<tr>' +
-                '<th style="width: 33.3%">Build Created</th>' +
-                '<th style="width: 33.3%">Build Started</th>' +
-                '<th style="width: 33.3%">Build Finished</th>' +
-            '</tr>' +
-            '</thead>' +
         '<tbody>' +
             '<tr>' +
-            '<td id="created">' + PHPCI.buildData.created + '</td>' +
-            '<td id="started">' + PHPCI.buildData.started + '</td>' +
-            '<td id="finished">' + PHPCI.buildData.finished + '</td>' +
+            '<th>Build Created</th>' +'<td id="created">' + PHPCI.buildData.created + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<th>Build Started</th>' + '<td id="started">' + PHPCI.buildData.started + '</td>' +
+            '</tr>' +
+
+            '<tr>' +
+            '<th>Build Finished</th>' + '<td id="finished">' + PHPCI.buildData.finished + '</td>' +
             '</tr>' +
         '</tbody>' +
         '</table>';

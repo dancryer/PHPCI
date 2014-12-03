@@ -9,7 +9,21 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        var created = new Date(ActiveBuild.buildData.created);
+        var created = '';
+        var started = '';
+        var finished = '';
+
+        if (ActiveBuild.buildData.created) {
+            created = dateFormat(ActiveBuild.buildData.created);
+        }
+
+        if (ActiveBuild.buildData.started) {
+            started = dateFormat(ActiveBuild.buildData.started);
+        }
+
+        if (ActiveBuild.buildData.finished) {
+            finished = dateFormat(ActiveBuild.buildData.finished);
+        }
 
         return '<table class="table table-striped table-bordered">' +
             '<thead>' +
@@ -21,9 +35,9 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
             '</thead>' +
         '<tbody>' +
             '<tr>' +
-            '<td id="created">' + created.format('mmm d yyyy, H:MM') + '</td>' +
-            '<td id="started">' + ActiveBuild.buildData.started + '</td>' +
-            '<td id="finished">' + ActiveBuild.buildData.finished + '</td>' +
+            '<td id="created">' + created + '</td>' +
+            '<td id="started">' + started + '</td>' +
+            '<td id="finished">' + finished + '</td>' +
             '</tr>' +
         '</tbody>' +
         '</table>';
@@ -32,20 +46,23 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
     onUpdate: function(e) {
         var build = e.queryData;
 
-        var created = new Date(build.created);
-
+        var created = '';
         var started = '';
-        if (build.started) {
-            var started = new Date(build.started);
-            started = started.format('mmm d yyyy, H:MM');
+        var finished = '';
+
+        if (build.created) {
+            created = dateFormat(build.created);
         }
 
-        var finished = '';
-        if (build.finished) {
-            var finished = new Date(build.finished);
-            finished = finished.format('mmm d yyyy, H:MM');
+        if (build.started) {
+            started = dateFormat(build.started);
         }
-        $('#created').text(created.format('mmm d yyyy, H:MM'));
+
+        if (build.finished) {
+            finished = dateFormat(build.finished);
+        }
+
+        $('#created').text(created);
         $('#started').text(started);
         $('#finished').text(finished);
     }

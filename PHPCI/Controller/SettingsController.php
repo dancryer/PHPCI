@@ -138,10 +138,15 @@ class SettingsController extends Controller
         die;
     }
 
+    /**
+     * Convert config to yaml and store to file.
+     *
+     * @return mixed
+     */
     protected function storeSettings()
     {
         $dumper = new Dumper();
-        $yaml = $dumper->dump($this->settings);
+        $yaml = $dumper->dump($this->settings, 4);
         file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
         if (error_get_last()) {
             $error_get_last = error_get_last();

@@ -1,5 +1,10 @@
 <div class="row">
-    <div class="col-lg-5 col-md-5 col-sm-5">
+
+    <div class="col-sm-5">
+        <?php print $summary; ?>
+    </div>
+
+    <div class="col-sm-7 pull-left">
         <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title">Latest Builds</h3>
@@ -11,25 +16,6 @@
 
                     <?php
                     foreach ($builds as $build):
-
-                        switch ($build->getProject()->getType()) {
-                            case 'github':
-                                $icon = 'github';
-                                break;
-
-                            case 'bitbucket':
-                                $icon = 'bitbucket';
-                                break;
-
-                            case 'git':
-                            case 'gitlab':
-                                $icon = 'git';
-                                break;
-
-                            default:
-                                $icon = 'cog';
-                                break;
-                        }
 
                         switch ($build->getStatus()) {
                             case \PHPCI\Model\Build::STATUS_NEW:
@@ -69,12 +55,16 @@
                         <!-- /.timeline-label -->
                         <!-- timeline item -->
                         <li>
-                            <i class="fa fa-<?php print $icon; ?> bg-<?php print $color; ?>"></i>
+                            <i class="fa fa-<?php print $build->getProject()->getIcon(); ?> bg-<?php print $color; ?>"></i>
                             <div class="timeline-item">
                                 <span class="time"><i class="fa fa-clock-o"></i> <?php print $updated->format('g:ia'); ?></span>
                                 <h3 class="timeline-header">
                                     <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
                                         <?php print $build->getProject()->getTitle(); ?>
+                                    </a>
+                                    -
+                                    <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
+                                        Build #<?php print $build->getId(); ?>
                                     </a>
                                 </h3>
 
@@ -95,21 +85,4 @@
         </div>
     </div>
 
-    <div class="col-lg-7 col-md-7 col-sm-7">
-        <div class="box box-default">
-            <div class="box-header"><h3 class="box-title">Project Overview</h3></div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Health</th>
-                    <th style="width: 100px"></th>
-                </tr>
-                </thead>
-                <tbody id="project-overview">
-                <?php print $summary; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>

@@ -70,13 +70,24 @@ class HomeController extends \PHPCI\Controller
     protected function getSummaryHtml($projects)
     {
         $summaryBuilds = array();
+        $successes = array();
+        $failures = array();
+
         foreach ($projects['items'] as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+
+            $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
+            $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
+
+            $successes[$project->getId()] = $success;
+            $failures[$project->getId()] = $failure;
         }
 
         $summaryView = new b8\View('SummaryTable');
         $summaryView->projects = $projects['items'];
         $summaryView->builds = $summaryBuilds;
+        $summaryView->successful = $successes;
+        $summaryView->failed = $failures;
 
         return $summaryView->render();
     }

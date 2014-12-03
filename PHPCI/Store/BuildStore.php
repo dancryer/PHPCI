@@ -53,6 +53,21 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
+    {
+        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
+        $stmt->bindValue(':status', $status);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return new Build($res);
+        } else {
+            return array();
+        }
+    }
+
     public function getByProjectAndCommit($projectId, $commitId)
     {
         $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id AND `commit_id` = :commit_id';

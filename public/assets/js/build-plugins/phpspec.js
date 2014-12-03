@@ -28,21 +28,21 @@ var phpspecPlugin = PHPCI.UiPlugin.extend({
         return $('<table class="table table-striped" id="phpspec-data">' +
             '<thead>' +
             '<tr>' +
-			'   <th>Suite</th>' +
-			'   <th>Test</th>' +
-			'   <th>Result</th>' +
+            '   <th>Suite</th>' +
+            '   <th>Test</th>' +
+            '   <th>Result</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpcs').hide();
             return;
         }
 
         this.rendered = true;
         this.lastData = e.queryData;
-		console.log(this.lastData);
 
         var tests = this.lastData[0].meta_value;
         var tbody = $('#phpspec-data tbody');

@@ -71,6 +71,9 @@ var phpspecPlugin = PHPCI.UiPlugin.extend({
 				tbody.append(row);
 			}
         }
+        
+        // show plugin once preparation of grid is done
+        $('#build-phpspec-errors').show();
     }
 });
 

@@ -80,7 +80,9 @@ foreach($projects as $project):
     <div class="small-box bg-<?php print $subcls; ?>">
         <div class="inner">
             <h3>
-                <?php print $project->getTitle(); ?>
+                <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
+                    <?php print $project->getTitle(); ?>
+                </a>
             </h3>
             <p>
                 <?php if ($failures > 0): ?>

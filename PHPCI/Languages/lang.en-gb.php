@@ -48,8 +48,9 @@ $strings = array(
 
     // Timeline:
     'latest_builds' => 'Latest Builds',
-    'created' => 'Created',
-    'started' => 'Started',
+    'pending' => 'Pending',
+    'running' => 'Running',
+    'success' => 'Success',
     'successful' => 'Successful',
     'failed' => 'Failed',
 
@@ -87,4 +88,32 @@ $strings = array(
     'error_github' => 'Repository name must be in the format "owner/repo"',
     'error_bitbucket' => 'Repository name must be in the format "owner/repo"',
     'error_path' => 'The path you specified does not exist.',
+
+    // View Project:
+    'all_branches' => 'All Branches',
+    'builds' => 'Builds',
+    'id' => 'ID',
+    'project' => 'Project',
+    'commit' => 'Commit',
+    'branch' => 'Branch',
+    'status' => 'Status',
+    'prev_link' => '&laquo; Prev',
+    'next_link' => 'Next &raquo;',
+    'public_key' => 'Public Key',
+    'delete_build' => 'Delete Build',
+
+    'webhooks' => 'Webhooks',
+    'webhooks_help_github' => 'To automatically build this project when new commits are pushed, add the URL below
+                                as a new "Webhook" in the <a href="https://github.com/%s/settings/hooks">Webhooks
+                                and Services</a>  section of your Github repository.',
+
+    'webhooks_help_gitlab' => 'To automatically build this project when new commits are pushed, add the URL below
+                                as a "WebHook URL" in the Web Hooks section of your Gitlab repository.',
+
+    'webhooks_help_bitbucket' => 'To automatically build this project when new commits are pushed, add the URL below
+                                as a "POST" service in the
+                                <a href="https://bitbucket.org/%s/admin/services">
+                                Services</a> section of your Bitbucket repository.',
+
+
 );

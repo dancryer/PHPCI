@@ -21,13 +21,13 @@
                         switch ($build->getStatus()) {
                             case \PHPCI\Model\Build::STATUS_NEW:
                                 $updated = $build->getCreated();
-                                $label = Lang::get('created');
+                                $label = Lang::get('pending');
                                 $color = 'blue';
                                 break;
 
                             case \PHPCI\Model\Build::STATUS_RUNNING:
                                 $updated = $build->getStarted();
-                                $label = Lang::get('started');
+                                $label = Lang::get('running');
                                 $color = 'yellow';
                                 break;
 
@@ -81,7 +81,7 @@
                                             $build->getCommitterEmail()
                                         );
                                     } else {
-                                        print 'Manual Build';
+                                        print Lang::get('manual_build');
                                     }
                                     ?>
                                     - <?php print $build->getCommitMessage(); ?>

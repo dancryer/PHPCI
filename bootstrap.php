@@ -66,3 +66,5 @@ if (file_exists($configFile)) {
 }
 
 require_once(dirname(__FILE__) . '/vars.php');
+
+\PHPCI\Helper\Lang::init($config);

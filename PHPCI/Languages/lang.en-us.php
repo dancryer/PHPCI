@@ -7,8 +7,4 @@
  * @link         https://www.phptesting.org/
  */
 
-$strings = array(
-    'toggle_navigation' => 'Toggle Navigation',
-    'n_builds_pending' => '%d builds pending',
-    'n_builds_running' => '%d builds running',
-);
+require_once(dirname(__FILE__) . '/lang.en-gb.php');

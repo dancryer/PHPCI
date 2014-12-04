@@ -51,7 +51,7 @@ var PHPCI = {
             $('.phpci-pending').hide();
         } else {
             $('.phpci-pending').show();
-            $('.phpci-pending-count').text(data.pending.count);
+            $('.phpci-pending .header').text(Lang.get('n_builds_pending', data.pending.count));
 
             $.each(data.pending.items, function (idx, build) {
                 $('.phpci-pending-list').append(build.header_row);
@@ -62,7 +62,7 @@ var PHPCI = {
             $('.phpci-running').hide();
         } else {
             $('.phpci-running').show();
-            $('.phpci-running-count').text(data.running.count);
+            $('.phpci-running .header').text(Lang.get('n_builds_running', data.running.count));
 
             $.each(data.running.items, function (idx, build) {
                 $('.phpci-running-list').append(build.header_row);
@@ -472,3 +472,18 @@ function dateFormat(date)
 
     return rtn;
 }
+
+
+var Lang = {
+    get: function () {
+        var args = Array.prototype.slice.call(arguments);;
+        var string = args.shift();
+
+        if (PHPCI_STRINGS[string]) {
+            args.unshift(PHPCI_STRINGS[string]);
+            return sprintf.apply(sprintf[0], args);
+        }
+
+        return '';
+    }
+};

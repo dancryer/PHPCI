@@ -29,6 +29,11 @@ class Lang
         return '%%MISSING STRING: ' . $string . '%%';
     }
 
+    public static function out()
+    {
+        print call_user_func_array(array('PHPCI\Helper\Lang', 'get'), func_get_args());
+    }
+
     public static function getStrings()
     {
         return self::$strings;
@@ -36,13 +41,32 @@ class Lang
 
     public static function init(Config $config)
     {
-        self::$language = $config->get('phpci.default_language', 'en');
-        self::$strings = self::loadLanguage();
+        // Try user language:
+        $matches = array();
 
-        if (is_null(self::$strings)) {
-            self::$language = 'en';
+        if (preg_match('/([a-zA-Z]{2}\-[a-zA-Z]{2})/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) {
+            self::$language = strtolower($matches[1]);
             self::$strings = self::loadLanguage();
+
+            if (!is_null(self::$strings)) {
+                return;
+            }
         }
+
+        // Try the installation default language:
+        self::$language = $config->get('phpci.default_language', null);
+
+        if (!is_null(self::$language)) {
+            self::$strings = self::loadLanguage();
+
+            if (!is_null(self::$strings)) {
+                return;
+            }
+        }
+
+        // Fall back to en-GB:
+        self::$language = 'en-gb';
+        self::$strings = self::loadLanguage();
     }
 
     protected static function loadLanguage()

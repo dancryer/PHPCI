@@ -17,6 +17,7 @@ use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
+use PHPCI\Helper\Lang;
 use PHPCI\Helper\SshKey;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
@@ -68,7 +69,7 @@ class ProjectController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
         $per_page = 10;
@@ -77,7 +78,8 @@ class ProjectController extends \PHPCI\Controller
         $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
         if ($page > $pages) {
-            throw new NotFoundException('Page with number: ' . $page . ' not found');
+            header('Location: '.PHPCI_URL.'project/view/'.$projectId);
+            die;
         }
 
         $this->view->builds   = $builds[0];
@@ -107,7 +109,7 @@ class ProjectController extends \PHPCI\Controller
         }
 
         if (empty($project)) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
         $email = $_SESSION['phpci_user']->getEmail();
@@ -174,7 +176,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
-        $this->layout->title = 'Add Project';
+        $this->layout->title = Lang::get('add_project');
         $this->requireAdmin();
 
         $method = $this->request->getMethod();
@@ -231,10 +233,11 @@ class ProjectController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
-        $this->config->set('page_title', 'Edit: ' . $project->getTitle());
+        $this->layout->title = $project->getTitle();
+        $this->layout->subtitle = Lang::get('edit_project');
 
         $values = $project->getDataArray();
         $values['key'] = $values['ssh_private_key'];
@@ -262,7 +265,7 @@ class ProjectController extends \PHPCI\Controller
             return $view->render();
         }
 
-        $title = $this->getParam('title', 'New Project');
+        $title = $this->getParam('title', Lang::get('new_project'));
         $reference = $this->getParam('reference', null);
         $type = $this->getParam('type', null);
 
@@ -292,16 +295,16 @@ class ProjectController extends \PHPCI\Controller
         $form->addField(new Form\Element\Hidden('pubkey'));
 
         $options = array(
-            'choose' => 'Select repository type...',
-            'github' => 'Github',
-            'bitbucket' => 'Bitbucket',
-            'gitlab' => 'Gitlab',
-            'remote' => 'Remote URL',
-            'local' => 'Local Path',
-            'hg'    => 'Mercurial',
+            'choose' => Lang::get('select_repository_type'),
+            'github' => Lang::get('github'),
+            'bitbucket' => Lang::get('bitbucket'),
+            'gitlab' => Lang::get('gitlab'),
+            'remote' => Lang::get('remote'),
+            'local' => Lang::get('local'),
+            'hg'    => Lang::get('hg'),
             );
 
-        $field = Form\Element\Select::create('type', 'Where is your project hosted?', true);
+        $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
         $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
         $field->setOptions($options);
         $field->setClass('form-control')->setContainerClass('form-group');
@@ -310,45 +313,42 @@ class ProjectController extends \PHPCI\Controller
         $container = new Form\ControlGroup('github-container');
         $container->setClass('github-container');
 
-        $field = Form\Element\Select::create('github', 'Choose a Github repository:', false);
+        $field = Form\Element\Select::create('github', Lang::get('choose_github'), false);
         $field->setClass('form-control')->setContainerClass('form-group');
         $container->addField($field);
         $form->addField($container);
 
-        $field = Form\Element\Text::create('reference', 'Repository Name / URL (Remote) or Path (Local)', true);
+        $field = Form\Element\Text::create('reference', Lang::get('repo_name'), true);
         $field->setValidator($this->getReferenceValidator($values));
         $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = Form\Element\Text::create('title', 'Project Title', true);
+        $field = Form\Element\Text::create('title', Lang::get('project_title'), true);
         $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
 
-        $title = 'Private key to use to access repository (leave blank for local and/or anonymous remotes)';
-        $field = Form\Element\TextArea::create('key', $title, false);
-        $field->setClass('form-control')->setContainerClass('form-group');
-        $field->setRows(6);
-        $form->addField($field);
-
-        $label = 'PHPCI build config for this project (if you cannot add a phpci.yml file in the project repository)';
-        $field = Form\Element\TextArea::create('build_config', $label, false);
+        $field = Form\Element\TextArea::create('key', Lang::get('project_private_key'), false);
         $field->setClass('form-control')->setContainerClass('form-group');
         $field->setRows(6);
         $form->addField($field);
 
-        $field = Form\Element\Text::create('branch', 'Default branch name', true);
+        $field = Form\Element\TextArea::create('build_config', Lang::get('build_config'), false);
+        $field->setClass('form-control')->setContainerClass('form-group');
+        $field->setRows(6);
+        $form->addField($field);
+
+        $field = Form\Element\Text::create('branch', Lang::get('default_branch'), true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 
-        $label = 'Enable public status page and image for this project?';
-        $field = Form\Element\Checkbox::create('allow_public_status', $label, false);
+        $field = Form\Element\Checkbox::create('allow_public_status', Lang::get('allow_public_status'), false);
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
         $field->setValue(0);
         $form->addField($field);
 
         $field = new Form\Element\Submit();
-        $field->setValue('Save Project');
+        $field->setValue(Lang::get('save_project'));
         $field->setContainerClass('form-group');
         $field->setClass('btn-success');
         $form->addField($field);
@@ -374,30 +374,30 @@ class ProjectController extends \PHPCI\Controller
             $validators = array(
                 'hg' => array(
                     'regex' => '/^(https?):\/\//',
-                    'message' => 'Mercurial repository URL must be start with http:// or https://'
+                    'message' => Lang::get('error_mercurial')
                 ),
                 'remote' => array(
                     'regex' => '/^(git|https?):\/\//',
-                    'message' => 'Repository URL must be start with git://, http:// or https://'
+                    'message' => Lang::get('error_remote')
                 ),
                 'gitlab' => array(
                     'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
-                    'message' => 'GitLab Repository name must be in the format "user@domain.tld:owner/repo.git"'
+                    'message' => Lang::get('error_gitlab')
                 ),
                 'github' => array(
                     'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
-                    'message' => 'Repository name must be in the format "owner/repo"'
+                    'message' => Lang::get('error_github')
                 ),
                 'bitbucket' => array(
                     'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
-                    'message' => 'Repository name must be in the format "owner/repo"'
+                    'message' => Lang::get('error_bitbucket')
                 ),
             );
 
             if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
                 throw new \Exception($validators[$type]['message']);
             } elseif ($type == 'local' && !is_dir($val)) {
-                throw new \Exception('The path you specified does not exist.');
+                throw new \Exception(Lang::get('error_path'));
             }
 
             return true;

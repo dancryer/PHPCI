@@ -42,14 +42,16 @@ class Lang
     public static function init(Config $config)
     {
         // Try user language:
-        $matches = array();
+        if (isset($_SERVER) && array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
+            $matches = array();
 
-        if (preg_match('/([a-zA-Z]{2}\-[a-zA-Z]{2})/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) {
-            self::$language = strtolower($matches[1]);
-            self::$strings = self::loadLanguage();
+            if (preg_match('/([a-zA-Z]{2}\-[a-zA-Z]{2})/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) {
+                self::$language = strtolower($matches[1]);
+                self::$strings = self::loadLanguage();
 
-            if (!is_null(self::$strings)) {
-                return;
+                if (!is_null(self::$strings)) {
+                    return;
+                }
             }
         }
 

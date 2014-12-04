@@ -14,6 +14,9 @@ $strings = array(
     'n_builds_running' => '%d builds running',
     'edit_profile' => 'Edit Profile',
     'sign_out' => 'Sign Out',
+    'branch_x' => 'Branch: %s',
+    'created_x' => 'Created: %s',
+    'started_x' => 'Started: %s',
 
     // Sidebar
     'hello_name' => 'Hello, %s',
@@ -49,4 +52,39 @@ $strings = array(
     'started' => 'Started',
     'successful' => 'Successful',
     'failed' => 'Failed',
+
+    // Add/Edit Project:
+    'new_project' => 'New Project',
+    'project_x_not_found' => 'Project with ID %d does not exist.',
+    'project_details' => 'Project Details',
+    'public_key_help' => 'To make it easier to get started, we\'ve generated an SSH key pair for you to use
+                            for this project. To use it, just add the following public key to the "deploy keys" section
+                            of your chosen source code hosting platform.',
+    'select_repository_type' => 'Select repository type...',
+    'github' => 'Github',
+    'bitbucket' => 'Bitbucket',
+    'gitlab' => 'Gitlab',
+    'remote' => 'Remote URL',
+    'local' => 'Local Path',
+    'hg'    => 'Mercurial',
+
+    'where_hosted' => 'Where is your project hosted?',
+    'choose_github' => 'Choose a Github repository:',
+
+    'repo_name' => 'Repository Name / URL (Remote) or Path (Local)',
+    'project_title' => 'Project Title',
+    'project_private_key' => 'Private key to use to access repository
+                                (leave blank for local and/or anonymous remotes)',
+    'build_config' => 'PHPCI build config for this project
+                                (if you cannot add a phpci.yml file in the project repository)',
+    'default_branch' => 'Default branch name',
+    'allow_public_status' => 'Enable public status page and image for this project?',
+    'save_project' => 'Save Project',
+
+    'error_mercurial' => 'Mercurial repository URL must be start with http:// or https://',
+    'error_remote' => 'Repository URL must be start with git://, http:// or https://',
+    'error_gitlab' => 'GitLab Repository name must be in the format "user@domain.tld:owner/repo.git"',
+    'error_github' => 'Repository name must be in the format "owner/repo"',
+    'error_bitbucket' => 'Repository name must be in the format "owner/repo"',
+    'error_path' => 'The path you specified does not exist.',
 );

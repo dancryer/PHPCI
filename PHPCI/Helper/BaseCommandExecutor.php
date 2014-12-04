@@ -11,6 +11,7 @@ namespace PHPCI\Helper;
 
 use \PHPCI\Logging\BuildLogger;
 use Psr\Log\LogLevel;
+use PHPCI\Helper\Lang;
 
 abstract class BaseCommandExecutor implements CommandExecutor
 {
@@ -154,29 +155,30 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         foreach ($binary as $bin) {
-            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
+            $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-                $this->logger->log("Found in ".$composerBin.": " . $bin, LogLevel::DEBUG);
+
+                $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;
             }
 
             if (is_file($this->rootDir . $bin)) {
-                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
                 $binaryPath = $this->rootDir . $bin;
                 break;
             }
 
             if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
-                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', 'vendor/bin', $bin), LogLevel::DEBUG);
                 $binaryPath = $this->rootDir . 'vendor/bin/' . $bin;
                 break;
             }
 
             $findCmdResult = $this->findGlobalBinary($bin);
             if (is_file($findCmdResult)) {
-                $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', '', $bin), LogLevel::DEBUG);
                 $binaryPath = $findCmdResult;
                 break;
             }

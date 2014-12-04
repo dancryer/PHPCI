@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -73,7 +74,7 @@ class Pdepend implements \PHPCI\Plugin
         $pdepend = $this->phpci->findBinary('pdepend');
 
         if (!$pdepend) {
-            $this->phpci->logFailure('Could not find pdepend.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'pdepend'));
             return false;
         }
 
@@ -110,10 +111,7 @@ class Pdepend implements \PHPCI\Plugin
                     $config['url'] . '/build/pdepend/' . $this->pyramid
                 )
             );
-        } else {
-            $this->phpci->logFailure(sprintf("The function '%s' failed"));
         }
-
 
         return $success;
     }

@@ -67,7 +67,7 @@ class Atoum implements \PHPCI\Plugin
         }
         if (count($output) == 0) {
             $status = false;
-            $this->phpci->log("No test have been performed!");
+            $this->phpci->log(Lang::get('no_tests_performed'));
         }
         
         return $status;

@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use b8\View;
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -80,8 +81,8 @@ class Email implements \PHPCI\Plugin
         if ($this->build->isSuccessful()) {
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
-                sprintf($subjectTemplate, $projectName, "Passing Build"),
-                sprintf("Log Output: <br><pre>%s</pre>", $logText)
+                sprintf($subjectTemplate, $projectName, Lang::get('passing_build')),
+                sprintf(Lang::get('log_output')."<br><pre>%s</pre>", $logText)
             );
         } else {
             $view = new View('Email/failed');
@@ -92,14 +93,15 @@ class Email implements \PHPCI\Plugin
 
             $sendFailures = $this->sendSeparateEmails(
                 $addresses,
-                sprintf($subjectTemplate, $projectName, "Failing Build"),
+                sprintf($subjectTemplate, $projectName, Lang::get('failing_build')),
                 $emailHtml
             );
         }
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - count($sendFailures))));
-        $this->phpci->log(sprintf("%d emails failed to send", count($sendFailures)));
+
+        $this->phpci->log(Lang::get('n_emails_sent', (count($addresses) - count($sendFailures))));
+        $this->phpci->log(Lang::get('n_emails_failed', count($sendFailures)));
 
         return (count($sendFailures) == 0);
     }

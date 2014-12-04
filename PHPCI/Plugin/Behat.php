@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -52,7 +53,7 @@ class Behat implements \PHPCI\Plugin
         $behat = $this->executable;
 
         if (!$behat) {
-            $this->phpci->logFailure('Could not find behat.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'behat'));
             return false;
         }
 

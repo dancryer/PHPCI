@@ -139,7 +139,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $phpcs = $this->phpci->findBinary('phpcs');
 
         if (!$phpcs) {
-            $this->phpci->logFailure('Could not find phpcs.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpcs'));
             return false;
         }
 
@@ -204,7 +204,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if (!is_array($data)) {
             $this->phpci->log($output);
-            throw new \Exception('Could not process PHPCS report JSON.');
+            throw new \Exception(PHPCI\Helper\Lang::get('could_not_process_report'));
         }
 
         $errors = $data['totals']['errors'];

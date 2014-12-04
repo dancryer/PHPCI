@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -89,7 +90,7 @@ class Git implements \PHPCI\Plugin
     protected function runTagAction($options)
     {
         $tagName = date('Ymd-His');
-        $message = 'Tag created by PHPCI: ' . date('Y-m-d H:i:s');
+        $message = Lang::get('tag_created', date('Y-m-d H:i:s'));
 
         if (array_key_exists('name', $options)) {
             $tagName = $this->phpci->interpolate($options['name']);

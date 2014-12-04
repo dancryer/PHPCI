@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -44,7 +45,7 @@ class Campfire implements \PHPCI\Plugin
             $this->authToken = $campfire['authToken'];
             $this->roomId = $campfire['roomId'];
         } else {
-            throw new \Exception("No connection parameters given for Campfire plugin");
+            throw new \Exception(Lang::get('no_campfire_settings'));
         }
 
     }

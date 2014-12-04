@@ -104,7 +104,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $phpmdBinaryPath = $this->phpci->findBinary('phpmd');
 
         if (!$phpmdBinaryPath) {
-            $this->phpci->logFailure('Could not find phpmd.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpmd'));
             return false;
         }
 

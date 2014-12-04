@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use PHPCI\Helper\BuildInterpolator;
+use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
@@ -135,7 +136,7 @@ class Builder implements LoggerAwareInterface
     public function setConfigArray($config)
     {
         if (is_null($config) || !is_array($config)) {
-            throw new \Exception('This project does not contain a phpci.yml file, or it is empty.');
+            throw new \Exception(Lang::get('missing_phpci_yml'));
         }
 
         $this->config = $config;
@@ -209,14 +210,14 @@ class Builder implements LoggerAwareInterface
 
             if ($success) {
                 $this->pluginExecutor->executePlugins($this->config, 'success');
-                $this->buildLogger->logSuccess('BUILD SUCCESSFUL!');
+                $this->buildLogger->logSuccess(Lang::get('build_success'));
             } else {
                 $this->pluginExecutor->executePlugins($this->config, 'failure');
-                $this->buildLogger->logFailure("BUILD FAILURE");
+                $this->buildLogger->logFailure(Lang::get('build_failed'));
             }
 
             // Clean up:
-            $this->buildLogger->log('Removing build.');
+            $this->buildLogger->log(Lang::get('removing_build'));
 
             $cmd = 'rm -Rf "%s"';
             if (IS_WIN) {
@@ -225,7 +226,7 @@ class Builder implements LoggerAwareInterface
             $this->executeCommand($cmd, $this->buildPath);
         } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
-            $this->buildLogger->logFailure('Exception: ' . $ex->getMessage());
+            $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
         }
 
 
@@ -293,7 +294,7 @@ class Builder implements LoggerAwareInterface
 
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
-            throw new \Exception('Could not create a working copy.');
+            throw new \Exception(Lang::get('could_not_create_working'));
         }
 
         // Does the project's phpci.yml request verbose mode?
@@ -306,7 +307,7 @@ class Builder implements LoggerAwareInterface
             $this->ignore = $this->config['build_settings']['ignore'];
         }
 
-        $this->buildLogger->logSuccess('Working copy created: ' . $this->buildPath);
+        $this->buildLogger->logSuccess(Lang::get('working_copy_created', $this->buildPath));
         return true;
     }
 

@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -48,7 +49,7 @@ class Env implements \PHPCI\Plugin
             
             if (!putenv($this->phpci->interpolate($env_var))) {
                 $success = false;
-                $this->phpci->logFailure("Unable to set environment variable");
+                $this->phpci->logFailure(Lang::get('unable_to_set_env'));
             }
         }
         return $success;

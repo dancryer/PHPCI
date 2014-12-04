@@ -10,7 +10,6 @@
 namespace PHPCI\Helper;
 
 use b8\Config;
-use PHPCI\Model\User;
 
 class Lang
 {

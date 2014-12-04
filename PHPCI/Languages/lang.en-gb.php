@@ -8,6 +8,38 @@
  */
 
 $strings = array(
+    // Log in:
+    'log_in_to_phpci' => 'Log in to PHPCI',
+    'login_error' => 'Incorrect email address or password',
+    'forgotten_password_link' => 'Forgotten your password?',
+    'reset_emailed' => 'We\'ve emailed you a link to reset your password.',
+    'reset_header' => '<strong>Don\'t worry!</strong><br>Just enter your email address below and we\'ll email
+                            you a link to reset your password.',
+    'reset_email_address' => 'Enter your email address:',
+    'reset_send_email' => 'Email password reset',
+    'reset_enter_password' => 'Please enter a new password',
+    'reset_new_password' => 'New password:',
+    'reset_change_password' => 'Change password',
+    'reset_no_user_exists' => 'No user exists with that email address, please try again.',
+    'reset_email_body' => 'Hi %s,
+
+You have received this email because you, or someone else, has requested a password reset for PHPCI.
+
+If this was you, please click the following link to reset your password: %ssession/reset-password/%d/%s
+
+Otherwise, please ignore this email and no action will be taken.
+
+Thank you,
+
+PHPCI',
+
+    'reset_email_title' => 'PHPCI Password Reset for %s',
+    'reset_invalid' => 'Invalid password reset request.',
+    'email_address' => 'Email Address',
+    'password' => 'Password',
+    'log_in' => 'Log in',
+
+
     // Top Nav
     'toggle_navigation' => 'Toggle Navigation',
     'n_builds_pending' => '%d builds pending',

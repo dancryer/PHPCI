@@ -198,4 +198,62 @@ PHPCI',
     'build_created' => 'Build Created',
     'build_started' => 'Build Started',
     'build_finished' => 'Build Finished',
+
+    // Users
+    'name' => 'Name',
+    'password_change' => 'Password (leave blank if you don\'t want to change)',
+    'save' => 'Save &raquo;',
+    'update_your_details' => 'Update your details',
+    'your_details_updated' => 'Your details have been updated.',
+    'add_user' => 'Add User',
+    'is_admin' => 'Is Admin?',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'edit' => 'Edit',
+    'edit_user' => 'Edit User',
+    'delete_user' => 'Delete User',
+    'user_n_not_found' => 'User with ID %d does not exist.',
+    'is_user_admin' => 'Is this user an administrator?',
+    'save_user' => 'Save User',
+
+    // Settings:
+    'settings_saved' => 'Your settings have been saved.',
+    'settings_check_perms' => 'Your settings could not be saved, check the permissions of your config.yml file.',
+    'settings_cannot_write' => 'PHPCI cannot write to your config.yml file, settings may not be saved properly
+                                until this is rectified.',
+    'settings_github_linked' => 'Your Github account has been linked.',
+    'settings_github_not_linked' => 'Your Github account could not be linked.',
+    'build_settings' => 'Build Settings',
+    'github_application' => 'Github Application',
+    'github_sign_in' => 'Before you can start using Github, you need to <a href="%s">sign in</a> and grant
+                            PHPCI access to your account.',
+    'github_phpci_linked' => 'PHPCI is successfully linked to Github account.',
+    'github_where_to_find' => 'Where to find these...',
+    'github_where_help' => 'If you own the application you would like to use, you can find this information within your
+                            <a href="https://github.com/settings/applications">applications</a> settings area.',
+
+    'email_settings' => 'Email Settings',
+    'email_settings_help' => 'Before PHPCI can send build status emails,
+                                you need to configure your SMTP settings below.',
+
+    'application_id' => 'Application ID',
+    'application_secret' => 'Application Secret',
+
+    'smtp_server' => 'SMTP Server',
+    'smtp_port' => 'SMTP Port',
+    'smtp_username' => 'SMTP Username',
+    'smtp_password' => 'SMTP Password',
+    'from_email_address' => 'From Email Address',
+    'default_notification_address' => 'Default Notification Email Address',
+    'use_smtp_encryption' => 'Use SMTP Encryption?',
+    'none' => 'None',
+    'ssl' => 'SSL',
+    'tls' => 'TLS',
+
+    'failed_after' => 'Consider a build failed after',
+    '5_mins' => '5 Minutes',
+    '15_mins' => '15 Minutes',
+    '30_mins' => '30 Minutes',
+    '1_hour' => '1 Hour',
+    '3_hours' => '3 Hours',
 );

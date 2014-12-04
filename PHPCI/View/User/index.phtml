@@ -1,6 +1,7 @@
+<?php use PHPCI\Helper\Lang; ?>
 <div class="clearfix"  style="margin-bottom: 20px;">
     <div class="pull-right btn-group">
-        <a class="btn btn-primary" href="<?php print PHPCI_URL; ?>user/add">Add User</a>
+        <a class="btn btn-primary" href="<?php print PHPCI_URL; ?>user/add"><?php Lang::out('add_user'); ?></a>
     </div>
 </div>
 
@@ -11,9 +12,9 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Email Address</th>
-                        <th>Name</th>
-                        <th>Administrator</th>
+                        <th><?php Lang::out('email_address'); ?></th>
+                        <th><?php Lang::out('name'); ?></th>
+                        <th><?php Lang::out('is_admin'); ?></th>
                         <th style="width: 100px"></th>
                     </tr>
                     </thead>
@@ -24,12 +25,12 @@
                         {
                             case 0:
                                 $cls = '';
-                                $status = 'No';
+                                $status = Lang::get('no');
                                 break;
 
                             case 1:
                                 $cls = 'warning';
-                                $status = 'Yes';
+                                $status = Lang::get('yes');
                                 break;
                         }
                         ?>
@@ -40,12 +41,12 @@
                             <td>
                                 <?php if($this->User()->getIsAdmin()): ?>
                                     <div class="btn-group">
-                                        <a class="btn btn-default btn-small" href="<?php echo PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>">Edit</a>
+                                        <a class="btn btn-default btn-small" href="<?php echo PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php Lang::out('edit'); ?></a>
                                         <button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="<?php echo PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>" class="phpci-app-delete-user">Delete User</a></li>
+                                            <li><a href="<?php echo PHPCI_URL ?>user/delete/<?php print $user->getId(); ?>" class="phpci-app-delete-user"><?php Lang::out('delete_user'); ?></a></li>
                                         </ul>
                                     </div>
                                 <?php endif; ?>

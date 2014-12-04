@@ -115,5 +115,55 @@ $strings = array(
                                 <a href="https://bitbucket.org/%s/admin/services">
                                 Services</a> section of your Bitbucket repository.',
 
+    // View Build
+    'build_x_not_found' => 'Build with ID %d does not exist.',
+    'build_n' => 'Build %d',
+    'rebuild_now' => 'Rebuild Now',
 
+
+    'committed_by_x' => 'Committed by %s',
+    'commit_id_x' => 'Commit: %s',
+
+    'chart_display' => 'This chart will display once the build has completed.',
+
+    'build' => 'Build',
+    'lines' => 'Lines',
+    'comment_lines' => 'Comment Lines',
+    'noncomment_lines' => 'Non-Comment Lines',
+    'logical_lines' => 'Logical Lines',
+    'lines_of_code' => 'Lines of Code',
+    'build_log' => 'Build Log',
+    'quality_trend' => 'Quality Trend',
+    'phpmd_warnings' => 'PHPMD Warnings',
+    'phpcs_warnings' => 'PHPCS Warnings',
+    'phpcs_errors' => 'PHPCS Errors',
+    'phplint_errors' => 'Lint Errors',
+    'phpunit_errors' => 'PHPUnit Errors',
+    'phpdoccheck_warnings' => 'Missing Docblocks',
+    'issues' => 'Issues',
+
+    'phpcpd' => 'PHP Copy/Paste Detector',
+    'phpcs' => 'PHP Code Sniffer',
+    'phpdoccheck' => 'Missing Docblocks',
+    'phpmd' => 'PHP Mess Detector',
+    'phpspec' => 'PHP Spec',
+    'phpunit' => 'PHP Unit',
+
+    'file' => 'File',
+    'line' => 'Line',
+    'class' => 'Class',
+    'method' => 'Method',
+    'message' => 'Message',
+    'start' => 'Start',
+    'end' => 'End',
+    'from' => 'From',
+    'to' => 'To',
+    'suite' => 'Suite',
+    'test' => 'Test',
+    'result' => 'Result',
+    'ok' => 'OK',
+    'took_n_seconds' => 'Took %d seconds',
+    'build_created' => 'Build Created',
+    'build_started' => 'Build Started',
+    'build_finished' => 'Build Finished',
 );

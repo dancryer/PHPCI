@@ -9,4 +9,6 @@
 
 require_once(dirname(__FILE__) . '/lang.en-gb.php');
 
-if (!isset($strings)) $strings = array('test' => 'test');
+if (!isset($strings)) {
+    $strings = array('test' => 'test');
+}

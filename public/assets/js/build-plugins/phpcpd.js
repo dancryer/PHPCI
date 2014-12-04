@@ -1,7 +1,7 @@
 var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpcpd',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Copy/Paste Detector',
+    title: Lang.get('phpcpd'),
     lastData: null,
     box: true,
     rendered: false,
@@ -26,9 +26,9 @@ var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
         return $('<table class="table" id="phpcpd-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Start</th>' +
-            '   <th>End</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('start')+'</th>' +
+            '   <th>'+Lang.get('end')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
 
@@ -64,10 +64,10 @@ var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
             }
 
-            var label = 'From';
+            var label = Lang.get('from');
 
             if (i % 2 > 0) {
-                label = 'To';
+                label = Lang.get('to');
             }
             else {
                 rowClass = (rowClass == 'warning' ? 'danger' : 'warning');

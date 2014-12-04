@@ -484,6 +484,6 @@ var Lang = {
             return sprintf.apply(sprintf[0], args);
         }
 
-        return '';
+        return 'MISSING: ' + string;
     }
 };

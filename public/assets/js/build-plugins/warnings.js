@@ -1,14 +1,14 @@
 var warningsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-warnings-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
-    title: 'Quality Trend',
+    title: Lang.get('quality_trend'),
     keys: {
-        'phpmd-warnings': 'PHPMD Warnings',
-        'phpcs-warnings': 'PHPCS Warnings',
-        'phpcs-errors': 'PHPCS Errors',
-        'phplint-errors': 'PHPLint Errors',
-        'phpunit-errors': 'PHPUnit Errors',
-        'phpdoccheck-warnings': 'PHP Docblock Checker Warnings'
+        'phpmd-warnings': Lang.get('phpmd_warnings'),
+        'phpcs-warnings': Lang.get('phpcs_warnings'),
+        'phpcs-errors': Lang.get('phpcs_errors'),
+        'phplint-errors': Lang.get('phplint_errors'),
+        'phpunit-errors': Lang.get('phpunit_errors'),
+        'phpdoccheck-warnings': Lang.get('phpdoccheck')
     },
     data: {},
     displayOnUpdate: false,
@@ -39,7 +39,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<div id="build-warnings"></div>').text('This chart will display once the build has completed.');
+        return $('<div id="build-warnings"></div>').text(Lang.get('chart_display'));
     },
 
     onUpdate: function(e) {
@@ -91,8 +91,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
 
         var data = google.visualization.arrayToDataTable(data);
         var options = {
-            hAxis: {title: 'Builds'},
-            vAxis: {title: 'Warnings / Errors'},
+            hAxis: {title: Lang.get('builds')},
+            vAxis: {title: Lang.get('issues')},
             backgroundColor: { fill: 'transparent' },
             height: 275,
             pointSize: 3

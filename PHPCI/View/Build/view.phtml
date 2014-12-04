@@ -1,8 +1,9 @@
+<?php use PHPCI\Helper\Lang; ?>
 <div class="build-info-panel box box-solid">
 
     <div class="box-header">
         <h1 class="box-title">
-            Committed by <?php print $build->getCommitterEmail(); ?>
+            <?php Lang::out('committed_by_x', $build->getCommitterEmail()); ?>
             <label class="pull-right label"></label>
         </h1>
     </div>
@@ -17,10 +18,10 @@
                 </div>
             <?php endif; ?>
 
-            <strong>Branch: </strong> <?php print $build->getBranch(); ?>
+            <?php Lang::out('branch_x', $build->getBranch()); ?>
 
             <?php if ($build->getCommitId() != 'Manual'): ?>
-                <br><strong>Commit ID: </strong> <?php print $build->getCommitId(); ?><br>
+                <br><?php Lang::out('commit_id_x', $build->getCommitId()); ?>
             <?php endif; ?>
         </div>
     </div>

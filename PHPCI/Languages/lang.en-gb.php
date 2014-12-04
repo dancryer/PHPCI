@@ -256,4 +256,21 @@ PHPCI',
     '30_mins' => '30 Minutes',
     '1_hour' => '1 Hour',
     '3_hours' => '3 Hours',
+
+    // Plugins
+    'cannot_update_composer' => 'PHPCI cannot update composer.json for you as it is not writable.',
+    'x_has_been_removed' => '%s has been removed.',
+    'x_has_been_added' => '%s has been added to composer.json for you and will be installed next time
+                            you run composer update.',
+    'enabled_plugins' => 'Enabled Plugins',
+    'provided_by_package' => 'Provided By Package',
+    'installed_packages' => 'Installed Packages',
+    'suggested_packages' => 'Suggested Packages',
+    'title' => 'Title',
+    'description' => 'Description',
+    'version' => 'Version',
+    'install' => 'Install &raquo;',
+    'remove' => 'Remove &raquo;',
+    'search_packagist_for_more' => 'Search Packagist for more packages',
+    'search' => 'Search &raquo;',
 );

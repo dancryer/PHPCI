@@ -19,7 +19,7 @@
 
     <script>
         var PHPCI_URL = '<?php print PHPCI_URL; ?>';
-        var PHPCI_STRINGS = <?php print json_encode(Lang::getStrings()); ?>;
+        var PHPCI_STRINGS = <?php print json_encode(Lang::getStrings(),JSON_UNESCAPED_UNICODE); ?>;
     </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>

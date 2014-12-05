@@ -63,9 +63,6 @@ PHPCI',
     'edit_project' => 'Edit Project',
     'delete_project' => 'Delete Project',
 
-    // Dashboard:
-    'dashboard' => 'Dashboard',
-
     // Project Summary:
     'no_builds_yet' => 'No builds yet!',
     'x_of_x_failed' => '%d out of the last %d builds failed.',

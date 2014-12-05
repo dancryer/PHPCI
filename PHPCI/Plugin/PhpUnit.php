@@ -166,7 +166,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 
@@ -193,7 +193,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 

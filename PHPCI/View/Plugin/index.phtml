@@ -1,26 +1,27 @@
+<?php use PHPCI\Helper\Lang; ?>
 <?php if (!$canWrite): ?>
-    <p class="alert alert-danger">PHPCI cannot update composer.json for you as it is not writable.</p>
+    <p class="alert alert-danger"><?php Lang::out('cannot_update_composer'); ?></p>
 <?php endif; ?>
 
 <?php if (isset($_GET['r'])): ?>
-    <p class="alert alert-success"><strong><?php echo $_GET['r']; ?></strong> has been removed.</p>
+    <p class="alert alert-success"><?php Lang::out('x_has_been_removed', $_GET['r']); ?></p>
 <?php endif; ?>
 
 <?php if (isset($_GET['w'])): ?>
-    <p class="alert alert-success"><strong><?php echo $_GET['w']; ?></strong> has been added to composer.json for you and will be installed next time you run composer update.</p>
+    <p class="alert alert-success"><?php Lang::out('x_has_been_added', $_GET['w']); ?></p>
 <?php endif; ?>
 
 <div class="box box-primary">
     <div class="box-header">
-        <h3 class="box-title">Enabled Plugins</h3>
+        <h3 class="box-title"><?php Lang::out('enabled_plugins'); ?></h3>
     </div>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Provided by Package</th>
+                <th><?php Lang::out('name'); ?></th>
+                <th><?php Lang::out('class'); ?></th>
+                <th><?php Lang::out('provided_by_package'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -41,14 +42,14 @@
     <div class="col-lg-6">
         <div class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title">Installed Packages</h3>
+                <h3 class="box-title"><?php Lang::out('installed_packages'); ?></h3>
             </div>
 
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Version</th>
+                    <th><?php Lang::out('title'); ?></th>
+                    <th><?php Lang::out('version'); ?></th>
                     <th width="1"></th>
                 </tr>
                 </thead>
@@ -59,7 +60,7 @@
                         <td><?php echo $version; ?></td>
                         <td>
                             <?php if (!in_array($package, $required) && $canWrite): ?>
-                                <a class="btn btn-danger btn-small" href="<?php echo PHPCI_URL ?>plugin/remove?package=<?php echo $package; ?>">Remove &raquo;</a>
+                                <a class="btn btn-danger btn-small" href="<?php echo PHPCI_URL ?>plugin/remove?package=<?php echo $package; ?>"><?php Lang::out('remove'); ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -73,14 +74,14 @@
     <div class="col-lg-6">
         <div class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title">Suggested Packages</h3>
+                <h3 class="box-title"><?php Lang::out('suggested_packages'); ?></h3>
             </div>
 
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Description</th>
+                    <th><?php Lang::out('title'); ?></th>
+                    <th><?php Lang::out('description'); ?></th>
                     <th width="1"></th>
                 </tr>
                 </thead>
@@ -92,7 +93,7 @@
                         <td><?php echo $version; ?></td>
                         <td>
                             <?php if ($canWrite): ?>
-                                <button data-name="<?php echo $package; ?>" class="install-package btn btn-success btn-small">Install &raquo;</button>
+                                <button data-name="<?php echo $package; ?>" class="install-package btn btn-success btn-small"><?php Lang::out('install'); ?></button>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -106,14 +107,14 @@
 
 <div class="box box-primary">
     <div class="box-header">
-        <h3 class="box-title">Search Packagist for More Packages</h3>
+        <h3 class="box-title"><?php Lang::out('search_packagist_for_more'); ?></h3>
     </div>
 
     <div class="box-body">
         <div class="input-group">
             <input id="search-query" type="text" class="form-control">
       <span class="input-group-btn">
-        <button id="search-button" class="btn btn-success" type="button">Search</button>
+        <button id="search-button" class="btn btn-success" type="button"><?php Lang::out('search'); ?></button>
       </span>
         </div>
 
@@ -121,8 +122,8 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Description</th>
+                    <th><?php Lang::out('title'); ?></th>
+                    <th><?php Lang::out('description'); ?></th>
                     <th width="1"></th>
                 </tr>
                 </thead>
@@ -153,7 +154,7 @@
                 thisRow.append($('<td></td>').text(thisRes.name));
                 thisRow.append($('<td></td>').text(thisRes.description));
 
-                var inst = $('<button></button>').data('name', thisRes.name).addClass('btn btn-small btn-success').html('Install &raquo;');
+                var inst = $('<button></button>').data('name', thisRes.name).addClass('btn btn-small btn-success').html(Lang.get('install'));
 
                 inst.on('click', versionChooser);
 
@@ -201,7 +202,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Choose a version...</h4>
+                <h4 class="modal-title"><?php Lang::out('version'); ?></h4>
             </div>
             <div class="modal-body">
                 <ul></ul>

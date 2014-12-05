@@ -1,7 +1,7 @@
 var phpunitPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpunit-errors',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHPUnit',
+    title: Lang.get('phpunit'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -28,7 +28,7 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         return $('<table class="table" id="phpunit-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>Test</th>' +
+            '   <th>'+Lang.get('test')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },

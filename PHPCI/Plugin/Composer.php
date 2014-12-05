@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Helper\Lang;
 
 /**
 * Composer Plugin - Provides access to Composer functionality.
@@ -68,7 +69,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
 
         if (!$composerLocation) {
-            $this->phpci->logFailure('Could not find Composer.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'composer'));
             return false;
         }
 

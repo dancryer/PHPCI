@@ -1,7 +1,7 @@
 var phpcsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpcs',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Code Sniffer',
+    title: Lang.get('phpcs'),
     lastData: null,
     box: true,
     rendered: false,
@@ -25,9 +25,9 @@ var phpcsPlugin = ActiveBuild.UiPlugin.extend({
         return $('<table class="table" id="phpcs-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Line</th>' +
-            '   <th>Message</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('line')+'</th>' +
+            '   <th>'+Lang.get('message')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },

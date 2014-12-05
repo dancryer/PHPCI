@@ -93,7 +93,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $checker = $this->phpci->findBinary('phpdoccheck');
 
         if (!$checker) {
-            $this->phpci->logFailure('Could not find phpdoccheck.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpdoccheck'));
             return false;
         }
 

@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -52,7 +53,7 @@ class Irc implements \PHPCI\Plugin
         $msg = $this->phpci->interpolate($this->message);
 
         if (empty($this->server) || empty($this->room) || empty($this->nick)) {
-            $this->phpci->logFailure('You must configure a server, room and nick.');
+            $this->phpci->logFailure(Lang::get('irc_settings'));
         }
 
         if (empty($this->port)) {

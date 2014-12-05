@@ -68,7 +68,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $phploc = $this->phpci->findBinary('phploc');
 
         if (!$phploc) {
-            $this->phpci->logFailure('Could not find phploc.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phploc'));
             return false;
         }
 

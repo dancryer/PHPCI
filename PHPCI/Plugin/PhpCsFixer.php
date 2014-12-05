@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -53,7 +54,7 @@ class PhpCsFixer implements \PHPCI\Plugin
         $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
 
         if (!$phpcsfixer) {
-            $this->phpci->logFailure('Could not find php-cs-fixer.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'php-cs-fixer'));
             return false;
         }
 

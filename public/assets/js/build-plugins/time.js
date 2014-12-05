@@ -28,9 +28,9 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
         return '<table class="table table-striped table-bordered">' +
             '<thead>' +
             '<tr>' +
-                '<th style="width: 33.3%">Build Created</th>' +
-                '<th style="width: 33.3%">Build Started</th>' +
-                '<th style="width: 33.3%">Build Finished</th>' +
+                '<th style="width: 33.3%">'+Lang.get('build_created')+'</th>' +
+                '<th style="width: 33.3%">'+Lang.get('build_started')+'</th>' +
+                '<th style="width: 33.3%">'+Lang.get('build_finished')+'</th>' +
             '</tr>' +
             '</thead>' +
         '<tbody>' +

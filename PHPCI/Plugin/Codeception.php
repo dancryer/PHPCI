@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -74,7 +75,7 @@ class Codeception implements \PHPCI\Plugin
             $codecept = $this->phpci->findBinary('codecept');
 
             if (!$codecept) {
-                $this->phpci->logFailure('Could not find codeception.');
+                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
                 return false;
             }
 

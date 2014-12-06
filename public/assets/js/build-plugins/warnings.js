@@ -92,7 +92,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         var data = google.visualization.arrayToDataTable(data);
         var options = {
             hAxis: {title: 'Builds'},
-            vAxis: {title: 'Warnings / Errors'},
+            vAxis: {title: 'Warnings / Errors', logScale:true},
             backgroundColor: { fill: 'transparent' },
             height: 275,
             pointSize: 3

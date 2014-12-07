@@ -14,15 +14,15 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
         var finished = '';
 
         if (ActiveBuild.buildData.created) {
-            created = dateFormat(ActiveBuild.buildData.created);
+            created = moment(ActiveBuild.buildData.created).format('ll LT');
         }
 
         if (ActiveBuild.buildData.started) {
-            started = dateFormat(ActiveBuild.buildData.started);
+            started = moment(ActiveBuild.buildData.started).format('ll LT');
         }
 
         if (ActiveBuild.buildData.finished) {
-            finished = dateFormat(ActiveBuild.buildData.finished);
+            finished = moment(ActiveBuild.buildData.finished).format('ll LT');
         }
 
         return '<table class="table table-striped table-bordered">' +
@@ -51,15 +51,15 @@ var timePlugin = ActiveBuild.UiPlugin.extend({
         var finished = '';
 
         if (build.created) {
-            created = dateFormat(build.created);
+            created = moment(build.created).format('ll LT');
         }
 
         if (build.started) {
-            started = dateFormat(build.started);
+            started = moment(build.started).format('ll LT');
         }
 
         if (build.finished) {
-            finished = dateFormat(build.finished);
+            finished = moment(build.finished).format('ll LT');
         }
 
         $('#created').text(created);

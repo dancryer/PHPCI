@@ -82,6 +82,7 @@ PHPCI',
     'success' => 'Success',
     'successful' => 'Successful',
     'failed' => 'Failed',
+    'manual_build' => 'Manual Build',
 
     // Add/Edit Project:
     'new_project' => 'New Project',

@@ -407,73 +407,6 @@ function setupProjectForm()
     });
 }
 
-
-
-function dateFormat(date)
-{
-    if (typeof date == 'string') {
-        date = new Date(date);
-    }
-    
-    var rtn = '';
-
-    switch (date.getMonth()) {
-        case 0:
-            rtn = 'Jan ';
-            break;
-
-        case 1:
-            rtn = 'Feb ';
-            break;
-
-        case 2:
-            rtn = 'Mar ';
-            break;
-
-        case 3:
-            rtn = 'Apr ';
-            break;
-
-        case 4:
-            rtn = 'May ';
-            break;
-
-        case 5:
-            rtn = 'Jun ';
-            break;
-
-        case 6:
-            rtn = 'Jul ';
-            break;
-
-        case 7:
-            rtn = 'Aug ';
-            break;
-
-        case 8:
-            rtn = 'Sep ';
-            break;
-
-        case 9:
-            rtn = 'Oct ';
-            break;
-
-        case 10:
-            rtn = 'Nov ';
-            break;
-
-        case 11:
-            rtn = 'Dec ';
-            break;
-    }
-
-    rtn += date.getDate() + ' ' + date.getFullYear();
-    rtn += ' ' + date.getHours() + ':' + date.getMinutes();
-
-    return rtn;
-}
-
-
 var Lang = {
     get: function () {
         var args = Array.prototype.slice.call(arguments);;
@@ -487,3 +420,5 @@ var Lang = {
         return 'MISSING: ' + string;
     }
 };
+
+moment.locale(PHPCI_LANGUAGE);

@@ -33,6 +33,11 @@ class Lang
         print call_user_func_array(array('PHPCI\Helper\Lang', 'get'), func_get_args());
     }
 
+    public static function getLanguage()
+    {
+        return self::$language;
+    }
+
     public static function getStrings()
     {
         return self::$strings;

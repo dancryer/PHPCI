@@ -42,10 +42,12 @@ class Lang
     {
         // Try user language:
         if (isset($_SERVER) && array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
-            $matches = array();
+            $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
-            if (preg_match('/([a-zA-Z]{2}\-[a-zA-Z]{2})/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches)) {
-                self::$language = strtolower($matches[1]);
+            foreach ($langs as $lang) {
+                $parts = explode(';', $lang);
+
+                self::$language = strtolower($parts[0]);
                 self::$strings = self::loadLanguage();
 
                 if (!is_null(self::$strings)) {

@@ -1,6 +1,6 @@
-var phpcpdPlugin = PHPCI.UiPlugin.extend({
+var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpcpd',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
     title: 'PHP Copy/Paste Detector',
     lastData: null,
     box: true,
@@ -8,7 +8,7 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpcpd-data', -1, {key: 'phpcpd-data'})
+        var query = ActiveBuild.registerQuery('phpcpd-data', -1, {key: 'phpcpd-data'})
 
         $(window).on('phpcpd-data', function(data) {
             self.onUpdate(data);
@@ -23,7 +23,7 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table table-striped" id="phpcpd-data">' +
+        return $('<table class="table" id="phpcpd-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>File</th>' +
@@ -36,6 +36,7 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpcpd').hide();
             return;
         }
 
@@ -47,11 +48,17 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
         tbody.empty();
 
         var rowClass = 'danger';
+
+        if (errors.length == 0) {
+            $('#build-phpcpd').hide();
+            return;
+        }
+
         for (var i in errors) {
             var file = errors[i].file;
 
-            if (PHPCI.fileLinkTemplate) {
-                var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
+            if (ActiveBuild.fileLinkTemplate) {
+                var fileLink = ActiveBuild.fileLinkTemplate.replace('{FILE}', file);
                 fileLink = fileLink.replace('{LINE}', errors[i].line_start);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
@@ -75,7 +82,9 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpcpd').show();
     }
 });
 
-PHPCI.registerPlugin(new phpcpdPlugin());
+ActiveBuild.registerPlugin(new phpcpdPlugin());

@@ -47,19 +47,22 @@ switch($build->getStatus())
             }
         ?></a></td>
 
-    <td>
+    <td class="hidden-md hidden-sm hidden-xs">
         <?php
             if ($build->getCommitId() !== 'Manual') {
-                print '<a href="' . $build->getCommitLink() . '">';
-            }
-            print $build->getCommitId();
-            if ($build->getCommitId() !== 'Manual') {
-                print '</a>';
+                print sprintf(
+                    '<a href="%s" target="_blank">%s (%s)</a>',
+                    $build->getCommitLink(),
+                    substr($build->getCommitId(), 0, 7),
+                    $build->getCommitterEmail()
+                );
+            } else {
+                print 'Manual Build';
             }
         ?>
     </td>
 
-	<td><a href="<?php print $build->getBranchLink(); ?>"><?php print $build->getBranch(); ?></a></td>
+	<td><a href="<?php print $build->getBranchLink(); ?>" target="_blank"><?php print $build->getBranch(); ?></a></td>
 	<td>
 		<span class='label label-<?php echo $subcls ?>'><?php echo $status ?></span>
 	</td>

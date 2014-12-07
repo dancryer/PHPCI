@@ -1,4 +1,4 @@
-var locPlugin = PHPCI.UiPlugin.extend({
+var locPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-lines-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: 'Lines of Code',
@@ -8,7 +8,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phploc-lines', -1, {num_builds: 10, key: 'phploc'})
+        var query = ActiveBuild.registerQuery('phploc-lines', -1, {num_builds: 10, key: 'phploc'})
 
         $(window).on('phploc-lines', function(data) {
             self.onUpdate(data);
@@ -36,6 +36,7 @@ var locPlugin = PHPCI.UiPlugin.extend({
         var builds = this.lastData;
 
         if (!builds || !builds.length) {
+            $('#build-lines-chart').hide();
             return;
         }
 
@@ -57,9 +58,10 @@ var locPlugin = PHPCI.UiPlugin.extend({
             height: 275
         };
 
+        $('#build-lines-chart').show();
         var chart = new google.visualization.LineChart(document.getElementById('phploc-lines'));
         chart.draw(data, options);
     }
 });
 
-PHPCI.registerPlugin(new locPlugin());
+ActiveBuild.registerPlugin(new locPlugin());

@@ -13,6 +13,7 @@ use b8;
 use b8\Exception\HttpException\NotFoundException;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
+use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
 
 /**
@@ -58,8 +59,22 @@ class BuildController extends \PHPCI\Controller
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
 
-        $title = 'Build #' . $build->getId() . ' - ' . $build->getProjectTitle();
-        $this->config->set('page_title', $title);
+        $this->layout->title = 'Build #' . $build->getId();
+        $this->layout->subtitle = $build->getProjectTitle();
+
+        $nav = array(
+            'title' => 'Build '.$build->getId(),
+            'icon' => 'cog',
+            'links' => array(
+                'build/rebuild/' . $build->getId() => 'Rebuild Now',
+            ),
+        );
+
+        if ($this->currentUserIsAdmin()) {
+            $nav['links']['build/delete/' . $build->getId()] = 'Delete Build';
+        }
+
+        $this->layout->nav = $nav;
     }
 
     protected function getUiPlugins()
@@ -141,9 +156,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function delete($buildId)
     {
-        if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $build = BuildFactory::getBuildById($buildId);
 
@@ -167,5 +180,37 @@ class BuildController extends \PHPCI\Controller
         $log = str_replace('[0m', '</span>', $log);
 
         return $log;
+    }
+
+    public function latest()
+    {
+        $rtn = array(
+            'pending' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_NEW)),
+            'running' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_RUNNING)),
+        );
+
+        if ($this->request->isAjax()) {
+            die(json_encode($rtn));
+        }
+    }
+
+    protected function formatBuilds($builds)
+    {
+        Project::$sleepable = array('id', 'title', 'reference', 'type');
+
+        $rtn = array('count' => $builds['count'], 'items' => array());
+
+        foreach ($builds['items'] as $build) {
+            $item = $build->toArray(1);
+
+            $header = new b8\View('Build/header-row');
+            $header->build = $build;
+
+            $item['header_row'] = $header->render();
+            $rtn['items'][$item['id']] = $item;
+        }
+
+        ksort($rtn['items']);
+        return $rtn;
     }
 }

@@ -40,9 +40,9 @@ class SessionController extends \PHPCI\Controller
 
         if ($this->request->getMethod() == 'POST') {
             $user = $this->userStore->getByEmail($this->getParam('email'));
-            
+
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
-                $_SESSION['user_id']    = $user->getId();
+                $_SESSION['phpci_user_id']    = $user->getId();
                 header('Location: ' . $this->getLoginRedirect());
                 die;
             } else {
@@ -84,7 +84,9 @@ class SessionController extends \PHPCI\Controller
     */
     public function logout()
     {
-        $_SESSION = array();
+        unset($_SESSION['phpci_user']);
+        unset($_SESSION['phpci_user_id']);
+
         session_destroy();
         header('Location: ' . PHPCI_URL);
         die;
@@ -147,8 +149,8 @@ MSG;
             $hash = password_hash($this->getParam('password'), PASSWORD_DEFAULT);
             $user->setHash($hash);
 
-            $_SESSION['user'] = $this->userStore->save($user);
-            $_SESSION['user_id'] = $user->getId();
+            $_SESSION['phpci_user'] = $this->userStore->save($user);
+            $_SESSION['phpci_user_id'] = $user->getId();
 
             header('Location: ' . PHPCI_URL);
             die;
@@ -164,9 +166,9 @@ MSG;
     {
         $rtn = PHPCI_URL;
 
-        if (!empty($_SESSION['login_redirect'])) {
-            $rtn .= $_SESSION['login_redirect'];
-            $_SESSION['login_redirect'] = null;
+        if (!empty($_SESSION['phpci_login_redirect'])) {
+            $rtn .= $_SESSION['phpci_login_redirect'];
+            $_SESSION['phpci_login_redirect'] = null;
         }
 
         return $rtn;

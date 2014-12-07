@@ -9,6 +9,7 @@
 
 namespace PHPCI\Command;
 
+use b8\Config;
 use Monolog\Logger;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
@@ -48,6 +49,11 @@ class RunCommand extends Command
     protected $maxBuilds = null;
 
     /**
+     * @var bool
+     */
+    protected $isFromDaemon = false;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -73,14 +79,15 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->hasOption('verbose')) {
+        if ($input->hasOption('verbose') && $input->getOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
         }
 
-        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+        $running = $this->validateRunningBuilds();
 
+        $this->logger->pushProcessor(new LoggedBuildContextTidier());
         $this->logger->addInfo("Finding builds to process");
         $store = Factory::getStore('Build');
         $result = $store->getByStatus(0, $this->maxBuilds);
@@ -88,10 +95,21 @@ class RunCommand extends Command
 
         $builds = 0;
 
-        foreach ($result['items'] as $build) {
-            $builds++;
-
+        while (count($result['items'])) {
+            $build = array_shift($result['items']);
             $build = BuildFactory::getBuild($build);
+
+            // Skip build (for now) if there's already a build running in that project:
+            if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
+                $this->logger->addInfo('Skipping Build #'.$build->getId() . ' - Project build already in progress.');
+                $result['items'][] = $build;
+
+                // Re-run build validator:
+                $running = $this->validateRunningBuilds();
+                continue;
+            }
+
+            $builds++;
 
             try {
                 // Logging relevant to this build should be stored
@@ -107,6 +125,7 @@ class RunCommand extends Command
                 $this->logger->popHandler($buildDbLog);
             } catch (\Exception $ex) {
                 $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
                 $build->setLog($build->getLog() . PHP_EOL . PHP_EOL . $ex->getMessage());
                 $store->save($build);
             }
@@ -118,8 +137,59 @@ class RunCommand extends Command
         return $builds;
     }
 
-    public function setBaxBuilds($numBuilds)
+    public function setMaxBuilds($numBuilds)
     {
         $this->maxBuilds = (int)$numBuilds;
+    }
+
+    public function setIsDaemon($fromDaemon)
+    {
+        $this->isFromDaemon = (bool)$fromDaemon;
+    }
+
+    protected function validateRunningBuilds()
+    {
+        /** @var \PHPCI\Store\BuildStore $store */
+        $store = Factory::getStore('Build');
+        $running = $store->getByStatus(1);
+        $rtn = array();
+
+        $timeout = Config::getInstance()->get('phpci.build.failed_after', 1800);
+
+        foreach ($running['items'] as $build) {
+            /** @var \PHPCI\Model\Build $build */
+            $build = BuildFactory::getBuild($build);
+
+            $now = time();
+            $start = $build->getStarted()->getTimestamp();
+
+            if (($now - $start) > $timeout) {
+                $this->logger->addInfo('Build #'.$build->getId().' marked as failed due to timeout.');
+                $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
+                $store->save($build);
+                $this->removeBuildDirectory($build);
+                continue;
+            }
+
+            $rtn[$build->getProjectId()] = true;
+        }
+
+        return $rtn;
+    }
+
+    protected function removeBuildDirectory($build)
+    {
+        $buildPath = PHPCI_DIR . 'PHPCI/build/' . $build->getId() . '/';
+
+        if (is_dir($buildPath)) {
+            $cmd = 'rm -Rf "%s"';
+
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
+
+            shell_exec($cmd);
+        }
     }
 }

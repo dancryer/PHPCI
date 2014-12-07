@@ -62,6 +62,7 @@ class Irc implements \PHPCI\Plugin
         $sock = fsockopen($this->server, $this->port);
         fputs($sock, 'USER ' . $this->nick . ' phptesting.org ' . $this->nick . ' :' . $this->nick . "\r\n");
         fputs($sock, 'NICK ' . $this->nick . "\r\n");
+        fputs($sock, 'JOIN ' . $this->room . "\r\n");
         fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
 
         while (fgets($sock)) {

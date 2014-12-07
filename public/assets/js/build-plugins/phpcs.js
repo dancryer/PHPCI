@@ -1,6 +1,6 @@
-var phpcsPlugin = PHPCI.UiPlugin.extend({
+var phpcsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpcs',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
     title: 'PHP Code Sniffer',
     lastData: null,
     box: true,
@@ -8,7 +8,7 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpcs-data', -1, {key: 'phpcs-data'})
+        var query = ActiveBuild.registerQuery('phpcs-data', -1, {key: 'phpcs-data'})
 
         $(window).on('phpcs-data', function(data) {
             self.onUpdate(data);
@@ -22,7 +22,7 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table table-striped" id="phpcs-data">' +
+        return $('<table class="table" id="phpcs-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>File</th>' +
@@ -34,6 +34,7 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpcs').hide();
             return;
         }
 
@@ -44,12 +45,17 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
         var tbody = $('#phpcs-data tbody');
         tbody.empty();
 
+        if (errors.length == 0) {
+            $('#build-phpcs').hide();
+            return;
+        }
+
         for (var i in errors) {
             var file = errors[i].file;
 
-            if (PHPCI.fileLinkTemplate) {
-                var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
-                fileLink = fileLink.replace('{LINE}', errors[i].line_start);
+            if (ActiveBuild.fileLinkTemplate) {
+                var fileLink = ActiveBuild.fileLinkTemplate.replace('{FILE}', file);
+                fileLink = fileLink.replace('{LINE}', errors[i].line);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
             }
@@ -65,7 +71,9 @@ var phpcsPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpcs').show();
     }
 });
 
-PHPCI.registerPlugin(new phpcsPlugin());
+ActiveBuild.registerPlugin(new phpcsPlugin());

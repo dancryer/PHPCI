@@ -56,7 +56,6 @@ class WebhookController extends \PHPCI\Controller
 
         foreach ($payload['commits'] as $commit) {
             try {
-
                 $email = $commit['raw_author'];
                 $email = substr($email, 0, strpos($email, '>'));
                 $email = substr($email, strpos($email, '<') + 1);
@@ -73,7 +72,7 @@ class WebhookController extends \PHPCI\Controller
     }
 
     /**
-     * Called by POSTing to /git/webhook/<project_id>?branch=<branch>&commit=<commit>
+     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
      *
      * @param string $project
      */
@@ -81,6 +80,8 @@ class WebhookController extends \PHPCI\Controller
     {
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
+        $commitMessage = $this->getParam('message');
+        $committer = $this->getParam('committer');
 
         try {
             if (empty($branch)) {
@@ -91,8 +92,15 @@ class WebhookController extends \PHPCI\Controller
                 $commit = null;
             }
 
-            $this->createBuild($project, $commit, $branch, null, null);
+            if (empty($commitMessage)) {
+                $commitMessage = null;
+            }
 
+            if (empty($committer)) {
+                $committer = null;
+            }
+
+            $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
         } catch (\Exception $ex) {
             header('HTTP/1.1 400 Bad Request');
             header('Ex: ' . $ex->getMessage());
@@ -107,7 +115,19 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
-        $payload = json_decode($this->getParam('payload'), true);
+        switch ($_SERVER['CONTENT_TYPE']) {
+            case 'application/json':
+                $payload = json_decode(file_get_contents('php://input'), true);
+                break;
+
+            case 'application/x-www-form-urlencoded':
+                $payload = json_decode($this->getParam('payload'), true);
+                break;
+
+            default:
+                header('HTTP/1.1 400 Bad Request');
+                die('Request content type not supported');
+        }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {

@@ -38,11 +38,11 @@ class ProjectBase extends Model
         'reference' => null,
         'branch' => null,
         'ssh_private_key' => null,
-        'ssh_public_key' => null,
         'type' => null,
         'access_information' => null,
         'last_commit' => null,
         'build_config' => null,
+        'ssh_public_key' => null,
         'allow_public_status' => null,
     );
 
@@ -56,11 +56,11 @@ class ProjectBase extends Model
         'reference' => 'getReference',
         'branch' => 'getBranch',
         'ssh_private_key' => 'getSshPrivateKey',
-        'ssh_public_key' => 'getSshPublicKey',
         'type' => 'getType',
         'access_information' => 'getAccessInformation',
         'last_commit' => 'getLastCommit',
         'build_config' => 'getBuildConfig',
+        'ssh_public_key' => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
 
         // Foreign key getters:
@@ -76,11 +76,11 @@ class ProjectBase extends Model
         'reference' => 'setReference',
         'branch' => 'setBranch',
         'ssh_private_key' => 'setSshPrivateKey',
-        'ssh_public_key' => 'setSshPublicKey',
         'type' => 'setType',
         'access_information' => 'setAccessInformation',
         'last_commit' => 'setLastCommit',
         'build_config' => 'setBuildConfig',
+        'ssh_public_key' => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
 
         // Foreign key setters:
@@ -109,15 +109,10 @@ class ProjectBase extends Model
         ),
         'branch' => array(
             'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
+            'length' => 50,
+            'default' => 'master',
         ),
         'ssh_private_key' => array(
-            'type' => 'text',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'ssh_public_key' => array(
             'type' => 'text',
             'nullable' => true,
             'default' => null,
@@ -125,7 +120,7 @@ class ProjectBase extends Model
         'type' => array(
             'type' => 'varchar',
             'length' => 50,
-            'default' => 1,
+            'default' => null,
         ),
         'access_information' => array(
             'type' => 'varchar',
@@ -144,9 +139,14 @@ class ProjectBase extends Model
             'nullable' => true,
             'default' => null,
         ),
+        'ssh_public_key' => array(
+            'type' => 'text',
+            'nullable' => true,
+            'default' => null,
+        ),
         'allow_public_status' => array(
-            'type' => 'tinyint',
-            'length' => 4,
+            'type' => 'int',
+            'length' => 11,
         ),
     );
 
@@ -225,18 +225,6 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of SshPublicKey / ssh_public_key.
-    *
-    * @return string
-    */
-    public function getSshPublicKey()
-    {
-        $rtn    = $this->data['ssh_public_key'];
-
-        return $rtn;
-    }
-
-    /**
     * Get the value of Type / type.
     *
     * @return string
@@ -280,6 +268,18 @@ class ProjectBase extends Model
     public function getBuildConfig()
     {
         $rtn    = $this->data['build_config'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of SshPublicKey / ssh_public_key.
+    *
+    * @return string
+    */
+    public function getSshPublicKey()
+    {
+        $rtn    = $this->data['ssh_public_key'];
 
         return $rtn;
     }
@@ -395,24 +395,6 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of SshPublicKey / ssh_public_key.
-    *
-    * @param $value string
-    */
-    public function setSshPublicKey($value)
-    {
-        $this->_validateString('SshPublicKey', $value);
-
-        if ($this->data['ssh_public_key'] === $value) {
-            return;
-        }
-
-        $this->data['ssh_public_key'] = $value;
-
-        $this->_setModified('ssh_public_key');
-    }
-
-    /**
     * Set the value of Type / type.
     *
     * Must not be null.
@@ -484,6 +466,24 @@ class ProjectBase extends Model
         $this->data['build_config'] = $value;
 
         $this->_setModified('build_config');
+    }
+
+    /**
+    * Set the value of SshPublicKey / ssh_public_key.
+    *
+    * @param $value string
+    */
+    public function setSshPublicKey($value)
+    {
+        $this->_validateString('SshPublicKey', $value);
+
+        if ($this->data['ssh_public_key'] === $value) {
+            return;
+        }
+
+        $this->data['ssh_public_key'] = $value;
+
+        $this->_setModified('ssh_public_key');
     }
 
     /**

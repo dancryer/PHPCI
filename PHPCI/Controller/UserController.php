@@ -49,23 +49,29 @@ class UserController extends Controller
         $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
         $this->view->users    = $users;
 
-        $this->config->set('page_title', 'Users');
+        $this->layout->title = 'Users';
 
         return $this->view->render();
     }
 
     public function profile()
     {
-        $user = $_SESSION['user'];
-        $values = $user->getDataArray();
+        $user = $_SESSION['phpci_user'];
+
+        $this->layout->title = 'Edit Profile';
 
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
-            $_SESSION['user'] = $this->userService->updateUser($name, $email, $password);
+            $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
+            $user = $_SESSION['phpci_user'];
+
+            $this->view->updated = 1;
         }
+
+        $values = $user->getDataArray();
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');
@@ -109,11 +115,9 @@ class UserController extends Controller
     */
     public function add()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
-        $this->config->set('page_title', 'Add User');
+        $this->layout->title = 'Add User';
 
         $method = $this->request->getMethod();
 
@@ -151,9 +155,7 @@ class UserController extends Controller
     */
     public function edit($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
         $user = $this->userStore->getById($userId);
@@ -161,6 +163,9 @@ class UserController extends Controller
         if (empty($user)) {
             throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
         }
+
+        $this->layout->title = $user->getName();
+        $this->layout->subtitle = 'Edit User';
 
         $values = array_merge($user->getDataArray(), $this->getParams());
         $form = $this->userForm($values, 'edit/' . $userId);
@@ -244,10 +249,8 @@ class UserController extends Controller
     */
     public function delete($userId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
-        
+        $this->requireAdmin();
+
         $user   = $this->userStore->getById($userId);
 
         if (empty($user)) {

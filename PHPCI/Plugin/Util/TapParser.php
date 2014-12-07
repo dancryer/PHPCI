@@ -8,6 +8,7 @@ class TapParser
     const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
     const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
     const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
+    const TEST_SKIP_PATTERN = '/ok\s+[0-9]+\s+\-\s+#\s+SKIP/';
 
     /**
      * @var string
@@ -43,7 +44,7 @@ class TapParser
             throw new \Exception('TapParser only supports TAP version 13');
         }
 
-        if (preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
+        if (isset($lines[count($lines) - 1]) && preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
             array_pop($lines);
             if ($lines[count($lines) - 1] == "") {
                 array_pop($lines);
@@ -57,7 +58,8 @@ class TapParser
             $totalTests = (int) $matches[2];
         }
 
-        if (preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
+        if (isset($lines[count($lines) - 1]) &&
+            preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
             array_pop($lines);
             $totalTests = (int) $matches[2];
         }
@@ -92,6 +94,8 @@ class TapParser
                 );
 
                 $rtn[] = $item;
+            } elseif (preg_match(self::TEST_SKIP_PATTERN, $line, $matches)) {
+                $rtn[] = array('message' => 'SKIP');
             } elseif (preg_match(self::TEST_MESSAGE_PATTERN, $line, $matches)) {
                 $rtn[count($rtn) - 1]['message'] = $matches[1];
             }

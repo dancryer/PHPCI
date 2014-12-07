@@ -56,7 +56,6 @@ class BuildStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $count = null;
 
         $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id' . $add;
         $stmt = Database::getConnection($useConnection)->prepare($query);
@@ -69,6 +68,9 @@ class BuildStoreBase extends Store
                 return new Build($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
 
             return array('items' => $rtn, 'count' => $count);
         } else {
@@ -88,7 +90,6 @@ class BuildStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
-        $count = null;
 
         $query = 'SELECT * FROM `build` WHERE `status` = :status' . $add;
         $stmt = Database::getConnection($useConnection)->prepare($query);
@@ -101,6 +102,9 @@ class BuildStoreBase extends Store
                 return new Build($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
 
             return array('items' => $rtn, 'count' => $count);
         } else {

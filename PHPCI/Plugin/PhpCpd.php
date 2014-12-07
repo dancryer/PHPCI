@@ -90,7 +90,7 @@ class PhpCpd implements \PHPCI\Plugin
 
         $tmpfilename = tempnam('/tmp', 'phpcpd');
 
-        $cmd = $phpcpd . ' --log-pmd="%s" %s "%s"';
+        $cmd = $phpcpd . ' --log-pmd "%s" %s "%s"';
         $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
         print $this->phpci->getLastOutput();

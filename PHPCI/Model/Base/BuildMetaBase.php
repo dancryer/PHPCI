@@ -91,17 +91,15 @@ class BuildMetaBase extends Model
         'build_id' => array(
             'type' => 'int',
             'length' => 11,
-            'nullable' => true,
             'default' => null,
         ),
         'meta_key' => array(
             'type' => 'varchar',
-            'length' => 255,
+            'length' => 250,
             'default' => null,
         ),
         'meta_value' => array(
-            'type' => 'longtext',
-            'nullable' => true,
+            'type' => 'text',
             'default' => null,
         ),
     );
@@ -238,10 +236,12 @@ class BuildMetaBase extends Model
     /**
     * Set the value of BuildId / build_id.
     *
+    * Must not be null.
     * @param $value int
     */
     public function setBuildId($value)
     {
+        $this->_validateNotNull('BuildId', $value);
         $this->_validateInt('BuildId', $value);
 
         if ($this->data['build_id'] === $value) {
@@ -276,10 +276,12 @@ class BuildMetaBase extends Model
     /**
     * Set the value of MetaValue / meta_value.
     *
+    * Must not be null.
     * @param $value string
     */
     public function setMetaValue($value)
     {
+        $this->_validateNotNull('MetaValue', $value);
         $this->_validateString('MetaValue', $value);
 
         if ($this->data['meta_value'] === $value) {

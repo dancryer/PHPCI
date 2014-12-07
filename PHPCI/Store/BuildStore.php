@@ -10,6 +10,7 @@
 namespace PHPCI\Store;
 
 use b8\Database;
+use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 use PHPCI\Store\Base\BuildStoreBase;
 
@@ -21,11 +22,22 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
-    public function getLatestBuilds($projectId)
+    public function getLatestBuilds($projectId = null, $limit = 5)
     {
-        $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
+        $where = '';
+
+        if (!is_null($projectId)) {
+            $where = ' WHERE `project_id` = :pid ';
+        }
+
+        $query = 'SELECT * FROM build '.$where.' ORDER BY id DESC LIMIT :limit';
         $stmt = Database::getConnection('read')->prepare($query);
-        $stmt->bindValue(':pid', $projectId);
+
+        if (!is_null($projectId)) {
+            $stmt->bindValue(':pid', $projectId);
+        }
+
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -36,6 +48,22 @@ class BuildStore extends BuildStoreBase
             $rtn = array_map($map, $res);
 
             return $rtn;
+        } else {
+            return array();
+        }
+    }
+
+    public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
+    {
+        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
+        $stmt->bindValue(':status', $status);
+
+        if ($stmt->execute()) {
+            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                return new Build($data);
+            }
         } else {
             return array();
         }

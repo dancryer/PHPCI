@@ -64,6 +64,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function view($projectId)
     {
+        $branch = $this->getParam('branch', '');
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
@@ -72,20 +73,23 @@ class ProjectController extends \PHPCI\Controller
 
         $per_page = 10;
         $page     = $this->getParam('p', 1);
-        $builds   = $this->getLatestBuildsHtml($projectId, (($page - 1) * $per_page));
+        $builds   = $this->getLatestBuildsHtml($projectId, urldecode($branch), (($page - 1) * $per_page));
         $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
         if ($page > $pages) {
             throw new NotFoundException('Page with number: ' . $page . ' not found');
         }
 
-        $this->view->builds  = $builds[0];
-        $this->view->total   = $builds[1];
-        $this->view->project = $project;
-        $this->view->page    = $page;
-        $this->view->pages   = $pages;
+        $this->view->builds   = $builds[0];
+        $this->view->total    = $builds[1];
+        $this->view->project  = $project;
+        $this->view->branch = urldecode($branch);
+        $this->view->branches = $this->projectStore->getKnownBranches($projectId);
+        $this->view->page     = $page;
+        $this->view->pages    = $pages;
 
-        $this->config->set('page_title', $project->getTitle());
+        $this->layout->title = $project->getTitle();
+        $this->layout->subtitle = $this->view->branch;
 
         return $this->view->render();
     }
@@ -93,16 +97,21 @@ class ProjectController extends \PHPCI\Controller
     /**
     * Create a new pending build for a project.
     */
-    public function build($projectId)
+    public function build($projectId, $branch = '')
     {
         /* @var \PHPCI\Model\Project $project */
         $project = $this->projectStore->getById($projectId);
+
+        if (empty($branch)) {
+            $branch = $project->getBranch();
+        }
 
         if (empty($project)) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        $build = $this->buildService->createBuild($project, null, null, $_SESSION['user']->getEmail());
+        $email = $_SESSION['phpci_user']->getEmail();
+        $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -113,9 +122,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function delete($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $project = $this->projectStore->getById($projectId);
         $this->projectService->deleteProject($project);
@@ -129,16 +136,26 @@ class ProjectController extends \PHPCI\Controller
     */
     public function builds($projectId)
     {
-        $builds = $this->getLatestBuildsHtml($projectId);
+        $branch = $this->getParam('branch', '');
+        $builds = $this->getLatestBuildsHtml($projectId, urldecode($branch));
         die($builds[0]);
     }
 
     /**
-    * Render latest builds for project as HTML table.
-    */
-    protected function getLatestBuildsHtml($projectId, $start = 0)
+     * Render latest builds for project as HTML table.
+     *
+     * @param $projectId
+     * @param string $branch A urldecoded branch name.
+     * @param int $start
+     * @return array
+     */
+    protected function getLatestBuildsHtml($projectId, $branch = '', $start = 0)
     {
         $criteria = array('project_id' => $projectId);
+        if (!empty($branch)) {
+            $criteria['branch'] = $branch;
+        }
+
         $order = array('id' => 'DESC');
         $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
         $view = new b8\View('BuildsTable');
@@ -157,7 +174,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function add()
     {
-        $this->config->set('page_title', 'Add Project');
+        $this->layout->title = 'Add Project';
         $this->requireAdmin();
 
         $method = $this->request->getMethod();
@@ -208,9 +225,7 @@ class ProjectController extends \PHPCI\Controller
     */
     public function edit($projectId)
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new ForbiddenException('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $method = $this->request->getMethod();
         $project = $this->projectStore->getById($projectId);
@@ -322,7 +337,6 @@ class ProjectController extends \PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Text::create('branch', 'Default branch name', true);
-        $field->setValidator($this->getReferenceValidator($values));
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 

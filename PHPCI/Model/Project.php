@@ -88,4 +88,28 @@ class Project extends ProjectBase
             return $this->data['branch'];
         }
     }
+
+    public function getIcon()
+    {
+        switch ($this->getType()) {
+            case 'github':
+                $icon = 'github';
+                break;
+
+            case 'bitbucket':
+                $icon = 'bitbucket';
+                break;
+
+            case 'git':
+            case 'gitlab':
+                $icon = 'git';
+                break;
+
+            default:
+                $icon = 'cog';
+                break;
+        }
+
+        return $icon;
+    }
 }

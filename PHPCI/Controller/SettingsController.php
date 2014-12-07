@@ -41,19 +41,18 @@ class SettingsController extends Controller
         $this->view->settings = $this->settings;
 
         $emailSettings = array();
-        $authenticationSettings = array();
-
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
-        if (isset($this->settings['phpci']['authentication_settings'])) {
-            $authenticationSettings = $this->settings['phpci']['authentication_settings'];
+        $buildSettings = array();
+        if (isset($this->settings['phpci']['build'])) {
+            $buildSettings = $this->settings['phpci']['build'];
         }
 
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
-        $this->view->authenticationSettings = $this->getAuthenticationForm($authenticationSettings);
+        $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
@@ -65,6 +64,8 @@ class SettingsController extends Controller
 
     public function github()
     {
+        $this->requireAdmin();
+
         $this->settings['phpci']['github']['id'] = $this->getParam('githubid', '');
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error = $this->storeSettings();
@@ -80,6 +81,8 @@ class SettingsController extends Controller
 
     public function email()
     {
+        $this->requireAdmin();
+
         $this->settings['phpci']['email_settings'] = $this->getParams();
         $this->settings['phpci']['email_settings']['smtp_encryption'] = $this->getParam('smtp_encryption', 0);
 
@@ -94,10 +97,11 @@ class SettingsController extends Controller
         die;
     }
 
-    public function authentication()
+    public function build()
     {
-        $this->settings['phpci']['authentication_settings']['state'] = $this->getParam('disable_authentication', 0);
-        $this->settings['phpci']['authentication_settings']['user_id'] = $_SESSION['user_id'];
+        $this->requireAdmin();
+
+        $this->settings['phpci']['build'] = $this->getParams();
 
         $error = $this->storeSettings();
 
@@ -109,7 +113,6 @@ class SettingsController extends Controller
 
         die;
     }
-
 
     /**
      * Github redirects users back to this URL when t
@@ -141,11 +144,16 @@ class SettingsController extends Controller
         die;
     }
 
+    /**
+     * Convert config to yaml and store to file.
+     * @return mixed
+     */
     protected function storeSettings()
     {
         $dumper = new Dumper();
-        $yaml = $dumper->dump($this->settings);
+        $yaml = $dumper->dump($this->settings, 4);
         file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
+
         if (error_get_last()) {
             $error_get_last = error_get_last();
             return $error_get_last['message'];
@@ -243,13 +251,58 @@ class SettingsController extends Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Checkbox('smtp_encryption');
-        $field->setCheckedValue(1);
+        $field = new Form\Element\Select('smtp_encryption');
+        $field->setOptions(['' => 'None', 'tls' => 'TLS', 'ssl' => 'SSL']);
         $field->setRequired(false);
         $field->setLabel('Use SMTP encryption?');
         $field->setContainerClass('form-group');
         $field->setValue(1);
         $form->addField($field);
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
+    }
+
+    protected function getGithubUser($token)
+    {
+        $http = new HttpClient('https://api.github.com');
+        $user = $http->get('/user', array('access_token' => $token));
+
+        return $user['body'];
+    }
+
+    protected function canWriteConfig()
+    {
+        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
+    }
+
+    protected function getBuildForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/build');
+
+        $field = new Form\Element\Select('failed_after');
+        $field->setRequired(false);
+        $field->setLabel('Consider a build failed after');
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setOptions([
+            300 => '5 Minutes',
+            900 => '15 Minutes',
+            1800 => '30 Minutes',
+            3600 => '1 Hour',
+            10800 => '3 Hours',
+        ]);
+        $field->setValue(1800);
+        $form->addField($field);
+
 
         $field = new Form\Element\Submit();
         $field->setValue('Save &raquo;');
@@ -289,18 +342,5 @@ class SettingsController extends Controller
         $form->setValues($values);
 
         return $form;
-    }
-
-    protected function getGithubUser($token)
-    {
-        $http = new HttpClient('https://api.github.com');
-        $user = $http->get('/user', array('access_token' => $token));
-
-        return $user['body'];
-    }
-
-    protected function canWriteConfig()
-    {
-        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
     }
 }

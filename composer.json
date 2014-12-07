@@ -22,12 +22,18 @@
         "source": "https://github.com/Block8/PHPCI"
     },
 
+    "autoload": {
+        "psr-4": {
+            "PHPCI\\": "PHPCI"
+        }
+    },
+
     "require": {
         "php": ">=5.3.8",
         "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
-        "block8/b8framework": "~1.1",
+        "block8/b8framework": "~1.0",
         "ircmaxell/password-compat": "~1.0",
         "swiftmailer/swiftmailer": "~5.0",
         "symfony/yaml": "~2.1",

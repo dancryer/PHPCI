@@ -22,6 +22,9 @@ use PHPCI\Model\Build;
 */
 class Application extends b8\Application
 {
+    /**
+     * init
+     */
     public function init()
     {
         $request =& $this->request;
@@ -44,24 +47,22 @@ class Application extends b8\Application
             return false;
         };
 
-        // load settings to check if there's a configured default user and auth disabled
+        // Check settings for disable_authentication enabled and user_id
         $skipAuth = function () {
-        /**    $parser = new Parser();
-            $yaml = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
-            $settings = $parser->parse($yaml);
-            if ((!empty($settings['phpci']['authentication_settings']['state'])
-                    && 1 == (int)$settings['phpci']['authentication_settings']['state'])
-                && !empty($settings['phpci']['authentication_settings']['user_id'])
-            ) {
+            $config = b8\Config::getInstance();
+            $state = (bool)$config->get('phpci.authentication_settings.state', false);
+            $id    = $config->get('phpci.authentication_settings.user_id', 0);
+
+            if (false !== $state && 0 != (int)$id) {
                 $user = b8\Store\Factory::getStore('User')
-                    ->getByPrimaryKey($settings['phpci']['authentication_settings']['user_id']);
+                    ->getByPrimaryKey($id);
 
                 if ($user) {
-                    $_SESSION['user'] = $user;
+                    $_SESSION['phpci_user'] = $user;
                     return true;
                 }
             }
-*/
+
             return false;
         };
 
@@ -88,9 +89,12 @@ class Application extends b8\Application
         $this->router->clearRoutes();
         $this->router->register($route, $opts, $routeHandler);
     }
+
     /**
-    * Handle an incoming web request.
-    */
+     * Handle an incoming web request.
+     *
+     * @return b8\b8\Http\Response|Response
+     */
     public function handleRequest()
     {
         try {
@@ -123,6 +127,10 @@ class Application extends b8\Application
         return $this->response;
     }
 
+    /**
+     * @param $class
+     * @return mixed
+     */
     protected function loadController($class)
     {
         $controller = parent::loadController($class);
@@ -133,6 +141,9 @@ class Application extends b8\Application
         return $controller;
     }
 
+    /**
+     * @param View $layout
+     */
     protected function setLayoutVariables(View &$layout)
     {
         /** @var \PHPCI\Store\ProjectStore $projectStore */

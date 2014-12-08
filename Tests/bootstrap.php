@@ -25,3 +25,5 @@ if (file_exists(dirname(__DIR__) . '/PHPCI/config.yml')) {
 }
 
 require_once(dirname(__DIR__) . '/vars.php');
+
+\PHPCI\Helper\Lang::init($config);

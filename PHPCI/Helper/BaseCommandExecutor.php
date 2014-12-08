@@ -12,6 +12,10 @@ namespace PHPCI\Helper;
 use \PHPCI\Logging\BuildLogger;
 use Psr\Log\LogLevel;
 
+/**
+ * Handles running system commands with variables.
+ * @package PHPCI\Helper
+ */
 abstract class BaseCommandExecutor implements CommandExecutor
 {
     /**

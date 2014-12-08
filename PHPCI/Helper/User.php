@@ -17,6 +17,12 @@ namespace PHPCI\Helper;
 */
 class User
 {
+    /**
+     * Proxies method calls through to the current active user model.
+     * @param $method
+     * @param array $params
+     * @return mixed|null
+     */
     public function __call($method, $params = array())
     {
         $user = $_SESSION['phpci_user'];

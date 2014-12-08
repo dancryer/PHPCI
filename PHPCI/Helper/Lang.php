@@ -11,11 +11,20 @@ namespace PHPCI\Helper;
 
 use b8\Config;
 
+/**
+ * Languages Helper Class - Handles loading strings files and the strings within them.
+ * @package PHPCI\Helper
+ */
 class Lang
 {
     protected static $language = null;
     protected static $strings = array();
 
+    /**
+     * Get a specific string from the language file.
+     * @param $string
+     * @return mixed|string
+     */
     public static function get($string)
     {
         $vars = func_get_args();
@@ -28,21 +37,36 @@ class Lang
         return '%%MISSING STRING: ' . $string . '%%';
     }
 
+    /**
+     * Output a specific string from the language file.
+     */
     public static function out()
     {
         print call_user_func_array(array('PHPCI\Helper\Lang', 'get'), func_get_args());
     }
 
+    /**
+     * Get the currently active language.
+     * @return string|null
+     */
     public static function getLanguage()
     {
         return self::$language;
     }
 
+    /**
+     * Get the strings for the currently active language.
+     * @return string[]
+     */
     public static function getStrings()
     {
         return self::$strings;
     }
 
+    /**
+     * Initialise the Language helper, try load the language file for the user's browser or the configured default.
+     * @param Config $config
+     */
     public static function init(Config $config)
     {
         // Try user language:
@@ -73,10 +97,14 @@ class Lang
         }
 
         // Fall back to en-GB:
-        self::$language = 'en-gb';
+        self::$language = 'en';
         self::$strings = self::loadLanguage();
     }
 
+    /**
+     * Load a specific language file.
+     * @return string[]|null
+     */
     protected static function loadLanguage()
     {
         $langFile = PHPCI_DIR . 'PHPCI/Languages/lang.' . self::$language . '.php';

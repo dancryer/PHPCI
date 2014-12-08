@@ -58,12 +58,12 @@ released under the MIT or BSD license.
 
 Enjoy!
 
-[1]:  http://symfony.com/doc/2.7/book/installation.html
-[6]:  http://symfony.com/doc/2.7/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  http://symfony.com/doc/2.7/book/doctrine.html
-[8]:  http://symfony.com/doc/2.7/book/templating.html
-[9]:  http://symfony.com/doc/2.7/book/security.html
-[10]: http://symfony.com/doc/2.7/cookbook/email.html
-[11]: http://symfony.com/doc/2.7/cookbook/logging/monolog.html
-[12]: http://symfony.com/doc/2.7/cookbook/assetic/asset_management.html
-[13]: http://symfony.com/doc/2.7/bundles/SensioGeneratorBundle/index.html
+[1]:  http://symfony.com/doc/3.0/book/installation.html
+[6]:  http://symfony.com/doc/3.0/bundles/SensioFrameworkExtraBundle/index.html
+[7]:  http://symfony.com/doc/3.0/book/doctrine.html
+[8]:  http://symfony.com/doc/3.0/book/templating.html
+[9]:  http://symfony.com/doc/3.0/book/security.html
+[10]: http://symfony.com/doc/3.0/cookbook/email.html
+[11]: http://symfony.com/doc/3.0/cookbook/logging/monolog.html
+[12]: http://symfony.com/doc/3.0/cookbook/assetic/asset_management.html
+[13]: http://symfony.com/doc/3.0/bundles/SensioGeneratorBundle/index.html

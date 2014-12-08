@@ -27,6 +27,18 @@ class Lint implements PHPCI\Plugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
@@ -68,6 +80,13 @@ class Lint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Lint an item (file or directory) by calling the appropriate method.
+     * @param $php
+     * @param $item
+     * @param $itemPath
+     * @return bool
+     */
     protected function lintItem($php, $item, $itemPath)
     {
         $success = true;
@@ -81,6 +100,12 @@ class Lint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Run php -l against a directory of files.
+     * @param $php
+     * @param $path
+     * @return bool
+     */
     protected function lintDirectory($php, $path)
     {
         $success = true;
@@ -105,6 +130,12 @@ class Lint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Run php -l against a specific file.
+     * @param $php
+     * @param $path
+     * @return bool
+     */
     protected function lintFile($php, $path)
     {
         $success = true;

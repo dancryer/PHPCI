@@ -113,6 +113,12 @@ class RemoteGitBuild extends Build
         return $success;
     }
 
+    /**
+     * Handle any post-clone tasks, like switching branches.
+     * @param Builder $builder
+     * @param $cloneTo
+     * @return bool
+     */
     protected function postCloneSetup(Builder $builder, $cloneTo)
     {
         $success = true;

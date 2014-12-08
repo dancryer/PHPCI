@@ -31,6 +31,12 @@ class Phing implements \PHPCI\Plugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->setPhpci($phpci);
@@ -138,6 +144,10 @@ class Phing implements \PHPCI\Plugin
         return $this->targets;
     }
 
+    /**
+     * Converts an array of targets into a string.
+     * @return string
+     */
     private function targetsToString()
     {
         return implode(' ', $this->targets);
@@ -180,6 +190,10 @@ class Phing implements \PHPCI\Plugin
         $this->buildFile = $buildFile;
     }
 
+    /**
+     * Get phing build file path.
+     * @return string
+     */
     public function getBuildFilePath()
     {
         return $this->getDirectory() . $this->buildFile;

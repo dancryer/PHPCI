@@ -22,6 +22,9 @@ use PHPCI\Model\Build;
 */
 class Application extends b8\Application
 {
+    /**
+     * Initialise PHPCI - Handles session verification, routing, etc.
+     */
     public function init()
     {
         $request =& $this->request;
@@ -67,6 +70,7 @@ class Application extends b8\Application
         $this->router->clearRoutes();
         $this->router->register($route, $opts, $routeHandler);
     }
+
     /**
     * Handle an incoming web request.
     */
@@ -102,6 +106,11 @@ class Application extends b8\Application
         return $this->response;
     }
 
+    /**
+     * Loads a particular controller, and injects our layout view into it.
+     * @param $class
+     * @return mixed
+     */
     protected function loadController($class)
     {
         $controller = parent::loadController($class);
@@ -112,6 +121,10 @@ class Application extends b8\Application
         return $controller;
     }
 
+    /**
+     * Injects variables into the layout before rendering it.
+     * @param View $layout
+     */
     protected function setLayoutVariables(View &$layout)
     {
         /** @var \PHPCI\Store\ProjectStore $projectStore */

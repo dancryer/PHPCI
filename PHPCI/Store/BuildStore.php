@@ -22,6 +22,12 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
+    /**
+     * Return an array of the latest builds for a given project.
+     * @param null $projectId
+     * @param int $limit
+     * @return array
+     */
     public function getLatestBuilds($projectId = null, $limit = 5)
     {
         $where = '';
@@ -53,6 +59,12 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Return the latest build for a specific project, of a specific build status.
+     * @param null $projectId
+     * @param int $status
+     * @return array|Build
+     */
     public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
     {
         $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
@@ -69,6 +81,12 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Return an array of builds for a given project and commit ID.
+     * @param $projectId
+     * @param $commitId
+     * @return array
+     */
     public function getByProjectAndCommit($projectId, $commitId)
     {
         $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id AND `commit_id` = :commit_id';
@@ -91,6 +109,14 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Return build metadata by key, project and optionally build id.
+     * @param $key
+     * @param $projectId
+     * @param null $buildId
+     * @param int $numResults
+     * @return array|null
+     */
     public function getMeta($key, $projectId, $buildId = null, $numResults = 1)
     {
         $select = '`build_id`, `meta_key`, `meta_value`';
@@ -124,6 +150,14 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Set a metadata value for a given project and build ID.
+     * @param $projectId
+     * @param $buildId
+     * @param $key
+     * @param $value
+     * @return bool
+     */
     public function setMeta($projectId, $buildId, $key, $value)
     {
         $cols = '`project_id`, `build_id`, `meta_key`, `meta_value`';

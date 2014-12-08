@@ -28,6 +28,18 @@ class Irc implements \PHPCI\Plugin
     protected $room;
     protected $nick;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -47,6 +59,10 @@ class Irc implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * Run IRC plugin.
+     * @return bool
+     */
     public function execute()
     {
         $msg = $this->phpci->interpolate($this->message);

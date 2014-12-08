@@ -51,6 +51,9 @@ class ProjectController extends \PHPCI\Controller
      */
     protected $buildService;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
@@ -366,6 +369,11 @@ class ProjectController extends \PHPCI\Controller
         die(json_encode($github->getRepositories()));
     }
 
+    /**
+     * Get the validator to use to check project references.
+     * @param $values
+     * @return callable
+     */
     protected function getReferenceValidator($values)
     {
         return function ($val) use ($values) {

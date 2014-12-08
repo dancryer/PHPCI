@@ -33,7 +33,10 @@ class BuildController extends \PHPCI\Controller
      * @var \PHPCI\Service\BuildService
      */
     protected $buildService;
-    
+
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore = b8\Store\Factory::getStore('Build');
@@ -77,6 +80,10 @@ class BuildController extends \PHPCI\Controller
         $this->layout->nav = $nav;
     }
 
+    /**
+     * Returns an array of the JS plugins to include.
+     * @return array
+     */
     protected function getUiPlugins()
     {
         $rtn = array();
@@ -182,6 +189,9 @@ class BuildController extends \PHPCI\Controller
         return $log;
     }
 
+    /**
+     * Allows the UI to poll for the latest running and pending builds.
+     */
     public function latest()
     {
         $rtn = array(
@@ -194,6 +204,11 @@ class BuildController extends \PHPCI\Controller
         }
     }
 
+    /**
+     * Formats a list of builds into rows suitable for the dropdowns in the PHPCI header bar.
+     * @param $builds
+     * @return array
+     */
     protected function formatBuilds($builds)
     {
         Project::$sleepable = array('id', 'title', 'reference', 'type');

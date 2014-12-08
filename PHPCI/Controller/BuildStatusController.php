@@ -30,6 +30,9 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
     protected $buildStore;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->response->disableLayout();
@@ -79,6 +82,12 @@ class BuildStatusController extends \PHPCI\Controller
         die(file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg'));
     }
 
+    /**
+     * View the public status page of a given project, if enabled.
+     * @param $projectId
+     * @return string
+     * @throws \b8\Exception\HttpException\NotFoundException
+     */
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);

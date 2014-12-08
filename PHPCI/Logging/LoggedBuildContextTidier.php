@@ -11,8 +11,15 @@ namespace PHPCI\Logging;
 
 use PHPCI\Model\Build;
 
+/**
+ * Class LoggedBuildContextTidier cleans up build log entries.
+ * @package PHPCI\Logging
+ */
 class LoggedBuildContextTidier
 {
+    /**
+     * @return array
+     */
     public function __invoke()
     {
         return $this->tidyLoggedBuildContext(func_get_arg(0));

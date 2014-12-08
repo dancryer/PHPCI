@@ -13,6 +13,10 @@ use b8\Store\Factory;
 use Monolog\Handler\AbstractProcessingHandler;
 use PHPCI\Model\Build;
 
+/**
+ * Class BuildDBLogHandler writes the build log to the database.
+ * @package PHPCI\Logging
+ */
 class BuildDBLogHandler extends AbstractProcessingHandler
 {
     /**
@@ -22,6 +26,11 @@ class BuildDBLogHandler extends AbstractProcessingHandler
 
     protected $logValue;
 
+    /**
+     * @param Build $build
+     * @param bool $level
+     * @param bool $bubble
+     */
     public function __construct(
         Build $build,
         $level = LogLevel::INFO,
@@ -33,6 +42,10 @@ class BuildDBLogHandler extends AbstractProcessingHandler
         $this->logValue = $build->getLog();
     }
 
+    /**
+     * Write a log entry to the build log.
+     * @param array $record
+     */
     protected function write(array $record)
     {
         $message = (string)$record['message'];

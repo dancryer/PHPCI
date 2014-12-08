@@ -251,6 +251,10 @@ class Builder implements LoggerAwareInterface
         return $this->commandExecutor->getLastOutput();
     }
 
+    /**
+     * Specify whether exec output should be logged.
+     * @param bool $enableLog
+     */
     public function logExecOutput($enableLog = true)
     {
         $this->commandExecutor->logExecOutput = $enableLog;
@@ -321,6 +325,12 @@ class Builder implements LoggerAwareInterface
         $this->buildLogger->setLogger($logger);
     }
 
+    /**
+     * Write to the build log.
+     * @param $message
+     * @param string $level
+     * @param array $context
+     */
     public function log($message, $level = LogLevel::INFO, $context = array())
     {
         $this->buildLogger->log($message, $level, $context);

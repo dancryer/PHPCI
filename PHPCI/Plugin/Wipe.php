@@ -32,7 +32,12 @@ class Wipe implements \PHPCI\Plugin
 
     protected $directory;
 
-
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;

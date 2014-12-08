@@ -13,6 +13,11 @@ use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Store\BuildStore;
 
+/**
+ * The build service handles the creation, duplication and deletion of builds.
+ * Class BuildService
+ * @package PHPCI\Service
+ */
 class BuildService
 {
     /**

@@ -25,6 +25,12 @@ class PackageBuild implements \PHPCI\Plugin
     protected $format;
     protected $phpci;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;

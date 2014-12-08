@@ -13,6 +13,10 @@ use Monolog\Handler\AbstractProcessingHandler;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class OutputLogHandler outputs the build log to the terminal.
+ * @package PHPCI\Logging
+ */
 class OutputLogHandler extends AbstractProcessingHandler
 {
     /**
@@ -20,6 +24,11 @@ class OutputLogHandler extends AbstractProcessingHandler
      */
     protected $output;
 
+    /**
+     * @param OutputInterface $output
+     * @param bool|string $level
+     * @param bool $bubble
+     */
     public function __construct(
         OutputInterface $output,
         $level = LogLevel::INFO,
@@ -29,6 +38,10 @@ class OutputLogHandler extends AbstractProcessingHandler
         $this->output = $output;
     }
 
+    /**
+     * Write a log entry to the terminal.
+     * @param array $record
+     */
     protected function write(array $record)
     {
         $this->output->writeln((string)$record['formatted']);

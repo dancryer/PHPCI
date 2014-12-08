@@ -37,6 +37,18 @@ class PhpCsFixer implements \PHPCI\Plugin
     protected $diff       = '';
     protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -46,6 +58,10 @@ class PhpCsFixer implements \PHPCI\Plugin
         $this->buildArgs($options);
     }
 
+    /**
+     * Run PHP CS Fixer.
+     * @return bool
+     */
     public function execute()
     {
         $curdir = getcwd();
@@ -66,6 +82,10 @@ class PhpCsFixer implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Build an args string for PHPCS Fixer.
+     * @param $options
+     */
     public function buildArgs($options)
     {
         if (isset($options['verbose']) && $options['verbose']) {

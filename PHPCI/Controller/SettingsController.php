@@ -28,6 +28,9 @@ class SettingsController extends Controller
 {
     protected $settings;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         parent::init();
@@ -37,6 +40,10 @@ class SettingsController extends Controller
         $this->settings = $parser->parse($yaml);
     }
 
+    /**
+     * Display settings forms.
+     * @return string
+     */
     public function index()
     {
         $this->requireAdmin();
@@ -66,6 +73,9 @@ class SettingsController extends Controller
         return $this->view->render();
     }
 
+    /**
+     * Save Github settings.
+     */
     public function github()
     {
         $this->requireAdmin();
@@ -83,6 +93,9 @@ class SettingsController extends Controller
         die;
     }
 
+    /**
+     * Save email settings.
+     */
     public function email()
     {
         $this->requireAdmin();
@@ -101,6 +114,9 @@ class SettingsController extends Controller
         die;
     }
 
+    /**
+     * Save build settings.
+     */
     public function build()
     {
         $this->requireAdmin();
@@ -164,6 +180,10 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * Get the Github settings form.
+     * @return Form
+     */
     protected function getGithubForm()
     {
         $form = new Form();
@@ -203,6 +223,11 @@ class SettingsController extends Controller
         return $form;
     }
 
+    /**
+     * Get the email settings form.
+     * @param array $values
+     * @return Form
+     */
     protected function getEmailForm($values = array())
     {
         $form = new Form();
@@ -273,6 +298,11 @@ class SettingsController extends Controller
         return $form;
     }
 
+    /**
+     * Call Github API for our Github user object.
+     * @param $token
+     * @return mixed
+     */
     protected function getGithubUser($token)
     {
         $http = new HttpClient('https://api.github.com');
@@ -281,11 +311,20 @@ class SettingsController extends Controller
         return $user['body'];
     }
 
+    /**
+     * Check if we can write the PHPCI config file.
+     * @return bool
+     */
     protected function canWriteConfig()
     {
         return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
     }
 
+    /**
+     * Get the Build settings form.
+     * @param array $values
+     * @return Form
+     */
     protected function getBuildForm($values = array())
     {
         $form = new Form();

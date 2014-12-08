@@ -11,11 +11,13 @@ namespace PHPCI\Logging;
 
 use Monolog\Logger;
 
+/**
+ * Class LoggerConfig
+ * @package PHPCI\Logging
+ */
 class LoggerConfig
 {
-
     const KEY_ALWAYS_LOADED = "_";
-
     private $config;
 
     /**
@@ -59,6 +61,11 @@ class LoggerConfig
         return new Logger($name, $handlers);
     }
 
+    /**
+     * Return an array of enabled log handlers.
+     * @param $key
+     * @return array|mixed
+     */
     protected function getHandlers($key)
     {
         $handlers = array();

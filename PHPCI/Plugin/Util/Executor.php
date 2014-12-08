@@ -5,6 +5,10 @@ namespace PHPCI\Plugin\Util;
 use PHPCI\Helper\Lang;
 use \PHPCI\Logging\BuildLogger;
 
+/**
+ * Plugin Executor - Runs the configured plugins for a given build stage.
+ * @package PHPCI\Plugin\Util
+ */
 class Executor
 {
     /**
@@ -17,6 +21,10 @@ class Executor
      */
     protected $pluginFactory;
 
+    /**
+     * @param Factory $pluginFactory
+     * @param BuildLogger $logger
+     */
     public function __construct(Factory $pluginFactory, BuildLogger $logger)
     {
         $this->pluginFactory = $pluginFactory;

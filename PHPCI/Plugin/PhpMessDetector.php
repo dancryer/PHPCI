@@ -55,6 +55,13 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected $rules;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
@@ -64,7 +71,18 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
-
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -117,6 +135,11 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $this->wasLastExecSuccessful($errorCount);
     }
 
+    /**
+     * Override a default setting.
+     * @param $options
+     * @param $key
+     */
     protected function overrideSetting($options, $key)
     {
         if (isset($options[$key]) && is_array($options[$key])) {
@@ -124,6 +147,12 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
     }
 
+    /**
+     * Process PHPMD's XML output report.
+     * @param $xmlString
+     * @return array
+     * @throws \Exception
+     */
     protected function processReport($xmlString)
     {
         $xml = simplexml_load_string($xmlString);
@@ -159,6 +188,10 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return array($warnings, $data);
     }
 
+    /**
+     * Try and process the rules parameter from phpci.yml.
+     * @return bool
+     */
     protected function tryAndProcessRules()
     {
         if (!empty($this->rules) && !is_array($this->rules)) {
@@ -175,6 +208,10 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return true;
     }
 
+    /**
+     * Execute PHP Mess Detector.
+     * @param $binaryPath
+     */
     protected function executePhpMd($binaryPath)
     {
         $cmd = $binaryPath . ' "%s" xml %s %s %s';
@@ -207,6 +244,10 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->phpci->logExecOutput(true);
     }
 
+    /**
+     * Get the path PHPMD should be run against.
+     * @return string
+     */
     protected function getTargetPath()
     {
         $path = $this->phpci->buildPath . $this->path;

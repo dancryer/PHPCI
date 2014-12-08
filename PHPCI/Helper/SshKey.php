@@ -9,8 +9,16 @@
 
 namespace PHPCI\Helper;
 
+/**
+ * Helper class for dealing with SSH keys.
+ * @package PHPCI\Helper
+ */
 class SshKey
 {
+    /**
+     * Uses ssh-keygen to generate a public/private key pair.
+     * @return array
+     */
     public function generate()
     {
         $tempPath = sys_get_temp_dir() . '/';
@@ -49,6 +57,10 @@ class SshKey
         return $return;
     }
 
+    /**
+     * Checks whether or not we can generate keys, by quietly test running ssh-keygen.
+     * @return bool
+     */
     public function canGenerateKeys()
     {
         $keygen = @shell_exec('ssh-keygen -h');

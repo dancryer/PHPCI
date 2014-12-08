@@ -26,6 +26,9 @@ class SessionController extends \PHPCI\Controller
      */
     protected $userStore;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->response->disableLayout();
@@ -93,6 +96,10 @@ class SessionController extends \PHPCI\Controller
         die;
     }
 
+    /**
+     * Allows the user to request a password reset email.
+     * @return string
+     */
     public function forgotPassword()
     {
         if ($this->request->getMethod() == 'POST') {
@@ -121,6 +128,12 @@ class SessionController extends \PHPCI\Controller
         return $this->view->render();
     }
 
+    /**
+     * Allows the user to change their password after a password reset email.
+     * @param $userId
+     * @param $key
+     * @return string
+     */
     public function resetPassword($userId, $key)
     {
         $user = $this->userStore->getById($userId);
@@ -148,6 +161,10 @@ class SessionController extends \PHPCI\Controller
         return $this->view->render();
     }
 
+    /**
+     * Get the URL the user was trying to go to prior to being asked to log in.
+     * @return string
+     */
     protected function getLoginRedirect()
     {
         $rtn = PHPCI_URL;

@@ -37,6 +37,12 @@ class PhpCpd implements \PHPCI\Plugin
      */
     protected $ignore;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -105,6 +111,12 @@ class PhpCpd implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Process the PHPCPD XML report.
+     * @param $xmlString
+     * @return array
+     * @throws \Exception
+     */
     protected function processReport($xmlString)
     {
         $xml = simplexml_load_string($xmlString);

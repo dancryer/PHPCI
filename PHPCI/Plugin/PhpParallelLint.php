@@ -41,6 +41,18 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     protected $ignore;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
@@ -88,6 +100,10 @@ class PhpParallelLint implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Produce an argument string for PHP Parallel Lint.
+     * @return array
+     */
     protected function getFlags()
     {
         $ignore = '';

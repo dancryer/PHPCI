@@ -36,6 +36,9 @@ class UserController extends Controller
      */
     protected $userService;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->userStore = b8\Store\Factory::getStore('User');
@@ -55,6 +58,10 @@ class UserController extends Controller
         return $this->view->render();
     }
 
+    /**
+     * Allows the user to edit their profile.
+     * @return string
+     */
     public function profile()
     {
         $user = $_SESSION['phpci_user'];

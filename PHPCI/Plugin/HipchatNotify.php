@@ -27,6 +27,13 @@ class HipchatNotify implements \PHPCI\Plugin
     private $color;
     private $notify;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     * @throws \Exception
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -62,6 +69,10 @@ class HipchatNotify implements \PHPCI\Plugin
 
     }
 
+    /**
+     * Run the HipChat plugin.
+     * @return bool
+     */
     public function execute()
     {
         $hipChat = new \HipChat\HipChat($this->authToken);

@@ -32,6 +32,9 @@ class HomeController extends \PHPCI\Controller
      */
     protected $projectStore;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore      = b8\Store\Factory::getStore('Build');
@@ -68,12 +71,20 @@ class HomeController extends \PHPCI\Controller
         die($this->getLatestBuildsHtml());
     }
 
+    /**
+     * Ajax request for the project overview section of the dashboard.
+     */
     public function summary()
     {
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
         die($this->getSummaryHtml($projects));
     }
 
+    /**
+     * Generate the HTML for the project overview section of the dashboard.
+     * @param $projects
+     * @return string
+     */
     protected function getSummaryHtml($projects)
     {
         $summaryBuilds = array();

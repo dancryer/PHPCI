@@ -204,6 +204,10 @@ class Phar implements \PHPCI\Plugin
         return $this->stub;
     }
 
+    /**
+     * Get stub content for the Phar file.
+     * @return string
+     */
     public function getStubContent()
     {
         $content  = '';
@@ -214,7 +218,10 @@ class Phar implements \PHPCI\Plugin
         return $content;
     }
 
-    // Execution
+    /**
+     * Run the phar plugin.
+     * @return bool
+     */
     public function execute()
     {
         $success = false;

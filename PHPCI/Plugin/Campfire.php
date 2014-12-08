@@ -29,6 +29,13 @@ class Campfire implements \PHPCI\Plugin
     private $verbose;
     private $roomId;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     * @throws \Exception
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -50,6 +57,10 @@ class Campfire implements \PHPCI\Plugin
 
     }
 
+    /**
+     * Run the Campfire plugin.
+     * @return bool|mixed
+     */
     public function execute()
     {
         $url = PHPCI_URL."build/view/".$this->build->getId();
@@ -62,16 +73,31 @@ class Campfire implements \PHPCI\Plugin
 
     }
 
+    /**
+     * Join a Campfire room.
+     * @param $roomId
+     */
     public function joinRoom($roomId)
     {
         $this->getPageByPost('/room/'.$roomId.'/join.json');
     }
 
+    /**
+     * Leave a Campfire room.
+     * @param $roomId
+     */
     public function leaveRoom($roomId)
     {
         $this->getPageByPost('/room/'.$roomId.'/leave.json');
     }
 
+    /**
+     * Send a message to a campfire room.
+     * @param $message
+     * @param $roomId
+     * @param bool $isPaste
+     * @return bool|mixed
+     */
     public function speak($message, $roomId, $isPaste = false)
     {
         $page = '/room/'.$roomId.'/speak.json';
@@ -85,6 +111,12 @@ class Campfire implements \PHPCI\Plugin
 
     }
 
+    /**
+     * Make a request to Campfire.
+     * @param $page
+     * @param null $data
+     * @return bool|mixed
+     */
     private function getPageByPost($page, $data = null)
     {
         $url = $this->url . $page;

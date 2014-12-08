@@ -21,6 +21,11 @@ use PHPCI\Store\Base\ProjectStoreBase;
 */
 class ProjectStore extends ProjectStoreBase
 {
+    /**
+     * Returns a list of all branch names PHPCI has run builds against.
+     * @param $projectId
+     * @return array
+     */
     public function getKnownBranches($projectId)
     {
         $query = 'SELECT DISTINCT branch from build WHERE project_id = :pid';
@@ -41,6 +46,10 @@ class ProjectStore extends ProjectStoreBase
         }
     }
 
+    /**
+     * Get a list of all projects, ordered by their title.
+     * @return array
+     */
     public function getAll()
     {
         $query = 'SELECT * FROM `project` ORDER BY `title` ASC';

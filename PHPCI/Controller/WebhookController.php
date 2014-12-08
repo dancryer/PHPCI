@@ -40,6 +40,9 @@ class WebhookController extends \PHPCI\Controller
      */
     protected $buildService;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
@@ -143,6 +146,11 @@ class WebhookController extends \PHPCI\Controller
         die('This request type is not supported, this is not an error.');
     }
 
+    /**
+     * Handle the payload when Github sends a commit webhook.
+     * @param $project
+     * @param array $payload
+     */
     protected function githubCommitRequest($project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
@@ -182,6 +190,11 @@ class WebhookController extends \PHPCI\Controller
         die('OK');
     }
 
+    /**
+     * Handle the payload when Github sends a Pull Request webhook.
+     * @param $projectId
+     * @param array $payload
+     */
     protected function githubPullRequest($projectId, array $payload)
     {
         // We only want to know about open pull requests:
@@ -262,6 +275,17 @@ class WebhookController extends \PHPCI\Controller
         die('OK');
     }
 
+    /**
+     * Wrapper for creating a new build.
+     * @param $projectId
+     * @param $commitId
+     * @param $branch
+     * @param $committer
+     * @param $commitMessage
+     * @param null $extra
+     * @return bool
+     * @throws \Exception
+     */
     protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, $extra = null)
     {
         // Check if a build already exists for this commit ID:

@@ -24,7 +24,7 @@ test:
   php_loc:
   php_unit:
   php_docblock_checker:
-    allowed_warnings: -1 # Allow unlimited warnings for now.
+    allowed_warnings: 0
 
 failure:
   email:

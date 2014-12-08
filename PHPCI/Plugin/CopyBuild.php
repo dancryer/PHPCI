@@ -27,6 +27,12 @@ class CopyBuild implements \PHPCI\Plugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
@@ -62,6 +68,10 @@ class CopyBuild implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Wipe the destination directory if it already exists.
+     * @throws \Exception
+     */
     protected function wipeExistingDirectory()
     {
         if ($this->wipe == true && $this->directory != '/' && is_dir($this->directory)) {
@@ -74,6 +84,9 @@ class CopyBuild implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * Delete any ignored files from the build prior to copying.
+     */
     protected function deleteIgnoredFiles()
     {
         if ($this->ignore) {

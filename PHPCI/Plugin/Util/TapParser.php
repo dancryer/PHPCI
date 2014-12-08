@@ -4,6 +4,10 @@ namespace PHPCI\Plugin\Util;
 
 use PHPCI\Helper\Lang;
 
+/**
+ * Processes TAP format strings into usable test result data.
+ * @package PHPCI\Plugin\Util
+ */
 class TapParser
 {
     const TEST_COUNTS_PATTERN = '/([0-9]+)\.\.([0-9]+)/';
@@ -75,6 +79,11 @@ class TapParser
         return $rtn;
     }
 
+    /**
+     * Process the individual test lines within a TAP string.
+     * @param $lines
+     * @return array
+     */
     protected function processTestLines($lines)
     {
         $rtn = array();
@@ -106,6 +115,10 @@ class TapParser
         return $rtn;
     }
 
+    /**
+     * Get the total number of failures from the current TAP file.
+     * @return int
+     */
     public function getTotalFailures()
     {
         return $this->failures;

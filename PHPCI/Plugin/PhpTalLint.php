@@ -25,10 +25,35 @@ class PhpTalLint implements PHPCI\Plugin
     protected $recursive = true;
     protected $suffixes;
     protected $ignore;
+
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
+
+    /**
+     * @var \PHPCI\Model\Build
+     */
     protected $build;
+
+    /**
+     * @var string The path to a file contain custom phptal_tales_ functions
+     */
     protected $tales;
+
+    /**
+     * @var int
+     */
     protected $allowed_warnings;
+
+    /**
+     * @var int
+     */
+    protected $allowed_errors;
+
+    /**
+     * @var array The results of the lint scan
+     */
     protected $failedPaths = array();
 
     /**
@@ -53,32 +78,32 @@ class PhpTalLint implements PHPCI\Plugin
             $this->directories = array($options['directory']);
         }
 
-        if (!empty($options['directories'])) {
-            $this->directories = $options['directories'];
-        }
-
         if (isset($options['suffixes'])) {
             $this->suffixes = (array)$options['suffixes'];
         }
 
-        if (isset($options['allowed_warnings'])) {
-            $this->allowed_warnings = $options['allowed_warnings'];
-        }
+        $this->setOptions($options);
+    }
 
-        if (isset($options['allowed_errors'])) {
-            $this->allowed_errors = $options['allowed_errors'];
-        }
-
-        if (array_key_exists('tales', $options)) {
-            $this->tales = $options['tales'];
+    /**
+     * Handle this plugin's options.
+     * @param $options
+     */
+    protected function setOptions($options)
+    {
+        foreach (array('directories', 'tales', 'allowed_warnings', 'allowed_errors') as $key) {
+            if (array_key_exists($key, $options)) {
+                $this->{$key} = $options[$key];
+            }
         }
     }
 
+    /**
+     * Executes phptal lint
+     */
     public function execute()
     {
         $this->phpci->quiet = true;
-        $success = true;
-
         $this->phpci->logExecOutput(false);
 
         foreach ($this->directories as $dir) {
@@ -86,7 +111,6 @@ class PhpTalLint implements PHPCI\Plugin
         }
 
         $this->phpci->quiet = false;
-
         $this->phpci->logExecOutput(true);
 
         $errors = 0;
@@ -104,6 +128,8 @@ class PhpTalLint implements PHPCI\Plugin
         $this->build->storeMeta('phptallint-errors', $errors);
         $this->build->storeMeta('phptallint-data', $this->failedPaths);
 
+        $success = true;
+
         if ($this->allowed_warnings != -1 && $warnings > $this->allowed_warnings) {
             $success = false;
         }
@@ -117,7 +143,6 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Lint an item (file or directory) by calling the appropriate method.
-     * @param $php
      * @param $item
      * @param $itemPath
      * @return bool
@@ -137,6 +162,11 @@ class PhpTalLint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Run phptal lint against a directory of files.
+     * @param $path
+     * @return bool
+     */
     protected function lintDirectory($path)
     {
         $success = true;
@@ -161,6 +191,11 @@ class PhpTalLint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Run phptal lint against a specific file.
+     * @param $path
+     * @return bool
+     */
     protected function lintFile($path)
     {
         $success = true;
@@ -210,6 +245,10 @@ class PhpTalLint implements PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Process options and produce an arguments string for PHPTAL Lint.
+     * @return array
+     */
     protected function getFlags()
     {
         $tales = '';

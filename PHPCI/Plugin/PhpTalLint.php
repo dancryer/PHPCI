@@ -82,7 +82,7 @@ class PhpTalLint implements PHPCI\Plugin
         $this->phpci->logExecOutput(false);
 
         foreach ($this->directories as $dir) {
-            $this->lintDirectory($lint, $dir);
+            $this->lintDirectory($dir);
         }
 
         $this->phpci->quiet = false;

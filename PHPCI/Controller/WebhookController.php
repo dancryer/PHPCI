@@ -256,6 +256,21 @@ class WebhookController extends \PHPCI\Controller
 
         try {
 
+
+            // build on merge request events
+            if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
+                $attributes = $payload['object_attributes'];
+                if ( $attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
+
+                    $branch = $attributes['source_branch'];
+                    $commit = $attributes['last_commit'];
+                    $committer = $commit['author']['email'];
+
+                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message'] );
+                }
+            }
+
+            // build on push events
             if (isset($payload['commits']) && is_array($payload['commits'])) {
                 // If we have a list of commits, then add them all as builds to be tested:
 

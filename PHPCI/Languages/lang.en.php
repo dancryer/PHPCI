@@ -92,7 +92,7 @@ PHPCI',
                             for this project. To use it, just add the following public key to the "deploy keys" section
                             of your chosen source code hosting platform.',
     'select_repository_type' => 'Select repository type...',
-    'github' => 'Github',
+    'github' => 'GitHub',
     'bitbucket' => 'Bitbucket',
     'gitlab' => 'Gitlab',
     'remote' => 'Remote URL',
@@ -100,7 +100,7 @@ PHPCI',
     'hg'    => 'Mercurial',
 
     'where_hosted' => 'Where is your project hosted?',
-    'choose_github' => 'Choose a Github repository:',
+    'choose_github' => 'Choose a GitHub repository:',
 
     'repo_name' => 'Repository Name / URL (Remote) or Path (Local)',
     'project_title' => 'Project Title',
@@ -135,7 +135,7 @@ PHPCI',
     'webhooks' => 'Webhooks',
     'webhooks_help_github' => 'To automatically build this project when new commits are pushed, add the URL below
                                 as a new "Webhook" in the <a href="https://github.com/%s/settings/hooks">Webhooks
-                                and Services</a>  section of your Github repository.',
+                                and Services</a>  section of your GitHub repository.',
 
     'webhooks_help_gitlab' => 'To automatically build this project when new commits are pushed, add the URL below
                                 as a "WebHook URL" in the Web Hooks section of your Gitlab repository.',
@@ -219,13 +219,13 @@ PHPCI',
     'settings_check_perms' => 'Your settings could not be saved, check the permissions of your config.yml file.',
     'settings_cannot_write' => 'PHPCI cannot write to your config.yml file, settings may not be saved properly
                                 until this is rectified.',
-    'settings_github_linked' => 'Your Github account has been linked.',
-    'settings_github_not_linked' => 'Your Github account could not be linked.',
+    'settings_github_linked' => 'Your GitHub account has been linked.',
+    'settings_github_not_linked' => 'Your GitHub account could not be linked.',
     'build_settings' => 'Build Settings',
-    'github_application' => 'Github Application',
-    'github_sign_in' => 'Before you can start using Github, you need to <a href="%s">sign in</a> and grant
+    'github_application' => 'GitHub Application',
+    'github_sign_in' => 'Before you can start using GitHub, you need to <a href="%s">sign in</a> and grant
                             PHPCI access to your account.',
-    'github_phpci_linked' => 'PHPCI is successfully linked to Github account.',
+    'github_phpci_linked' => 'PHPCI is successfully linked to GitHub account.',
     'github_where_to_find' => 'Where to find these...',
     'github_where_help' => 'If you own the application you would like to use, you can find this information within your
                             <a href="https://github.com/settings/applications">applications</a> settings area.',
@@ -298,7 +298,7 @@ PHPCI',
     'enter_phpci_url' => 'Your PHPCI URL ("http://phpci.local" for example): ',
 
     'enter_db_host' => 'Please enter your MySQL host [localhost]: ',
-    'enter_db_name' => 'Please enter your MySQL name [phpci]: ',
+    'enter_db_name' => 'Please enter your MySQL database name [phpci]: ',
     'enter_db_user' => 'Please enter your MySQL username [phpci]: ',
     'enter_db_pass' => 'Please enter your MySQL password: ',
     'could_not_connect' => 'PHPCI could not connect to MySQL with the details provided. Please try again.',
@@ -315,11 +315,11 @@ PHPCI',
     'install_instead' => 'Please install PHPCI via phpci:install instead.',
 
     // Poll Command
-    'poll_github' => 'Poll github to check if we need to start a build.',
-    'no_token' => 'No github token found',
+    'poll_github' => 'Poll GitHub to check if we need to start a build.',
+    'no_token' => 'No GitHub token found',
     'finding_projects' => 'Finding projects to poll',
     'found_n_projects' => 'Found %d projects',
-    'last_commit_is' => 'Last commit to github for %s is %s',
+    'last_commit_is' => 'Last commit to GitHub for %s is %s',
     'adding_new_build' => 'Last commit is different to database, adding new build.',
     'finished_processing_builds' => 'Finished processing builds.',
 

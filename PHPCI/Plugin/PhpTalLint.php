@@ -188,7 +188,7 @@ class PhpTalLint implements PHPCI\Plugin
             foreach ($rows as $row) {
                 $name = basename($path);
 
-                $riw = str_replace('(use -i to include your custom modifier functions)', '', $row);
+                $row = str_replace('(use -i to include your custom modifier functions)', '', $row);
                 $message = str_replace($name . ': ', '', $row);
                 
                 $parts = explode(' (line ', $message);

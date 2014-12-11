@@ -55,6 +55,11 @@ class Lang
         return self::$language;
     }
 
+    /**
+     * Try and load a language, and if successful, set it for use throughout the system.
+     * @param $language
+     * @return bool
+     */
     public static function setLanguage($language)
     {
         if (in_array($language, self::$languages)) {

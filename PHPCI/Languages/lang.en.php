@@ -94,7 +94,7 @@ PHPCI',
     'select_repository_type' => 'Select repository type...',
     'github' => 'GitHub',
     'bitbucket' => 'Bitbucket',
-    'gitlab' => 'Gitlab',
+    'gitlab' => 'GitLab',
     'remote' => 'Remote URL',
     'local' => 'Local Path',
     'hg'    => 'Mercurial',
@@ -138,7 +138,7 @@ PHPCI',
                                 and Services</a>  section of your GitHub repository.',
 
     'webhooks_help_gitlab' => 'To automatically build this project when new commits are pushed, add the URL below
-                                as a "WebHook URL" in the Web Hooks section of your Gitlab repository.',
+                                as a "WebHook URL" in the Web Hooks section of your GitLab repository.',
 
     'webhooks_help_bitbucket' => 'To automatically build this project when new commits are pushed, add the URL below
                                 as a "POST" service in the

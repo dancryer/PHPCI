@@ -25,7 +25,6 @@ class PluginController extends \PHPCI\Controller
 {
     protected $required = array(
         'php',
-        'ext-mcrypt',
         'ext-pdo',
         'ext-pdo_mysql',
         'block8/b8framework',

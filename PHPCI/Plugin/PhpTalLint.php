@@ -47,7 +47,7 @@ class PhpTalLint implements PHPCI\Plugin
         $this->ignore = $phpci->ignore;
 
         $this->allowed_warnings = 0;
-        $this->allowed_errors = 0; 
+        $this->allowed_errors = 0;
 
         if (!empty($options['directory'])) {
             $this->directories = array($options['directory']);
@@ -126,8 +126,10 @@ class PhpTalLint implements PHPCI\Plugin
     {
         $success = true;
 
-        if ($item->isFile() && in_array(strtolower($item->getExtension()), $this->suffixes) && !$this->lintFile($itemPath)) {
-            $success = false;
+        if ($item->isFile() && !in_array(strtolower($item->getExtension()), $this->suffixes)) {
+            if (!$this->lintFile($itemPath)) {
+                $success = false;
+            }
         } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($itemPath . '/')) {
             $success = false;
         }
@@ -186,9 +188,11 @@ class PhpTalLint implements PHPCI\Plugin
             foreach ($rows as $row) {
                 $name = basename($path);
 
-                $message = str_replace('(use -i to include your custom modifier functions)', '', str_replace($name . ': ', '', $row));
-                $parts = explode(' (line ', $message);
+                $riw = str_replace('(use -i to include your custom modifier functions)', '', $row);
+                $message = str_replace($name . ': ', '', $row);
                 
+                $parts = explode(' (line ', $message);
+
                 $message = trim($parts[0]);
                 $line = str_replace(')', '', $parts[1]);
 
@@ -206,7 +210,8 @@ class PhpTalLint implements PHPCI\Plugin
         return $success;
     }
 
-    protected function getFlags() {
+    protected function getFlags()
+    {
         $tales = '';
         if (!empty($this->tales)) {
             $tales = ' -i ' . $this->phpci->buildPath . $this->tales;

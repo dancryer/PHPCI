@@ -60,8 +60,10 @@ class Lang
         if (in_array($language, self::$languages)) {
             self::$language = $language;
             self::$strings = self::loadLanguage();
-            return;
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -73,6 +75,7 @@ class Lang
         $languages = array();
 
         foreach (self::$languages as $language) {
+            $strings = array();
             require(PHPCI_DIR . 'PHPCI/Languages/lang.' . $language . '.php');
             $languages[$language] = $strings['language_name'];
         }
@@ -103,14 +106,8 @@ class Lang
         }
 
         // Try cookies first:
-        if (isset($_COOKIE) && array_key_exists('phpcilang', $_COOKIE)) {
-            $language = $_COOKIE['phpcilang'];
-
-            if (in_array($language, self::$languages)) {
-                self::$language = $language;
-                self::$strings = self::loadLanguage();
-                return;
-            }
+        if (isset($_COOKIE) && array_key_exists('phpcilang', $_COOKIE) && self::setLanguage($_COOKIE['phpcilang'])) {
+            return;
         }
 
         // Try user language:
@@ -119,12 +116,9 @@ class Lang
 
             foreach ($langs as $lang) {
                 $parts = explode(';', $lang);
-
                 $language = strtolower($parts[0]);
 
-                if (in_array($language, self::$languages)) {
-                    self::$language = $language;
-                    self::$strings = self::loadLanguage();
+                if (self::setLanguage($language)) {
                     return;
                 }
             }
@@ -132,10 +126,7 @@ class Lang
 
         // Try the installation default language:
         $language = $config->get('phpci.basic.language', null);
-
-        if (in_array($language, self::$languages)) {
-            self::$language = $language;
-            self::$strings = self::loadLanguage();
+        if (self::setLanguage($language)) {
             return;
         }
 

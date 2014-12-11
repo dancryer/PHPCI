@@ -66,9 +66,6 @@ PHPCI',
     'edit_project' => 'Éditer le projet',
     'delete_project' => 'Supprimer le projet',
 
-    // Dashboard:
-    'dashboard' => 'Tableau de bord',
-
     // Project Summary:
     'no_builds_yet' => 'Aucun build pour le moment!',
     'x_of_x_failed' => '%d parmis les derniers %d builds ont échoué.',
@@ -88,6 +85,7 @@ PHPCI',
     'success' => 'Terminé',
     'successful' => 'Réussi',
     'failed' => 'Échoué',
+    'manual_build' => 'Build manuel',
 
     // Add/Edit Project:
     'new_project' => 'Nouveau Projet',
@@ -97,15 +95,15 @@ PHPCI',
                             Pour l\'utiliser, il faut simplement ajouter la clé publique dans la section "Clés de déploiement"
                             de votre outil d\'hébergement de code.',
     'select_repository_type' => 'Sélectionnez le type de dépôt...',
-    'github' => 'Github',
+    'github' => 'GitHub',
     'bitbucket' => 'Bitbucket',
-    'gitlab' => 'Gitlab',
+    'gitlab' => 'GitLab',
     'remote' => 'URL distante',
     'local' => 'Chemin local',
     'hg'    => 'Mercurial',
 
     'where_hosted' => 'Où est hébergé votre projet ?',
-    'choose_github' => 'Choisissez un dépôt Github :',
+    'choose_github' => 'Choisissez un dépôt GitHub :',
 
     'repo_name' => 'Nom du dépôt / URL (distance) ou chemin (local)',
     'project_title' => 'Titre du projet',
@@ -140,10 +138,10 @@ PHPCI',
     'webhooks' => 'Webhooks',
     'webhooks_help_github' => 'Pour générer un build quand de nouveaux commits sont poussés, ajouter l\'url suivante
                                 en tant que new "Webhook" dans la section <a href="https://github.com/%s/settings/hooks">Webhooks
-                                and Services</a> de votre dépôt Github.',
+                                and Services</a> de votre dépôt GitHub.',
 
     'webhooks_help_gitlab' => 'Pour générer un build quand de nouveaux commits sont poussés, ajouter l\'url suivante
-                                and tant que "WebHook URL" dans la section Web Hooks de votre dépôt Gitlab.',
+                                and tant que "WebHook URL" dans la section Web Hooks de votre dépôt GitLab.',
 
     'webhooks_help_bitbucket' => 'Pour générer un build quand de nouveaux commits sont poussés, ajouter l\'url suivante
                                 en tant que service "POST" dans la section
@@ -320,11 +318,11 @@ PHPCI',
     'install_instead' => 'Merci d\'installer PHPCI grâce à la commande phpci:install.',
 
     // Poll Command
-    'poll_github' => 'Demander à github de vérifier si nous devons démarrer un build.',
-    'no_token' => 'Aucun token github n\'a été trouvé',
+    'poll_github' => 'Demander à GitHub de vérifier si nous devons démarrer un build.',
+    'no_token' => 'Aucun token GitHub n\'a été trouvé',
     'finding_projects' => 'Recherche des projets à sonder',
     'found_n_projects' => '%d projets trouvés',
-    'last_commit_is' => 'Le dernier commit sur github pour %s est %s',
+    'last_commit_is' => 'Le dernier commit sur GitHub pour %s est %s',
     'adding_new_build' => 'Le dernier commit est différent de celui présent en base de données, ajout d\'un nouveau build.',
     'finished_processing_builds' => 'Traitement des builds terminé.',
 

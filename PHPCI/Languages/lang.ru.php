@@ -41,6 +41,7 @@ PHPCI',
     'password' => 'Пароль',
     'log_in' => 'Войти',
 
+
     // Top Nav
     'toggle_navigation' => 'Скрыть/показать панель навигации',
     'n_builds_pending' => '%d сборок ожидает',
@@ -83,6 +84,7 @@ PHPCI',
     'success' => 'Успешно',
     'successful' => 'Успешна',
     'failed' => 'Провалена',
+    'manual_build' => 'Ручной сборки',
 
     // Add/Edit Project:
     'new_project' => 'Новый проект',
@@ -91,15 +93,15 @@ PHPCI',
     'public_key_help' => 'Чтобы было легче начать, мы сгенерировали пару SSH-ключей для использования в вашем проекте.
                         Для их использования, просто добавьте эту публичную часть ключа в поле "deploy keys" на выбранном вами хостинге исходного кода.',
     'select_repository_type' => 'Выберите тип репозитория...',
-    'github' => 'Github',
+    'github' => 'GitHub',
     'bitbucket' => 'Bitbucket',
-    'gitlab' => 'Gitlab',
+    'gitlab' => 'GitLab',
     'remote' => 'Внешний URL',
     'local' => 'Локальный путь',
     'hg'    => 'Mercurial',
 
     'where_hosted' => 'Расположение проекта',
-    'choose_github' => 'Выберите Github репозиторий:',
+    'choose_github' => 'Выберите GitHub репозиторий:',
 
     'repo_name' => 'Репозиторий / Внешний URL / Локальный путь',
     'project_title' => 'Название проекта',
@@ -133,10 +135,10 @@ PHPCI',
 
     'webhooks' => 'Webhooks',
     'webhooks_help_github' => 'Чтобы Автоматически собирать этот проект при публикации новых коммитов, добавьте URL ниже в качестве нового хука в разделе настроек <a href="https://github.com/%s/settings/hooks">Webhooks
-                                and Services</a> вашего Github репозитория.',
+                                and Services</a> вашего GitHub репозитория.',
 
     'webhooks_help_gitlab' => 'Чтобы Автоматически собирать этот проект при публикации новых коммитов, добавьте URL ниже в качестве "WebHook URL"
-                                в разделе "Web Hooks" вашего Gitlab репозитория.',
+                                в разделе "Web Hooks" вашего GitLab репозитория.',
 
     'webhooks_help_bitbucket' => 'Чтобы Автоматически собирать этот проект при публикации новых коммитов, добавьте URL ниже как "POST" сервис в разделе <a href="https://bitbucket.org/%s/admin/services">
                                 Services</a> вашего Bitbucket репозитория.',
@@ -214,13 +216,13 @@ PHPCI',
     'settings_saved' => 'Ваши настройки были сохранены.',
     'settings_check_perms' => 'Ваши настройки не могут быть сохранены, проверьте права на файл настроек config.yml.',
     'settings_cannot_write' => 'PHPCI не может записать config.yml файл, настройки не могут быть сохранены корректно, пока это не будет исправлено.',
-    'settings_github_linked' => 'Ваш Github аккаунт привязан.',
-    'settings_github_not_linked' => 'Ваш Github аккаунт не может быть привязан.',
+    'settings_github_linked' => 'Ваш GitHub аккаунт привязан.',
+    'settings_github_not_linked' => 'Ваш GitHub аккаунт не может быть привязан.',
     'build_settings' => 'Настройки сборки',
-    'github_application' => 'Github приложение',
-    'github_sign_in' => 'Перед тем как начать использовать Github аккаунт, вам необходимо <a href="%s">войти</a> и разрешить доступ для
+    'github_application' => 'GitHub приложение',
+    'github_sign_in' => 'Перед тем как начать использовать GitHub аккаунт, вам необходимо <a href="%s">войти</a> и разрешить доступ для
                             PHPCI до вашего аккаунта.',
-    'github_phpci_linked' => 'PHPCI успешно привязал Github аккаунт.',
+    'github_phpci_linked' => 'PHPCI успешно привязал GitHub аккаунт.',
     'github_where_to_find' => 'Где это найти...',
     'github_where_help' => 'Если вы владелец приложения, которое вы хотели бы использовать, то вы можете найти информацию об этом в разделе
     <a href="https://github.com/settings/applications">applications</a> настроек.',
@@ -309,11 +311,11 @@ PHPCI',
     'install_instead' => 'Пожалуйста, установите PHPCI с помощью команды phpci:install.',
 
     // Poll Command
-    'poll_github' => 'Опрос github для проверки запуска сборки.',
-    'no_token' => 'github токен не найден',
+    'poll_github' => 'Опрос GitHub для проверки запуска сборки.',
+    'no_token' => 'GitHub токен не найден',
     'finding_projects' => 'Поиск проектов для опроса',
     'found_n_projects' => 'Найдено проектов: %d',
-    'last_commit_is' => 'Последний коммит на github для %s - %s',
+    'last_commit_is' => 'Последний коммит на GitHub для %s - %s',
     'adding_new_build' => 'Последний коммит имеет различия с базой данных, создана сборка.',
     'finished_processing_builds' => 'Процесс сборки завершен.',
 

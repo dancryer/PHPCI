@@ -131,7 +131,7 @@ class Lang
         }
 
         // Try the installation default language:
-        $language = $config->get('phpci.default_language', null);
+        $language = $config->get('phpci.basic.language', null);
 
         if (in_array($language, self::$languages)) {
             self::$language = $language;

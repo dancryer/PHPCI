@@ -8,7 +8,9 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         'phpcs-errors': 'PHPCS Errors',
         'phplint-errors': 'PHPLint Errors',
         'phpunit-errors': 'PHPUnit Errors',
-        'phpdoccheck-warnings': 'PHP Docblock Checker Warnings'
+        'phpdoccheck-warnings': 'PHP Docblock Checker Warnings',
+        'phptallint-errors': 'PHPTAL Lint Errors',
+        'phptallint-warnings': 'PHPTAL Lint Warnings'
     },
     data: {},
     displayOnUpdate: false,
@@ -22,7 +24,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
           queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('phpmd-warnings phpcs-warnings phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
+        $(window).on('phpmd-warnings phpcs-warnings phptallint-warnings phptallint-errors phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
             self.onUpdate(data);
         });
 

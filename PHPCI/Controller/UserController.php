@@ -66,13 +66,18 @@ class UserController extends Controller
     {
         $user = $_SESSION['phpci_user'];
 
-        $this->layout->title = $user->getName();
-        $this->layout->subtitle = Lang::get('edit_profile');
-
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
+
+            $currentLang = Lang::getLanguage();
+            $chosenLang = $this->getParam('language', $currentLang);
+
+            if ($chosenLang !== $currentLang) {
+                setcookie('phpcilang', $chosenLang, time() + (10 * 365 * 24 * 60 * 60), '/');
+                Lang::setLanguage($chosenLang);
+            }
 
             $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
             $user = $_SESSION['phpci_user'];
@@ -80,7 +85,14 @@ class UserController extends Controller
             $this->view->updated = 1;
         }
 
+        $this->layout->title = $user->getName();
+        $this->layout->subtitle = Lang::get('edit_profile');
+
         $values = $user->getDataArray();
+
+        if (array_key_exists('phpcilang', $_COOKIE)) {
+            $values['language'] = $_COOKIE['phpcilang'];
+        }
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');
@@ -106,6 +118,14 @@ class UserController extends Controller
         $password->setLabel(Lang::get('password_change'));
         $password->setRequired(false);
         $form->addField($password);
+
+        $lang = new Form\Element\Select('language');
+        $lang->setClass('form-control');
+        $lang->setContainerClass('form-group');
+        $lang->setLabel(Lang::get('language'));
+        $lang->setRequired(true);
+        $lang->setOptions(Lang::getLanguageOptions());
+        $form->addField($lang);
 
         $submit = new Form\Element\Submit();
         $submit->setClass('btn btn-success');

@@ -19,6 +19,7 @@ class Lang
 {
     protected static $language = null;
     protected static $strings = array();
+    protected static $languages = array();
 
     /**
      * Get a specific string from the language file.
@@ -54,6 +55,31 @@ class Lang
         return self::$language;
     }
 
+    public static function setLanguage($language)
+    {
+        if (in_array($language, self::$languages)) {
+            self::$language = $language;
+            self::$strings = self::loadLanguage();
+            return;
+        }
+    }
+
+    /**
+     * Return a list of available languages and their names.
+     * @return array
+     */
+    public static function getLanguageOptions()
+    {
+        $languages = array();
+
+        foreach (self::$languages as $language) {
+            require(PHPCI_DIR . 'PHPCI/Languages/lang.' . $language . '.php');
+            $languages[$language] = $strings['language_name'];
+        }
+
+        return $languages;
+    }
+
     /**
      * Get the strings for the currently active language.
      * @return string[]
@@ -69,6 +95,24 @@ class Lang
      */
     public static function init(Config $config)
     {
+        $matches = array();
+        foreach (glob(PHPCI_DIR . 'PHPCI/Languages/lang.*.php') as $file) {
+            if (preg_match('/lang\.([a-z]{2}\-?[a-z]*)\.php/', $file, $matches)) {
+                self::$languages[] = $matches[1];
+            }
+        }
+
+        // Try cookies first:
+        if (isset($_COOKIE) && array_key_exists('phpcilang', $_COOKIE)) {
+            $language = $_COOKIE['phpcilang'];
+
+            if (in_array($language, self::$languages)) {
+                self::$language = $language;
+                self::$strings = self::loadLanguage();
+                return;
+            }
+        }
+
         // Try user language:
         if (isset($_SERVER) && array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
             $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -76,27 +120,26 @@ class Lang
             foreach ($langs as $lang) {
                 $parts = explode(';', $lang);
 
-                self::$language = strtolower($parts[0]);
-                self::$strings = self::loadLanguage();
+                $language = strtolower($parts[0]);
 
-                if (!is_null(self::$strings)) {
+                if (in_array($language, self::$languages)) {
+                    self::$language = $language;
+                    self::$strings = self::loadLanguage();
                     return;
                 }
             }
         }
 
         // Try the installation default language:
-        self::$language = $config->get('phpci.default_language', null);
+        $language = $config->get('phpci.default_language', null);
 
-        if (!is_null(self::$language)) {
+        if (in_array($language, self::$languages)) {
+            self::$language = $language;
             self::$strings = self::loadLanguage();
-
-            if (!is_null(self::$strings)) {
-                return;
-            }
+            return;
         }
 
-        // Fall back to en-GB:
+        // Fall back to English:
         self::$language = 'en';
         self::$strings = self::loadLanguage();
     }

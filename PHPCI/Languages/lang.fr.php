@@ -8,6 +8,9 @@
  */
 
 $strings = array(
+    'language_name' => 'Français',
+    'language' => 'Langue',
+
     // Log in:
     'log_in_to_phpci' => 'Connectez-vous à PHPCI',
     'login_error' => 'Adresse email ou mot de passe invalide',

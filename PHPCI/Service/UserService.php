@@ -12,6 +12,11 @@ namespace PHPCI\Service;
 use PHPCI\Model\User;
 use PHPCI\Store\UserStore;
 
+/**
+ * The user service handles the creation, modification and deletion of users.
+ * Class UserService
+ * @package PHPCI\Service
+ */
 class UserService
 {
     /**
@@ -27,6 +32,14 @@ class UserService
         $this->store = $store;
     }
 
+    /**
+     * Create a new user within PHPCI.
+     * @param $name
+     * @param $emailAddress
+     * @param $password
+     * @param bool $isAdmin
+     * @return \PHPCI\Model\User
+     */
     public function createUser($name, $emailAddress, $password, $isAdmin = false)
     {
         $user = new User();
@@ -38,6 +51,15 @@ class UserService
         return $this->store->save($user);
     }
 
+    /**
+     * Update a user.
+     * @param User $user
+     * @param $name
+     * @param $emailAddress
+     * @param null $password
+     * @param null $isAdmin
+     * @return \PHPCI\Model\User
+     */
     public function updateUser(User $user, $name, $emailAddress, $password = null, $isAdmin = null)
     {
         $user->setName($name);
@@ -54,6 +76,11 @@ class UserService
         return $this->store->save($user);
     }
 
+    /**
+     * Delete a user.
+     * @param User $user
+     * @return bool
+     */
     public function deleteUser(User $user)
     {
         return $this->store->delete($user);

@@ -9,6 +9,10 @@
 
 namespace PHPCI;
 
+/**
+ * PHPCI Base Model.
+ * @package PHPCI
+ */
 abstract class Model extends \b8\Model
 {
 

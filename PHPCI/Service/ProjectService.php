@@ -12,6 +12,11 @@ namespace PHPCI\Service;
 use PHPCI\Model\Project;
 use PHPCI\Store\ProjectStore;
 
+/**
+ * The project service handles the creation, modification and deletion of projects.
+ * Class ProjectService
+ * @package PHPCI\Service
+ */
 class ProjectService
 {
     /**

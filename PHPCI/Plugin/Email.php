@@ -41,6 +41,13 @@ class Email implements \PHPCI\Plugin
      */
     protected $fromAddress;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param \Swift_Mailer $mailer
+     * @param array $options
+     */
     public function __construct(
         Builder $phpci,
         Build $build,
@@ -129,6 +136,13 @@ class Email implements \PHPCI\Plugin
         return $failedAddresses;
     }
 
+    /**
+     * Send out build status emails.
+     * @param array $toAddresses
+     * @param $subject
+     * @param $body
+     * @return array
+     */
     public function sendSeparateEmails(array $toAddresses, $subject, $body)
     {
         $failures = array();
@@ -143,6 +157,10 @@ class Email implements \PHPCI\Plugin
         return $failures;
     }
 
+    /**
+     * Get the list of email addresses to send to.
+     * @return array
+     */
     protected function getEmailAddresses()
     {
         $addresses = array();
@@ -165,6 +183,10 @@ class Email implements \PHPCI\Plugin
         return $addresses;
     }
 
+    /**
+     * Get the list of email addresses to CC.
+     * @return array
+     */
     protected function getCcAddresses()
     {
         $ccAddresses = array();

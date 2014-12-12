@@ -24,6 +24,12 @@ class Env implements \PHPCI\Plugin
     protected $build;
     protected $env_vars;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;

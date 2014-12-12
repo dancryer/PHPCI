@@ -20,11 +20,24 @@ class ProjectStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\Project';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a Project by primary key.
+     * @param mixed $value Primary key.
+     * @param string $useConnection Connection to use (read / write)
+     * @return \PHPCI\Model\Project|null
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a Project by Id.
+     * @param mixed $value.
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\Project|null;
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +57,14 @@ class ProjectStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get an array of Project by Title.
+     * @param mixed $value.
+     * @param int $limit
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\Project[]
+     */
     public function getByTitle($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -56,6 +77,7 @@ class ProjectStoreBase extends Store
             $add .= ' LIMIT ' . $limit;
         }
 
+        $count = null;
 
         $query = 'SELECT * FROM `project` WHERE `title` = :title' . $add;
         $stmt = Database::getConnection($useConnection)->prepare($query);
@@ -68,9 +90,6 @@ class ProjectStoreBase extends Store
                 return new Project($item);
             };
             $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
 
             return array('items' => $rtn, 'count' => $count);
         } else {

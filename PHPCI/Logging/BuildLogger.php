@@ -14,6 +14,10 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * Class BuildLogger
+ * @package PHPCI\Logging
+ */
 class BuildLogger implements LoggerAwareInterface
 {
     /**
@@ -26,6 +30,11 @@ class BuildLogger implements LoggerAwareInterface
      */
     protected $build;
 
+    /**
+     * Set up the BuildLogger class.
+     * @param LoggerInterface $logger
+     * @param Build $build
+     */
     public function __construct(LoggerInterface $logger, Build $build)
     {
         $this->logger = $logger;

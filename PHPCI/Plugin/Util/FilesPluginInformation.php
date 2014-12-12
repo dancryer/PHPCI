@@ -2,6 +2,10 @@
 
 namespace PHPCI\Plugin\Util;
 
+/**
+ * Class FilesPluginInformation
+ * @package PHPCI\Plugin\Util
+ */
 class FilesPluginInformation implements InstalledPluginInformation
 {
 
@@ -21,11 +25,18 @@ class FilesPluginInformation implements InstalledPluginInformation
      */
     protected $pluginInfo = null;
 
+    /**
+     * @param $dirPath
+     * @return FilesPluginInformation
+     */
     public static function newFromDir($dirPath)
     {
         return new self(new \DirectoryIterator($dirPath));
     }
 
+    /**
+     * @param \Iterator $files
+     */
     public function __construct(\Iterator $files)
     {
         $this->files = $files;
@@ -62,6 +73,9 @@ class FilesPluginInformation implements InstalledPluginInformation
         );
     }
 
+    /**
+     * Load plugin information from a given list of files.
+     */
     protected function loadPluginInfo()
     {
         $this->pluginInfo = array();
@@ -74,6 +88,10 @@ class FilesPluginInformation implements InstalledPluginInformation
         }
     }
 
+    /**
+     * Add a plugin to the list from a given file.
+     * @param \SplFileInfo $fileInfo
+     */
     protected function addPluginFromFile(\SplFileInfo $fileInfo)
     {
         $class = $this->getFullClassFromFile($fileInfo);
@@ -89,6 +107,11 @@ class FilesPluginInformation implements InstalledPluginInformation
         }
     }
 
+    /**
+     * Determine plugin class name for a given file.
+     * @param \SplFileInfo $fileInfo
+     * @return null|string
+     */
     protected function getFullClassFromFile(\SplFileInfo $fileInfo)
     {
         //TODO: Something less horrible than a regular expression

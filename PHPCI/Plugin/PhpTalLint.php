@@ -151,7 +151,7 @@ class PhpTalLint implements PHPCI\Plugin
     {
         $success = true;
 
-        if ($item->isFile() && !in_array(strtolower($item->getExtension()), $this->suffixes)) {
+        if ($item->isFile() && in_array(strtolower($item->getExtension()), $this->suffixes)) {
             if (!$this->lintFile($itemPath)) {
                 $success = false;
             }

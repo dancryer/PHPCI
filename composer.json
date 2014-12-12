@@ -30,7 +30,6 @@
 
     "require": {
         "php": ">=5.3.8",
-        "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "block8/b8framework": "~1.0",

@@ -68,6 +68,8 @@ class Lint implements PHPCI\Plugin
         $success = true;
 
         $php = $this->phpci->findBinary('php');
+        
+        $this->phpci->logExecOutput(false);
 
         foreach ($this->directories as $dir) {
             if (!$this->lintDirectory($php, $dir)) {
@@ -76,6 +78,8 @@ class Lint implements PHPCI\Plugin
         }
 
         $this->phpci->quiet = false;
+        
+        $this->phpci->logExecOutput(true);
 
         return $success;
     }

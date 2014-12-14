@@ -15,6 +15,7 @@ use PDO;
 use b8\Config;
 use b8\Database;
 use b8\Store\Factory;
+use PHPCI\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

@@ -24,10 +24,9 @@ use PHPCI\Model\Build;
 */
 class BuildStatusController extends \PHPCI\Controller
 {
-    /**
-     * @var \PHPCI\Store\ProjectStore
-     */
+    /* @var \PHPCI\Store\ProjectStore */
     protected $projectStore;
+    /* @var \PHPCI\Store\BuildStore */
     protected $buildStore;
 
     /**
@@ -71,13 +70,110 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
+     * Displays projects information in ccmenu format
+     *
+     * @param $projectId
+     * @throws b8\Exception\HttpException
+     * @author Vaidas Zilionis <vaidas@zilionis.net>
+     */
+    public function ccmenu($projectId) {
+        /* @var Project $project */
+        $project = $this->projectStore->getById($projectId);
+        $xml = new \SimpleXMLElement('<projects/>');
+        try {
+            if (!$project instanceof Project) {
+                throw new \Exception('Project not found', 404);
+            }
+            if (!$project->getAllowPublicStatus()) {
+                echo $xml;
+            };
+
+            $branchList = $this->buildStore->getBuildBranches($projectId);
+            if (!$branchList) {
+                $branchList = array($project->getBranch());
+            }
+
+            $projectsXmlChild = $xml->addChild('Projects');
+            foreach ($branchList as $branch) {
+                $branchBuildStatus = $this->getBuildStatus($project, $branch, $project->getLatestBuild($branch));
+                $projectXml = $projectsXmlChild->addChild('Project');
+                $projectXml->addAttribute('name', $branchBuildStatus['name']);
+                $projectXml->addAttribute('activity', $branchBuildStatus['activity']);
+                $projectXml->addAttribute('lastBuildLabel', $branchBuildStatus['buildLabel']);
+                $projectXml->addAttribute('lastBuildStatus', $branchBuildStatus['buildStatus']);
+                $projectXml->addAttribute('lastBuildTime', $branchBuildStatus['lastBuildTime']);
+                $projectXml->addAttribute('webUrl', $branchBuildStatus['webUrl']);
+            }
+        } catch(\Exception $e) {
+            $xml = new \SimpleXMLElement('<projects/>');
+        }
+        Header('Content-type: text/xml');
+        print($xml->asXML());
+    }
+
+    /**
+     * @param Project $project
+     * @param string $branch
+     * @param Build $build
+     * @return string
+     * @author Vaidas Zilionis <vaidas@zilionis.net>
+     */
+    protected function getBuildStatus(Project $project, $branch, Build $build = null)
+    {
+        if ($build instanceof Build) {
+            $buildStatusId = $build->getStatus();
+        } else {
+            return null;
+        }
+
+        $activityText = 'Sleeping';
+        switch ($buildStatusId) {
+            case 0:
+            case 1:
+                /** @var  Build $lastFinishedBuild */
+                $lastFinishedBuild = $project->getLatestBuild($branch, array(2,3));
+                $lastFinishedBuildInfo = $this->getBuildStatus($project, $branch, $lastFinishedBuild);
+                $buildLabel = ($lastFinishedBuildInfo) ? $lastFinishedBuildInfo['buildLabel'] : '';
+                $buildStatus = ($lastFinishedBuildInfo) ? $lastFinishedBuildInfo['buildStatus'] : '';
+                $lastBuildTime = ($lastFinishedBuildInfo) ? $lastFinishedBuildInfo['lastBuildTime'] : '';
+                $webUrl = ($lastFinishedBuildInfo) ? $lastFinishedBuildInfo['webUrl'] : '';
+                if ($buildStatusId == 1) {
+                    $activityText = 'Building';
+                    $lastBuildTime = $build->getStarted()->format("Y-m-d\TH:i:sO");
+                } else {
+                    $activityText = 'Unknown';
+                }
+                break;
+            case 2:
+            case 3:
+                $buildStatus = ($buildStatusId == 2) ? 'Success' : 'Failure';
+                $finishedDateTime = $build->getFinished();
+                $buildLabel = ($finishedDateTime) ? $build->getId() : '';
+                $lastBuildTime = ($finishedDateTime) ?
+                    $finishedDateTime->format("Y-m-d\TH:i:sO") : '';
+                $webUrl = ($finishedDateTime) ? PHPCI_URL. 'build/view/' . $build->getId() : '';
+                break;
+
+        }
+
+        return array(
+            'name' => $build->getProjectTitle() . ' / ' . $branch,
+            'activity' => $activityText,
+            'buildLabel' => $buildLabel,
+            'buildStatus' => $buildStatus,
+            'lastBuildTime' => $lastBuildTime,
+            'webUrl' => $webUrl,
+        );
+    }
+
+    /**
     * Returns the appropriate build status image in SVG format for a given project.
     */
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
         $color = ($status == 'passing') ? 'green' : 'red';
-        
+
         header('Content-Type: image/svg+xml');
         die(file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg'));
     }

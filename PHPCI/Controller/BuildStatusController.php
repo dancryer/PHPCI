@@ -74,9 +74,9 @@ class BuildStatusController extends \PHPCI\Controller
      *
      * @param $projectId
      * @throws b8\Exception\HttpException
-     * @author Vaidas Zilionis <vaidas@zilionis.net>
      */
-    public function ccmenu($projectId) {
+    public function ccmenu($projectId)
+    {
         /* @var Project $project */
         $project = $this->projectStore->getById($projectId);
         $xml = new \SimpleXMLElement('<projects/>');
@@ -104,7 +104,7 @@ class BuildStatusController extends \PHPCI\Controller
                 $projectXml->addAttribute('lastBuildTime', $branchBuildStatus['lastBuildTime']);
                 $projectXml->addAttribute('webUrl', $branchBuildStatus['webUrl']);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $xml = new \SimpleXMLElement('<projects/>');
         }
         Header('Content-type: text/xml');
@@ -116,7 +116,6 @@ class BuildStatusController extends \PHPCI\Controller
      * @param string $branch
      * @param Build $build
      * @return string
-     * @author Vaidas Zilionis <vaidas@zilionis.net>
      */
     protected function getBuildStatus(Project $project, $branch, Build $build = null)
     {

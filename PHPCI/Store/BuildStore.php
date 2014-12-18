@@ -116,7 +116,8 @@ class BuildStore extends BuildStoreBase
      * @return array
      * @throws \Exception
      */
-    public function getBuildBranches($projectId) {
+    public function getBuildBranches($projectId)
+    {
         $query = 'SELECT DISTINCT `branch` FROM `build` WHERE `project_id` = :project_id';
         $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':project_id', $projectId);

@@ -30,7 +30,7 @@ Je ontvangt deze email omdat jij, of iemand anders, je wachtwoord voor PHPCI opn
 
 Indien jij dit was, klik op deze link op je wachtwoord opnieuw in te stellen: %ssession/reset-password/%d/%s
 
-Zoniet, negeer deze e-mail en er zal geen actie ondernomen worden.
+Zoniet, negeer deze e-mail en er zal geen verdere actie ondernomen worden.
 
 Bedankt,
 
@@ -63,8 +63,8 @@ PHPCI',
     'plugins' => 'Plugins',
     'view' => 'Bekijk',
     'build_now' => 'Build nu',
-    'edit_project' => 'Project aanpassen',
-    'delete_project' => 'Project verwijderen',
+    'edit_project' => 'Wijzig project',
+    'delete_project' => 'Verwijder project',
 
     // Project Summary:
     'no_builds_yet' => 'Nog geen builds!',
@@ -72,7 +72,7 @@ PHPCI',
     'x_of_x_failed_short' => '%d / %d faalden.',
     'last_successful_build' => 'De laatste succesvolle build was %s.',
     'never_built_successfully' => 'Dit project heeft geen succesvolle build gehad.',
-    'all_builds_passed' => 'Alle van de laatste %d builds slaagden.',
+    'all_builds_passed' => 'Elk van de laatste %d builds slaagden.',
     'all_builds_passed_short' => '%d / %d slaagden.',
     'last_failed_build' => 'De laatste gefaalde build was %s.',
     'never_failed_build' => 'Dit project heeft geen gefaalde build gehad.',
@@ -91,7 +91,7 @@ PHPCI',
     'new_project' => 'Nieuw project',
     'project_x_not_found' => 'Project met ID %d bestaat niet.',
     'project_details' => 'Project details',
-    'public_key_help' => 'Om het makkelijker te maken te starten, hebben we een SSH sleutelpaar gegenereerd
+    'public_key_help' => 'Om eenvoudiger te kunnen starten, hebben we een SSH sleutelpaar gegenereerd
 voor dit project. Om het te gebruiken, voeg onderstaande public key toe aan de "deploy keys" sectie
 van je gekozen source code hosting platform',
     'select_repository_type' => 'Selecteer repository type...',
@@ -133,7 +133,7 @@ van je gekozen source code hosting platform',
     'prev_link' => '&laquo; Vorig',
     'next_link' => 'Volgend &raquo;',
     'public_key' => 'Public Key',
-    'delete_build' => 'Build verwijder',
+    'delete_build' => 'Verwijder build',
 
     'webhooks' => 'Webhooks',
     'webhooks_help_github' => 'Voor automatische builds wanneer nieuwe commits worden gepusht, dient onderstaande URL
@@ -234,7 +234,7 @@ PHPCI toegang te verlenen tot je account.',
 in je <a href="https://github.com/settings/applications">applications</a> instellingen pagina vinden.',
 
     'email_settings' => 'E-mail instellingen',
-    'email_settings_help' => 'Vooraleer PHPCI je build status emails kan sturen,
+    'email_settings_help' => 'Vooraleer PHPCI je build status e-mails kan sturen,
 dien je eerst je SMTP instellingen te configureren.',
 
     'application_id' => 'Toepassings ID',
@@ -251,7 +251,7 @@ dien je eerst je SMTP instellingen te configureren.',
     'ssl' => 'SSL',
     'tls' => 'TLS',
 
-    'failed_after' => 'Beschouw een build gefaald achter',
+    'failed_after' => 'Beschouw een build gefaald na',
     '5_mins' => '5 minuten',
     '15_mins' => '15 minuten',
     '30_mins' => '30 minuten',
@@ -308,7 +308,7 @@ Gelieve de fouten na te kijken vooraleer verder te gaan.',
     'setting_up_db' => 'Database wordt aangemaakt...',
     'user_created' => 'Gebruikersprofiel aangemaakt!',
     'failed_to_create' => 'PHPCI kon je administratorprofiel niet aanmaken.',
-    'config_exists' => 'het PHPCI configuratiebestand bestaat en is niet leeg.',
+    'config_exists' => 'Het PHPCI configuratiebestand bestaat en is niet leeg.',
     'update_instead' => 'Liever phpci:update te gebruiken indien je PHPCI probeerde te updaten, ',
 
     // Update

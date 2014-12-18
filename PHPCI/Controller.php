@@ -116,4 +116,16 @@ class Controller extends \b8\Controller
     {
         return $_SESSION['phpci_user']->getIsAdmin();
     }
+
+    /**
+     * Checks if login is disabled
+     * @return bool
+     */
+    protected function loginIsDisabled()
+    {
+        $config = b8\Config::getInstance();
+        $state = (bool) $config->get('phpci.authentication_settings.state', false);
+
+        return (false !== $state);
+    }
 }

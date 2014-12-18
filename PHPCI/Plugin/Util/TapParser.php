@@ -12,6 +12,7 @@ class TapParser
     const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
     const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
     const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
+    const TEST_COVERAGE_SKIP_PATTERN = '/The Xdebug extension is not loaded/';
     const TEST_SKIP_PATTERN = '/ok\s+[0-9]+\s+\-\s+#\s+SKIP/';
 
     /**
@@ -70,7 +71,7 @@ class TapParser
 
         $rtn = $this->processTestLines($lines);
 
-        if ($totalTests != count($rtn)) {
+        if ($totalTests != count($rtn) && strpos($this->tapString, self::TEST_COVERAGE_SKIP_PATTERN)<0) {
             throw new \Exception('Invalid TAP string, number of tests does not match specified test count.');
         }
 

@@ -26,21 +26,29 @@ class BuildStore extends BuildStoreBase
      * Return an array of the latest builds for a given project.
      * @param null $projectId
      * @param int $limit
+     * @param null $branch
      * @return array
      */
-    public function getLatestBuilds($projectId = null, $limit = 5)
+    public function getLatestBuilds($projectId = null, $limit = 5, $branch = null)
     {
-        $where = '';
+        $criteria = array();
 
         if (!is_null($projectId)) {
-            $where = ' WHERE `project_id` = :pid ';
+            $criteria[] = ' `project_id` = :pid ';
         }
+        if (!is_null($branch)) {
+            $criteria[] = ' `branch` = :branch ';
+        }
+        $where = !empty($criteria) ? (' WHERE ' . implode('AND', $criteria)) : '';
 
         $query = 'SELECT * FROM build '.$where.' ORDER BY id DESC LIMIT :limit';
         $stmt = Database::getConnection('read')->prepare($query);
 
         if (!is_null($projectId)) {
             $stmt->bindValue(':pid', $projectId);
+        }
+        if (!is_null($branch)) {
+            $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
         }
 
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
@@ -63,14 +71,17 @@ class BuildStore extends BuildStoreBase
      * Return the latest build for a specific project, of a specific build status.
      * @param null $projectId
      * @param int $status
+     * @param null $branch
      * @return array|Build
      */
-    public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
+    public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS, $branch = null)
     {
-        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
+        $and = !is_null($branch) ? ' AND branch = :branch ' : '';
+        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ' . $and . ' ORDER BY id DESC LIMIT 1';
         $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':pid', $projectId);
         $stmt->bindValue(':status', $status);
+        $stmt->bindValue(':branch', $branch);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {

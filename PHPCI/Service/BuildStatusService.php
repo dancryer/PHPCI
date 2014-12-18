@@ -34,7 +34,7 @@ class BuildStatusService
     protected $url;
 
     /** @var array  */
-    protected $finishedBuildStatusIds = array(
+    protected $finishedStatusIds = array(
         Build::STATUS_SUCCESS,
         Build::STATUS_FAILED,
     );
@@ -85,7 +85,7 @@ class BuildStatusService
     protected function loadParentBuild($isParent = true)
     {
         if ($isParent === false && !$this->isFinished()) {
-            $lastFinishedBuild = $this->project->getLatestBuild($this->branch, $this->finishedBuildStatusIds);
+            $lastFinishedBuild = $this->project->getLatestBuild($this->branch, $this->finishedStatusIds);
 
             if ($lastFinishedBuild) {
                 $this->prevService = new BuildStatusService(
@@ -103,7 +103,7 @@ class BuildStatusService
      */
     public function getActivity()
     {
-        if (in_array($this->build->getStatus(), $this->finishedBuildStatusIds)) {
+        if (in_array($this->build->getStatus(), $this->finishedStatusIds)) {
             return 'Sleeping';
         } elseif ($this->build->getStatus() == Build::STATUS_NEW) {
             return 'Pending';
@@ -126,7 +126,7 @@ class BuildStatusService
      */
     public function isFinished()
     {
-        if (in_array($this->build->getStatus(), $this->finishedBuildStatusIds)) {
+        if (in_array($this->build->getStatus(), $this->finishedStatusIds)) {
             return true;
         }
         return false;

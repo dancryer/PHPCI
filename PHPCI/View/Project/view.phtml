@@ -93,7 +93,7 @@
         <?php if ($project->getSshPublicKey()): ?>
             <div class="box box-info">
                 <div class="box-header"><h3 class="box-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse"><?php Lang::out('public_key'); ?></a></h3></div>
-                <div class="box-body" style="word-break: break-word;"><?php print $project->getSshPublicKey(); ?></div>
+                <div class="box-body" style="word-break: break-all;"><?php print $project->getSshPublicKey(); ?></div>
             </div>
         <?php endif; ?>
     </div>

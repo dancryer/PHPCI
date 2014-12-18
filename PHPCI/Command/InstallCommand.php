@@ -119,7 +119,7 @@ class InstallCommand extends Command
         }
 
         // Check required extensions are present:
-        $requiredExtensions = array('PDO', 'pdo_mysql', 'mcrypt');
+        $requiredExtensions = array('PDO', 'pdo_mysql');
 
         foreach ($requiredExtensions as $extension) {
             if (!extension_loaded($extension)) {

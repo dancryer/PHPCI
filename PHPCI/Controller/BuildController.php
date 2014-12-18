@@ -121,7 +121,7 @@ class BuildController extends \PHPCI\Controller
         $data = null;
 
         if ($key && $build) {
-            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $build->getBranch(), $numBuilds);
         }
 
         die(json_encode($data));

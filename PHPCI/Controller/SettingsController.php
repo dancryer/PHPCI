@@ -20,12 +20,17 @@ use Symfony\Component\Yaml\Parser;
 
 /**
  * Settings Controller
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
  * @package      PHPCI
  * @subpackage   Web
  */
 class SettingsController extends Controller
 {
+
+    /**
+     * @var array
+     */
     protected $settings;
 
     /**
@@ -35,8 +40,8 @@ class SettingsController extends Controller
     {
         parent::init();
 
-        $parser = new Parser();
-        $yaml = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+        $parser         = new Parser();
+        $yaml           = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
         $this->settings = $parser->parse($yaml);
     }
 
@@ -49,6 +54,7 @@ class SettingsController extends Controller
         $this->requireAdmin();
 
         $this->layout->title = Lang::get('settings');
+
         $this->view->settings = $this->settings;
 
         $basicSettings = array();
@@ -66,10 +72,16 @@ class SettingsController extends Controller
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
+        $authenticationSettings = array();
+        if (isset($this->settings['phpci']['authentication_settings'])) {
+            $authenticationSettings = $this->settings['phpci']['authentication_settings'];
+        }
+
         $this->view->basicSettings = $this->getBasicForm($basicSettings);
         $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->authenticationSettings = $this->getAuthenticationForm($authenticationSettings);
         $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
@@ -86,9 +98,9 @@ class SettingsController extends Controller
     {
         $this->requireAdmin();
 
-        $this->settings['phpci']['github']['id'] = $this->getParam('githubid', '');
+        $this->settings['phpci']['github']['id']     = $this->getParam('githubid', '');
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
-        $error = $this->storeSettings();
+        $error                                       = $this->storeSettings();
 
         if ($error) {
             header('Location: ' . PHPCI_URL . 'settings?saved=2');
@@ -106,7 +118,7 @@ class SettingsController extends Controller
     {
         $this->requireAdmin();
 
-        $this->settings['phpci']['email_settings'] = $this->getParams();
+        $this->settings['phpci']['email_settings']                    = $this->getParams();
         $this->settings['phpci']['email_settings']['smtp_encryption'] = $this->getParam('smtp_encryption', 0);
 
         $error = $this->storeSettings();
@@ -148,6 +160,26 @@ class SettingsController extends Controller
         $this->requireAdmin();
 
         $this->settings['phpci']['basic'] = $this->getParams();
+        $error = $this->storeSettings();
+
+        if ($error) {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        } else {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
+
+        die;
+    }
+
+    /**
+     * Handle authentication settings
+     */
+    public function authentication()
+    {
+        $this->requireAdmin();
+
+        $this->settings['phpci']['authentication_settings']['state']   = $this->getParam('disable_authentication', 0);
+        $this->settings['phpci']['authentication_settings']['user_id'] = $_SESSION['phpci_user_id'];
 
         $error = $this->storeSettings();
 
@@ -165,14 +197,14 @@ class SettingsController extends Controller
      */
     public function githubCallback()
     {
-        $code = $this->getParam('code', null);
+        $code   = $this->getParam('code', null);
         $github = $this->settings['phpci']['github'];
 
         if (!is_null($code)) {
-            $http = new HttpClient();
-            $url  = 'https://github.com/login/oauth/access_token';
+            $http   = new HttpClient();
+            $url    = 'https://github.com/login/oauth/access_token';
             $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
-            $resp = $http->post($url, $params);
+            $resp   = $http->post($url, $params);
 
             if ($resp['success']) {
                 parse_str($resp['body'], $resp);
@@ -192,12 +224,13 @@ class SettingsController extends Controller
 
     /**
      * Convert config to yaml and store to file.
+     *
      * @return mixed
      */
     protected function storeSettings()
     {
         $dumper = new Dumper();
-        $yaml = $dumper->dump($this->settings, 4);
+        $yaml   = $dumper->dump($this->settings, 4);
         file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
 
         if (error_get_last()) {
@@ -406,6 +439,42 @@ class SettingsController extends Controller
 
         $field = new Form\Element\Submit();
         $field->setValue(Lang::get('save'));
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
+    }
+
+    /**
+     * Form for disabling user authentication while using a default user
+     *
+     * @param array $values
+     * @return Form
+     */
+    protected function getAuthenticationForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/authentication');
+        $form->addField(new Form\Element\Csrf('csrf'));
+
+        $field = new Form\Element\Checkbox('disable_authentication');
+        $field->setCheckedValue(1);
+        $field->setRequired(false);
+        $field->setLabel('Disable Authentication?');
+        $field->setContainerClass('form-group');
+        $field->setValue(0);
+
+        if (isset($values['state'])) {
+            $field->setValue((int)$values['state']);
+        }
+
+        $form->addField($field);
+
+        $field = new Form\Element\Submit();
+        $field->setValue('Save &raquo;');
         $field->setClass('btn btn-success pull-right');
         $form->addField($field);
 

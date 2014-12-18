@@ -30,7 +30,6 @@
 
     "require": {
         "php": ">=5.3.8",
-        "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "block8/b8framework": "~1.0",
@@ -64,6 +63,7 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
-        "hipchat/hipchat-php": "Hipchat integration"
+        "hipchat/hipchat-php": "Hipchat integration",
+        "phptal/phptal": "PHPTAL templating engine"
     }
 }

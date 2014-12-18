@@ -20,12 +20,9 @@ if (empty($timezone)) {
 // env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
 
-if (!file_exists($configFile)) {
-    $configEnv = getenv('phpci_config_file');
-
-    if (!empty($configEnv)) {
-        $configFile = $configEnv;
-    }
+$configEnv = getenv('phpci_config_file');
+if (!empty($configEnv)) {
+    $configFile = $configEnv;
 }
 
 // If we don't have a config file at all, fail at this point and tell the user to install:

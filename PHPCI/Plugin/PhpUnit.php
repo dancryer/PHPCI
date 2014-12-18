@@ -142,6 +142,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
+        if (empty($this->xmlConfigFile) && empty($this->directory)) {
+            $this->phpci->logFailure('Neither configuration file nor test directory found.');
+            return false;
+        }
+
         $success = true;
 
         $this->phpci->logExecOutput(false);

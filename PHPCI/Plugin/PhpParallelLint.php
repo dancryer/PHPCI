@@ -105,10 +105,11 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     protected function getFlags()
     {
-        $ignore = '';
-        if (count($this->ignore)) {
-            $ignore = ' --exclude ' . implode(' --exclude ', $this->ignore);
+        $ignoreFlags = array();
+        foreach ($this->ignore as $ignoreDir) {
+            $ignoreFlags[] = '--exclude "' . $this->phpci->buildPath . $ignoreDir . '"';
         }
+        $ignore = implode(' ', $ignoreFlags);
 
         return array($ignore);
     }

@@ -47,11 +47,30 @@ class Application extends b8\Application
             return false;
         };
 
+        // Check settings for disable_authentication enabled and user_id
+        $skipAuth = function () {
+            $config = b8\Config::getInstance();
+            $state = (bool)$config->get('phpci.authentication_settings.state', false);
+            $id    = $config->get('phpci.authentication_settings.user_id', 0);
+
+            if (false !== $state && 0 != (int)$id) {
+                $user = b8\Store\Factory::getStore('User')
+                    ->getByPrimaryKey($id);
+
+                if ($user) {
+                    $_SESSION['phpci_user'] = $user;
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
         // Handler for the route we're about to register, checks for a valid session where necessary:
-        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession) {
+        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession()) {
+            if (!$skipValidation && !$validateSession() && !$skipAuth()) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');
@@ -72,8 +91,10 @@ class Application extends b8\Application
     }
 
     /**
-    * Handle an incoming web request.
-    */
+     * Handle an incoming web request.
+     *
+     * @return b8\b8\Http\Response|Response
+     */
     public function handleRequest()
     {
         try {

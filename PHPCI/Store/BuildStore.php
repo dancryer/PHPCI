@@ -114,21 +114,28 @@ class BuildStore extends BuildStoreBase
      * @param $key
      * @param $projectId
      * @param null $buildId
+     * @param null $branch
      * @param int $numResults
      * @return array|null
      */
-    public function getMeta($key, $projectId, $buildId = null, $numResults = 1)
+    public function getMeta($key, $projectId, $buildId = null, $branch = null, $numResults = 1)
     {
-        $select = '`build_id`, `meta_key`, `meta_value`';
-        $and = $numResults > 1 ? ' AND (`build_id` <= :buildId) ' : ' AND (`build_id` = :buildId) ';
-        $where = '`meta_key` = :key AND `project_id` = :projectId ' . $and;
-        $query = 'SELECT '.$select.' FROM `build_meta` WHERE '.$where.' ORDER BY id DESC LIMIT :numResults';
+        $select = '`bm`.`build_id`, `bm`.`meta_key`, `bm`.`meta_value`';
+        $and = $numResults > 1 ? ' AND (`bm`.`build_id` <= :buildId) ' : ' AND (`bm`.`build_id` = :buildId) ';
+        $where = '`bm`.`meta_key` = :key AND `bm`.`project_id` = :projectId ' . $and;
+	$from = ' `build_meta` AS `bm`';
+	if($branch !== null) {
+            $where .= ' AND `b`.`branch` = :branch AND `b`.`id`= `bm`.`build_id` ';
+            $from .= ', `build` AS `b`';
+	}
+        $query = 'SELECT '.$select.' FROM '.$from.' WHERE '.$where.' ORDER BY `bm`.id DESC LIMIT :numResults';
 
         $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
         $stmt->bindValue(':numResults', (int)$numResults, \PDO::PARAM_INT);
+        $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             $rtn = $stmt->fetchAll(\PDO::FETCH_ASSOC);

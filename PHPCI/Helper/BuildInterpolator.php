@@ -37,6 +37,7 @@ class BuildInterpolator
         $this->interpolation_vars['%PHPCI%'] = 1;
         $this->interpolation_vars['%COMMIT%'] = $build->getCommitId();
         $this->interpolation_vars['%SHORT_COMMIT%'] = substr($build->getCommitId(), 0, 7);
+        $this->interpolation_vars['%COMMIT_EMAIL%'] = $build->getCommitterEmail();
         $this->interpolation_vars['%BRANCH%'] = $build->getBranch();
         $this->interpolation_vars['%PROJECT%'] = $build->getProjectId();
         $this->interpolation_vars['%BUILD%'] = $build->getId();
@@ -45,6 +46,7 @@ class BuildInterpolator
         $this->interpolation_vars['%BUILD_URI%'] = $phpCiUrl . "build/view/" . $build->getId();
         $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
         $this->interpolation_vars['%PHPCI_SHORT_COMMIT%'] = $this->interpolation_vars['%SHORT_COMMIT%'];
+        $this->interpolation_vars['%PHPCI_COMMIT_EMAIL%'] = $this->interpolation_vars['%COMMIT_EMAIL%'];
         $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
         $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
         $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
@@ -54,6 +56,7 @@ class BuildInterpolator
         putenv('PHPCI=1');
         putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
         putenv('PHPCI_SHORT_COMMIT=' . $this->interpolation_vars['%SHORT_COMMIT%']);
+        putenv('PHPCI_COMMIT_EMAIL=' . $this->interpolation_vars['%COMMIT_EMAIL%']);
         putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
         putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
         putenv('PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']);

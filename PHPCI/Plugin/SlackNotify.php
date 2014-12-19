@@ -23,6 +23,7 @@ class SlackNotify implements \PHPCI\Plugin
     private $webHook;
     private $room;
     private $username;
+    private $message;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -36,25 +37,25 @@ class SlackNotify implements \PHPCI\Plugin
         $this->phpci = $phpci;
         $this->build = $build;
 
-        if (is_array($options) && isset($options['webhook_url']) && isset($options['room'])) {
-            $this->webHook = $options['webhook_url'];
-            $this->room = $options['room'];
+        if (is_array($options) && isset($options['webhook_url'])) {
+            $this->webHook = trim($options['webhook_url']);
 
             if (isset($options['message'])) {
                 $this->message = $options['message'];
             } else {
-                $this->message = '%PROJECT_TITLE% (%COMMIT%) built at %BUILD_URI%';
+                $this->message = '%PROJECT_TITLE% has finished building <%BUILD_URI%|%SHORT_COMMIT%> on branch %BRANCH%';
+            }
+
+            if (isset($options['room'])) {
+                $this->room = $options['room'];
             }
 
             if (isset($options['username'])) {
                 $this->username = $options['username'];
-            } else {
-                $this->username = 'PHPCI';
             }
 
-
         } else {
-            throw new \Exception('Please define room and webhook_url for slack_notify plugin!');
+            throw new \Exception('Please define the webhook_url for slack_notify plugin!');
         }
     }
 
@@ -66,13 +67,43 @@ class SlackNotify implements \PHPCI\Plugin
     {
         $message = $this->phpci->interpolate($this->message);
 
-        $data = json_encode(array(
-            'text'          => $message,
-            'channel'       =>  '#' . $this->room,
-            'username'      =>  $this->username
-        ));
+        $successfulBuild = $this->build->isSuccessful();
+
+        // $this->build->getCommitterEmail();
+        // $this->build->getCommitMessage();
+
+        $data = array(
+            'attachments' => array(
+                array(
+                    'fallback' => $message,
+                    'pretext' => $message,
+                    'color' => $successfulBuild ? 'good' : 'danger',
+                    'fields' => array(
+                        array(
+                            'title' => 'Results',
+                            'value' => $successfulBuild ? 'Success' : 'Failure',
+                            'short' => false
+                        )
+                    )
+                )
+            )
+        );
+
+
+        if (!empty($this->room))
+        {
+            $data['channel'] = '#' . $this->room;
+        }
+
+        if (!empty($this->username))
+        {
+            $data['username'] = $this->username;
+        }
+
+        $data = json_encode($data);
 
         $curlh = curl_init();
+
         curl_setopt($curlh, CURLOPT_URL, $this->webHook);
         curl_setopt($curlh, CURLOPT_POST, 1);
         curl_setopt($curlh, CURLOPT_POSTFIELDS, $data);
@@ -85,15 +116,18 @@ class SlackNotify implements \PHPCI\Plugin
         $response = curl_exec($curlh);
         $response_code = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
 
+        $success = true;
+
         if ($response == false) {
-            throw new \Exception (curl_error($curlh), curl_errno($curlh));
+            //throw new \Exception (curl_error($curlh), curl_errno($curlh)); // LOG AN ERROR
+            $success = false;
         }
 
         if ($response_code != 200) {
-            // Fall back to good 'ol email
-            throw new \Exception ('Slack failed ' - $response_code . ' - ' . $response);
+            //throw new \Exception ('Slack failed ' - $response_code . ' - ' . $response); // Log an error
+            $success = false;
         }
 
-        return true;
+        return $success;
     }
 }

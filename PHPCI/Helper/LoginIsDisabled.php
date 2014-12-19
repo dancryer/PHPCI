@@ -11,7 +11,7 @@ namespace PHPCI\Helper;
 
 /**
 * Login Is Disabled Helper - Checks if login is disalbed in the view
-* @author       Dan Cryer <dan@block8.co.uk>
+* @author       Stephen Ball <phpci@stephen.rebelinblue.com>
 * @package      PHPCI
 * @subpackage   Web
 */

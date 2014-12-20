@@ -44,7 +44,7 @@ class SlackNotify implements \PHPCI\Plugin
             if (isset($options['message'])) {
                 $this->message = $options['message'];
             } else {
-                $this->message = '%PROJECT_TITLE% - <%BUILD_URI%|Build #%BUILD%> has finished for commit <%COMMIT_URI%|%SHORT_COMMIT% (%COMMIT_EMAIL%)> on branch %BRANCH%';
+                $this->message = '<%PROJECT_URI%|%PROJECT_TITLE%> - <%BUILD_URI%|Build #%BUILD%> has finished for commit <%COMMIT_URI%|%SHORT_COMMIT% (%COMMIT_EMAIL%)> on branch <%BRANCH_URI%|%BRANCH%>';
             }
 
             if (isset($options['room'])) {

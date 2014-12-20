@@ -24,6 +24,7 @@ class SlackNotify implements \PHPCI\Plugin
     private $room;
     private $username;
     private $message;
+    private $icon;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -54,6 +55,10 @@ class SlackNotify implements \PHPCI\Plugin
                 $this->username = $options['username'];
             }
 
+            if (isset($options['icon'])) {
+                $this->icon = $options['icon'];
+            }
+
         } else {
             throw new \Exception('Please define the webhook_url for slack_notify plugin!');
         }
@@ -69,64 +74,39 @@ class SlackNotify implements \PHPCI\Plugin
 
         $successfulBuild = $this->build->isSuccessful();
 
-        // $this->build->getCommitterEmail();
-        // $this->build->getCommitMessage();
-
-        $data = array(
-            'attachments' => array(
-                array(
-                    'fallback' => $message,
-                    'pretext' => $message,
-                    'color' => $successfulBuild ? 'good' : 'danger',
-                    'fields' => array(
-                        array(
-                            'title' => 'Results',
-                            'value' => $successfulBuild ? 'Success' : 'Failure',
-                            'short' => false
-                        )
-                    )
-                )
+        // Build up the attachment data
+        $attachment = new \Maknz\Slack\Attachment(array(
+            'fallback' => $message,
+            'pretext' => $message,
+            'color' => $successfulBuild ? 'good' : 'danger',
+            'fields' => array(
+                new \Maknz\Slack\AttachmentField(array(
+                    'title' => 'Results',
+                    'value' => $successfulBuild ? 'Success' : 'Failure',
+                    'short' => false
+                ))
             )
-        );
-
-
-        if (!empty($this->room))
-        {
-            $data['channel'] = '#' . $this->room;
-        }
-
-        if (!empty($this->username))
-        {
-            $data['username'] = $this->username;
-        }
-
-        $data = json_encode($data);
-
-        $curlh = curl_init();
-
-        curl_setopt($curlh, CURLOPT_URL, $this->webHook);
-        curl_setopt($curlh, CURLOPT_POST, 1);
-        curl_setopt($curlh, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curlh, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($data) 
         ));
 
-        $response = curl_exec($curlh);
-        $response_code = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
+        $client = new \Maknz\Slack\Client($this->webHook);
+
+        if (!empty($this->room)) {
+            $client->setChannel('#' . $this->room);
+        }
+
+        if (!empty($this->username)) {
+            $client->setUsername($this->username);
+        }
+
+        if (!empty($this->icon)) {
+            $client->setIcon($this->icon);
+        }
+
+        $client->attach($attachment);
 
         $success = true;
 
-        if ($response == false) {
-            //throw new \Exception (curl_error($curlh), curl_errno($curlh)); // LOG AN ERROR
-            $success = false;
-        }
-
-        if ($response_code != 200) {
-            //throw new \Exception ('Slack failed ' - $response_code . ' - ' . $response); // Log an error
-            $success = false;
-        }
+        $client->send($message); // FIXME: Handle errors
 
         return $success;
     }

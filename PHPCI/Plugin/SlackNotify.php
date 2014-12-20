@@ -49,10 +49,14 @@ class SlackNotify implements \PHPCI\Plugin
 
             if (isset($options['room'])) {
                 $this->room = $options['room'];
+            } else {
+                $this->room = '#phpci';
             }
 
             if (isset($options['username'])) {
                 $this->username = $options['username'];
+            } else {
+                $this->username = 'PHPCI';
             }
 
             if (isset($options['icon'])) {
@@ -91,7 +95,7 @@ class SlackNotify implements \PHPCI\Plugin
         $client = new \Maknz\Slack\Client($this->webHook);
 
         if (!empty($this->room)) {
-            $client->setChannel('#' . $this->room);
+            $client->setChannel($this->room);
         }
 
         if (!empty($this->username)) {
@@ -106,7 +110,7 @@ class SlackNotify implements \PHPCI\Plugin
 
         $success = true;
 
-        $client->send($message); // FIXME: Handle errors
+        $client->send(''); // FIXME: Handle errors
 
         return $success;
     }

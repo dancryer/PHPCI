@@ -85,8 +85,8 @@ class SlackNotify implements \PHPCI\Plugin
             'color' => $successfulBuild ? 'good' : 'danger',
             'fields' => array(
                 new \Maknz\Slack\AttachmentField(array(
-                    'title' => 'Results',
-                    'value' => $successfulBuild ? 'Success' : 'Failure',
+                    'title' => 'Status',
+                    'value' => $successfulBuild ? 'Success' : 'Failed',
                     'short' => false
                 ))
             )

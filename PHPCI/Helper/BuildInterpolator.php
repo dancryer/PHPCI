@@ -40,9 +40,11 @@ class BuildInterpolator
         $this->interpolation_vars['%COMMIT_EMAIL%'] = $build->getCommitterEmail();
         $this->interpolation_vars['%COMMIT_URI%'] = $build->getCommitLink();
         $this->interpolation_vars['%BRANCH%'] = $build->getBranch();
+        $this->interpolation_vars['%BRANCH_URI%'] = $build->getBranchLink();
         $this->interpolation_vars['%PROJECT%'] = $build->getProjectId();
         $this->interpolation_vars['%BUILD%'] = $build->getId();
         $this->interpolation_vars['%PROJECT_TITLE%'] = $build->getProjectTitle();
+        $this->interpolation_vars['%PROJECT_URI%'] = $phpCiUrl . "project/view/" . $build->getProjectId();
         $this->interpolation_vars['%BUILD_PATH%'] = $buildPath;
         $this->interpolation_vars['%BUILD_URI%'] = $phpCiUrl . "build/view/" . $build->getId();
         $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
@@ -52,6 +54,7 @@ class BuildInterpolator
         $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
         $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
         $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
+        $this->interpolation_vars['%PHPCI_PROJECT_URI%'] = $this->interpolation_vars['%PROJECT_URI%'];
         $this->interpolation_vars['%PHPCI_BUILD_PATH%'] = $this->interpolation_vars['%BUILD_PATH%'];
         $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
 

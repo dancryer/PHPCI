@@ -124,6 +124,7 @@
 </li>
 
 
+<?php if (!$this->LoginIsDisabled()): ?>
 <!-- User Account: style can be found in dropdown.less -->
 <li class="dropdown user user-menu">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -150,6 +151,7 @@
         </li>
     </ul>
 </li>
+<?php endif; ?>
 </ul>
 </div>
 </nav>
@@ -159,6 +161,8 @@
     <aside class="left-side sidebar-offcanvas">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
+
+            <?php if (!$this->LoginIsDisabled()): ?>
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
@@ -170,6 +174,7 @@
                     <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">

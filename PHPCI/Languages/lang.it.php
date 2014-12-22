@@ -8,6 +8,10 @@
  */
 
 $strings = array(
+
+    'language_name' => 'Italiano',
+    'language' => 'Lingua',
+    
     // Log in:
     'log_in_to_phpci' => 'Accedi a PHPCI',
     'login_error' => 'Indirizzo email o password errati',
@@ -91,15 +95,15 @@ PHPCI',
                           usare per questo progetto. Per usarla, aggiungi la chiave pubblica alle "deploy keys"
                           della piattaforma di gestione del codice che hai scelto.',
     'select_repository_type' => 'Seleziona il tipo di repository...',
-    'github' => 'Github',
+    'github' => 'GitHub',
     'bitbucket' => 'Bitbucket',
-    'gitlab' => 'Gitlab',
+    'gitlab' => 'GitLab',
     'remote' => 'URL Remoto',
     'local' => 'Percorso Locale',
     'hg'    => 'Mercurial',
 
     'where_hosted' => 'Dove è archiviato il tuo progetto?',
-    'choose_github' => 'Scegli il repository di Github:',
+    'choose_github' => 'Scegli il repository di GitHub:',
 
     'repo_name' => 'Nome del Repository / URL (Remoto) o Percorso (Locale)',
     'project_title' => 'Titolo del Progetto',
@@ -136,7 +140,7 @@ PHPCI',
     'webhooks_help_github' => 'Per efettuare la build automatica di questo progetto quando vengono pushati nuovi commit,
                                 aggiungi l\'URL seguente come "Webhook" nella sezione
                                 <a href="https://github.com/%s/settings/hooks">Webhooks and Services</a> del tuo
-                                repository su Github.',
+                                repository su GitHub.',
 
     'webhooks_help_gitlab' => 'Per efettuare la build automatica di questo progetto quando vengono pushati nuovi commit,
                                 aggiungi l\'URL seguente come "Webhook URL" nella sezione "WebHook URL" del tuo
@@ -221,13 +225,13 @@ PHPCI',
     'settings_check_perms' => 'Le configurazioni non possono essere salvate, controlla i permessi del filer config.yml.',
     'settings_cannot_write' => 'PHPCI non può scrivere il file config.yml, le configurazioni potrebbero non essere
                                 salvate correttamente fintanto che il problema non verrà risolto.',
-    'settings_github_linked' => 'Il tuo account Github è stato collegato.',
-    'settings_github_not_linked' => 'Il tuo account Github non può essere collegato.',
+    'settings_github_linked' => 'Il tuo account GitHub è stato collegato.',
+    'settings_github_not_linked' => 'Il tuo account GitHub non può essere collegato.',
     'build_settings' => 'Configurazioni della build',
-    'github_application' => 'Applicatzione Github',
-    'github_sign_in' => 'Prima di poter iniziare ad usare Github, è necessario <a href="%s">collegarsi</a> e garantire
+    'github_application' => 'Applicatzione GitHub',
+    'github_sign_in' => 'Prima di poter iniziare ad usare GitHub, è necessario <a href="%s">collegarsi</a> e garantire
                             a PHPCI l\'accesso al tuo account.',
-    'github_phpci_linked' => 'PHPCI è stato collegato correttamente al tuo account Github.',
+    'github_phpci_linked' => 'PHPCI è stato collegato correttamente al tuo account GitHub.',
     'github_where_to_find' => 'Dove trovare queste...',
     'github_where_help' => 'Se sei il proprietario dell\'applicazione, puoi trovare queste informazioni nell\'are delle
                               configurazioni dell\'<a href="https://github.com/settings/applications">applicazione</a>.',
@@ -317,11 +321,11 @@ PHPCI',
     'install_instead' => 'Per favore installa PHPCI tramite phpci:install.',
 
     // Poll Command
-    'poll_github' => 'Richiesta a github per verificare se è necessario avviare una build.',
-    'no_token' => 'Nessuno token per github trovato',
+    'poll_github' => 'Richiesta a GitHub per verificare se è necessario avviare una build.',
+    'no_token' => 'Nessuno token per GitHub trovato',
     'finding_projects' => 'Ricerca dei progetti da aggiornare',
     'found_n_projects' => 'Trovati %d progetti',
-    'last_commit_is' => 'Ultimo commit su github per %s è %s',
+    'last_commit_is' => 'Ultimo commit su GitHub per %s è %s',
     'adding_new_build' => 'L\'ultimo commit è diverso da quello registrato, new build aggiunta.',
     'finished_processing_builds' => 'Terminato di processare le build.',
 

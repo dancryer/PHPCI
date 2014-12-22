@@ -123,11 +123,13 @@ class BuildStore extends BuildStoreBase
         $select = '`bm`.`build_id`, `bm`.`meta_key`, `bm`.`meta_value`';
         $and = $numResults > 1 ? ' AND (`bm`.`build_id` <= :buildId) ' : ' AND (`bm`.`build_id` = :buildId) ';
         $where = '`bm`.`meta_key` = :key AND `bm`.`project_id` = :projectId ' . $and;
-	$from = ' `build_meta` AS `bm`';
-	if($branch !== null) {
+        $from = ' `build_meta` AS `bm`';
+
+        if ($branch !== null) {
             $where .= ' AND `b`.`branch` = :branch AND `b`.`id`= `bm`.`build_id` ';
             $from .= ', `build` AS `b`';
-	}
+        }
+
         $query = 'SELECT '.$select.' FROM '.$from.' WHERE '.$where.' ORDER BY `bm`.id DESC LIMIT :numResults';
 
         $stmt = Database::getConnection('read')->prepare($query);

@@ -62,16 +62,16 @@ class SettingsController extends Controller
             $buildSettings = $this->settings['phpci']['build'];
         }
 
-        $authenticationSettings = array();
+        $authSettings = array();
         if (isset($this->settings['phpci']['authentication_settings'])) {
-            $authenticationSettings = $this->settings['phpci']['authentication_settings'];
+            $authSettings = $this->settings['phpci']['authentication_settings'];
         }
 
         $this->view->github                 = $this->getGithubForm();
         $this->view->emailSettings          = $this->getEmailForm($emailSettings);
         $this->view->buildSettings          = $this->getBuildForm($buildSettings);
         $this->view->isWriteable            = $this->canWriteConfig();
-        $this->view->authenticationSettings = $this->getAuthenticationForm($authenticationSettings);
+        $this->view->authenticationSettings = $this->getAuthenticationForm($authSettings);
 
         if (!empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);

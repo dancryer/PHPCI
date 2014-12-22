@@ -260,13 +260,13 @@ class WebhookController extends \PHPCI\Controller
             // build on merge request events
             if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
                 $attributes = $payload['object_attributes'];
-                if ( $attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
+                if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
 
                     $branch = $attributes['source_branch'];
                     $commit = $attributes['last_commit'];
                     $committer = $commit['author']['email'];
 
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message'] );
+                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
                 }
             }
 

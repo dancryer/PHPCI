@@ -103,12 +103,7 @@ class Lang
      */
     public static function init(Config $config)
     {
-        $matches = array();
-        foreach (glob(PHPCI_DIR . 'PHPCI/Languages/lang.*.php') as $file) {
-            if (preg_match('/lang\.([a-z]{2}\-?[a-z]*)\.php/', $file, $matches)) {
-                self::$languages[] = $matches[1];
-            }
-        }
+        self::loadAvailableLanguages();
 
         // Try cookies first:
         if (isset($_COOKIE) && array_key_exists('phpcilang', $_COOKIE) && self::setLanguage($_COOKIE['phpcilang'])) {
@@ -159,5 +154,15 @@ class Lang
         }
 
         return $strings;
+    }
+
+    protected static function loadAvailableLanguages()
+    {
+        $matches = array();
+        foreach (glob(PHPCI_DIR . 'PHPCI/Languages/lang.*.php') as $file) {
+            if (preg_match('/lang\.([a-z]{2}\-?[a-z]*)\.php/', $file, $matches)) {
+                self::$languages[] = $matches[1];
+            }
+        }
     }
 }

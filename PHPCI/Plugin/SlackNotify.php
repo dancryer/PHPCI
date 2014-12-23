@@ -81,10 +81,10 @@ class SlackNotify implements \PHPCI\Plugin
         $successfulBuild = $this->build->isSuccessful();
 
         if ($successfulBuild) {
-            $message = 'Success';
+            $status = 'Success';
             $color = 'good';
         } else {
-            $message = 'Failed';
+            $status = 'Failed';
             $color = 'danger';
         }
 
@@ -96,7 +96,7 @@ class SlackNotify implements \PHPCI\Plugin
             'fields' => array(
                 new \Maknz\Slack\AttachmentField(array(
                     'title' => 'Status',
-                    'value' => $message,
+                    'value' => $status,
                     'short' => false
                 ))
             )

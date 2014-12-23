@@ -8,7 +8,7 @@
  */
 
 $strings = array(
-    'language_name' => 'Angielski',
+    'language_name' => 'Polski',
     'language' => 'Język',
 
     // Log in:

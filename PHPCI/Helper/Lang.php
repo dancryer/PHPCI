@@ -156,6 +156,9 @@ class Lang
         return $strings;
     }
 
+    /**
+     * Load the names of all available languages.
+     */
     protected static function loadAvailableLanguages()
     {
         $matches = array();

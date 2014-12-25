@@ -13,12 +13,6 @@ date_default_timezone_set(@date_default_timezone_get());
 // Load Composer autoloader:
 require_once(dirname(__DIR__) . '/vendor/autoload.php');
 
-// Load configuration if present:
-$conf = array();
-$conf['b8']['app']['namespace'] = 'PHPCI';
-$conf['b8']['app']['default_controller'] = 'Home';
-$conf['b8']['view']['path'] = dirname(__DIR__) . '/../PHPCI/View/';
-
 // If the PHPCI config file is not where we expect it, try looking in
 // env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
@@ -31,8 +25,15 @@ if (!file_exists($configFile)) {
     }
 }
 
+// Load configuration if present:
+$conf = array();
+$conf['b8']['app']['namespace'] = 'PHPCI';
+$conf['b8']['app']['default_controller'] = 'Home';
+$conf['b8']['view']['path'] = dirname(__DIR__) . '/PHPCI/View/';
+
+$config = new b8\Config($conf);
+
 if (file_exists($configFile)) {
-    $config = new b8\Config($conf);
     $config->loadYaml($configFile);
 }
 

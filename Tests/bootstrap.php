@@ -34,7 +34,7 @@ require_once(dirname(__DIR__) . '/vendor/autoload.php');
 $conf = array();
 $conf['b8']['app']['namespace'] = 'PHPCI';
 $conf['b8']['app']['default_controller'] = 'Home';
-$conf['b8']['view']['path'] = dirname(__DIR__) . '/PHPCI/View/';
+$conf['b8']['view']['path'] = dirname(__DIR__) . '/../PHPCI/View/';
 
 if (file_exists(dirname(__DIR__) . '/PHPCI/config.yml')) {
     $config = new b8\Config($conf);

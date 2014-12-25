@@ -1,10 +1,10 @@
 <?php
+use PHPCI\Helper\Lang;
 
 foreach($projects as $project):
     $statuses = array();
     $successes = 0;
     $failures = 0;
-    $health = '';
     $subcls = '';
     $cls = '';
 
@@ -12,32 +12,6 @@ foreach($projects as $project):
     $failure = null;
 
     if (count($builds[$project->getId()])) {
-
-        // Use the latest build information to determine current status:
-        $latestBuild = $builds[$project->getId()][0];
-
-        switch ($latestBuild->getStatus()) {
-            case 0:
-                $cls = 'active';
-                $status = 'Pending';
-                break;
-
-            case 1:
-                $cls = 'warning';
-                $status = 'Running';
-                break;
-
-            case 2:
-                $cls = 'success';
-                $status = 'Success';
-                break;
-
-            case 3:
-                $cls = 'danger';
-                $status = 'Failed';
-                break;
-        }
-
         // Use the last 5 builds to determine project health:
         $successes = 0;
         $failures = 0;
@@ -53,45 +27,93 @@ foreach($projects as $project):
                 case 2:
                     $successes++;
                     $statuses[] = 'ok';
-                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $success;
+                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $success;
                     break;
                 case 3:
                     $failures++;
                     $statuses[] = 'failed';
-                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : $failure;
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $failure;
                     break;
             }
         }
     }
 
     if ($failures == 0) {
-        $health = 'Good';
-        $subcls = 'success';
-    } elseif ($failures > $successes) {
-        $health = 'Bad';
-        $subcls = 'danger';
+        $subcls = 'green';
+    } elseif ($successes == 0) {
+        $subcls = 'red';
     } else {
-        $health = 'Warning';
-        $subcls = 'warning';
+        $subcls = 'yellow';
+    }
+
+
+    $buildCount = count($builds[$project->getId()]);
+    $lastSuccess = $successful[$project->getId()];
+    $lastFailure = $failed[$project->getId()];
+    $message = Lang::get('no_builds_yet');
+    $shortMessage = Lang::get('no_builds_yet');
+
+    if ($buildCount > 0) {
+        if ($failures > 0) {
+            $shortMessage = Lang::get('x_of_x_failed_short', $failures, $buildCount);
+            $message = Lang::get('x_of_x_failed', $failures, $buildCount);
+
+            if (!is_null($lastSuccess) && !is_null($lastSuccess->getFinished())) {
+                $message .= Lang::get('last_successful_build', $lastSuccess->getFinished()->format('M j Y'));
+            } else {
+                $message .= Lang::get('never_built_successfully');
+            }
+        } else {
+            $message = Lang::get('all_builds_passed', $buildCount);
+            $shortMessage = Lang::get('all_builds_passed_short', $buildCount, $buildCount);
+
+            if (!is_null($lastFailure) && !is_null($lastFailure->getFinished())) {
+                $message .= Lang::get('last_failed_build', $lastFailure->getFinished()->format('M j Y'));
+            } else {
+                $message .= Lang::get('never_failed_build');
+            }
+        }
     }
 
 ?>
-<tr class="<?php print $cls; ?>">
-    <td>
-        <span class='label label-<?php echo $subcls ?>'>
-            <?php echo $health ?>
-        </span>
-    </td>
-    <td><a href='<?php echo PHPCI_URL ?>project/view/<?php echo $project->getId() ?>'><?php echo htmlspecialchars($project->getTitle()) ?></a></td>
-    <td><?php print is_null($success) ? 'Never' : $success; ?></td>
-    <td><?php print is_null($failure) ? 'Never' : $failure; ?></td>
-    <td>
-        <?php
-        foreach ($statuses as $status) {
-            print '<img alt="'.$status.'" src="' . PHPCI_URL . 'assets/img/icon-build-' . $status . '.png">';
-        }
-        ?>
-    </td>
-    <td><a class="btn btn-default btn-sm" href='<?php echo PHPCI_URL ?>project/build/<?php echo $project->getId(); ?>'>build now &raquo;</a></td>
-</tr>
+
+    <?php if (count($projects) > 10): ?>
+
+        <div class="small-box bg-<?php print $subcls; ?>">
+            <div class="inner">
+                <h4>
+                    <strong>
+                        <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
+                            <?php print $project->getTitle(); ?>
+                        </a>
+                    </strong> -
+                    <?php print $shortMessage; ?>
+                </h4>
+            </div>
+        </div>
+
+    <?php else: ?>
+
+    <div class="small-box bg-<?php print $subcls; ?>">
+        <div class="inner">
+            <h3>
+                <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
+                    <?php print $project->getTitle(); ?>
+                </a>
+            </h3>
+
+            <p>
+                <?php print $message; ?>
+            </p>
+
+        </div>
+        <div class="icon">
+            <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
+        </div>
+        <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>" class="small-box-footer">
+            <?php Lang::out('view_project'); ?> <i class="fa fa-arrow-circle-right"></i>
+        </a>
+    </div>
+
+    <?php endif; ?>
 <?php endforeach; ?>

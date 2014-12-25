@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Helper\Lang;
 
 /**
 * Composer Plugin - Provides access to Composer functionality.
@@ -27,6 +28,13 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         $path = $builder->buildPath . '/composer.json';
@@ -38,6 +46,12 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path = $phpci->buildPath;
@@ -68,7 +82,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
 
         if (!$composerLocation) {
-            $this->phpci->logFailure('Could not find Composer.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'composer'));
             return false;
         }
 

@@ -2,7 +2,10 @@
 
 namespace PHPCI\Plugin\Util;
 
-
+/**
+ * Class ComposerPluginInformation
+ * @package PHPCI\Plugin\Util
+ */
 class ComposerPluginInformation implements InstalledPluginInformation
 {
     /**
@@ -67,6 +70,9 @@ class ComposerPluginInformation implements InstalledPluginInformation
         );
     }
 
+    /**
+     * Load a list of available plugins from the installed composer packages.
+     */
     protected function loadPluginInfo()
     {
         if ($this->pluginInfo !== null) {

@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use b8\View;
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Helper\Email as EmailHelper;
 
@@ -37,6 +38,13 @@ class Email implements \PHPCI\Plugin
      */
     protected $options;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param \Swift_Mailer $mailer
+     * @param array $options
+     */
     public function __construct(
         Builder $phpci,
         Build $build,
@@ -60,7 +68,7 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
+        $buildStatus  = $this->build->isSuccessful() ? Lang::get('passing_build') : Lang::get('failing_build');
         $projectName  = $this->build->getProject()->getTitle();
         $mailTemplate = $this->build->isSuccessful() ? 'Email/success' : 'Email/failed';
 
@@ -76,8 +84,8 @@ class Email implements \PHPCI\Plugin
         );
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
-        $this->phpci->log(sprintf("%d emails failed to send", $sendFailures));
+        $this->phpci->log(Lang::get('n_emails_sent', (count($addresses) - count($sendFailures))));
+        $this->phpci->log(Lang::get('n_emails_failed', count($sendFailures)));
 
         return ($sendFailures === 0);
     }
@@ -132,6 +140,10 @@ class Email implements \PHPCI\Plugin
         return $failures;
     }
 
+    /**
+     * Get the list of email addresses to send to.
+     * @return array
+     */
     protected function getEmailAddresses()
     {
         $addresses = array();
@@ -154,6 +166,10 @@ class Email implements \PHPCI\Plugin
         return $addresses;
     }
 
+    /**
+     * Get the list of email addresses to CC.
+     * @return array
+     */
     protected function getCcAddresses()
     {
         $ccAddresses = array();

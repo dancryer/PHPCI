@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\ComposerPluginInformation;
 use PHPCI\Plugin\Util\FilesPluginInformation;
@@ -24,6 +25,9 @@ use PHPCI\Plugin\Util\PluginInformationCollection;
 class PluginController extends \PHPCI\Controller
 {
     protected $required = array(
+        'php',
+        'ext-pdo',
+        'ext-pdo_mysql',
         'block8/b8framework',
         'ircmaxell/password-compat',
         'swiftmailer/swiftmailer',
@@ -31,17 +35,20 @@ class PluginController extends \PHPCI\Controller
         'symfony/console',
         'psr/log',
         'monolog/monolog',
-        'pimple/pimple'
+        'pimple/pimple',
+        'robmorgan/phinx',
     );
 
     protected $canInstall;
     protected $composerPath;
 
+    /**
+     * List all enabled plugins, installed and recommend packages.
+     * @return string
+     */
     public function index()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $this->view->canWrite = is_writable(APPLICATION_PATH . 'composer.json');
         $this->view->required = $this->required;
@@ -60,16 +67,17 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
-        $this->config->set('page_title', 'Plugins');
+        $this->layout->title = Lang::get('plugins');
 
         return $this->view->render();
     }
 
+    /**
+     * Remove a given package.
+     */
     public function remove()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $json = $this->getComposerJson();
@@ -86,11 +94,12 @@ class PluginController extends \PHPCI\Controller
         die;
     }
 
+    /**
+     * Install a given package.
+     */
     public function install()
     {
-        if (!$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $package = $this->getParam('package', null);
         $version = $this->getParam('version', '*');
@@ -103,18 +112,37 @@ class PluginController extends \PHPCI\Controller
         die;
     }
 
+    /**
+     * Get the json-decoded contents of the composer.json file.
+     * @return mixed
+     */
     protected function getComposerJson()
     {
         $json = file_get_contents(APPLICATION_PATH . 'composer.json');
         return json_decode($json, true);
     }
 
+    /**
+     * Convert array to json and save composer.json
+     * 
+     * @param $array
+     */
     protected function setComposerJson($array)
     {
-        $json = json_encode($array);
+        if (defined('JSON_PRETTY_PRINT')) {
+            $json = json_encode($array, JSON_PRETTY_PRINT);
+        } else {
+            $json = json_encode($array);
+        }
+
         file_put_contents(APPLICATION_PATH . 'composer.json', $json);
     }
 
+    /**
+     * Find a system binary.
+     * @param $binary
+     * @return null|string
+     */
     protected function findBinary($binary)
     {
         if (is_string($binary)) {
@@ -143,6 +171,9 @@ class PluginController extends \PHPCI\Controller
         return null;
     }
 
+    /**
+     * Perform a search on packagist.org.
+     */
     public function packagistSearch()
     {
         $searchQuery = $this->getParam('q', '');
@@ -153,6 +184,9 @@ class PluginController extends \PHPCI\Controller
         die(json_encode($res['body']));
     }
 
+    /**
+     * Look up available versions of a given package on packagist.org
+     */
     public function packagistVersions()
     {
         $name = $this->getParam('p', '');

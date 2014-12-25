@@ -10,6 +10,7 @@
 namespace PHPCI\Store;
 
 use b8\Database;
+use PHPCI\Model\Project;
 use PHPCI\Store\Base\ProjectStoreBase;
 
 /**
@@ -20,6 +21,11 @@ use PHPCI\Store\Base\ProjectStoreBase;
 */
 class ProjectStore extends ProjectStoreBase
 {
+    /**
+     * Returns a list of all branch names PHPCI has run builds against.
+     * @param $projectId
+     * @return array
+     */
     public function getKnownBranches($projectId)
     {
         $query = 'SELECT DISTINCT branch from build WHERE project_id = :pid';
@@ -37,6 +43,32 @@ class ProjectStore extends ProjectStoreBase
             return $rtn;
         } else {
             return array();
+        }
+    }
+
+    /**
+     * Get a list of all projects, ordered by their title.
+     * @return array
+     */
+    public function getAll()
+    {
+        $query = 'SELECT * FROM `project` ORDER BY `title` ASC';
+        $stmt = Database::getConnection('read')->prepare($query);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return new Project($item);
+            };
+            $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
+
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
         }
     }
 }

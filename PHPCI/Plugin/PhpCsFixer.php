@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -36,6 +37,18 @@ class PhpCsFixer implements \PHPCI\Plugin
     protected $diff       = '';
     protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -45,6 +58,10 @@ class PhpCsFixer implements \PHPCI\Plugin
         $this->buildArgs($options);
     }
 
+    /**
+     * Run PHP CS Fixer.
+     * @return bool
+     */
     public function execute()
     {
         $curdir = getcwd();
@@ -53,7 +70,7 @@ class PhpCsFixer implements \PHPCI\Plugin
         $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
 
         if (!$phpcsfixer) {
-            $this->phpci->logFailure('Could not find php-cs-fixer.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'php-cs-fixer'));
             return false;
         }
 
@@ -65,6 +82,10 @@ class PhpCsFixer implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Build an args string for PHPCS Fixer.
+     * @param $options
+     */
     public function buildArgs($options)
     {
         if (isset($options['verbose']) && $options['verbose']) {

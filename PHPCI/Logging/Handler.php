@@ -11,6 +11,10 @@ namespace PHPCI\Logging;
 
 use Psr\Log\LoggerInterface;
 
+/**
+ * Base Log Handler
+ * @package PHPCI\Logging
+ */
 class Handler
 {
     /**
@@ -33,11 +37,18 @@ class Handler
      */
     protected $logger;
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * Register a new log handler.
+     * @param LoggerInterface $logger
+     */
     public static function register(LoggerInterface $logger = null)
     {
         $handler = new static($logger);
@@ -122,6 +133,10 @@ class Handler
         $this->log($exception);
     }
 
+    /**
+     * Write to the build log.
+     * @param \Exception $exception
+     */
     protected function log(\Exception $exception)
     {
         if (null !== $this->logger) {

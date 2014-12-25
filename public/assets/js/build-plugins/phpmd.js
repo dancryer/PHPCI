@@ -1,7 +1,7 @@
-var phpmdPlugin = PHPCI.UiPlugin.extend({
+var phpmdPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpmd-warnings',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Mess Detector',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
+    title: Lang.get('phpmd'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -9,7 +9,7 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpmd-data', -1, {key: 'phpmd-data'})
+        var query = ActiveBuild.registerQuery('phpmd-data', -1, {key: 'phpmd-data'})
 
         $(window).on('phpmd-data', function(data) {
             self.onUpdate(data);
@@ -25,19 +25,20 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table table-striped" id="phpmd-data">' +
+        return $('<table class="table" id="phpmd-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Start</th>' +
-            '   <th>End</th>' +
-            '   <th>Message</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('start')+'</th>' +
+            '   <th>'+Lang.get('end')+'</th>' +
+            '   <th>'+Lang.get('message')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpmd-warnings').hide();
             return;
         }
 
@@ -48,11 +49,16 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
         var tbody = $('#phpmd-data tbody');
         tbody.empty();
 
+        if (errors.length == 0) {
+            $('#build-phpmd-warnings').hide();
+            return;
+        }
+
         for (var i in errors) {
             var file = errors[i].file;
 
-            if (PHPCI.fileLinkTemplate) {
-                var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
+            if (ActiveBuild.fileLinkTemplate) {
+                var fileLink = ActiveBuild.fileLinkTemplate.replace('{FILE}', file);
                 fileLink = fileLink.replace('{LINE}', errors[i].line_start);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
@@ -66,7 +72,9 @@ var phpmdPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpmd-warnings').show();
     }
 });
 
-PHPCI.registerPlugin(new phpmdPlugin());
+ActiveBuild.registerPlugin(new phpmdPlugin());

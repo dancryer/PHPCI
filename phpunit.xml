@@ -11,6 +11,9 @@
          bootstrap="./Tests/bootstrap.php"
 >
     <testsuites>
+        <testsuite name="PHPCI Command Test Suite">
+            <directory suffix="Test.php">./Tests/PHPCI/Command</directory>
+        </testsuite>
         <testsuite name="PHPCI Helper Test Suite">
             <directory suffix="Test.php">./Tests/PHPCI/Helper</directory>
         </testsuite>

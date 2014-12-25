@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Helper\Lang;
 
 /**
 * Copy Build Plugin - Copies the entire build to another directory.
@@ -26,6 +27,12 @@ class CopyBuild implements \PHPCI\Plugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $path               = $phpci->buildPath;
@@ -61,17 +68,25 @@ class CopyBuild implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Wipe the destination directory if it already exists.
+     * @throws \Exception
+     */
     protected function wipeExistingDirectory()
     {
         if ($this->wipe == true && $this->directory != '/' && is_dir($this->directory)) {
             $cmd = 'rm -Rf "%s*"';
             $success = $this->phpci->executeCommand($cmd, $this->directory);
+
             if (!$success) {
-                throw new \Exception('Failed to wipe existing directory ' . $this->directory . ' before copy');
+                throw new \Exception(Lang::get('failed_to_wipe', $this->directory));
             }
         }
     }
 
+    /**
+     * Delete any ignored files from the build prior to copying.
+     */
     protected function deleteIgnoredFiles()
     {
         if ($this->ignore) {

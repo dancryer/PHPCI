@@ -16,43 +16,29 @@ if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-// Set up a basic autoloader for PHPCI:
-$autoload = function ($class) {
-    $file = str_replace(array('\\', '_'), '/', $class);
-    $file .= '.php';
-
-    if (substr($file, 0, 1) == '/') {
-        $file = substr($file, 1);
-    }
-
-    if (is_file(dirname(__FILE__) . '/' . $file)) {
-        include(dirname(__FILE__) . '/' . $file);
-        return;
-    }
-};
-
-spl_autoload_register($autoload, true, true);
-
 // If the PHPCI config file is not where we expect it, try looking in
 // env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
 
-if (!file_exists($configFile)) {
-    $configEnv = getenv('phpci_config_file');
-
-    if (!empty($configEnv)) {
-        $configFile = $configEnv;
-    }
+$configEnv = getenv('phpci_config_file');
+if (!empty($configEnv)) {
+    $configFile = $configEnv;
 }
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
 if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
-    die('PHPCI has not yet been installed - Please use the command ./console phpci:install to install it.');
+    $message = 'PHPCI has not yet been installed - Please use the command "./console phpci:install" ';
+    $message .= '(or "php ./console phpci:install" for Windows) to install it.';
+
+    die($message);
 }
 
 // If composer has not been run, fail at this point and tell the user to install:
 if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-    file_put_contents('php://stderr', 'Please install PHPCI with "composer install" before using console');
+    $message = 'Please install PHPCI with "composer install" (or "php composer.phar install"';
+    $message .= ' for Windows) before using console';
+    
+    file_put_contents('php://stderr', $message);
     exit(1);
 }
 
@@ -77,3 +63,5 @@ if (file_exists($configFile)) {
 }
 
 require_once(dirname(__FILE__) . '/vars.php');
+
+\PHPCI\Helper\Lang::init($config);

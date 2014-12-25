@@ -1,17 +1,16 @@
-<div class="build-info-panel panel panel-default">
-    <img class="pull-left" src="//www.gravatar.com/avatar/<?php print md5($build->getCommitterEmail()); ?>?d=mm">
+<?php use PHPCI\Helper\Lang; ?>
+<div class="build-info-panel box box-solid">
 
-    <div class="panel-heading">
-        <h1 class="panel-title">
-            <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
-            <?php print $build->getProject()->getTitle(); ?></a>
-            <span>#<?php print $build->getId(); ?></span>
-
+    <div class="box-header">
+        <h1 class="box-title">
+            <?php Lang::out('committed_by_x', $build->getCommitterEmail()); ?>
             <label class="pull-right label"></label>
         </h1>
     </div>
 
-    <div class="panel-body">
+    <div class="box-body">
+        <img class="pull-left" src="//www.gravatar.com/avatar/<?php print md5($build->getCommitterEmail()); ?>?d=mm">
+
         <div id="build-info">
             <?php if ($build->getCommitMessage()): ?>
                 <div class="commit-message">
@@ -19,46 +18,29 @@
                 </div>
             <?php endif; ?>
 
-            <strong>Branch: </strong> <?php print $build->getBranch(); ?><br>
-            <strong>Committer: </strong> <?php print $build->getCommitterEmail(); ?>
+            <?php Lang::out('branch_x', $build->getBranch()); ?>
 
             <?php if ($build->getCommitId() != 'Manual'): ?>
-                <br><strong>Commit ID: </strong> <?php print $build->getCommitId(); ?><br>
+                <br><?php Lang::out('commit_id_x', $build->getCommitId()); ?>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
 <div class="row">
-	<div class="col-lg-3">
-        <div class="panel panel-default affix">
-            <div class="panel-heading">
-                <h4 class="panel-title">Options</h4>
-            </div>
-                <ul class="list-group">
-                    <a class="list-group-item" href="<?php echo PHPCI_URL ?>build/rebuild/<?php print $build->getId(); ?>"><i class="icon-cog"></i> Rebuild</a>
-                    <?php if($this->User()->getIsAdmin()): ?>
-                        <a class="list-group-item" href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" id="delete-build"><i class="icon-trash"></i> Delete Build</a>
-                    <?php endif; ?>
-                </ul>
-            <div class="panel-heading">
-                <h4 class="panel-title">Quick links</h4>
-            </div>
-                <ul class="list-group" id="anchorPlugins"></ul>
-
-        </div>
-	</div>
-
-	<div class="col-lg-9">
+	<div class="col-lg-12">
 		<div id="status"></div>
         <div id="plugins" class="row"></div>
     </div>
 </div>
 
+<script src="<?php print PHPCI_URL; ?>assets/js/build.js"></script>
 <script>
-    var PHPCI = new PHPCIObject(<?php print $build->getId() ?>);
-    PHPCI.buildData = <?php print $data; ?>;
-    PHPCI.fileLinkTemplate = <?php print json_encode($build->getFileLinkTemplate()); ?>;
+
+    var ActiveBuild = new Build(<?php print $build->getId() ?>);
+    ActiveBuild.buildData = <?php print $data; ?>;
+    ActiveBuild.fileLinkTemplate = <?php print json_encode($build->getFileLinkTemplate()); ?>;
+
 </script>
 
 <?php
@@ -69,7 +51,7 @@ foreach ($plugins as $plugin) {
 
 <script>
     $(document).ready(function() {
-        PHPCI.renderPlugins();
+        ActiveBuild.renderPlugins();
 
         $('#delete-build').on('click', function (e) {
             e.preventDefault();
@@ -86,41 +68,38 @@ foreach ($plugins as $plugin) {
     });
 
     function updateBuildStatus(status) {
-        var statusClass = null;
-        var statusText = null;
-
         switch (status) {
             case 0:
-                statusClass = 'info';
-                statusText = 'Pending';
+                $('.build-info-panel')
+                    .removeClass('bg-yellow')
+                    .removeClass('bg-green')
+                    .removeClass('bg-red')
+                    .addClass('bg-blue');
                 break;
+
             case 1:
-                statusClass = 'warning';
-                statusText = 'Running';
+                $('.build-info-panel')
+                    .removeClass('bg-green')
+                    .removeClass('bg-red')
+                    .removeClass('bg-blue')
+                    .addClass('bg-yellow');
                 break;
+
             case 2:
-                statusClass = 'success';
-                statusText = 'Success';
+                $('.build-info-panel')
+                    .removeClass('bg-yellow')
+                    .removeClass('bg-red')
+                    .removeClass('bg-blue')
+                    .addClass('bg-green');
                 break;
+
             case 3:
-                statusClass = 'danger';
-                statusText = 'Failed';
+                $('.build-info-panel')
+                    .removeClass('bg-yellow')
+                    .removeClass('bg-green')
+                    .removeClass('bg-blue')
+                    .addClass('bg-red');
                 break;
         }
-
-        $('.build-info-panel')
-            .removeClass('panel-info')
-            .removeClass('panel-warning')
-            .removeClass('panel-success')
-            .removeClass('panel-danger')
-            .addClass('panel-' + statusClass);
-
-        $('.build-info-panel .label')
-            .removeClass('label-info')
-            .removeClass('label-warning')
-            .removeClass('label-success')
-            .removeClass('label-danger')
-            .addClass('label-' + statusClass)
-            .text(statusText);
     }
 </script>

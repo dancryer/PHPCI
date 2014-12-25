@@ -49,6 +49,13 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected $xmlConfigFile;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
@@ -58,6 +65,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
+    /**
+     * Try and find the phpunit XML config file.
+     * @param $buildPath
+     * @return null|string
+     */
     public static function findConfigFile($buildPath)
     {
         if (file_exists($buildPath . 'phpunit.xml')) {
@@ -79,6 +91,18 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return null;
     }
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -118,6 +142,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
+        if (empty($this->xmlConfigFile) && empty($this->directory)) {
+            $this->phpci->logFailure('Neither configuration file nor test directory found.');
+            return false;
+        }
+
         $success = true;
 
         $this->phpci->logExecOutput(false);
@@ -129,7 +158,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         // Run any dirs next. Again this can be either a single value or an array.
         if ($this->directory !== null) {
-            $success &= $this->runDir();
+            $success &= $this->runDir($this->directory);
         }
 
         $tapString = $this->phpci->getLastOutput();
@@ -152,6 +181,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $success;
     }
 
+    /**
+     * Run the tests defined in a PHPUnit config file.
+     * @param $configPath
+     * @return bool|mixed
+     */
     protected function runConfigFile($configPath)
     {
         if (is_array($configPath)) {
@@ -166,7 +200,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 
@@ -182,10 +216,15 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
     }
 
-    protected function runDir()
+    /**
+     * Run the PHPUnit tests in a specific directory or array of directories.
+     * @param $directory
+     * @return bool|mixed
+     */
+    protected function runDir($directory)
     {
-        if (is_array($this->directory)) {
-            return $this->recurseArg($this->directory, array($this, "runDir"));
+        if (is_array($directory)) {
+            return $this->recurseArg($directory, array($this, "runDir"));
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
@@ -193,17 +232,22 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 
             $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $this->directory);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
             chdir($curdir);
             return $success;
         }
     }
 
+    /**
+     * @param $array
+     * @param $callable
+     * @return bool|mixed
+     */
     protected function recurseArg($array, $callable)
     {
         $success = true;

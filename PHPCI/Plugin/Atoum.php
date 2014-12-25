@@ -12,12 +12,22 @@ namespace PHPCI\Plugin;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
+/**
+ * Atoum plugin, runs Atoum tests within a project.
+ * @package PHPCI\Plugin
+ */
 class Atoum implements \PHPCI\Plugin
 {
     private $args;
     private $config;
     private $directory;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -42,6 +52,10 @@ class Atoum implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * Run the Atoum plugin.
+     * @return bool
+     */
     public function execute()
     {
         $cmd = $this->executable;
@@ -67,7 +81,7 @@ class Atoum implements \PHPCI\Plugin
         }
         if (count($output) == 0) {
             $status = false;
-            $this->phpci->log("No test have been performed!");
+            $this->phpci->log(Lang::get('no_tests_performed'));
         }
         
         return $status;

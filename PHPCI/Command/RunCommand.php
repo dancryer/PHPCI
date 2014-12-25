@@ -9,7 +9,9 @@
 
 namespace PHPCI\Command;
 
+use b8\Config;
 use Monolog\Logger;
+use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
 use PHPCI\Logging\OutputLogHandler;
@@ -48,6 +50,11 @@ class RunCommand extends Command
     protected $maxBuilds = null;
 
     /**
+     * @var bool
+     */
+    protected $isFromDaemon = false;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -61,7 +68,7 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.');
+            ->setDescription(Lang::get('run_all_pending'));
     }
 
     /**
@@ -73,25 +80,37 @@ class RunCommand extends Command
 
         // For verbose mode we want to output all informational and above
         // messages to the symphony output interface.
-        if ($input->hasOption('verbose')) {
+        if ($input->hasOption('verbose') && $input->getOption('verbose')) {
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
         }
 
-        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+        $running = $this->validateRunningBuilds();
 
-        $this->logger->addInfo("Finding builds to process");
+        $this->logger->pushProcessor(new LoggedBuildContextTidier());
+        $this->logger->addInfo(Lang::get('finding_builds'));
         $store = Factory::getStore('Build');
         $result = $store->getByStatus(0, $this->maxBuilds);
-        $this->logger->addInfo(sprintf("Found %d builds", count($result['items'])));
+        $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));
 
         $builds = 0;
 
-        foreach ($result['items'] as $build) {
-            $builds++;
-
+        while (count($result['items'])) {
+            $build = array_shift($result['items']);
             $build = BuildFactory::getBuild($build);
+
+            // Skip build (for now) if there's already a build running in that project:
+            if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
+                $this->logger->addInfo(Lang::get('skipping_build', $build->getId()));
+                $result['items'][] = $build;
+
+                // Re-run build validator:
+                $running = $this->validateRunningBuilds();
+                continue;
+            }
+
+            $builds++;
 
             try {
                 // Logging relevant to this build should be stored
@@ -107,19 +126,71 @@ class RunCommand extends Command
                 $this->logger->popHandler($buildDbLog);
             } catch (\Exception $ex) {
                 $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
                 $build->setLog($build->getLog() . PHP_EOL . PHP_EOL . $ex->getMessage());
                 $store->save($build);
             }
 
         }
 
-        $this->logger->addInfo("Finished processing builds");
+        $this->logger->addInfo(Lang::get('finished_processing_builds'));
 
         return $builds;
     }
 
-    public function setBaxBuilds($numBuilds)
+    public function setMaxBuilds($numBuilds)
     {
         $this->maxBuilds = (int)$numBuilds;
+    }
+
+    public function setIsDaemon($fromDaemon)
+    {
+        $this->isFromDaemon = (bool)$fromDaemon;
+    }
+
+    protected function validateRunningBuilds()
+    {
+        /** @var \PHPCI\Store\BuildStore $store */
+        $store = Factory::getStore('Build');
+        $running = $store->getByStatus(1);
+        $rtn = array();
+
+        $timeout = Config::getInstance()->get('phpci.build.failed_after', 1800);
+
+        foreach ($running['items'] as $build) {
+            /** @var \PHPCI\Model\Build $build */
+            $build = BuildFactory::getBuild($build);
+
+            $now = time();
+            $start = $build->getStarted()->getTimestamp();
+
+            if (($now - $start) > $timeout) {
+                $this->logger->addInfo(Lang::get('marked_as_failed', $build->getId()));
+                $build->setStatus(Build::STATUS_FAILED);
+                $build->setFinished(new \DateTime());
+                $store->save($build);
+                $this->removeBuildDirectory($build);
+                continue;
+            }
+
+            $rtn[$build->getProjectId()] = true;
+        }
+
+        return $rtn;
+    }
+
+    protected function removeBuildDirectory($build)
+    {
+        $buildPath = PHPCI_DIR . 'PHPCI/build/' . $build->getId() . '/';
+
+        if (is_dir($buildPath)) {
+            $cmd = 'rm -Rf "%s"';
+
+            if (IS_WIN) {
+                $cmd = 'rmdir /S /Q "%s"';
+            }
+
+            shell_exec($cmd);
+        }
     }
 }

@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -36,6 +37,12 @@ class PhpCpd implements \PHPCI\Plugin
      */
     protected $ignore;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -84,13 +91,13 @@ class PhpCpd implements \PHPCI\Plugin
         $phpcpd = $this->phpci->findBinary('phpcpd');
 
         if (!$phpcpd) {
-            $this->phpci->logFailure('Could not find phpcpd.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'phpcpd'));
             return false;
         }
 
         $tmpfilename = tempnam('/tmp', 'phpcpd');
 
-        $cmd = $phpcpd . ' --log-pmd="%s" %s "%s"';
+        $cmd = $phpcpd . ' --log-pmd "%s" %s "%s"';
         $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
         print $this->phpci->getLastOutput();
@@ -104,13 +111,19 @@ class PhpCpd implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Process the PHPCPD XML report.
+     * @param $xmlString
+     * @return array
+     * @throws \Exception
+     */
     protected function processReport($xmlString)
     {
         $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
             $this->phpci->log($xmlString);
-            throw new \Exception('Could not process PHPCPD report XML.');
+            throw new \Exception(Lang::get('could_not_process_report'));
         }
 
         $warnings = 0;

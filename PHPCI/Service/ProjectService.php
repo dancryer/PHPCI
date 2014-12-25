@@ -12,6 +12,11 @@ namespace PHPCI\Service;
 use PHPCI\Model\Project;
 use PHPCI\Store\ProjectStore;
 
+/**
+ * The project service handles the creation, modification and deletion of projects.
+ * Class ProjectService
+ * @package PHPCI\Service
+ */
 class ProjectService
 {
     /**
@@ -110,12 +115,12 @@ class ProjectService
         if ($project->getType() == 'gitlab') {
             $info = array();
 
-            if (preg_match('`^(.*)@(.*):([0-9]+)?/?(.*)/(.*)\.git`', $reference, $matches)) {
+            if (preg_match('`^(.+)@(.+):([0-9]*)\/?(.+)\.git`', $reference, $matches)) {
                 $info['user'] = $matches[1];
                 $info['domain'] = $matches[2];
                 $info['port'] = $matches[3];
 
-                $project->setReference($matches[4] . '/' . $matches[5]);
+                $project->setReference($matches[4]);
             }
 
             $project->setAccessInformation($info);

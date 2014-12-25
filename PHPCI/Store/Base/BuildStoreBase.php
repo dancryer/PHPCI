@@ -20,11 +20,24 @@ class BuildStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\Build';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a Build by primary key.
+     * @param mixed $value Primary key.
+     * @param string $useConnection Connection to use (read / write)
+     * @return \PHPCI\Model\Build|null
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a Build by Id.
+     * @param mixed $value.
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\Build|null;
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +57,14 @@ class BuildStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get an array of Build by ProjectId.
+     * @param mixed $value.
+     * @param int $limit
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\Build[]
+     */
     public function getByProjectId($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -76,6 +97,14 @@ class BuildStoreBase extends Store
         }
     }
 
+    /**
+     * Get an array of Build by Status.
+     * @param mixed $value.
+     * @param int $limit
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\Build[]
+     */
     public function getByStatus($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {

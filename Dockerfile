@@ -7,7 +7,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C E5267A6C 0
 RUN apt-get update
 
 # Install PHP:
-RUN apt-get install -qy git-core php5-common php5-cli php5-curl php5-imap php5-mcrypt php5-mysqlnd
+RUN apt-get install -qy git-core php5-common php5-cli php5-curl php5-imap php5-mysqlnd
 
 # Give Git some fake user details to prevent it asking when trying to test merges:
 RUN git config --global user.name "PHPCI"

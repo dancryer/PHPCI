@@ -2,8 +2,13 @@
 
 namespace PHPCI\Plugin\Util;
 
+use PHPCI\Helper\Lang;
 use \PHPCI\Logging\BuildLogger;
 
+/**
+ * Plugin Executor - Runs the configured plugins for a given build stage.
+ * @package PHPCI\Plugin\Util
+ */
 class Executor
 {
     /**
@@ -16,6 +21,10 @@ class Executor
      */
     protected $pluginFactory;
 
+    /**
+     * @param Factory $pluginFactory
+     * @param BuildLogger $logger
+     */
     public function __construct(Factory $pluginFactory, BuildLogger $logger)
     {
         $this->pluginFactory = $pluginFactory;
@@ -37,7 +46,7 @@ class Executor
         }
 
         foreach ($config[$stage] as $plugin => $options) {
-            $this->logger->log('RUNNING PLUGIN: ' . $plugin);
+            $this->logger->log(Lang::get('running_plugin', $plugin));
 
             // Is this plugin allowed to fail?
             if ($stage == 'test' && !isset($options['allow_failures'])) {
@@ -48,7 +57,7 @@ class Executor
             if ($this->executePlugin($plugin, $options)) {
 
                 // Execution was successful:
-                $this->logger->logSuccess('PLUGIN STATUS: SUCCESS!');
+                $this->logger->logSuccess(Lang::get('plugin_success'));
 
             } else {
 
@@ -58,7 +67,7 @@ class Executor
                     $success = false;
                 }
 
-                $this->logger->logFailure('PLUGIN STATUS: FAILED');
+                $this->logger->logFailure(Lang::get('plugin_failed'));
             }
         }
 
@@ -82,7 +91,7 @@ class Executor
         }
 
         if (!class_exists($class)) {
-            $this->logger->logFailure('Plugin does not exist: ' . $plugin);
+            $this->logger->logFailure(Lang::get('plugin_missing', $plugin));
             return false;
         }
 
@@ -96,7 +105,7 @@ class Executor
                 $rtn = false;
             }
         } catch (\Exception $ex) {
-            $this->logger->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
+            $this->logger->logFailure(Lang::get('exception') . $ex->getMessage(), $ex);
             $rtn = false;
         }
 

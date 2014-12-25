@@ -30,6 +30,13 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected $phpci;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
@@ -39,6 +46,12 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci     = $phpci;
@@ -68,7 +81,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $phploc = $this->phpci->findBinary('phploc');
 
         if (!$phploc) {
-            $this->phpci->logFailure('Could not find phploc.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phploc'));
             return false;
         }
 

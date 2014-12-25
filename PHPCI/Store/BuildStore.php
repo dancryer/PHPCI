@@ -10,6 +10,7 @@
 namespace PHPCI\Store;
 
 use b8\Database;
+use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 use PHPCI\Store\Base\BuildStoreBase;
 
@@ -21,11 +22,28 @@ use PHPCI\Store\Base\BuildStoreBase;
 */
 class BuildStore extends BuildStoreBase
 {
-    public function getLatestBuilds($projectId)
+    /**
+     * Return an array of the latest builds for a given project.
+     * @param null $projectId
+     * @param int $limit
+     * @return array
+     */
+    public function getLatestBuilds($projectId = null, $limit = 5)
     {
-        $query = 'SELECT * FROM build WHERE project_id = :pid ORDER BY id DESC LIMIT 5';
+        $where = '';
+
+        if (!is_null($projectId)) {
+            $where = ' WHERE `project_id` = :pid ';
+        }
+
+        $query = 'SELECT * FROM build '.$where.' ORDER BY id DESC LIMIT :limit';
         $stmt = Database::getConnection('read')->prepare($query);
-        $stmt->bindValue(':pid', $projectId);
+
+        if (!is_null($projectId)) {
+            $stmt->bindValue(':pid', $projectId);
+        }
+
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -41,6 +59,34 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Return the latest build for a specific project, of a specific build status.
+     * @param null $projectId
+     * @param int $status
+     * @return array|Build
+     */
+    public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
+    {
+        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':pid', $projectId);
+        $stmt->bindValue(':status', $status);
+
+        if ($stmt->execute()) {
+            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                return new Build($data);
+            }
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * Return an array of builds for a given project and commit ID.
+     * @param $projectId
+     * @param $commitId
+     * @return array
+     */
     public function getByProjectAndCommit($projectId, $commitId)
     {
         $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id AND `commit_id` = :commit_id';
@@ -63,18 +109,35 @@ class BuildStore extends BuildStoreBase
         }
     }
 
-    public function getMeta($key, $projectId, $buildId = null, $numResults = 1)
+    /**
+     * Return build metadata by key, project and optionally build id.
+     * @param $key
+     * @param $projectId
+     * @param null $buildId
+     * @param null $branch
+     * @param int $numResults
+     * @return array|null
+     */
+    public function getMeta($key, $projectId, $buildId = null, $branch = null, $numResults = 1)
     {
-        $select = '`build_id`, `meta_key`, `meta_value`';
-        $and = $numResults > 1 ? ' AND (`build_id` <= :buildId) ' : ' AND (`build_id` = :buildId) ';
-        $where = '`meta_key` = :key AND `project_id` = :projectId ' . $and;
-        $query = 'SELECT '.$select.' FROM `build_meta` WHERE '.$where.' ORDER BY id DESC LIMIT :numResults';
+        $select = '`bm`.`build_id`, `bm`.`meta_key`, `bm`.`meta_value`';
+        $and = $numResults > 1 ? ' AND (`bm`.`build_id` <= :buildId) ' : ' AND (`bm`.`build_id` = :buildId) ';
+        $where = '`bm`.`meta_key` = :key AND `bm`.`project_id` = :projectId ' . $and;
+        $from = ' `build_meta` AS `bm`';
+
+        if ($branch !== null) {
+            $where .= ' AND `b`.`branch` = :branch AND `b`.`id`= `bm`.`build_id` ';
+            $from .= ', `build` AS `b`';
+        }
+
+        $query = 'SELECT '.$select.' FROM '.$from.' WHERE '.$where.' ORDER BY `bm`.id DESC LIMIT :numResults';
 
         $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
         $stmt->bindValue(':numResults', (int)$numResults, \PDO::PARAM_INT);
+        $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             $rtn = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -96,6 +159,14 @@ class BuildStore extends BuildStoreBase
         }
     }
 
+    /**
+     * Set a metadata value for a given project and build ID.
+     * @param $projectId
+     * @param $buildId
+     * @param $key
+     * @param $value
+     * @return bool
+     */
     public function setMeta($projectId, $buildId, $key, $value)
     {
         $cols = '`project_id`, `build_id`, `meta_key`, `meta_value`';

@@ -109,8 +109,8 @@ class ProjectBase extends Model
         ),
         'branch' => array(
             'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
+            'length' => 50,
+            'default' => 'master',
         ),
         'ssh_private_key' => array(
             'type' => 'text',
@@ -125,7 +125,7 @@ class ProjectBase extends Model
         'type' => array(
             'type' => 'varchar',
             'length' => 50,
-            'default' => 1,
+            'default' => null,
         ),
         'access_information' => array(
             'type' => 'varchar',
@@ -145,8 +145,8 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'allow_public_status' => array(
-            'type' => 'tinyint',
-            'length' => 4,
+            'type' => 'int',
+            'length' => 11,
         ),
     );
 

@@ -1,14 +1,14 @@
-var phpcpdPlugin = PHPCI.UiPlugin.extend({
+var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpcpd',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Copy/Paste Detector',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
+    title: Lang.get('phpcpd'),
     lastData: null,
     box: true,
     rendered: false,
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpcpd-data', -1, {key: 'phpcpd-data'})
+        var query = ActiveBuild.registerQuery('phpcpd-data', -1, {key: 'phpcpd-data'})
 
         $(window).on('phpcpd-data', function(data) {
             self.onUpdate(data);
@@ -23,12 +23,12 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table table-striped" id="phpcpd-data">' +
+        return $('<table class="table" id="phpcpd-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Start</th>' +
-            '   <th>End</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('start')+'</th>' +
+            '   <th>'+Lang.get('end')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
 
@@ -36,6 +36,7 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpcpd').hide();
             return;
         }
 
@@ -47,20 +48,26 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
         tbody.empty();
 
         var rowClass = 'danger';
+
+        if (errors.length == 0) {
+            $('#build-phpcpd').hide();
+            return;
+        }
+
         for (var i in errors) {
             var file = errors[i].file;
 
-            if (PHPCI.fileLinkTemplate) {
-                var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
+            if (ActiveBuild.fileLinkTemplate) {
+                var fileLink = ActiveBuild.fileLinkTemplate.replace('{FILE}', file);
                 fileLink = fileLink.replace('{LINE}', errors[i].line_start);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
             }
 
-            var label = 'From';
+            var label = Lang.get('from');
 
             if (i % 2 > 0) {
-                label = 'To';
+                label = Lang.get('to');
             }
             else {
                 rowClass = (rowClass == 'warning' ? 'danger' : 'warning');
@@ -75,7 +82,9 @@ var phpcpdPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpcpd').show();
     }
 });
 
-PHPCI.registerPlugin(new phpcpdPlugin());
+ActiveBuild.registerPlugin(new phpcpdPlugin());

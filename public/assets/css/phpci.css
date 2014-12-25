@@ -44,31 +44,7 @@ h1 {
     }
 
 
-.build-info-panel {
 
-}
-
-    .build-info-panel h1.panel-title {
-        border: 0;
-        font-size: 2em;
-        font-weight: bold;
-        padding: 0;
-    }
-
-        .build-info-panel h1.panel-title span {
-            font-weight: normal;
-        }
-
-    .build-info-panel img {
-        border: 1px solid #fff;
-        border-radius: 50%;
-        box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
-        margin: 7px 15px 15px 7px;
-    }
-
-    .build-info-panel #build-info {
-        margin-left: 90px;
-    }
 
 #loading {
     background: #246;

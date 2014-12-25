@@ -12,6 +12,10 @@ namespace PHPCI\Helper;
 use b8\Config;
 use PHPCI\Helper\MailerFactory;
 
+/**
+ * Helper class for sending emails using PHPCI's email configuration.
+ * @package PHPCI\Helper
+ */
 class Email
 {
     const DEFAULT_FROM = 'PHPCI <no-reply@phptesting.org>';
@@ -23,11 +27,20 @@ class Email
     protected $isHtml = false;
     protected $config;
 
+    /**
+     * Create a new email object.
+     */
     public function __construct()
     {
         $this->config = Config::getInstance();
     }
 
+    /**
+     * Set the email's To: header.
+     * @param string $email
+     * @param string|null $name
+     * @return $this
+     */
     public function setEmailTo($email, $name = null)
     {
         $this->emailTo[$email] = $name;
@@ -35,6 +48,12 @@ class Email
         return $this;
     }
 
+    /**
+     * Add an address to the email's CC header.
+     * @param string $email
+     * @param string|null $name
+     * @return $this
+     */
     public function addCc($email, $name = null)
     {
         $this->emailCc[$email] = $name;
@@ -42,6 +61,11 @@ class Email
         return $this;
     }
 
+    /**
+     * Set the email subject.
+     * @param string $subject
+     * @return $this
+     */
     public function setSubject($subject)
     {
         $this->subject = $subject;
@@ -49,6 +73,11 @@ class Email
         return $this;
     }
 
+    /**
+     * Set the email body.
+     * @param string $body
+     * @return $this
+     */
     public function setBody($body)
     {
         $this->body = $body;
@@ -56,6 +85,11 @@ class Email
         return $this;
     }
 
+    /**
+     * Set whether or not the email body is HTML.
+     * @param bool $isHtml
+     * @return $this
+     */
     public function setIsHtml($isHtml = false)
     {
         $this->isHtml = $isHtml;
@@ -63,6 +97,10 @@ class Email
         return $this;
     }
 
+    /**
+     * Send the email.
+     * @return bool|int
+     */
     public function send()
     {
         $smtpServer = $this->config->get('phpci.email_settings.smtp_address');
@@ -74,6 +112,10 @@ class Email
         }
     }
 
+    /**
+     * Sends the email via the built in PHP mail() function.
+     * @return bool
+     */
     protected function sendViaMail()
     {
         $headers = '';
@@ -100,6 +142,10 @@ class Email
         return mail($emailTo, $this->subject, $this->body, $headers);
     }
 
+    /**
+     * Sends the email using SwiftMailer.
+     * @return int
+     */
     protected function sendViaSwiftMailer()
     {
         $factory = new MailerFactory($this->config->get('phpci'));
@@ -121,6 +167,10 @@ class Email
         return $mailer->send($message);
     }
 
+    /**
+     * Get the from address to use for the email.
+     * @return mixed|string
+     */
     protected function getFrom()
     {
         $email = $this->config->get('phpci.email_settings.from_address', self::DEFAULT_FROM);

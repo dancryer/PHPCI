@@ -1,7 +1,10 @@
 <?php
 namespace PHPCI\Plugin\Util;
 
-
+/**
+ * Interface InstalledPluginInformation
+ * @package PHPCI\Plugin\Util
+ */
 interface InstalledPluginInformation
 {
     /**

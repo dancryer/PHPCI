@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -26,6 +27,13 @@ class HipchatNotify implements \PHPCI\Plugin
     private $color;
     private $notify;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     * @throws \Exception
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -41,7 +49,7 @@ class HipchatNotify implements \PHPCI\Plugin
             if (isset($options['message'])) {
                 $this->message = $options['message'];
             } else {
-                $this->message = '%PROJECT_TITLE% built at %BUILD_URI%';
+                $this->message = Lang::get('x_built_at_x');
             }
 
             if (isset($options['color'])) {
@@ -56,11 +64,15 @@ class HipchatNotify implements \PHPCI\Plugin
                 $this->notify = false;
             }
         } else {
-            throw new \Exception('Please define room and authToken for hipchat_notify plugin!');
+            throw new \Exception(Lang::get('hipchat_settings'));
         }
 
     }
 
+    /**
+     * Run the HipChat plugin.
+     * @return bool
+     */
     public function execute()
     {
         $hipChat = new \HipChat\HipChat($this->authToken);

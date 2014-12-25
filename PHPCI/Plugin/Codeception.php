@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -37,6 +38,12 @@ class Codeception implements \PHPCI\Plugin
      */
     protected $xmlConfigFile;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -65,6 +72,11 @@ class Codeception implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Run tests from a Codeception config file.
+     * @param $configPath
+     * @return bool|mixed
+     */
     protected function runConfigFile($configPath)
     {
         if (is_array($configPath)) {
@@ -74,7 +86,7 @@ class Codeception implements \PHPCI\Plugin
             $codecept = $this->phpci->findBinary('codecept');
 
             if (!$codecept) {
-                $this->phpci->logFailure('Could not find codeception.');
+                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
                 return false;
             }
 
@@ -90,6 +102,11 @@ class Codeception implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * @param $array
+     * @param $callable
+     * @return bool|mixed
+     */
     protected function recurseArg($array, $callable)
     {
         $success = true;

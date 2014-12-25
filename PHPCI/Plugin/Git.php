@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -24,6 +25,12 @@ class Git implements \PHPCI\Plugin
     protected $build;
     protected $actions = array();
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -31,6 +38,10 @@ class Git implements \PHPCI\Plugin
         $this->actions = $options;
     }
 
+    /**
+     * Run the Git plugin.
+     * @return bool
+     */
     public function execute()
     {
         $buildPath = $this->phpci->buildPath;
@@ -57,6 +68,12 @@ class Git implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Determine which action to run, and run it.
+     * @param $action
+     * @param array $options
+     * @return bool
+     */
     protected function runAction($action, array $options = array())
     {
         switch ($action) {
@@ -77,6 +94,11 @@ class Git implements \PHPCI\Plugin
         return false;
     }
 
+    /**
+     * Handle a merge action.
+     * @param $options
+     * @return bool
+     */
     protected function runMergeAction($options)
     {
         if (array_key_exists('branch', $options)) {
@@ -86,10 +108,15 @@ class Git implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * Handle a tag action.
+     * @param $options
+     * @return bool
+     */
     protected function runTagAction($options)
     {
         $tagName = date('Ymd-His');
-        $message = 'Tag created by PHPCI: ' . date('Y-m-d H:i:s');
+        $message = Lang::get('tag_created', date('Y-m-d H:i:s'));
 
         if (array_key_exists('name', $options)) {
             $tagName = $this->phpci->interpolate($options['name']);
@@ -103,6 +130,11 @@ class Git implements \PHPCI\Plugin
         return $this->phpci->executeCommand($cmd, $tagName, $message);
     }
 
+    /**
+     * Handle a pull action.
+     * @param $options
+     * @return bool
+     */
     protected function runPullAction($options)
     {
         $branch = $this->build->getBranch();
@@ -119,6 +151,11 @@ class Git implements \PHPCI\Plugin
         return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
     }
 
+    /**
+     * Handle a push action.
+     * @param $options
+     * @return bool
+     */
     protected function runPushAction($options)
     {
         $branch = $this->build->getBranch();

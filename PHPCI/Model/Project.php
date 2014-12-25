@@ -22,6 +22,12 @@ use b8\Store;
 */
 class Project extends ProjectBase
 {
+    /**
+     * Return the latest build from a specific branch, of a specific status, for this project.
+     * @param string $branch
+     * @param null $status
+     * @return mixed|null
+     */
     public function getLatestBuild($branch = 'master', $status = null)
     {
         $criteria       = array('branch' => $branch, 'project_id' => $this->getId());
@@ -44,6 +50,10 @@ class Project extends ProjectBase
         return null;
     }
 
+    /**
+     * Store this project's access_information data
+     * @param string|array $value
+     */
     public function setAccessInformation($value)
     {
         if (is_array($value)) {
@@ -53,6 +63,11 @@ class Project extends ProjectBase
         parent::setAccessInformation($value);
     }
 
+    /**
+     * Get this project's access_information data. Pass a specific key or null for all data.
+     * @param string|null $key
+     * @return mixed|null|string
+     */
     public function getAccessInformation($key = null)
     {
         $info = $this->data['access_information'];
@@ -87,5 +102,33 @@ class Project extends ProjectBase
         } else {
             return $this->data['branch'];
         }
+    }
+
+    /**
+     * Return the name of a FontAwesome icon to represent this project, depending on its type.
+     * @return string
+     */
+    public function getIcon()
+    {
+        switch ($this->getType()) {
+            case 'github':
+                $icon = 'github';
+                break;
+
+            case 'bitbucket':
+                $icon = 'bitbucket';
+                break;
+
+            case 'git':
+            case 'gitlab':
+                $icon = 'git';
+                break;
+
+            default:
+                $icon = 'cog';
+                break;
+        }
+
+        return $icon;
     }
 }

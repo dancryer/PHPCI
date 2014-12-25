@@ -2,6 +2,10 @@
 
 namespace PHPCI\Plugin\Util;
 
+/**
+ * Class FilesPluginInformation
+ * @package PHPCI\Plugin\Util
+ */
 class FilesPluginInformation implements InstalledPluginInformation
 {
 
@@ -21,11 +25,18 @@ class FilesPluginInformation implements InstalledPluginInformation
      */
     protected $pluginInfo = null;
 
+    /**
+     * @param $dirPath
+     * @return FilesPluginInformation
+     */
     public static function newFromDir($dirPath)
     {
         return new self(new \DirectoryIterator($dirPath));
     }
 
+    /**
+     * @param \Iterator $files
+     */
     public function __construct(\Iterator $files)
     {
         $this->files = $files;
@@ -62,43 +73,64 @@ class FilesPluginInformation implements InstalledPluginInformation
         );
     }
 
+    /**
+     * Load plugin information from a given list of files.
+     */
     protected function loadPluginInfo()
     {
         $this->pluginInfo = array();
         foreach ($this->files as $fileInfo) {
             if ($fileInfo instanceof \SplFileInfo) {
-                if ($fileInfo->isFile()) {
+                if ($fileInfo->isFile() && $fileInfo->getExtension()=='php') {
                     $this->addPluginFromFile($fileInfo);
                 }
             }
         }
     }
 
+    /**
+     * Add a plugin to the list from a given file.
+     * @param \SplFileInfo $fileInfo
+     */
     protected function addPluginFromFile(\SplFileInfo $fileInfo)
     {
-        $newPlugin = new \stdClass();
-        $newPlugin->class = $this->getFullClassFromFile($fileInfo);
-        $newPlugin->source = "core";
-        $parts = explode('\\', $newPlugin->class);
-        $newPlugin->name = end($parts);
+        $class = $this->getFullClassFromFile($fileInfo);
 
-        $this->pluginInfo[] = $newPlugin;
+        if (!is_null($class)) {
+            $newPlugin = new \stdClass();
+            $newPlugin->class = $class;
+            $newPlugin->source = "core";
+            $parts = explode('\\', $newPlugin->class);
+            $newPlugin->name = end($parts);
+
+            $this->pluginInfo[] = $newPlugin;
+        }
     }
 
+    /**
+     * Determine plugin class name for a given file.
+     * @param \SplFileInfo $fileInfo
+     * @return null|string
+     */
     protected function getFullClassFromFile(\SplFileInfo $fileInfo)
     {
         //TODO: Something less horrible than a regular expression
         //      on the contents of a file
         $contents = file_get_contents($fileInfo->getRealPath());
-
         $matches = array();
+
         preg_match('#class +([A-Za-z]+) +implements#i', $contents, $matches);
-        $className = $matches[1];
 
-        $matches = array();
-        preg_match('#namespace +([A-Za-z\\\\]+);#i', $contents, $matches);
-        $namespace = $matches[1];
-
-        return $namespace . '\\' . $className;
+        if (isset($matches[1])) {
+            $className = $matches[1];
+    
+            $matches = array();
+            preg_match('#namespace +([A-Za-z\\\\]+);#i', $contents, $matches);
+            $namespace = $matches[1];
+    
+            return $namespace . '\\' . $className;
+        } else {
+            return null;
+        }
     }
 }

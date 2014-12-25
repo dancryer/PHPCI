@@ -14,6 +14,7 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
+use PHPCI\Model\Build;
 
 /**
 * PHPCI Front Controller
@@ -21,6 +22,9 @@ use b8\View;
 */
 class Application extends b8\Application
 {
+    /**
+     * Initialise PHPCI - Handles session verification, routing, etc.
+     */
     public function init()
     {
         $request =& $this->request;
@@ -29,30 +33,32 @@ class Application extends b8\Application
 
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
-            if (!empty($_SESSION['user_id'])) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['user_id']);
+            if (!empty($_SESSION['phpci_user_id'])) {
+                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
 
                 if ($user) {
-                    $_SESSION['user'] = $user;
+                    $_SESSION['phpci_user'] = $user;
                     return true;
                 }
 
-                unset($_SESSION['user_id']);
+                unset($_SESSION['phpci_user_id']);
             }
 
             return false;
         };
 
+        $skipAuth = [$this, 'shouldSkipAuth'];
+
         // Handler for the route we're about to register, checks for a valid session where necessary:
-        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession) {
+        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession()) {
+            if (!$skipValidation && !$validateSession() && !$skipAuth()) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
-                    $_SESSION['login_redirect'] = substr($request->getPath(), 1);
+                    $_SESSION['phpci_login_redirect'] = substr($request->getPath(), 1);
                     $response = new RedirectResponse($response);
                     $response->setHeader('Location', PHPCI_URL.'session/login');
                 }
@@ -66,9 +72,12 @@ class Application extends b8\Application
         $this->router->clearRoutes();
         $this->router->register($route, $opts, $routeHandler);
     }
+
     /**
-    * Handle an incoming web request.
-    */
+     * Handle an incoming web request.
+     *
+     * @return b8\b8\Http\Response|Response
+     */
     public function handleRequest()
     {
         try {
@@ -91,18 +100,62 @@ class Application extends b8\Application
             $this->response->setContent($view->render());
         }
 
-        if (View::exists('layout') && $this->response->hasLayout()) {
-            $view           = new View('layout');
-            $pageTitle = $this->config->get('page_title', null);
+        if ($this->response->hasLayout()) {
+            $this->setLayoutVariables($this->controller->layout);
 
-            if (!is_null($pageTitle)) {
-                $view->title = $pageTitle;
-            }
-
-            $view->content  = $this->response->getContent();
-            $this->response->setContent($view->render());
+            $this->controller->layout->content  = $this->response->getContent();
+            $this->response->setContent($this->controller->layout->render());
         }
 
         return $this->response;
+    }
+
+    /**
+     * Loads a particular controller, and injects our layout view into it.
+     * @param $class
+     * @return mixed
+     */
+    protected function loadController($class)
+    {
+        $controller = parent::loadController($class);
+        $controller->layout = new View('layout');
+        $controller->layout->title = 'PHPCI';
+        $controller->layout->breadcrumb = array();
+
+        return $controller;
+    }
+
+    /**
+     * Injects variables into the layout before rendering it.
+     * @param View $layout
+     */
+    protected function setLayoutVariables(View &$layout)
+    {
+        /** @var \PHPCI\Store\ProjectStore $projectStore */
+        $projectStore = b8\Store\Factory::getStore('Project');
+        $layout->projects = $projectStore->getAll();
+    }
+
+    /**
+     * Check whether we should skip auth (because it is disabled)
+     * @return bool
+     */
+    protected function shouldSkipAuth()
+    {
+        $config = b8\Config::getInstance();
+        $state = (bool)$config->get('phpci.authentication_settings.state', false);
+        $userId    = $config->get('phpci.authentication_settings.user_id', 0);
+
+        if (false !== $state && 0 != (int)$userId) {
+            $user = b8\Store\Factory::getStore('User')
+                ->getByPrimaryKey($userId);
+
+            if ($user) {
+                $_SESSION['phpci_user'] = $user;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,7 +1,7 @@
-var phpdoccheckPlugin = PHPCI.UiPlugin.extend({
+var phpdoccheckPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpdoccheck-warnings',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Docblock Checker',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
+    title: Lang.get('phpdoccheck'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -9,7 +9,7 @@ var phpdoccheckPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpdoccheck-data', -1, {key: 'phpdoccheck-data'})
+        var query = ActiveBuild.registerQuery('phpdoccheck-data', -1, {key: 'phpdoccheck-data'})
 
         $(window).on('phpdoccheck-data', function(data) {
             self.onUpdate(data);
@@ -24,20 +24,20 @@ var phpdoccheckPlugin = PHPCI.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table table-striped" id="phpdoccheck-data">' +
+        return $('<table class="table" id="phpdoccheck-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>Type</th>' +
-            '   <th>File</th>' +
-            '   <th>Line</th>' +
-            '   <th>Class</th>' +
-            '   <th>Method</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('line')+'</th>' +
+            '   <th>'+Lang.get('class')+'</th>' +
+            '   <th>'+Lang.get('method')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpdoccheck-warnings').hide();
             return;
         }
 
@@ -48,22 +48,26 @@ var phpdoccheckPlugin = PHPCI.UiPlugin.extend({
         var tbody = $('#phpdoccheck-data tbody');
         tbody.empty();
 
+        if (errors.length == 0) {
+            $('#build-phpdoccheck-warnings').hide();
+            return;
+        }
+
         for (var i in errors) {
             var file = errors[i].file;
 
-            if (PHPCI.fileLinkTemplate) {
-                var fileLink = PHPCI.fileLinkTemplate.replace('{FILE}', file);
+            if (ActiveBuild.fileLinkTemplate) {
+                var fileLink = ActiveBuild.fileLinkTemplate.replace('{FILE}', file);
                 fileLink = fileLink.replace('{LINE}', errors[i].line);
 
                 file = '<a target="_blank" href="'+fileLink+'">' + file + '</a>';
             }
 
             var row = $('<tr>' +
-                '<td>'+errors[i].type+'</td>' +
                 '<td>'+file+'</td>' +
                 '<td>'+errors[i].line+'</td>' +
                 '<td>'+errors[i].class+'</td>' +
-                '<td>'+errors[i].method+'</td></tr>');
+                '<td>'+(errors[i].method ? errors[i].method : '')+'</td></tr>');
 
             if (errors[i].type == 'method') {
                 row.addClass('danger');
@@ -73,7 +77,9 @@ var phpdoccheckPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpdoccheck-warnings').show();
     }
 });
 
-PHPCI.registerPlugin(new phpdoccheckPlugin());
+ActiveBuild.registerPlugin(new phpdoccheckPlugin());

@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -31,6 +32,12 @@ class Phing implements \PHPCI\Plugin
     protected $phpci;
     protected $build;
 
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->setPhpci($phpci);
@@ -75,7 +82,7 @@ class Phing implements \PHPCI\Plugin
         $phingExecutable = $this->phpci->findBinary('phing');
 
         if (!$phingExecutable) {
-            $this->phpci->logFailure('Could not find Phing executable.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'phing'));
             return false;
         }
 
@@ -138,6 +145,10 @@ class Phing implements \PHPCI\Plugin
         return $this->targets;
     }
 
+    /**
+     * Converts an array of targets into a string.
+     * @return string
+     */
     private function targetsToString()
     {
         return implode(' ', $this->targets);
@@ -174,12 +185,16 @@ class Phing implements \PHPCI\Plugin
     public function setBuildFile($buildFile)
     {
         if (!file_exists($this->getDirectory() . $buildFile)) {
-            throw new \Exception('Specified build file does not exists.');
+            throw new \Exception(Lang::get('build_file_missing'));
         }
 
         $this->buildFile = $buildFile;
     }
 
+    /**
+     * Get phing build file path.
+     * @return string
+     */
     public function getBuildFilePath()
     {
         return $this->getDirectory() . $this->buildFile;
@@ -242,7 +257,7 @@ class Phing implements \PHPCI\Plugin
     public function setPropertyFile($propertyFile)
     {
         if (!file_exists($this->getDirectory() . '/' . $propertyFile)) {
-            throw new \Exception('Specified property file does not exists.');
+            throw new \Exception(Lang::get('property_file_missing'));
         }
 
         $this->propertyFile = $propertyFile;

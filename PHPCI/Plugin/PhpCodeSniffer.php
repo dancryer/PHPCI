@@ -72,6 +72,13 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected $ignore;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
@@ -120,6 +127,10 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->setOptions($options);
     }
 
+    /**
+     * Handle this plugin's options.
+     * @param $options
+     */
     protected function setOptions($options)
     {
         foreach (array('directory', 'standard', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
@@ -139,7 +150,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $phpcs = $this->phpci->findBinary('phpcs');
 
         if (!$phpcs) {
-            $this->phpci->logFailure('Could not find phpcs.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpcs'));
             return false;
         }
 
@@ -177,6 +188,10 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $success;
     }
 
+    /**
+     * Process options and produce an arguments string for PHPCS.
+     * @return array
+     */
     protected function getFlags()
     {
         $ignore = '';
@@ -198,13 +213,19 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return array($ignore, $standard, $suffixes);
     }
 
+    /**
+     * Process the PHPCS output report.
+     * @param $output
+     * @return array
+     * @throws \Exception
+     */
     protected function processReport($output)
     {
         $data = json_decode(trim($output), true);
 
         if (!is_array($data)) {
             $this->phpci->log($output);
-            throw new \Exception('Could not process PHPCS report JSON.');
+            throw new \Exception(PHPCI\Helper\Lang::get('could_not_process_report'));
         }
 
         $errors = $data['totals']['errors'];

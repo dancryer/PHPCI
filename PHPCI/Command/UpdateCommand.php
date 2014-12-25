@@ -10,6 +10,7 @@
 namespace PHPCI\Command;
 
 use Monolog\Logger;
+use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -40,7 +41,7 @@ class UpdateCommand extends Command
     {
         $this
             ->setName('phpci:update')
-            ->setDescription('Update the database to reflect modified models.');
+            ->setDescription(Lang::get('update_phpci'));
     }
 
     /**
@@ -50,25 +51,25 @@ class UpdateCommand extends Command
     {
         $this->verifyInstalled($output);
 
-        $output->write('Updating PHPCI database: ');
+        $output->write(Lang::get('updating_phpci'));
 
         shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
-        $output->writeln('<info>Done!</info>');
+        $output->writeln('<info>'.Lang::get('ok').'</info>');
     }
 
     protected function verifyInstalled(OutputInterface $output)
     {
         if (!file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
-            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
-            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
+            $output->writeln('<error>'.Lang::get('not_installed').'</error>');
+            $output->writeln('<error>'.Lang::get('install_instead').'</error>');
             die;
         }
 
         $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
         if (empty($content)) {
-            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
-            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
+            $output->writeln('<error>'.Lang::get('not_installed').'</error>');
+            $output->writeln('<error>'.Lang::get('install_instead').'</error>');
             die;
         }
     }

@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -40,6 +41,18 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     protected $ignore;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci        = $phpci;
@@ -48,7 +61,7 @@ class PhpParallelLint implements \PHPCI\Plugin
         $this->ignore       = $this->phpci->ignore;
 
         if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
+            $this->directory = $phpci->buildPath.$options['directory'];
         }
 
         if (isset($options['ignore'])) {
@@ -66,7 +79,7 @@ class PhpParallelLint implements \PHPCI\Plugin
         $phplint = $this->phpci->findBinary('parallel-lint');
 
         if (!$phplint) {
-            $this->phpci->logFailure('Could not find parallel-lint.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'parallel-lint'));
             return false;
         }
 
@@ -87,12 +100,17 @@ class PhpParallelLint implements \PHPCI\Plugin
         return $success;
     }
 
+    /**
+     * Produce an argument string for PHP Parallel Lint.
+     * @return array
+     */
     protected function getFlags()
     {
-        $ignore = '';
-        if (count($this->ignore)) {
-            $ignore = ' --exclude ' . implode(' --exclude ', $this->ignore);
+        $ignoreFlags = array();
+        foreach ($this->ignore as $ignoreDir) {
+            $ignoreFlags[] = '--exclude "' . $this->phpci->buildPath . $ignoreDir . '"';
         }
+        $ignore = implode(' ', $ignoreFlags);
 
         return array($ignore);
     }

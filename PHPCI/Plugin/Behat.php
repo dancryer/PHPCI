@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -24,6 +25,18 @@ class Behat implements \PHPCI\Plugin
     protected $build;
     protected $features;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci    = $phpci;
@@ -52,7 +65,7 @@ class Behat implements \PHPCI\Plugin
         $behat = $this->executable;
 
         if (!$behat) {
-            $this->phpci->logFailure('Could not find behat.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'behat'));
             return false;
         }
 

@@ -30,6 +30,9 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
     protected $buildStore;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->response->disableLayout();
@@ -68,25 +71,23 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image for a given project.
+    * Returns the appropriate build status image in SVG format for a given project.
     */
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
-        header('Content-Type: image/png');
-        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.png'));
+        $color = ($status == 'passing') ? 'green' : 'red';
+        
+        header('Content-Type: image/svg+xml');
+        die(file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg'));
     }
 
     /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
-    public function svg($projectId)
-    {
-        $status = $this->getStatus($projectId);
-        header('Content-Type: image/svg+xml');
-        die(file_get_contents(APPLICATION_PATH . 'public/assets/img/build-' . $status . '.svg'));
-    }
-
+     * View the public status page of a given project, if enabled.
+     * @param $projectId
+     * @return string
+     * @throws \b8\Exception\HttpException\NotFoundException
+     */
     public function view($projectId)
     {
         $project = $this->projectStore->getById($projectId);

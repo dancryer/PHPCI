@@ -1,20 +1,9 @@
-<div id="title">
-	<h1><?php print $type == 'add' ? 'Add User' : 'Edit ' . htmlspecialchars($user->getName()) ?></h1>
-</div>
-
 <div class="row">
-	<div class="col-lg-4">
-		<div class="well" style="">
-			<?php if($type == 'add'): ?>
-			<p style="margin-bottom:0;">Fill in the form to the right to add a new user.</p>
-			<?php else: ?>
-			<p style="margin-bottom:0;">Edit user details using the form to the right.</p>
-			<?php endif; ?>
-		</div>
-	</div>
-	<div class="col-lg-8">
-        <div class="box">
-		<?php print $form; ?>
+	<div class="col-sm-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <?php print $form; ?>
+            </div>
         </div>
 	</div>
 </div>

@@ -1,93 +1,103 @@
-<div id="title">
-	<h1><i class="glyphicon glyphicon-home"></i> Dashboard</h1>
-</div>
-
-
+<?php use PHPCI\Helper\Lang; ?>
 <div class="row">
-	<div class="col-lg-3">
-		<?php if (count($projects)): ?>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">Projects</h4>
-            </div>
-            <div class="list-group">
-                <?php foreach($projects as $project): ?>
-                    <a class="list-group-item" href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php print htmlspecialchars($project->getTitle()); ?></a>
-                <?php endforeach; ?>
-            </div>
-        </div>
 
-        <?php endif; ?>
+    <div class="col-sm-5">
+        <?php print $summary; ?>
     </div>
-	<div class="col-lg-9">
-        <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Project Overview</h3></div>
-            <table class="table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th>Health</th>
-                    <th>Project</th>
-                    <th>Last Success</th>
-                    <th>Last Failure</th>
-                    <th>Success/Failures</th>
-                    <th style="width: 100px"></th>
-                </tr>
-                </thead>
-                <tbody id="project-overview">
-                    <?php print $summary; ?>
-                </tbody>
-            </table>
-        </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Last 5 Builds</h3>
+    <div class="col-sm-7 pull-left">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title"><?php Lang::out('latest_builds'); ?></h3>
             </div>
 
-		<table class="table table-striped table-bordered">
-			<thead>
-			<tr>
-				<th>ID</th>
-				<th>Project</th>
-				<th>Commit</th>
-				<th>Branch</th>
-				<th>Status</th>
-				<th style="width: 100px"></th>
-			</tr>
-			</thead>
-			<tbody id="latest-builds">
-				<?php print $builds; ?>
-			</tbody>
-		</table>
+            <div class="box-body">
+                <ul class="timeline">
+                    <?php $last = new \DateTime('-1 Year'); ?>
+
+                    <?php
+                    foreach ($builds as $build):
+
+                        switch ($build->getStatus()) {
+                            case \PHPCI\Model\Build::STATUS_NEW:
+                                $updated = $build->getCreated();
+                                $label = Lang::get('pending');
+                                $color = 'blue';
+                                break;
+
+                            case \PHPCI\Model\Build::STATUS_RUNNING:
+                                $updated = $build->getStarted();
+                                $label = Lang::get('running');
+                                $color = 'yellow';
+                                break;
+
+                            case \PHPCI\Model\Build::STATUS_SUCCESS:
+                                $updated = $build->getFinished();
+                                $label = Lang::get('successful');
+                                $color = 'green';
+                                break;
+
+                            case \PHPCI\Model\Build::STATUS_FAILED:
+                                $updated = $build->getFinished();
+                                $label = Lang::get('failed');
+                                $color = 'red';
+                                break;
+                        }
+
+                        if ($updated->format('Y-m-d') != $last->format('Y-m-d')): $last = $updated;
+                            ?>
+                            <li class="time-label">
+                    <span class="bg-gray">
+                        <?php print $last->format('M j Y'); ?>
+                    </span>
+                            </li>
+                        <?php endif; ?>
+
+                        <!-- /.timeline-label -->
+                        <!-- timeline item -->
+                        <li>
+                            <i class="fa fa-<?php print $build->getProject()->getIcon(); ?> bg-<?php print $color; ?>"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="fa fa-clock-o"></i> <?php print $updated->format('H:i'); ?></span>
+                                <h3 class="timeline-header">
+                                    <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
+                                        <?php print $build->getProject()->getTitle(); ?>
+                                    </a>
+                                    -
+                                    <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
+                                        Build #<?php print $build->getId(); ?>
+                                    </a>
+                                    -
+                                    <?php print $label; ?>
+                                </h3>
+
+                                <div class="timeline-body">
+                                    <?php
+                                    if ($build->getCommitId() !== 'Manual') {
+                                        print sprintf(
+                                            '<a href="%s" target="_blank">%s (%s)</a>',
+                                            $build->getCommitLink(),
+                                            substr($build->getCommitId(), 0, 7),
+                                            $build->getCommitterEmail()
+                                        );
+                                    } else {
+                                        print Lang::get('manual_build');
+                                    }
+                                    ?>
+                                    - <?php print $build->getCommitMessage(); ?>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- END timeline item -->
+
+                    <?php endforeach; ?>
+
+                    <li>
+                        <i class="fa fa-clock-o"></i>
+                    </li>
+                </ul>
+            </div>
         </div>
-	</div>
+    </div>
+
 </div>
-
-<script>
-    var refreshProjectData = function()
-    {
-        $.ajax({
-            url: '<?php echo PHPCI_URL ?>home/latest',
-
-            success: function (data) {
-                $('#latest-builds').html(data);
-                $('#latest-builds').trigger('latest-builds:reload');
-            },
-
-            error: handleFailedAjax
-        });
-
-        $.ajax({
-            url: '<?php echo PHPCI_URL ?>home/summary',
-
-            success: function (data) {
-                $('#project-overview').html(data);
-                $('#project-overview').trigger('project-overview:reload');
-            },
-
-            error: handleFailedAjax
-        });
-    };
-
-    setInterval(refreshProjectData, 10000);
-</script>

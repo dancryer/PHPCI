@@ -10,6 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\ComposerPluginInformation;
 use PHPCI\Plugin\Util\FilesPluginInformation;
@@ -66,7 +67,7 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
-        $this->layout->title = 'Plugins';
+        $this->layout->title = Lang::get('plugins');
 
         return $this->view->render();
     }

@@ -1,7 +1,8 @@
+<?php use PHPCI\Helper\Lang; ?>
 
 <?php if(empty($builds) || !count($builds)): ?>
 	<tr class="">
-		<td colspan="6">No builds yet.</td>
+		<td colspan="6"><?php Lang::out('no_builds_yet'); ?></td>
 	</tr>
 <?php endif; ?>
 
@@ -13,26 +14,26 @@ switch($build->getStatus())
 	case 0:
 		$cls = 'active';
 		$subcls = 'info';
-		$status = 'Pending';
+		$status = Lang::get('pending');
 
 	break;
 
 	case 1:
 		$cls = 'warning';
 		$subcls = 'warning';
-		$status = 'Running';
+		$status = Lang::get('running');
 	break;
 
 	case 2:
 		$cls = 'success';
 		$subcls = 'success';
-		$status = 'Success';
+		$status = Lang::get('success');
 	break;
 
 	case 3:
 		$cls = 'danger';
 		$subcls = 'danger';
-		$status = 'Failed';
+		$status = Lang::get('failed');
 	break;
 }
 ?>
@@ -57,7 +58,7 @@ switch($build->getStatus())
                     $build->getCommitterEmail()
                 );
             } else {
-                print 'Manual Build';
+                print Lang::get('manual_build');
             }
         ?>
     </td>
@@ -68,13 +69,13 @@ switch($build->getStatus())
 	</td>
 	<td>
 		<div class="btn-group">
-			<a class="btn btn-default btn-sm" href="<?php echo PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">View</a>
+			<a class="btn btn-default btn-sm" href="<?php echo PHPCI_URL ?>build/view/<?php print $build->getId(); ?>"><?php Lang::out('view'); ?></a>
 			<?php if($this->User()->getIsAdmin()): ?>
 			<button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				<span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu">
-				<li><a href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" class="phpci-app-delete-build">Delete Build</a></li>
+				<li><a href="<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>" class="phpci-app-delete-build"><?php Lang::out('delete_build'); ?></a></li>
 			</ul>
 			<?php endif; ?>
 		</div>

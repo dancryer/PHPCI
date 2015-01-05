@@ -51,7 +51,7 @@ var PHPCI = {
             $('.phpci-pending').hide();
         } else {
             $('.phpci-pending').show();
-            $('.phpci-pending-count').text(data.pending.count);
+            $('.phpci-pending .header').text(Lang.get('n_builds_pending', data.pending.count));
 
             $.each(data.pending.items, function (idx, build) {
                 $('.phpci-pending-list').append(build.header_row);
@@ -62,7 +62,7 @@ var PHPCI = {
             $('.phpci-running').hide();
         } else {
             $('.phpci-running').show();
-            $('.phpci-running-count').text(data.running.count);
+            $('.phpci-running .header').text(Lang.get('n_builds_running', data.running.count));
 
             $.each(data.running.items, function (idx, build) {
                 $('.phpci-running-list').append(build.header_row);
@@ -407,68 +407,18 @@ function setupProjectForm()
     });
 }
 
+var Lang = {
+    get: function () {
+        var args = Array.prototype.slice.call(arguments);;
+        var string = args.shift();
 
+        if (PHPCI_STRINGS[string]) {
+            args.unshift(PHPCI_STRINGS[string]);
+            return sprintf.apply(sprintf[0], args);
+        }
 
-function dateFormat(date)
-{
-    if (typeof date == 'string') {
-        date = new Date(date);
+        return 'MISSING: ' + string;
     }
-    
-    var rtn = '';
+};
 
-    switch (date.getMonth()) {
-        case 0:
-            rtn = 'Jan ';
-            break;
-
-        case 1:
-            rtn = 'Feb ';
-            break;
-
-        case 2:
-            rtn = 'Mar ';
-            break;
-
-        case 3:
-            rtn = 'Apr ';
-            break;
-
-        case 4:
-            rtn = 'May ';
-            break;
-
-        case 5:
-            rtn = 'Jun ';
-            break;
-
-        case 6:
-            rtn = 'Jul ';
-            break;
-
-        case 7:
-            rtn = 'Aug ';
-            break;
-
-        case 8:
-            rtn = 'Sep ';
-            break;
-
-        case 9:
-            rtn = 'Oct ';
-            break;
-
-        case 10:
-            rtn = 'Nov ';
-            break;
-
-        case 11:
-            rtn = 'Dec ';
-            break;
-    }
-
-    rtn += date.getDate() + ' ' + date.getFullYear();
-    rtn += ' ' + date.getHours() + ':' + date.getMinutes();
-
-    return rtn;
-}
+moment.locale(PHPCI_LANGUAGE);

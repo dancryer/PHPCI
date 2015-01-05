@@ -1,7 +1,7 @@
 var logPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-log',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'Build Log',
+    title: Lang.get('build_log'),
 
     init: function(){
         this._super();

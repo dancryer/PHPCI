@@ -47,24 +47,7 @@ class Application extends b8\Application
             return false;
         };
 
-        // Check settings for disable_authentication enabled and user_id
-        $skipAuth = function () {
-            $config = b8\Config::getInstance();
-            $state = (bool)$config->get('phpci.authentication_settings.state', false);
-            $id    = $config->get('phpci.authentication_settings.user_id', 0);
-
-            if (false !== $state && 0 != (int)$id) {
-                $user = b8\Store\Factory::getStore('User')
-                    ->getByPrimaryKey($id);
-
-                if ($user) {
-                    $_SESSION['phpci_user'] = $user;
-                    return true;
-                }
-            }
-
-            return false;
-        };
+        $skipAuth = [$this, 'shouldSkipAuth'];
 
         // Handler for the route we're about to register, checks for a valid session where necessary:
         $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
@@ -151,5 +134,28 @@ class Application extends b8\Application
         /** @var \PHPCI\Store\ProjectStore $projectStore */
         $projectStore = b8\Store\Factory::getStore('Project');
         $layout->projects = $projectStore->getAll();
+    }
+
+    /**
+     * Check whether we should skip auth (because it is disabled)
+     * @return bool
+     */
+    protected function shouldSkipAuth()
+    {
+        $config = b8\Config::getInstance();
+        $state = (bool)$config->get('phpci.authentication_settings.state', false);
+        $userId    = $config->get('phpci.authentication_settings.user_id', 0);
+
+        if (false !== $state && 0 != (int)$userId) {
+            $user = b8\Store\Factory::getStore('User')
+                ->getByPrimaryKey($userId);
+
+            if ($user) {
+                $_SESSION['phpci_user'] = $user;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,3 +1,4 @@
+<?php use PHPCI\Helper\Lang; ?>
 <script>
     var PHPCI_PROJECT_ID = <?php print $project->getId(); ?>;
     var PHPCI_PROJECT_BRANCH = '<?php print $branch; ?>';
@@ -5,11 +6,13 @@
 
 <div class="clearfix"  style="margin-bottom: 20px;">
     <div class="pull-right btn-group">
-        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>">Build Now</a>
+        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>">
+            <?php Lang::out('build_now'); ?>
+        </a>
 
         <div class="btn-group branch-btn pull-right">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                Branch<?php print !empty($branch) ? ': ' . $branch : ''; ?>&nbsp;&nbsp;<span class="caret"></span>
+                <?php print !empty($branch) ? Lang::get('branch_x', $branch) : Lang::get('branch'); ?>&nbsp;&nbsp;<span class="caret"></span>
             </button>
 
             <ul class="dropdown-menu" role="menu">
@@ -22,7 +25,7 @@
                 <?php endforeach; ?>
 
                 <li class="divider"></li>
-                <li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>">All</a></li>
+                <li><a href="<?php echo PHPCI_URL ?>project/view/<?php print $project->getId(); ?>"><?php Lang::out('all_branches'); ?></a></li>
             </ul>
         </div>
     </div>
@@ -34,16 +37,16 @@
         <div class="box box-primary">
             <div class="box-header">
 
-                <h3 class="box-title">Builds</h3>
+                <h3 class="box-title"><?php Lang::out('builds'); ?></h3>
             </div>
 		<table class="table">
 			<thead>
 			<tr>
-				<th>ID</th>
-				<th>Project</th>
-				<th class="hidden-md hidden-sm hidden-xs">Commit</th>
-				<th>Branch</th>
-				<th>Status</th>
+				<th><?php Lang::out('id'); ?></th>
+				<th><?php Lang::out('project'); ?></th>
+				<th class="hidden-md hidden-sm hidden-xs"><?php Lang::out('commit'); ?></th>
+				<th><?php Lang::out('branch'); ?></th>
+				<th><?php Lang::out('status'); ?></th>
 				<th style="width: 100px"></th>
 			</tr>
 			</thead>
@@ -59,38 +62,37 @@
         <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket'))): ?>
             <div class="box box-info">
                 <div class="box-header">
-                    <h4 class="box-title">Webhooks</h4>
+                    <h4 class="box-title"><?php Lang::out('webhooks'); ?></h4>
                 </div>
 
                 <div class="box-body">
-                    To automatically build this project when new commits are pushed, add the URL below
-
                     <?php
                     switch($project->getType())
                     {
                         case 'github':
                             $url	= PHPCI_URL . 'webhook/github/' . $project->getId();
-                            print ' as a new "Webhook" in the <a href="https://github.com/' . $project->getReference() . '/settings/hooks">Webhooks and Services</a> section of your Github repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+                            Lang::out('webhooks_help_github', $project->getReference());
                             break;
 
                         case 'gitlab':
                             $url	= PHPCI_URL. 'webhook/gitlab/' . $project->getId();
-                            print ' as a "WebHook URL" in the Web Hooks section of your Gitlab repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+                            Lang::out('webhooks_help_gitlab');
                             break;
 
                         case 'bitbucket':
                             $url	= PHPCI_URL . 'webhook/bitbucket/' . $project->getId();
-                            print ' as a "POST" service in the <a href="https://bitbucket.org/' . $project->getReference() . '/admin/services">Services</a> section of your Bitbucket repository.<br><br><strong style="word-wrap: break-word;">' . $url . '</strong>';
+                            Lang::out('webhooks_help_bitbucket', $project->getReference());
                             break;
                     }
                     ?>
+                    <br><br><strong style="word-wrap: break-word;"><?php print $url; ?></strong>
                 </div>
             </div>
         <?php endif; ?>
 
         <?php if ($project->getSshPublicKey()): ?>
             <div class="box box-info">
-                <div class="box-header"><h3 class="box-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse">Public Key</a></h3></div>
+                <div class="box-header"><h3 class="box-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse"><?php Lang::out('public_key'); ?></a></h3></div>
                 <div class="box-body" style="word-break: break-all;"><?php print $project->getSshPublicKey(); ?></div>
             </div>
         <?php endif; ?>
@@ -104,7 +106,7 @@ print '<div><ul class="pagination">';
 $project_url = PHPCI_URL . 'project/view/' . $project->getId() . ((!empty($branch)) ? '/' . urlencode($branch) : '');
 
 if ($page > 1) {
-    print '<li><a href="' . $project_url . '?p='.($page == 1 ? '1' : $page - 1).'">&laquo; Prev</a></li>';
+    print '<li><a href="' . $project_url . '?p='.($page == 1 ? '1' : $page - 1).'">'.Lang::get('prev_link').'</a></li>';
 }
 
 if ($pages > 1) {
@@ -144,7 +146,7 @@ if ($pages > 1) {
 
 
 if ($page < $pages - 1) {
-    print '<li><a href="' . $project_url . '?p='.($page == $pages ? $pages : $page + 1).'">Next &raquo;</a></li>';
+    print '<li><a href="' . $project_url . '?p='.($page == $pages ? $pages : $page + 1).'">'.Lang::get('next_link').'</a></li>';
 }
 
 

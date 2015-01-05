@@ -1,6 +1,9 @@
+<?php use PHPCI\Helper\Lang; ?>
 <?php if($failed): ?>
-    <p class="alert alert-danger">Incorrect email address or password</p>
+    <p class="alert alert-danger"><?php Lang::out('login_error'); ?></p>
 <?php endif; ?>
 <?php print $form; ?>
 
-<a style="margin-top: -22px; font-size: 0.85em; color: #246" class="pull-right" href="<?php print PHPCI_URL; ?>session/forgot-password">Forgotten your password?</a>
+<a style="margin-top: -22px; font-size: 0.85em; color: #246" class="pull-right" href="<?php print PHPCI_URL; ?>session/forgot-password">
+    <?php Lang::out('forgotten_password_link'); ?>
+</a>

@@ -12,6 +12,7 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
@@ -55,26 +56,26 @@ class BuildController extends \PHPCI\Controller
         }
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
 
-        $this->layout->title = 'Build #' . $build->getId();
+        $this->layout->title = Lang::get('build_n', $buildId);
         $this->layout->subtitle = $build->getProjectTitle();
 
         $nav = array(
-            'title' => 'Build '.$build->getId(),
+            'title' => Lang::get('build_n', $buildId),
             'icon' => 'cog',
             'links' => array(
-                'build/rebuild/' . $build->getId() => 'Rebuild Now',
+                'build/rebuild/' . $build->getId() => Lang::get('rebuild_now'),
             ),
         );
 
         if ($this->currentUserIsAdmin()) {
-            $nav['links']['build/delete/' . $build->getId()] = 'Delete Build';
+            $nav['links']['build/delete/' . $build->getId()] = Lang::get('delete_build');
         }
 
         $this->layout->nav = $nav;
@@ -149,7 +150,7 @@ class BuildController extends \PHPCI\Controller
         $copy   = BuildFactory::getBuildById($buildId);
 
         if (empty($copy)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $build = $this->buildService->createDuplicateBuild($copy);
@@ -168,7 +169,7 @@ class BuildController extends \PHPCI\Controller
         $build = BuildFactory::getBuildById($buildId);
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $this->buildService->deleteBuild($build);

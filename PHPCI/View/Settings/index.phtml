@@ -1,42 +1,50 @@
+<?php use PHPCI\Helper\Lang; ?>
+
 <?php if (isset($_GET['saved']) && $_GET['saved'] == 1): ?>
 <p class="alert alert-success" style="margin-bottom: 20px;">
-    Your settings have been saved.
+    <?php Lang::out('settings_saved'); ?>
 </p>
 <?php endif; ?>
 
 <?php if (isset($_GET['saved']) && $_GET['saved'] == 2): ?>
 <p class="alert alert-danger" style="margin-bottom: 20px;">
-    Your settings could not be saved, maybe check the permissions of config.yml?
+    <?php Lang::out('settings_check_perms'); ?>
 </p>
 <?php endif; ?>
 
 <?php if (!$isWriteable): ?>
     <p class="alert alert-danger" style="margin-bottom: 20px;">
-        PHPCI cannot write to your config.yml file, settings may not be saved properly until this is rectified.
+        <?php Lang::out('settings_cannot_write'); ?>
     </p>
 <?php endif; ?>
 
 <?php if (isset($_GET['linked']) && $_GET['linked'] == 1): ?>
     <p class="alert alert-success" style="margin-bottom: 20px;">
-        Your Github account has been linked.
+        <?php Lang::out('settings_github_linked'); ?>
     </p>
 <?php endif; ?>
 
 <?php if (isset($_GET['linked']) && $_GET['linked'] == 2): ?>
     <p class="alert alert-danger" style="margin-bottom: 20px;">
-        Your Github account could not be linked.
+        <?php Lang::out('settings_github_not_linked'); ?>
     </p>
 <?php endif; ?>
 
 <div class="box box-primary">
-    <div class="box-header"><h3 class="box-title">Build Settings</h3></div>
+    <div class="box-body clearfix">
+        <?php print $basicSettings; ?>
+    </div>
+</div>
+
+<div class="box box-primary">
+    <div class="box-header"><h3 class="box-title"><?php Lang::out('build_settings'); ?></h3></div>
     <div class="box-body clearfix">
         <?php print $buildSettings; ?>
     </div>
 </div>
 
 <div class="box box-primary">
-    <div class="box-header"><h3 class="box-title">Github Application</h3></div>
+    <div class="box-header"><h3 class="box-title"><?php Lang::out('github_application'); ?></h3></div>
     <div class="box-body clearfix">
 
         <div class="row">
@@ -53,13 +61,14 @@
                 ?>
                 <?php if (!empty($id) && empty($settings['phpci']['github']['token'])): ?>
                     <p class="alert alert-warning clearfix">
-                        Before you can start using Github, you need to <a href="<?php echo $githubUri; ?>">sign in</a> and grant PHPCI access to your account.
+                        <?php Lang::out('github_sign_in', $githubUri); ?>
                     </p>
                 <?php endif; ?>
 
                 <?php if (!empty($id) && !empty($settings['phpci']['github']['token'])): ?>
                     <p class="alert alert-success">
-                        PHPCI is successfully linked to Github account
+                        <?php Lang::out('github_phpci_linked'); ?>
+
                         <strong>
                             <a href="<?php echo $githubUser['html_url']; ?>"><?php echo $githubUser['name']; ?></a>
                         </strong>
@@ -74,12 +83,13 @@
             <div class="col-lg-4">
                 <div class="box box-info">
                     <div class="box-header">
-                        <h3 class="box-title">Where to find these...</h3>
+                        <h3 class="box-title"><?php Lang::out('github_where_to_find'); ?></h3>
                     </div>
 
                     <div class="box-body">
-                        <p>If you own the application you would like to use, you can find this information within your
-                            <a href="https://github.com/settings/applications">applications</a> settings area.</p>
+                        <p>
+                            <?php Lang::out('github_where_help'); ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -91,13 +101,13 @@
 
 <div class="box box-primary">
     <div class="box-header">
-        <h3 class="box-title">Email Settings</h3>
+        <h3 class="box-title"><?php Lang::out('email_settings'); ?></h3>
     </div>
 
     <div class="box-body clearfix">
         <?php if (!isset($settings['phpci']['email_settings'])): ?>
             <p class="alert alert-warning clearfix">
-                Before PHPCI can send build status emails, you need to configure your SMTP settings below.
+                <?php Lang::out('email_settings_help'); ?>
             </p>
         <?php endif; ?>
 

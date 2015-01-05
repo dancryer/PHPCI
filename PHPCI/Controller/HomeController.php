@@ -11,6 +11,7 @@ namespace PHPCI\Controller;
 
 use b8;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -45,7 +46,7 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
-        $this->layout->title = 'Dashboard';
+        $this->layout->title = Lang::get('dashboard');
 
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 

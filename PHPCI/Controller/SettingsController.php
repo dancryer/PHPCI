@@ -13,6 +13,7 @@ use b8;
 use b8\Form;
 use b8\HttpClient;
 use PHPCI\Controller;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
@@ -50,11 +51,15 @@ class SettingsController extends Controller
      */
     public function index()
     {
+        $this->requireAdmin();
+
+        $this->layout->title = Lang::get('settings');
+
         $this->view->settings = $this->settings;
 
-        $emailSettings = array();
-        if (isset($this->settings['phpci']['email_settings'])) {
-            $emailSettings = $this->settings['phpci']['email_settings'];
+        $basicSettings = array();
+        if (isset($this->settings['phpci']['basic'])) {
+            $basicSettings = $this->settings['phpci']['basic'];
         }
 
         $buildSettings = array();
@@ -62,16 +67,22 @@ class SettingsController extends Controller
             $buildSettings = $this->settings['phpci']['build'];
         }
 
-        $authenticationSettings = array();
-        if (isset($this->settings['phpci']['authentication_settings'])) {
-            $authenticationSettings = $this->settings['phpci']['authentication_settings'];
+        $emailSettings = array();
+        if (isset($this->settings['phpci']['email_settings'])) {
+            $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
-        $this->view->github                 = $this->getGithubForm();
-        $this->view->emailSettings          = $this->getEmailForm($emailSettings);
-        $this->view->buildSettings          = $this->getBuildForm($buildSettings);
-        $this->view->isWriteable            = $this->canWriteConfig();
-        $this->view->authenticationSettings = $this->getAuthenticationForm($authenticationSettings);
+        $authSettings = array();
+        if (isset($this->settings['phpci']['authentication_settings'])) {
+            $authSettings = $this->settings['phpci']['authentication_settings'];
+        }
+
+        $this->view->basicSettings = $this->getBasicForm($basicSettings);
+        $this->view->buildSettings = $this->getBuildForm($buildSettings);
+        $this->view->github = $this->getGithubForm();
+        $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->authenticationSettings = $this->getAuthenticationForm($authSettings);
+        $this->view->isWriteable = $this->canWriteConfig();
 
         if (!empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);
@@ -130,6 +141,25 @@ class SettingsController extends Controller
 
         $this->settings['phpci']['build'] = $this->getParams();
 
+        $error = $this->storeSettings();
+
+        if ($error) {
+            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+        } else {
+            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+        }
+
+        die;
+    }
+
+    /**
+     * Save basic settings.
+     */
+    public function basic()
+    {
+        $this->requireAdmin();
+
+        $this->settings['phpci']['basic'] = $this->getParams();
         $error = $this->storeSettings();
 
         if ($error) {
@@ -223,7 +253,7 @@ class SettingsController extends Controller
         $field = new Form\Element\Text('githubid');
         $field->setRequired(true);
         $field->setPattern('[a-zA-Z0-9]+');
-        $field->setLabel('Application ID');
+        $field->setLabel(Lang::get('application_id'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
@@ -235,7 +265,7 @@ class SettingsController extends Controller
         $field = new Form\Element\Text('githubsecret');
         $field->setRequired(true);
         $field->setPattern('[a-zA-Z0-9]+');
-        $field->setLabel('Application Secret');
+        $field->setLabel(Lang::get('application_secret'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
@@ -245,7 +275,7 @@ class SettingsController extends Controller
         }
 
         $field = new Form\Element\Submit();
-        $field->setValue('Save &raquo;');
+        $field->setValue(Lang::get('save'));
         $field->setClass('btn btn-success pull-right');
         $form->addField($field);
 
@@ -266,7 +296,7 @@ class SettingsController extends Controller
 
         $field = new Form\Element\Text('smtp_address');
         $field->setRequired(false);
-        $field->setLabel('SMTP Server');
+        $field->setLabel(Lang::get('smtp_server'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setValue('localhost');
@@ -275,7 +305,7 @@ class SettingsController extends Controller
         $field = new Form\Element\Text('smtp_port');
         $field->setRequired(false);
         $field->setPattern('[0-9]+');
-        $field->setLabel('SMTP Port');
+        $field->setLabel(Lang::get('smtp_port'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setValue(25);
@@ -283,42 +313,42 @@ class SettingsController extends Controller
 
         $field = new Form\Element\Text('smtp_username');
         $field->setRequired(false);
-        $field->setLabel('SMTP Username');
+        $field->setLabel(Lang::get('smtp_username'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Text('smtp_password');
         $field->setRequired(false);
-        $field->setLabel('SMTP Password');
+        $field->setLabel(Lang::get('smtp_password'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Email('from_address');
         $field->setRequired(false);
-        $field->setLabel('From Email Address');
+        $field->setLabel(Lang::get('from_email_address'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Email('default_mailto_address');
         $field->setRequired(false);
-        $field->setLabel('Default Notification Address');
+        $field->setLabel(Lang::get('default_notification_address'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Select('smtp_encryption');
-        $field->setOptions(['' => 'None', 'tls' => 'TLS', 'ssl' => 'SSL']);
+        $field->setOptions(['' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')]);
         $field->setRequired(false);
-        $field->setLabel('Use SMTP encryption?');
+        $field->setLabel(Lang::get('use_smtp_encryption'));
         $field->setContainerClass('form-group');
         $field->setValue(1);
         $form->addField($field);
 
         $field = new Form\Element\Submit();
-        $field->setValue('Save &raquo;');
+        $field->setValue(Lang::get('save'));
         $field->setClass('btn btn-success pull-right');
         $form->addField($field);
 
@@ -362,22 +392,53 @@ class SettingsController extends Controller
 
         $field = new Form\Element\Select('failed_after');
         $field->setRequired(false);
-        $field->setLabel('Consider a build failed after');
+        $field->setLabel(Lang::get('failed_after'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setOptions([
-            300   => '5 Minutes',
-            900   => '15 Minutes',
-            1800  => '30 Minutes',
-            3600  => '1 Hour',
-            10800 => '3 Hours',
+            300 => Lang::get('5_mins'),
+            900 => Lang::get('15_mins'),
+            1800 => Lang::get('30_mins'),
+            3600 => Lang::get('1_hour'),
+            10800 => Lang::get('3_hours'),
         ]);
         $field->setValue(1800);
         $form->addField($field);
 
 
         $field = new Form\Element\Submit();
-        $field->setValue('Save &raquo;');
+        $field->setValue(Lang::get('save'));
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
+    }
+
+    /**
+     * Get the Basic settings form.
+     * @param array $values
+     * @return Form
+     */
+    protected function getBasicForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/basic');
+
+        $field = new Form\Element\Select('language');
+        $field->setRequired(true);
+        $field->setLabel(Lang::get('language'));
+        $field->setClass('form-control');
+        $field->setContainerClass('form-group');
+        $field->setOptions(Lang::getLanguageOptions());
+        $field->setValue('en');
+        $form->addField($field);
+
+
+        $field = new Form\Element\Submit();
+        $field->setValue(Lang::get('save'));
         $field->setClass('btn btn-success pull-right');
         $form->addField($field);
 

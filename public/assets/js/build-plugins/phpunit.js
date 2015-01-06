@@ -49,10 +49,10 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
             '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off"> All' +
             '         </label>' +
             '         <label class="btn btn-xs btn-success" id="phpunit-filter-pass">' +
-            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off"> Passed' +
+            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off"> '+Lang.get('success') +
             '         </label>' +
             '         <label class="btn btn-xs btn-danger active" id="phpunit-filter-fail">' +
-            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off" checked> Failed' +
+            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off" checked> '+Lang.get('failed') +
             '         </label>' +
             '      </div>' +
             '   </th>' +

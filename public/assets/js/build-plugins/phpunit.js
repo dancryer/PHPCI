@@ -42,7 +42,9 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         return $('<table class="table" id="phpunit-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>'+Lang.get('test')+'</th>' +
+            '   <th>' +
+            '     '+Lang.get('test')+' <span id="phpunit-counter"></span>' +
+            '   </th>' +
             '   <th>' +
             '      <div class="btn-group pull-right" data-toggle="buttons">' +
             '         <label class="btn btn-xs btn-default" id="phpunit-filter-all">' +
@@ -70,6 +72,7 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         this.lastData = e.queryData;
 
         var tests = this.lastData[0].meta_value;
+        var failed = 0;
         var tbody = $('#phpunit-data tbody');
         tbody.empty();
 
@@ -88,6 +91,7 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
 
             if (!tests[i].pass) {
                 row.addClass('danger');
+                failed++;
             } else {
                 row.addClass('success');
                 row.css('display', 'none');
@@ -95,6 +99,8 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
 
             tbody.append(row);
         }
+      
+        $("#phpunit-counter").text('(' + Lang.get('x_of_x_failed_short', failed, tests.length) + ')');
 
         $('#build-phpunit-errors').show();
     }

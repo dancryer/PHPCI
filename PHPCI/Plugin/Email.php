@@ -178,10 +178,10 @@ class Email implements \PHPCI\Plugin
             }
         }
 
-        if (isset($this->options['default_mailto_address'])) {
+        if (empty($addresses) && isset($this->options['default_mailto_address'])) {
             $addresses[] = $this->options['default_mailto_address'];
-            return $addresses;
         }
+
         return array_unique($addresses);
     }
 

@@ -172,7 +172,7 @@ class Lang
     /**
      * Create a time tag for localization.
      * @param \DateTime $dateTime The dateTime to represent.
-     * @parma string $format The moment.js format to use.
+     * @param string $format The moment.js format to use. See http://momentjs.com/docs/#/displaying/format/
      * @return string The formatted tag.
      */
     public static function formatDateTime(\DateTime $dateTime, $format = 'lll')

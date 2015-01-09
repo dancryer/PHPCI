@@ -14,6 +14,9 @@ var PHPCI = {
             }
         });
 
+        // Setup the date locale
+        moment.locale(PHPCI_LANGUAGE);
+
         $(window).on('builds-updated', function (e, data) {
             PHPCI.updateHeaderBuilds(data);
         });

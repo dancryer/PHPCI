@@ -3,6 +3,9 @@ var PHPCI = {
     intervals: {},
 
     init: function () {
+        // Setup the date locale
+        moment.locale(PHPCI_LANGUAGE);
+
         $(document).ready(function () {
             // Format datetimes
             $('time[datetime]').each(function() {
@@ -19,9 +22,6 @@ var PHPCI = {
                 PHPCI.intervals.getProjectBuilds = setInterval(PHPCI.getProjectBuilds, 10000);
             }
         });
-
-        // Setup the date locale
-        moment.locale(PHPCI_LANGUAGE);
 
         $(window).on('builds-updated', function (e, data) {
             PHPCI.updateHeaderBuilds(data);

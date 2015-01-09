@@ -168,4 +168,20 @@ class Lang
             }
         }
     }
+
+    /**
+     * Create a time tag for localization.
+     * @param \DateTime $dateTime The dateTime to represent.
+     * @parma string $format The moment.js format to use.
+     * @return string The formatted tag.
+     */
+    public static function formatDateTime(\DateTime $dateTime, $format = 'lll')
+    {
+        return sprintf(
+            '<time datetime="%s" data-format="%s">%s</time>',
+            $dateTime->format(\DateTime::ISO8601),
+            $format,
+            $dateTime->format(\DateTime::RFC2822)
+        );
+    }
 }

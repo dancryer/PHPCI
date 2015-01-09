@@ -3,7 +3,16 @@ var PHPCI = {
     intervals: {},
 
     init: function () {
+        // Setup the date locale
+        moment.locale(PHPCI_LANGUAGE);
+
         $(document).ready(function () {
+            // Format datetimes
+            $('time[datetime]').each(function() {
+                var $this = $(this);
+                $this.text(moment(this.dateTime).format($this.data('format') || 'lll'));
+            });
+
             // Update latest builds every 5 seconds:
             PHPCI.getBuilds();
             PHPCI.intervals.getBuilds = setInterval(PHPCI.getBuilds, 5000);

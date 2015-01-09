@@ -27,12 +27,12 @@ foreach($projects as $project):
                 case 2:
                     $successes++;
                     $statuses[] = 'ok';
-                    $success = is_null($success) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $success;
+                    $success = is_null($success) && !is_null($build->getFinished()) ? Lang::formatDateTime($build->getFinished()) : $success;
                     break;
                 case 3:
                     $failures++;
                     $statuses[] = 'failed';
-                    $failure = is_null($failure) && !is_null($build->getFinished()) ? $build->getFinished()->format('M j Y g:ia') : $failure;
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? Lang::formatDateTime($build->getFinished()) : $failure;
                     break;
             }
         }
@@ -59,7 +59,7 @@ foreach($projects as $project):
             $message = Lang::get('x_of_x_failed', $failures, $buildCount);
 
             if (!is_null($lastSuccess) && !is_null($lastSuccess->getFinished())) {
-                $message .= Lang::get('last_successful_build', $lastSuccess->getFinished()->format('M j Y'));
+                $message .= Lang::get('last_successful_build', Lang::formatDateTime($lastSuccess->getFinished()));
             } else {
                 $message .= Lang::get('never_built_successfully');
             }
@@ -68,7 +68,7 @@ foreach($projects as $project):
             $shortMessage = Lang::get('all_builds_passed_short', $buildCount, $buildCount);
 
             if (!is_null($lastFailure) && !is_null($lastFailure->getFinished())) {
-                $message .= Lang::get('last_failed_build', $lastFailure->getFinished()->format('M j Y'));
+                $message .= Lang::get('last_failed_build', Lang::formatDateTime($lastFailure->getFinished()));
             } else {
                 $message .= Lang::get('never_failed_build');
             }

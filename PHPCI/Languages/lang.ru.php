@@ -84,7 +84,7 @@ PHPCI',
     'success' => 'Успешно',
     'successful' => 'Успешна',
     'failed' => 'Провалена',
-    'manual_build' => 'Ручной сборки',
+    'manual_build' => 'Собрано вручную',
 
     // Add/Edit Project:
     'new_project' => 'Новый проект',

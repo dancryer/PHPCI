@@ -23,6 +23,11 @@ use PHPCI\Model\Build;
 class Application extends b8\Application
 {
     /**
+     * @var \PHPCI\Controller
+     */
+    protected $controller;
+
+    /**
      * Initialise PHPCI - Handles session verification, routing, etc.
      */
     public function init()

@@ -23,6 +23,11 @@ use PHPCI\Model\Build;
 class Application extends b8\Application
 {
     /**
+     * @var \PHPCI\Controller
+     */
+    protected $controller;
+
+    /**
      * Initialise PHPCI - Handles session verification, routing, etc.
      */
     public function init()
@@ -100,7 +105,7 @@ class Application extends b8\Application
             $this->response->setContent($view->render());
         }
 
-        if ($this->response->hasLayout()) {
+        if ($this->response->hasLayout() && $this->controller->layout) {
             $this->setLayoutVariables($this->controller->layout);
 
             $this->controller->layout->content  = $this->response->getContent();

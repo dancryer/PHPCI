@@ -31,6 +31,11 @@ class Controller extends \b8\Controller
     protected $view;
 
     /**
+     * @var \b8\View
+     */
+    public $layout;
+
+    /**
      * Initialise the controller.
      */
     public function init()

@@ -13,6 +13,7 @@ use b8\Config;
 
 /**
  * Languages Helper Class - Handles loading strings files and the strings within them.
+ *
  * @package PHPCI\Helper
  */
 class Lang
@@ -23,6 +24,7 @@ class Lang
 
     /**
      * Get a specific string from the language file.
+     *
      * @param $string
      * @return mixed|string
      */
@@ -48,6 +50,7 @@ class Lang
 
     /**
      * Get the currently active language.
+     *
      * @return string|null
      */
     public static function getLanguage()
@@ -57,7 +60,9 @@ class Lang
 
     /**
      * Try and load a language, and if successful, set it for use throughout the system.
+     *
      * @param $language
+     *
      * @return bool
      */
     public static function setLanguage($language)
@@ -73,6 +78,7 @@ class Lang
 
     /**
      * Return a list of available languages and their names.
+     *
      * @return array
      */
     public static function getLanguageOptions()
@@ -90,6 +96,7 @@ class Lang
 
     /**
      * Get the strings for the currently active language.
+     *
      * @return string[]
      */
     public static function getStrings()
@@ -99,6 +106,7 @@ class Lang
 
     /**
      * Initialise the Language helper, try load the language file for the user's browser or the configured default.
+     *
      * @param Config $config
      */
     public static function init(Config $config)
@@ -137,6 +145,7 @@ class Lang
 
     /**
      * Load a specific language file.
+     *
      * @return string[]|null
      */
     protected static function loadLanguage()
@@ -171,8 +180,12 @@ class Lang
 
     /**
      * Create a time tag for localization.
+     *
+     * See http://momentjs.com/docs/#/displaying/format/ for a list of supported formats.
+     *
      * @param \DateTime $dateTime The dateTime to represent.
-     * @param string $format The moment.js format to use. See http://momentjs.com/docs/#/displaying/format/
+     * @param string $format The moment.js format to use.
+     *
      * @return string The formatted tag.
      */
     public static function formatDateTime(\DateTime $dateTime, $format = 'lll')

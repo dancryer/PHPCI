@@ -247,9 +247,18 @@ class ProjectController extends \PHPCI\Controller
         $values['pubkey'] = $values['ssh_public_key'];
 
         if ($values['type'] == "gitlab") {
-            $accessInfo = $project->getAccessInformation();
-            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
-            $values['reference'] = $reference;
+            $protocol = $project->getAccessInformation('protocol');
+            $user = $project->getAccessInformation('user');
+            $domain = $project->getAccessInformation('domain');
+            $port = $project->getAccessInformation('port');
+            $reference = $project->getReference();
+
+            if ('ssh' !== $protocol) { $protocol .= '://'; } else { $protocol = ''; }
+            if (!empty($user)) { $user .= '@'; }
+            if (!empty($port)) { $port = ':' . $port . '/'; } else { $port = ':'; }
+
+            $url = sprintf('%s%s%s%s%s.git', $protocol, $user, $domain, $port, $reference);
+            $values['reference'] = $url;
         }
 
         if ($method == 'POST') {
@@ -389,7 +398,7 @@ class ProjectController extends \PHPCI\Controller
                     'message' => Lang::get('error_remote')
                 ),
                 'gitlab' => array(
-                    'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
+                    'regex' => '`^(?:(https?|ssh):\/\/)?((.+)@)?(.+):([0-9]*)\/?(.+)\.git`',
                     'message' => Lang::get('error_gitlab')
                 ),
                 'github' => array(
@@ -401,8 +410,7 @@ class ProjectController extends \PHPCI\Controller
                     'message' => Lang::get('error_bitbucket')
                 ),
             );
-
-            if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
+            if (array_key_exists($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
                 throw new \Exception($validators[$type]['message']);
             } elseif ($type == 'local' && !is_dir($val)) {
                 throw new \Exception(Lang::get('error_path'));

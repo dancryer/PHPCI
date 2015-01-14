@@ -115,12 +115,17 @@ class ProjectService
         if ($project->getType() == 'gitlab') {
             $info = array();
 
-            if (preg_match('`^(.+)@(.+):([0-9]*)\/?(.+)\.git`', $reference, $matches)) {
-                $info['user'] = $matches[1];
-                $info['domain'] = $matches[2];
-                $info['port'] = $matches[3];
+            if (preg_match('`(?:(https?|ssh):\/\/)?((.+)@)?(.+):([0-9]*)\/?(.+)\.git`', $reference, $matches)) {
+                $info['protocol'] = !empty($matches[1]) ? $matches[1] : 'ssh';
+                $info['user'] = $matches[3];
+                $info['domain'] = $matches[4];
+                $info['port'] = $matches[5];
 
-                $project->setReference($matches[4]);
+                if ('ssh' === $info['protocol'] && empty($info['user'])) {
+                    $info['user'] = 'git';
+                }
+
+                $project->setReference($matches[6]);
             }
 
             $project->setAccessInformation($info);

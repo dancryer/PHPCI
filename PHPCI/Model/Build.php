@@ -93,7 +93,7 @@ class Build extends BuildBase
      * @param Builder $builder
      * @param string  $buildPath
      *
-     * @return bool
+     * @return array|bool
      */
     protected function handleConfig(Builder $builder, $buildPath)
     {
@@ -120,7 +120,8 @@ class Build extends BuildBase
         }
 
         $builder->setConfigArray($build_config);
-        return true;
+        
+        return $build_config;
     }
 
     /**

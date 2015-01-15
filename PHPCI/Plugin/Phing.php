@@ -213,8 +213,12 @@ class Phing implements \PHPCI\Plugin
      */
     public function propertiesToString()
     {
-        if (empty($this->properties)) {
-            return '';
+        /**
+         * fix the problem when execute phing out of the build dir
+         * @ticket 748
+         */
+        if (!isset($this->properties['project.basedir'])) {
+           $this->properties['project.basedir'] = $this->getDirectory(); 
         }
 
         $propertiesString = array();

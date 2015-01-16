@@ -92,12 +92,34 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
+        $shouldOutput = ($this->logExecOutput && $this->verbose);
+        
         $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
 
         if (is_resource($process)) {
+
+            /**
+             * don't wait to the end of the process to output stdout
+             */
+            while( !feof($pipes[1])) {
+
+                $stdOut = fgets($pipes[1], 4096);
+
+                if (strlen($stdOut) === 0) {
+                    break;
+                }
+
+                $aStdOut = array_filter(explode(PHP_EOL, $stdOut));
+
+                $this->lastOutput = array_merge($this->lastOutput, $aStdOut);
+               
+                if ($shouldOutput) {
+                    $this->logger->log($aStdOut);
+                }
+            }
+            
             fclose($pipes[0]);
 
-            $this->lastOutput = stream_get_contents($pipes[1]);
             $this->lastError = stream_get_contents($pipes[2]);
 
             fclose($pipes[1]);
@@ -106,11 +128,10 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $status = proc_close($process);
         }
 
-        $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
-
-        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
-
-        if ($shouldOutput && !empty($this->lastOutput)) {
+        /**
+         * If we don't output passthru but we have an error, log it.
+         */
+        if (!$shouldOutput && $status != 0 && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);
         }
 

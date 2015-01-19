@@ -110,7 +110,12 @@ abstract class BaseCommandExecutor implements CommandExecutor
              */
             while( !feof($pipes[1])) {
 
-                $stdOut = fgets($pipes[1], 4096);
+                /**
+                 * sets string lengh to 64M because outputs of processes
+                 * are managed by plugins
+                 * @todo study the case of big strings.
+                 */
+                $stdOut = fgets($pipes[1], 67108864);
 
                 if (strlen($stdOut) === 0) {
                     break;

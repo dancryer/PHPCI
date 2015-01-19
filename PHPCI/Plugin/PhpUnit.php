@@ -50,6 +50,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $xmlConfigFile;
 
     /**
+     * @var bool $logExecOutput Allow to configure if we want output execution to log.
+     */
+    protected $logExecOutput = false;
+
+    /**
      * Check if this plugin can be executed.
      * @param $stage
      * @param Builder $builder
@@ -135,6 +140,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (isset($options['coverage'])) {
             $this->coverage = " --coverage-html {$options['coverage']} ";
         }
+    
+        if (isset($options['log_exec_output'])) {
+            $this->logExecOutput = $options['log_exec_output'];
+        }
+
     }
 
     /**
@@ -149,7 +159,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $success = true;
 
-        $this->phpci->logExecOutput(false);
+        $this->phpci->logExecOutput($this->logExecOutput);
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {

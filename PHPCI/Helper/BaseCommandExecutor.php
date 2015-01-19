@@ -81,7 +81,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         if ($this->quiet) {
             $this->logger->log('Executing: ' . $command);
+        } else {
+            /**
+             * show the command to execute in purple
+             * @link http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
+             */
+            $this->logger->log([null, null, "\033[0;35mExecuting: {$command}\033[0m", null]);
         }
+        
 
         $status = 0;
         $descriptorSpec = array(
@@ -109,7 +116,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
                     break;
                 }
 
-                $aStdOut = array_filter(explode(PHP_EOL, $stdOut));
+                /**
+                 * remove the filters, we want to view in console the colours
+                 * when we execute :
+                 *    ./console phpci:run-builds
+                 * oldest way:
+                 *    //$aStdOut = array_filter(explode(PHP_EOL, $stdOut));
+                 */
+                $aStdOut = explode(PHP_EOL, $stdOut);
 
                 $this->lastOutput = array_merge($this->lastOutput, $aStdOut);
                
@@ -136,7 +150,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         if (!empty($this->lastError)) {
-            $this->logger->log("\033[0;31m" . $this->lastError . "\033[0m", LogLevel::ERROR);
+            $this->logger->log("\033[0;31m{$this->lastError}\033[0m", LogLevel::ERROR);
         }
 
         $rtn = false;

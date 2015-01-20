@@ -121,14 +121,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
                     break;
                 }
 
-                /**
-                 * remove the filters, we want to view in console the colours
-                 * when we execute :
-                 *    ./console phpci:run-builds
-                 * oldest way:
-                 *    //$aStdOut = array_filter(explode(PHP_EOL, $stdOut));
-                 */
-                $aStdOut = explode(PHP_EOL, $stdOut);
+                $aStdOut = array_filter(explode(PHP_EOL, $stdOut));
 
                 $this->lastOutput = array_merge($this->lastOutput, $aStdOut);
                

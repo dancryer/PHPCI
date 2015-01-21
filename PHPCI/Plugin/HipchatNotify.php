@@ -21,6 +21,7 @@ use PHPCI\Model\Build;
  */
 class HipchatNotify implements \PHPCI\Plugin
 {
+    private $target;
     private $authToken;
     private $userAgent;
     private $cookie;
@@ -52,6 +53,12 @@ class HipchatNotify implements \PHPCI\Plugin
                 $this->message = Lang::get('x_built_at_x');
             }
 
+            if (isset($options['target'])) {
+                $this->target = $options['target'];
+            } else {
+                $this->target = "https://api.hipchat.com";
+            }
+
             if (isset($options['color'])) {
                 $this->color = $options['color'];
             } else {
@@ -75,7 +82,7 @@ class HipchatNotify implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $hipChat = new \HipChat\HipChat($this->authToken);
+        $hipChat = new \HipChat\HipChat($this->authToken, $this->target);
         $message = $this->phpci->interpolate($this->message);
 
         $result = true;

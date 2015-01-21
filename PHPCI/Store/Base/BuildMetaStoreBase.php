@@ -20,11 +20,24 @@ class BuildMetaStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\BuildMeta';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a BuildMeta by primary key.
+     * @param mixed $value Primary key.
+     * @param string $useConnection Connection to use (read / write)
+     * @return \PHPCI\Model\BuildMeta|null
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a BuildMeta by Id.
+     * @param mixed $value.
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\BuildMeta|null;
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +57,14 @@ class BuildMetaStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get an array of BuildMeta by ProjectId.
+     * @param mixed $value.
+     * @param int $limit
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\BuildMeta[]
+     */
     public function getByProjectId($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -76,6 +97,14 @@ class BuildMetaStoreBase extends Store
         }
     }
 
+    /**
+     * Get an array of BuildMeta by BuildId.
+     * @param mixed $value.
+     * @param int $limit
+     * @param string $useConnection Connection to use (read / write)
+     * @throws \b8\Exception\HttpException
+     * @return \PHPCI\Model\BuildMeta[]
+     */
     public function getByBuildId($value, $limit = null, $useConnection = 'read')
     {
         if (is_null($value)) {

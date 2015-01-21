@@ -9,6 +9,8 @@
 
 namespace PHPCI\Command;
 
+use PHPCI\Helper\Lang;
+use PHPCI\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,7 +31,7 @@ class CreateAdminCommand extends Command
     {
         $this
             ->setName('phpci:create-admin')
-            ->setDescription('Create an admin user');
+            ->setDescription(Lang::get('create_admin_user'));
     }
 
     /**
@@ -37,32 +39,26 @@ class CreateAdminCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
+        $userStore = Factory::getStore('User');
+        $userService = new UserService($userStore);
+
         require(PHPCI_DIR . 'bootstrap.php');
 
         // Try to create a user account:
-        $adminEmail = $this->ask('Admin email address: ', true, FILTER_VALIDATE_EMAIL);
+        $adminEmail = $this->ask(Lang::get('enter_email'), true, FILTER_VALIDATE_EMAIL);
 
         if (empty($adminEmail)) {
             return;
         }
 
-        $adminPass = $this->ask('Admin password: ');
-        $adminName = $this->ask('Admin name: ');
+        $adminPass = $this->ask(Lang::get('enter_pass'));
+        $adminName = $this->ask(Lang::get('enter_name'));
 
         try {
-            $user = new \PHPCI\Model\User();
-            $user->setEmail($adminEmail);
-            $user->setName($adminName);
-            $user->setIsAdmin(1);
-            $user->setHash(password_hash($adminPass, PASSWORD_DEFAULT));
-
-            $store = \b8\Store\Factory::getStore('User');
-            $store->save($user);
-
-            print 'User account created!' . PHP_EOL;
+            $userService->createUser($adminName, $adminEmail, $adminPass, 1);
+            print Lang::get('user_created') . PHP_EOL;
         } catch (\Exception $ex) {
-            print 'There was a problem creating your account. :(' . PHP_EOL;
+            print Lang::get('failed_to_create') . PHP_EOL;
             print $ex->getMessage();
             print PHP_EOL;
         }
@@ -113,13 +109,13 @@ class CreateAdminCommand extends Command
                 switch ($filter)
                 {
                     case FILTER_VALIDATE_URL:
-                        $statusMessage = 'Incorrect url format.' . PHP_EOL;
+                        $statusMessage = Lang::get('must_be_valid_url') . PHP_EOL;
                         break;
                     case FILTER_VALIDATE_EMAIL:
-                        $statusMessage = 'Incorrect e-mail format.' . PHP_EOL;
+                        $statusMessage = Lang::get('must_be_valid_email') . PHP_EOL;
                         break;
                     case FILTER_VALIDATE_REGEXP:
-                        $statusMessage = 'Incorrect format.' . PHP_EOL;
+                        $statusMessage = Lang::get('incorrect_format') . PHP_EOL;
                         break;
                 }
             }

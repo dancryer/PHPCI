@@ -54,6 +54,13 @@ class LocalBuild extends Build
         return true;
     }
 
+    /**
+     * Check if this is a "bare" git repository, and if so, unarchive it.
+     * @param Builder $builder
+     * @param $reference
+     * @param $buildPath
+     * @return bool
+     */
     protected function handleBareRepository(Builder $builder, $reference, $buildPath)
     {
         $gitConfig = parse_ini_file($reference.'/config', true);
@@ -68,6 +75,13 @@ class LocalBuild extends Build
         return false;
     }
 
+    /**
+     * Create a symlink if required.
+     * @param Builder $builder
+     * @param $reference
+     * @param $buildPath
+     * @return bool
+     */
     protected function handleSymlink(Builder $builder, $reference, $buildPath)
     {
         if (is_link($buildPath) && is_file($buildPath)) {

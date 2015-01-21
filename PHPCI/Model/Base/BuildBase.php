@@ -110,16 +110,15 @@ class BuildBase extends Model
         'commit_id' => array(
             'type' => 'varchar',
             'length' => 50,
-            'nullable' => true,
             'default' => null,
         ),
         'status' => array(
-            'type' => 'tinyint',
-            'length' => 4,
+            'type' => 'int',
+            'length' => 11,
             'default' => null,
         ),
         'log' => array(
-            'type' => 'longtext',
+            'type' => 'text',
             'nullable' => true,
             'default' => null,
         ),
@@ -155,7 +154,7 @@ class BuildBase extends Model
             'default' => null,
         ),
         'extra' => array(
-            'type' => 'longtext',
+            'type' => 'text',
             'nullable' => true,
             'default' => null,
         ),
@@ -382,10 +381,12 @@ class BuildBase extends Model
     /**
     * Set the value of CommitId / commit_id.
     *
+    * Must not be null.
     * @param $value string
     */
     public function setCommitId($value)
     {
+        $this->_validateNotNull('CommitId', $value);
         $this->_validateString('CommitId', $value);
 
         if ($this->data['commit_id'] === $value) {

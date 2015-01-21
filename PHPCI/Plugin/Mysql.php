@@ -11,6 +11,7 @@ namespace PHPCI\Plugin;
 
 use PDO;
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -107,7 +108,7 @@ class Mysql implements \PHPCI\Plugin
                     // SQL file execution
                     $this->executeFile($query['import']);
                 } else {
-                    throw new \Exception("Invalid command");
+                    throw new \Exception(Lang::get('invalid_command'));
                 }
             }
         } catch (\Exception $ex) {
@@ -125,19 +126,19 @@ class Mysql implements \PHPCI\Plugin
     protected function executeFile($query)
     {
         if (!isset($query['file'])) {
-            throw new \Exception("Import statement must contain a 'file' key");
+            throw new \Exception(Lang::get('import_file_key'));
         }
 
         $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
         if (!is_readable($import_file)) {
-            throw new \Exception("Cannot open SQL import file: $import_file");
+            throw new \Exception(Lang::get('cannot_open_import', $import_file));
         }
 
         $database = isset($query['database']) ? $this->phpci->interpolate($query['database']) : null;
 
         $import_command = $this->getImportCommand($import_file, $database);
         if (!$this->phpci->executeCommand($import_command)) {
-            throw new \Exception("Unable to execute SQL file");
+            throw new \Exception(Lang::get('unable_to_execute'));
         }
 
         return true;

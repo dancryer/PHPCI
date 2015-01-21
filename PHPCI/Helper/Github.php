@@ -13,8 +13,18 @@ use b8\Cache;
 use b8\Config;
 use b8\HttpClient;
 
+/**
+ * The Github Helper class provides some Github API call functionality.
+ * @package PHPCI\Helper
+ */
 class Github
 {
+    /**
+     * Make a request to the Github API.
+     * @param $url
+     * @param $params
+     * @return mixed
+     */
     public function makeRequest($url, $params)
     {
         $http = new HttpClient('https://api.github.com');
@@ -32,12 +42,12 @@ class Github
      *
      * @return array
      */
-    public function makeRecursiveRequest($url, $params, $results=[])
+    public function makeRecursiveRequest($url, $params, $results = array())
     {
         $http = new HttpClient('https://api.github.com');
         $res = $http->get($url, $params);
 
-        foreach ($res['body'] as $key => $item) {
+        foreach ($res['body'] as $item) {
 
             $results[] = $item;
 

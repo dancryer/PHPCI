@@ -1,0 +1,21 @@
+<?php use PHPCI\Helper\Lang; ?>
+<li>
+    <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
+        <?php if ($build->getCommitterEmail()): ?>
+            <div class="pull-left">
+                <img src="https://www.gravatar.com/avatar/<?php print md5($build->getCommitterEmail()); ?>?d=mm&s=40" class="img-circle" alt="">
+            </div>
+        <?php endif; ?>
+
+        <h4>
+            <?php print $build->getProject()->getTitle(); ?>
+
+            <?php if ($build->getStatus() == \PHPCI\Model\Build::STATUS_NEW): ?>
+            <small class="pull-right"><?php Lang::out('created_x', $build->getCreated()->format('H:i')); ?></small>
+            <?php elseif ($build->getStatus() == \PHPCI\Model\Build::STATUS_RUNNING): ?>
+            <small class="pull-right"><?php Lang::out('started_x', $build->getStarted()->format('H:i')); ?></small>
+            <?php endif; ?>
+        </h4>
+        <p><?php Lang::out('branch_x', $build->getBranch()); ?></p>
+    </a>
+</li>

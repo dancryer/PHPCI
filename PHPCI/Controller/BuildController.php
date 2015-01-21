@@ -12,7 +12,10 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Model\Project;
+use PHPCI\Service\BuildService;
 
 /**
 * Build Controller - Allows users to run and view builds.
@@ -26,10 +29,19 @@ class BuildController extends \PHPCI\Controller
      * @var \PHPCI\Store\BuildStore
      */
     protected $buildStore;
-    
+
+    /**
+     * @var \PHPCI\Service\BuildService
+     */
+    protected $buildService;
+
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
-        $this->buildStore      = b8\Store\Factory::getStore('Build');
+        $this->buildStore = b8\Store\Factory::getStore('Build');
+        $this->buildService = new BuildService($this->buildStore);
     }
 
     /**
@@ -44,17 +56,35 @@ class BuildController extends \PHPCI\Controller
         }
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
         $this->view->data     = $this->getBuildData($build);
 
-        $title = 'Build #' . $build->getId() . ' - ' . $build->getProjectTitle();
-        $this->config->set('page_title', $title);
+        $this->layout->title = Lang::get('build_n', $buildId);
+        $this->layout->subtitle = $build->getProjectTitle();
+
+        $nav = array(
+            'title' => Lang::get('build_n', $buildId),
+            'icon' => 'cog',
+            'links' => array(
+                'build/rebuild/' . $build->getId() => Lang::get('rebuild_now'),
+            ),
+        );
+
+        if ($this->currentUserIsAdmin()) {
+            $nav['links']['build/delete/' . $build->getId()] = Lang::get('delete_build');
+        }
+
+        $this->layout->nav = $nav;
     }
 
+    /**
+     * Returns an array of the JS plugins to include.
+     * @return array
+     */
     protected function getUiPlugins()
     {
         $rtn = array();
@@ -91,7 +121,7 @@ class BuildController extends \PHPCI\Controller
         $data = null;
 
         if ($key && $build) {
-            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $build->getBranch(), $numBuilds);
         }
 
         die(json_encode($data));
@@ -120,20 +150,10 @@ class BuildController extends \PHPCI\Controller
         $copy   = BuildFactory::getBuildById($buildId);
 
         if (empty($copy)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
-        $build  = new Build();
-        $build->setProjectId($copy->getProjectId());
-        $build->setCommitId($copy->getCommitId());
-        $build->setStatus(Build::STATUS_NEW);
-        $build->setBranch($copy->getBranch());
-        $build->setCreated(new \DateTime());
-        $build->setCommitterEmail($copy->getCommitterEmail());
-        $build->setCommitMessage($copy->getCommitMessage());
-        $build->setExtra(json_encode($copy->getExtra()));
-
-        $build = $this->buildStore->save($build);
+        $build = $this->buildService->createDuplicateBuild($copy);
 
         header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
         exit;
@@ -144,17 +164,15 @@ class BuildController extends \PHPCI\Controller
     */
     public function delete($buildId)
     {
-        if (empty($_SESSION['user']) || !$_SESSION['user']->getIsAdmin()) {
-            throw new \Exception('You do not have permission to do that.');
-        }
+        $this->requireAdmin();
 
         $build = BuildFactory::getBuildById($buildId);
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
-        $this->buildStore->delete($build);
+        $this->buildService->deleteBuild($build);
 
         header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
         exit;
@@ -170,5 +188,45 @@ class BuildController extends \PHPCI\Controller
         $log = str_replace('[0m', '</span>', $log);
 
         return $log;
+    }
+
+    /**
+     * Allows the UI to poll for the latest running and pending builds.
+     */
+    public function latest()
+    {
+        $rtn = array(
+            'pending' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_NEW)),
+            'running' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_RUNNING)),
+        );
+
+        if ($this->request->isAjax()) {
+            die(json_encode($rtn));
+        }
+    }
+
+    /**
+     * Formats a list of builds into rows suitable for the dropdowns in the PHPCI header bar.
+     * @param $builds
+     * @return array
+     */
+    protected function formatBuilds($builds)
+    {
+        Project::$sleepable = array('id', 'title', 'reference', 'type');
+
+        $rtn = array('count' => $builds['count'], 'items' => array());
+
+        foreach ($builds['items'] as $build) {
+            $item = $build->toArray(1);
+
+            $header = new b8\View('Build/header-row');
+            $header->build = $build;
+
+            $item['header_row'] = $header->render();
+            $rtn['items'][$item['id']] = $item;
+        }
+
+        ksort($rtn['items']);
+        return $rtn;
     }
 }

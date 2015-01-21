@@ -20,7 +20,7 @@ function bindAppDeleteEvents () {
         e.preventDefault();
 
         confirmDelete(e.target.href, 'Build').onClose = function () {
-            refreshBuildsTable();
+            window.location.reload();
         };
 
         return false;

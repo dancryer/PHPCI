@@ -2,14 +2,14 @@
 
 namespace PHPCI\Plugin\Util;
 
-
-
+/**
+ * Plugin Factory - Loads Plugins and passes required dependencies.
+ * @package PHPCI\Plugin\Util
+ */
 class Factory
 {
-
     const TYPE_ARRAY = "array";
     const TYPE_CALLABLE = "callable";
-
     const INTERFACE_PHPCI_PLUGIN = '\PHPCI\Plugin';
 
     private $currentPluginOptions;
@@ -19,6 +19,9 @@ class Factory
      */
     private $container;
 
+    /**
+     * @param \Pimple $container
+     */
     public function __construct(\Pimple $container = null)
     {
         if ($container) {
@@ -59,6 +62,10 @@ class Factory
         return false;
     }
 
+    /**
+     * Get most recently used factory options.
+     * @return mixed
+     */
     public function getLastOptions()
     {
         return $this->currentPluginOptions;
@@ -129,6 +136,12 @@ class Factory
         $this->container[$resourceID] = $loader;
     }
 
+    /**
+     * Get an internal resource ID.
+     * @param null $type
+     * @param null $name
+     * @return string
+     */
     private function getInternalID($type = null, $name = null)
     {
         $type = $type ? : "";
@@ -136,6 +149,11 @@ class Factory
         return $type . "-" . $name;
     }
 
+    /**
+     * @param null $type
+     * @param null $name
+     * @return null
+     */
     private function getResourceFor($type = null, $name = null)
     {
         $fullId = $this->getInternalID($type, $name);
@@ -156,6 +174,10 @@ class Factory
         return null;
     }
 
+    /**
+     * @param \ReflectionParameter $param
+     * @return null|string
+     */
     private function getParamType(\ReflectionParameter $param)
     {
         $class = $param->getClass();
@@ -170,6 +192,12 @@ class Factory
         }
     }
 
+    /**
+     * @param $existingArgs
+     * @param \ReflectionParameter $param
+     * @return array
+     * @throws \DomainException
+     */
     private function addArgFromParam($existingArgs, \ReflectionParameter $param)
     {
         $name = $param->getName();

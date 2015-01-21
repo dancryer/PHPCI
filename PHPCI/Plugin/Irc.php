@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -28,6 +29,18 @@ class Irc implements \PHPCI\Plugin
     protected $room;
     protected $nick;
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -47,12 +60,16 @@ class Irc implements \PHPCI\Plugin
         }
     }
 
+    /**
+     * Run IRC plugin.
+     * @return bool
+     */
     public function execute()
     {
         $msg = $this->phpci->interpolate($this->message);
 
         if (empty($this->server) || empty($this->room) || empty($this->nick)) {
-            $this->phpci->logFailure('You must configure a server, room and nick.');
+            $this->phpci->logFailure(Lang::get('irc_settings'));
         }
 
         if (empty($this->port)) {
@@ -62,6 +79,7 @@ class Irc implements \PHPCI\Plugin
         $sock = fsockopen($this->server, $this->port);
         fputs($sock, 'USER ' . $this->nick . ' phptesting.org ' . $this->nick . ' :' . $this->nick . "\r\n");
         fputs($sock, 'NICK ' . $this->nick . "\r\n");
+        fputs($sock, 'JOIN ' . $this->room . "\r\n");
         fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
 
         while (fgets($sock)) {

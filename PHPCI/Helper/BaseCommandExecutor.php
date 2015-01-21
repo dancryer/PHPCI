@@ -11,7 +11,12 @@ namespace PHPCI\Helper;
 
 use \PHPCI\Logging\BuildLogger;
 use Psr\Log\LogLevel;
+use PHPCI\Helper\Lang;
 
+/**
+ * Handles running system commands with variables.
+ * @package PHPCI\Helper
+ */
 abstract class BaseCommandExecutor implements CommandExecutor
 {
     /**
@@ -30,6 +35,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
     protected $verbose;
 
     protected $lastOutput;
+    protected $lastError;
 
     public $logExecOutput = true;
 
@@ -78,14 +84,38 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         $status = 0;
-        exec($command, $this->lastOutput, $status);
+        $descriptorSpec = array(
+            0 => array("pipe", "r"),  // stdin
+            1 => array("pipe", "w"),  // stdout
+            2 => array("pipe", "w"),  // stderr
+        );
 
-        foreach ($this->lastOutput as &$lastOutput) {
-            $lastOutput = trim($lastOutput, '"');
+        $pipes = array();
+
+        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+
+        if (is_resource($process)) {
+            fclose($pipes[0]);
+
+            $this->lastOutput = stream_get_contents($pipes[1]);
+            $this->lastError = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $status = proc_close($process);
         }
 
-        if ($this->logExecOutput && !empty($this->lastOutput) && ($this->verbose|| $status != 0)) {
+        $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
+
+        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
+
+        if ($shouldOutput && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);
+        }
+
+        if (!empty($this->lastError)) {
+            $this->logger->log("\033[0;31m" . $this->lastError . "\033[0m", LogLevel::ERROR);
         }
 
         $rtn = false;
@@ -106,11 +136,21 @@ abstract class BaseCommandExecutor implements CommandExecutor
     }
 
     /**
+     * Returns the stderr output from the last command run.
+     */
+    public function getLastError()
+    {
+        return $this->lastError;
+    }
+
+    /**
      * Find a binary required by a plugin.
      * @param string $binary
+     * @param null $buildPath
      * @return null|string
      */
-    public function findBinary($binary, $buildPath = null) {
+    public function findBinary($binary, $buildPath = null)
+    {
         $binaryPath = null;
         $composerBin = $this->getComposerBinDir(realpath($buildPath));
 
@@ -119,29 +159,30 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         foreach ($binary as $bin) {
-            $this->logger->log("Looking for binary: " . $bin, LogLevel::DEBUG);
+            $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-                $this->logger->log("Found in ".$composerBin.": " . $bin, LogLevel::DEBUG);
+
+                $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;
             }
 
             if (is_file($this->rootDir . $bin)) {
-                $this->logger->log("Found in root: " . $bin, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
                 $binaryPath = $this->rootDir . $bin;
                 break;
             }
 
             if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
-                $this->logger->log("Found in vendor/bin: " . $bin, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', 'vendor/bin', $bin), LogLevel::DEBUG);
                 $binaryPath = $this->rootDir . 'vendor/bin/' . $bin;
                 break;
             }
 
             $findCmdResult = $this->findGlobalBinary($bin);
             if (is_file($findCmdResult)) {
-                $this->logger->log("Found in " . $findCmdResult, LogLevel::DEBUG);
+                $this->logger->log(Lang::get('found_in_path', '', $bin), LogLevel::DEBUG);
                 $binaryPath = $findCmdResult;
                 break;
             }
@@ -154,7 +195,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param string $binary
      * @return null|string
      */
-    abstract protected function findGlobalBinary($bin);
+    abstract protected function findGlobalBinary($binary);
 
     /**
      * Try to load the composer.json file in the building project
@@ -162,13 +203,17 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param string $path Current build path
      * @return string|null
      */
-    public function getComposerBinDir($path) {
+    public function getComposerBinDir($path)
+    {
         if (is_dir($path)) {
             $composer = $path.'/composer.json';
-            if( is_file($composer) ) {
+            if (is_file($composer)) {
                 $json = json_decode(file_get_contents($composer));
-                if( isset($json->config->{"bin-dir"}) ) {
+
+                if (isset($json->config->{"bin-dir"})) {
                     return $path.'/'.$json->config->{"bin-dir"};
+                } elseif (is_dir($path . '/vendor/bin')) {
+                    return $path  . '/vendor/bin';
                 }
             }
         }

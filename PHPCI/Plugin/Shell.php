@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -37,6 +38,18 @@ class Shell implements \PHPCI\Plugin
      */
     protected $commands = array();
 
+    /**
+     * Standard Constructor
+     *
+     * $options['directory'] Output Directory. Default: %BUILDPATH%
+     * $options['filename']  Phar Filename. Default: build.phar
+     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
+     * $options['stub']      Stub Content. No Default Value
+     *
+     * @param Builder $phpci
+     * @param Build   $build
+     * @param array   $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -67,7 +80,7 @@ class Shell implements \PHPCI\Plugin
     public function execute()
     {
         if (!defined('ENABLE_SHELL_PLUGIN') || !ENABLE_SHELL_PLUGIN) {
-            throw new \Exception('The shell plugin is not enabled.');
+            throw new \Exception(Lang::get('shell_not_enabled'));
         }
 
         $success = true;

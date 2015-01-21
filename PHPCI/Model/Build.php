@@ -39,15 +39,6 @@ class Build extends BuildBase
     }
 
     /**
-     * @return string
-     */
-    public function getProjectTitle()
-    {
-        $project = $this->getProject();
-        return $project ? $project->getTitle() : "";
-    }
-
-    /**
     * Get link to branch from another source (i.e. Github)
     */
     public function getBranchLink()
@@ -56,11 +47,29 @@ class Build extends BuildBase
     }
 
     /**
+     * Return a template to use to generate a link to a specific file.
+     * @return null
+     */
+    public function getFileLinkTemplate()
+    {
+        return null;
+    }
+
+    /**
     * Send status updates to any relevant third parties (i.e. Github)
     */
     public function sendStatusPostback()
     {
         return;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectTitle()
+    {
+        $project = $this->getProject();
+        return $project ? $project->getTitle() : "";
     }
 
     /**
@@ -114,6 +123,11 @@ class Build extends BuildBase
         return true;
     }
 
+    /**
+     * Get an array of plugins to run if there's no phpci.yml file.
+     * @param Builder $builder
+     * @return array
+     */
     protected function getZeroConfigPlugins(Builder $builder)
     {
         $pluginDir = PHPCI_DIR . 'PHPCI/Plugin/';
@@ -160,11 +174,11 @@ class Build extends BuildBase
         return $config;
     }
 
-    public function getFileLinkTemplate()
-    {
-        return null;
-    }
-
+    /**
+     * Return a value from the build's "extra" JSON array.
+     * @param null $key
+     * @return mixed|null|string
+     */
     public function getExtra($key = null)
     {
         $data = json_decode($this->data['extra'], true);

@@ -45,6 +45,13 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $skipClasses = false;
     protected $skipMethods = false;
 
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
@@ -54,7 +61,12 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return false;
     }
 
-
+    /**
+     * Set up the plugin, configure options, etc.
+     * @param Builder $phpci
+     * @param Build $build
+     * @param array $options
+     */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
         $this->phpci = $phpci;
@@ -93,7 +105,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $checker = $this->phpci->findBinary('phpdoccheck');
 
         if (!$checker) {
-            $this->phpci->logFailure('Could not find phpdoccheck.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpdoccheck'));
             return false;
         }
 

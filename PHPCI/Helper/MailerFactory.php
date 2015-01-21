@@ -9,7 +9,10 @@
 
 namespace PHPCI\Helper;
 
-
+/**
+ * Class MailerFactory helps to set up and configure a SwiftMailer object.
+ * @package PHPCI\Helper
+ */
 class MailerFactory
 {
     /**
@@ -17,8 +20,16 @@ class MailerFactory
      */
     protected $emailConfig;
 
-    public function __construct($config = null)
+    /**
+     * Set the mailer factory configuration.
+     * @param array $config
+     */
+    public function __construct($config = array())
     {
+        if (!is_array($config)) {
+            $config = array();
+        }
+
         $this->emailConfig  = isset($config['email_settings']) ? $config['email_settings'] : array();
     }
 
@@ -28,11 +39,19 @@ class MailerFactory
      */
     public function getSwiftMailerFromConfig()
     {
+        $encryptionType = $this->getMailConfig('smtp_encryption');
+
+        // Workaround issue where smtp_encryption could == 1 in the past by
+        // checking it is a valid transport
+        if ($encryptionType && !in_array($encryptionType, stream_get_transports())) {
+            $encryptionType = null;
+        }
+
         /** @var \Swift_SmtpTransport $transport */
         $transport = \Swift_SmtpTransport::newInstance(
             $this->getMailConfig('smtp_address'),
             $this->getMailConfig('smtp_port'),
-            $this->getMailConfig('smtp_encryption')
+            $encryptionType
         );
         $transport->setUsername($this->getMailConfig('smtp_username'));
         $transport->setPassword($this->getMailConfig('smtp_password'));
@@ -40,7 +59,12 @@ class MailerFactory
         return \Swift_Mailer::newInstance($transport);
     }
 
-    protected function getMailConfig($configName)
+    /**
+     * Return a specific configuration value by key.
+     * @param $configName
+     * @return null|string
+     */
+    public function getMailConfig($configName)
     {
         if (isset($this->emailConfig[$configName]) && $this->emailConfig[$configName] != "") {
             return $this->emailConfig[$configName];

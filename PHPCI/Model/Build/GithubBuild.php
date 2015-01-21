@@ -95,6 +95,10 @@ class GithubBuild extends RemoteGitBuild
         }
     }
 
+    /**
+     * Get a parsed version of the commit message, with links to issues and commits.
+     * @return string
+     */
     public function getCommitMessage()
     {
         $rtn = $this->data['commit_message'];
@@ -107,16 +111,38 @@ class GithubBuild extends RemoteGitBuild
         return $rtn;
     }
 
+    /**
+     * Get a template to use for generating links to files.
+     * e.g. https://github.com/block8/phpci/blob/master/{FILE}#L{LINE}
+     * @return string
+     */
     public function getFileLinkTemplate()
     {
-        $link = 'https://github.com/' . $this->getProject()->getReference() . '/';
-        $link .= 'blob/' . $this->getBranch() . '/';
+        $reference = $this->getProject()->getReference();
+        $branch = $this->getBranch();
+
+        if ($this->getExtra('build_type') == 'pull_request') {
+            $matches = array();
+            preg_match('/\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)/', $this->getExtra('remote_url'), $matches);
+
+            $reference = $matches[1];
+            $branch = $this->getExtra('remote_branch');
+        }
+
+        $link = 'https://github.com/' . $reference . '/';
+        $link .= 'blob/' . $branch . '/';
         $link .= '{FILE}';
         $link .= '#L{LINE}';
 
         return $link;
     }
 
+    /**
+     * Handle any post-clone tasks, like applying a pull request patch on top of the branch.
+     * @param Builder $builder
+     * @param $cloneTo
+     * @return bool
+     */
     protected function postCloneSetup(Builder $builder, $cloneTo)
     {
         $buildType = $this->getExtra('build_type');

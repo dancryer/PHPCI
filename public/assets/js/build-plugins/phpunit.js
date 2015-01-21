@@ -1,7 +1,7 @@
-var phpunitPlugin = PHPCI.UiPlugin.extend({
+var phpunitPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpunit-errors',
-    css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHPUnit',
+    css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
+    title: Lang.get('phpunit'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -9,7 +9,7 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
 
     register: function() {
         var self = this;
-        var query = PHPCI.registerQuery('phpunit-data', -1, {key: 'phpunit-data'})
+        var query = ActiveBuild.registerQuery('phpunit-data', -1, {key: 'phpunit-data'})
 
         $(window).on('phpunit-data', function(data) {
             self.onUpdate(data);
@@ -25,16 +25,17 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table table-striped" id="phpunit-data">' +
+        return $('<table class="table" id="phpunit-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>Test</th>' +
+            '   <th>'+Lang.get('test')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },
 
     onUpdate: function(e) {
         if (!e.queryData) {
+            $('#build-phpunit-errors').hide();
             return;
         }
 
@@ -44,6 +45,11 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
         var tests = this.lastData[0].meta_value;
         var tbody = $('#phpunit-data tbody');
         tbody.empty();
+
+        if (tests.length == 0) {
+            $('#build-phpunit-errors').hide();
+            return;
+        }
 
         for (var i in tests) {
 
@@ -61,7 +67,9 @@ var phpunitPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(row);
         }
+
+        $('#build-phpunit-errors').show();
     }
 });
 
-PHPCI.registerPlugin(new phpunitPlugin());
+ActiveBuild.registerPlugin(new phpunitPlugin());

@@ -113,17 +113,25 @@ class RemoteGitBuild extends Build
         return $success;
     }
 
+    /**
+     * Handle any post-clone tasks, like switching branches.
+     * @param Builder $builder
+     * @param $cloneTo
+     * @return bool
+     */
     protected function postCloneSetup(Builder $builder, $cloneTo)
     {
         $success = true;
         $commit = $this->getCommitId();
 
         if (!empty($commit) && $commit != 'Manual') {
-            $cmd = 'cd "%s" && git checkout %s';
+            $cmd = 'cd "%s"';
 
             if (IS_WIN) {
-                $cmd = 'cd /d "%s" && git checkout %s';
+                $cmd = 'cd /d "%s"';
             }
+
+            $cmd .= ' && git checkout %s --quiet';
 
             $success = $builder->executeCommand($cmd, $cloneTo, $this->getCommitId());
         }

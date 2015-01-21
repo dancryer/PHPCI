@@ -11,6 +11,9 @@
          bootstrap="./Tests/bootstrap.php"
 >
     <testsuites>
+        <testsuite name="PHPCI Command Test Suite">
+            <directory suffix="Test.php">./Tests/PHPCI/Command</directory>
+        </testsuite>
         <testsuite name="PHPCI Helper Test Suite">
             <directory suffix="Test.php">./Tests/PHPCI/Helper</directory>
         </testsuite>
@@ -19,6 +22,12 @@
         </testsuite>
         <testsuite name="PHPCI Plugin Test Suite">
             <directory suffix="Test.php">./Tests/PHPCI/Plugin</directory>
+        </testsuite>
+        <testsuite name="PHPCI Model Test Suite">
+            <directory suffix="Test.php">./Tests/PHPCI/Model</directory>
+        </testsuite>
+        <testsuite name="PHPCI Service Test Suite">
+            <directory suffix="Test.php">./Tests/PHPCI/Service</directory>
         </testsuite>
     </testsuites>
 </phpunit>

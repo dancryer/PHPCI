@@ -13,6 +13,7 @@ use b8;
 use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
+use PHPCI\Service\BuildService;
 
 /**
  * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
@@ -29,9 +30,24 @@ class WebhookController extends \PHPCI\Controller
      */
     protected $buildStore;
 
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
+    /**
+     * @var \PHPCI\Service\BuildService
+     */
+    protected $buildService;
+
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore = Store\Factory::getStore('Build');
+        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildService = new BuildService($this->buildStore);
     }
 
     /**
@@ -43,7 +59,6 @@ class WebhookController extends \PHPCI\Controller
 
         foreach ($payload['commits'] as $commit) {
             try {
-
                 $email = $commit['raw_author'];
                 $email = substr($email, 0, strpos($email, '>'));
                 $email = substr($email, strpos($email, '<') + 1);
@@ -60,7 +75,7 @@ class WebhookController extends \PHPCI\Controller
     }
 
     /**
-     * Called by POSTing to /git/webhook/<project_id>?branch=<branch>&commit=<commit>
+     * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
      *
      * @param string $project
      */
@@ -68,6 +83,8 @@ class WebhookController extends \PHPCI\Controller
     {
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
+        $commitMessage = $this->getParam('message');
+        $committer = $this->getParam('committer');
 
         try {
             if (empty($branch)) {
@@ -78,8 +95,15 @@ class WebhookController extends \PHPCI\Controller
                 $commit = null;
             }
 
-            $this->createBuild($project, $commit, $branch, null, null);
+            if (empty($commitMessage)) {
+                $commitMessage = null;
+            }
 
+            if (empty($committer)) {
+                $committer = null;
+            }
+
+            $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
         } catch (\Exception $ex) {
             header('HTTP/1.1 400 Bad Request');
             header('Ex: ' . $ex->getMessage());
@@ -94,7 +118,19 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
-        $payload = json_decode($this->getParam('payload'), true);
+        switch ($_SERVER['CONTENT_TYPE']) {
+            case 'application/json':
+                $payload = json_decode(file_get_contents('php://input'), true);
+                break;
+
+            case 'application/x-www-form-urlencoded':
+                $payload = json_decode($this->getParam('payload'), true);
+                break;
+
+            default:
+                header('HTTP/1.1 400 Bad Request');
+                die('Request content type not supported');
+        }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {
@@ -110,6 +146,11 @@ class WebhookController extends \PHPCI\Controller
         die('This request type is not supported, this is not an error.');
     }
 
+    /**
+     * Handle the payload when Github sends a commit webhook.
+     * @param $project
+     * @param array $payload
+     */
     protected function githubCommitRequest($project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
@@ -149,6 +190,11 @@ class WebhookController extends \PHPCI\Controller
         die('OK');
     }
 
+    /**
+     * Handle the payload when Github sends a Pull Request webhook.
+     * @param $projectId
+     * @param array $payload
+     */
     protected function githubPullRequest($projectId, array $payload)
     {
         // We only want to know about open pull requests:
@@ -210,6 +256,21 @@ class WebhookController extends \PHPCI\Controller
 
         try {
 
+
+            // build on merge request events
+            if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
+                $attributes = $payload['object_attributes'];
+                if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
+
+                    $branch = $attributes['source_branch'];
+                    $commit = $attributes['last_commit'];
+                    $committer = $commit['author']['email'];
+
+                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                }
+            }
+
+            // build on push events
             if (isset($payload['commits']) && is_array($payload['commits'])) {
                 // If we have a list of commits, then add them all as builds to be tested:
 
@@ -229,6 +290,17 @@ class WebhookController extends \PHPCI\Controller
         die('OK');
     }
 
+    /**
+     * Wrapper for creating a new build.
+     * @param $projectId
+     * @param $commitId
+     * @param $branch
+     * @param $committer
+     * @param $commitMessage
+     * @param null $extra
+     * @return bool
+     * @throws \Exception
+     */
     protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, $extra = null)
     {
         // Check if a build already exists for this commit ID:
@@ -238,22 +310,15 @@ class WebhookController extends \PHPCI\Controller
             return true;
         }
 
-        // If not, create a new build job for it:
-        $build = new Build();
-        $build->setProjectId($projectId);
-        $build->setCommitId($commitId);
-        $build->setStatus(Build::STATUS_NEW);
-        $build->setLog('');
-        $build->setCreated(new \DateTime());
-        $build->setBranch($branch);
-        $build->setCommitterEmail($committer);
-        $build->setCommitMessage($commitMessage);
+        $project = $this->projectStore->getById($projectId);
 
-        if (!is_null($extra)) {
-            $build->setExtra(json_encode($extra));
+        if (empty($project)) {
+            throw new \Exception('Project does not exist:' . $projectId);
         }
 
-        $build = BuildFactory::getBuild($this->buildStore->save($build));
+        // If not, create a new build job for it:
+        $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
+        $build = BuildFactory::getBuild($build);
 
         // Send a status postback if the build type provides one:
         $build->sendStatusPostback();

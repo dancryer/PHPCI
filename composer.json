@@ -22,25 +22,34 @@
         "source": "https://github.com/Block8/PHPCI"
     },
 
+    "autoload": {
+        "psr-4": {
+            "PHPCI\\": "PHPCI"
+        }
+    },
+
     "require": {
         "php": ">=5.3.8",
-        "ext-mcrypt": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
-        "block8/b8framework"       : "~1.1",
+        "block8/b8framework": "~1.0",
         "ircmaxell/password-compat": "~1.0",
-        "swiftmailer/swiftmailer"  : "~5.0",
-        "symfony/yaml"             : "~2.1",
-        "symfony/console"          : "~2.1",
+        "swiftmailer/swiftmailer": "~5.0",
+        "symfony/yaml": "~2.1",
+        "symfony/console": "~2.1",
         "psr/log": "~1.0",
         "monolog/monolog": "~1.6",
         "pimple/pimple": "~1.1",
-        "robmorgan/phinx": "*"
+        "robmorgan/phinx": "~0.3"
     },
 
     "require-dev": {
-        "phpunit/phpunit": "~3.7",
-        "phpspec/prophecy-phpunit": "~1.0"
+        "phpunit/phpunit": "~4.0",
+        "phpspec/prophecy-phpunit": "~1.0",
+        "phpmd/phpmd": "~2.0",
+        "squizlabs/php_codesniffer": "~1.5",
+        "block8/php-docblock-checker": "~1.0",
+        "phploc/phploc": "~2.0"
     },
 
     "suggest": {
@@ -54,6 +63,8 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
-        "hipchat/hipchat-php": "Hipchat integration"
+        "hipchat/hipchat-php": "Hipchat integration",
+        "phptal/phptal": "PHPTAL templating engine",
+        "maknz/slack": "Slack integration"
     }
 }

@@ -11,6 +11,8 @@ namespace PHPCI\Controller;
 
 use b8;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
+use PHPCI\Model\Build;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -30,6 +32,9 @@ class HomeController extends \PHPCI\Controller
      */
     protected $projectStore;
 
+    /**
+     * Initialise the controller, set up stores and services.
+     */
     public function init()
     {
         $this->buildStore      = b8\Store\Factory::getStore('Build');
@@ -41,13 +46,19 @@ class HomeController extends \PHPCI\Controller
     */
     public function index()
     {
+        $this->layout->title = Lang::get('dashboard');
+
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
 
-        $this->view->builds   = $this->getLatestBuildsHtml();
+        $builds = $this->buildStore->getLatestBuilds(null, 10);
+
+        foreach ($builds as &$build) {
+            $build = BuildFactory::getBuild($build);
+        }
+
+        $this->view->builds   = $builds;
         $this->view->projects = $projects['items'];
         $this->view->summary  = $this->getSummaryHtml($projects);
-
-        $this->config->set('page_title', 'Dashboard');
 
         return $this->view->render();
     }
@@ -60,22 +71,41 @@ class HomeController extends \PHPCI\Controller
         die($this->getLatestBuildsHtml());
     }
 
+    /**
+     * Ajax request for the project overview section of the dashboard.
+     */
     public function summary()
     {
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
         die($this->getSummaryHtml($projects));
     }
 
+    /**
+     * Generate the HTML for the project overview section of the dashboard.
+     * @param $projects
+     * @return string
+     */
     protected function getSummaryHtml($projects)
     {
         $summaryBuilds = array();
+        $successes = array();
+        $failures = array();
+
         foreach ($projects['items'] as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+
+            $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
+            $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
+
+            $successes[$project->getId()] = $success;
+            $failures[$project->getId()] = $failure;
         }
 
         $summaryView = new b8\View('SummaryTable');
         $summaryView->projects = $projects['items'];
         $summaryView->builds = $summaryBuilds;
+        $summaryView->successful = $successes;
+        $summaryView->failed = $failures;
 
         return $summaryView->render();
     }

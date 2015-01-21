@@ -2,6 +2,10 @@
 
 namespace PHPCI\Plugin\Util;
 
+/**
+ * Class PluginInformationCollection
+ * @package PHPCI\Plugin\Util
+ */
 class PluginInformationCollection implements InstalledPluginInformation
 {
     /**
@@ -9,6 +13,10 @@ class PluginInformationCollection implements InstalledPluginInformation
      */
     protected $pluginInformations = array();
 
+    /**
+     * Add a plugin to the collection.
+     * @param InstalledPluginInformation $information
+     */
     public function add(InstalledPluginInformation $information)
     {
         $this->pluginInformations[] = $information;

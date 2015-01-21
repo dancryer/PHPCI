@@ -1,4 +1,4 @@
-var codeceptionPlugin = PHPCI.UiPlugin.extend({
+var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-codeception-errors',
     css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
     title: 'Codeception',
@@ -80,6 +80,8 @@ var codeceptionPlugin = PHPCI.UiPlugin.extend({
 
             tbody.append(rows);
         }
+
+        $('#build-codeception-errors').show();
     },
 
     onUpdateMeta: function(e) {

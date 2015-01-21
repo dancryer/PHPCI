@@ -179,6 +179,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $this->build->storeMeta('codeception-meta', $meta);
             $this->build->storeMeta('codeception-data', $output);
+            $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
 
             $this->phpci->logExecOutput(true);
 

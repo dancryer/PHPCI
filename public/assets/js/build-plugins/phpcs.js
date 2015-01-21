@@ -22,14 +22,14 @@ var phpcsPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table" id="phpcs-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpcs-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>'+Lang.get('file')+'</th>' +
             '   <th>'+Lang.get('line')+'</th>' +
             '   <th>'+Lang.get('message')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
     },
 
     onUpdate: function(e) {

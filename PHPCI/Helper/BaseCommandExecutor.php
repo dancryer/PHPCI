@@ -103,40 +103,11 @@ abstract class BaseCommandExecutor implements CommandExecutor
         
         $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
 
-        if (is_resource($process)) {
-            /**
-             * don't wait to the end of the process to output stdout
-             */
-            while (!feof($pipes[1])) {
-                /**
-                 * sets string lengh to 64M because outputs of processes
-                 * are managed by plugins
-                 * @todo study the case of big strings.
-                 */
-                $stdOut = fgets($pipes[1], 67108864);
-
-                if (strlen($stdOut) === 0) {
-                    break;
-                }
-
-                $aStdOut = array_filter(explode(PHP_EOL, $stdOut));
-
-                $this->lastOutput = array_merge($this->lastOutput, $aStdOut);
-               
-                if ($shouldOutput) {
-                    $this->logger->log($aStdOut);
-                }
-            }
-            
-            fclose($pipes[0]);
-
-            $this->lastError = stream_get_contents($pipes[2]);
-
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-
-            $status = proc_close($process);
-        }
+        $status = $this->manageExecutionStandardOutput(
+            $process,
+            $pipes,
+            $shouldOutput
+        );
 
         /**
          * If we don't output passthru but we have an error, log it.
@@ -156,6 +127,66 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         return $rtn;
+    }
+
+    /**
+     * Manage the standard output of a process execution flushing data in
+     * realtime
+     *
+     * @param array $pipes proc_open pipes
+     * @param boolean $shouldOutput
+     */
+    protected function manageExecutionStandardOutput($process, $pipes, $shouldOutput)
+    {
+        $status = false;
+
+        if (is_resource($process)) {
+            /**
+             * don't wait to the end of the process to output stdout
+             */
+            while (!feof($pipes[1])) {
+                /**
+                 * sets string lengh to 64M because outputs of processes
+                 * are managed by plugins
+                 * @todo study the case of big strings.
+                 */
+                $stdOut = fgets(
+                    $pipes[1],
+                    67108864
+                );
+
+                if (strlen($stdOut) === 0) {
+                    break;
+                }
+
+                $aStdOut = array_filter(
+                    explode(
+                        PHP_EOL,
+                        $stdOut
+                    )
+                );
+
+                $this->lastOutput = array_merge(
+                    $this->lastOutput,
+                    $aStdOut
+                );
+
+                if ($shouldOutput) {
+                    $this->logger->log($aStdOut);
+                }
+            }
+            
+            fclose($pipes[0]);
+
+            $this->lastError = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $status = proc_close($process);
+        }
+
+        return $status;
     }
 
     /**

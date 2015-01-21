@@ -117,34 +117,48 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
         }
 
-        if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
-        }
+        $this->setOptions($options);
+        
+    }
 
-        if (isset($options['config'])) {
-            $this->xmlConfigFile = $options['config'];
-        }
+    /**
+     * Set options in properties
+     *
+     * @param array $options
+     */
+    protected function setOptions($options)
+    {
+        foreach ($options as $option) {
+            switch ($option) {
+                case 'directory':
+                    $this->directory = $options['directory'];
+                    break;
 
-        if (isset($options['run_from'])) {
-            $this->runFrom = $options['run_from'];
-        }
+                case 'config':
+                    $this->xmlConfigFile = $options['config'];
+                    break;
 
-        if (isset($options['args'])) {
-            $this->args = $this->phpci->interpolate($options['args']);
-        }
+                case 'run_from':
+                    $this->runFrom = $options['run_from'];
+                    break;
 
-        if (isset($options['path'])) {
-            $this->path = $options['path'];
-        }
+                case 'args':
+                    $this->args = $this->phpci->interpolate($options['args']);
+                    break;
 
-        if (isset($options['coverage'])) {
-            $this->coverage = " --coverage-html {$options['coverage']} ";
-        }
-    
-        if (isset($options['log_exec_output'])) {
-            $this->logExecOutput = $options['log_exec_output'];
-        }
+                case 'path':
+                    $this->args = $this->phpci->interpolate($options['args']);
+                    break;
 
+                case 'coverage':
+                    $this->coverage = " --coverage-html {$options['coverage']} ";
+                    break;
+
+                case 'log_exec_output':
+                    $this->logExecOutput = $options['log_exec_output'];
+                    break;
+            }
+        }
     }
 
     /**

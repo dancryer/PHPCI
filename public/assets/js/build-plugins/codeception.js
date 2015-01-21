@@ -31,7 +31,7 @@ var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table table-striped" id="codeception-data">' +
+        return $('<table class="table" id="codeception-data">' +
             '<thead>' +
             '<tr><th>'+Lang.get('codeception_suite')+'</th>' +
             '<th>'+Lang.get('codeception_feature')+'</th>' +

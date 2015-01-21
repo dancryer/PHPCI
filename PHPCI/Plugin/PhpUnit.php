@@ -128,34 +128,34 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected function setOptions($options)
     {
-        foreach ($options as $option) {
+        foreach ($options as $option => $value) {
             switch ($option) {
                 case 'directory':
-                    $this->directory = $options['directory'];
+                    $this->directory = $value;
                     break;
 
                 case 'config':
-                    $this->xmlConfigFile = $options['config'];
+                    $this->xmlConfigFile = $value;
                     break;
 
                 case 'run_from':
-                    $this->runFrom = $options['run_from'];
+                    $this->runFrom = $value;
                     break;
 
                 case 'args':
-                    $this->args = $this->phpci->interpolate($options['args']);
+                    $this->args = $this->phpci->interpolate($value);
                     break;
 
                 case 'path':
-                    $this->args = $this->phpci->interpolate($options['args']);
+                    $this->args = $this->phpci->interpolate($value);
                     break;
 
                 case 'coverage':
-                    $this->coverage = " --coverage-html {$options['coverage']} ";
+                    $this->coverage = " --coverage-html {$value} ";
                     break;
 
                 case 'log_exec_output':
-                    $this->logExecOutput = $options['log_exec_output'];
+                    $this->logExecOutput = $value;
                     break;
             }
         }

@@ -37,20 +37,20 @@ class LocalBuild extends Build
 
         $buildSettings = $this->handleConfig($builder, $reference);
         if (is_array($buildSettings) and isset($buildSettings['build_settings'])) {
-            $buildSettings = $buildSettings['build_settings']; 
+            $buildSettings = $buildSettings['build_settings'];
         } else {
             return false;
         }
 
         if (isset($buildSettings['prefer_symlink']) && $buildSettings['prefer_symlink'] === true) {
             return $this->handleSymlink($builder, $reference, $buildPath);
-        } elseif(isset($buildSettings['prefer_rsync']) and $buildSettings['prefer_rsync'] === true) { 
+        } elseif (isset($buildSettings['prefer_rsync']) and $buildSettings['prefer_rsync'] === true) {
             if (isset($buildSettings['ignore'])) {
                 $exclude = '--exclude ' . implode(' --exclude ', $buildSettings['ignore']);
             } else {
                 $exclude = "";
             }
-            $cmd = 'rsync -qav %s "%s/" "%s"'; 
+            $cmd = 'rsync -qav %s "%s/" "%s"';
             $builder->executeCommand($cmd, $exclude, $reference, $buildPath);
         } else {
             $cmd = 'cp -Rf "%s" "%s/"';

@@ -160,7 +160,6 @@ class WebhookController extends \PHPCI\Controller
         }
 
         try {
-
             if (isset($payload['commits']) && is_array($payload['commits'])) {
                 // If we have a list of commits, then add them all as builds to be tested:
 
@@ -255,13 +254,10 @@ class WebhookController extends \PHPCI\Controller
         $payload = json_decode($payloadString, true);
 
         try {
-
-
             // build on merge request events
             if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
                 $attributes = $payload['object_attributes'];
                 if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
-
                     $branch = $attributes['source_branch'];
                     $commit = $attributes['last_commit'];
                     $committer = $commit['author']['email'];

@@ -18,7 +18,7 @@ namespace PHPCI\Helper;
 class LoginIsDisabled
 {
     /**
-     * Checks if 
+     * Checks if
      * @param $method
      * @param array $params
      * @return mixed|null

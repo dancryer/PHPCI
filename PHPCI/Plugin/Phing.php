@@ -218,7 +218,7 @@ class Phing implements \PHPCI\Plugin
          * @ticket 748
          */
         if (!isset($this->properties['project.basedir'])) {
-           $this->properties['project.basedir'] = $this->getDirectory(); 
+            $this->properties['project.basedir'] = $this->getDirectory();
         }
 
         $propertiesString = array();

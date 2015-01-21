@@ -180,38 +180,48 @@ class BuildController extends \PHPCI\Controller
 
     /**
      * Parse log for unix colours and replace with HTML.
-     * 
+     *
      * @link http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
      * @param string $log Output
      */
     protected function cleanLog($log)
     {
         $shellColours = [
-        '[0;30m' => '<span style="color: black">',
-        '[0;31m' => '<span style="color: red">',
-        '[0;32m' => '<span style="color: green">',
-        '[0;33m' => '<span style="color: brown">',
-        '[0;34m' => '<span style="color: blue">',
-        '[0;35m' => '<span style="color: purple">',
-        '[0;36m' => '<span style="color: cyan">',
-        '[0;37m' => '<span style="color: lightGray">',
-        '[1;31m' => '<span style="color: lightRed">',
-        '[1;32m' => '<span style="color: lightGreen">',
-        '[1;33m' => '<span style="color: yellow">',
-        '[1;34m' => '<span style="color: lightBlue">',
-        '[1;35m' => '<span style="color: lightPurple">',
-        '[1;36m' => '<span style="color: lightCyan">',
-        '[1;37m' => '<span style="color: white">',
-        '[0m' => '</span>',
+            '[0;30m' => '<span style="color: black">',
+            '[0;31m' => '<span style="color: red">',
+            '[0;32m' => '<span style="color: green">',
+            '[0;33m' => '<span style="color: brown">',
+            '[0;34m' => '<span style="color: blue">',
+            '[0;35m' => '<span style="color: purple">',
+            '[0;36m' => '<span style="color: cyan">',
+            '[0;37m' => '<span style="color: lightGray">',
+            '[1;31m' => '<span style="color: lightRed">',
+            '[1;32m' => '<span style="color: lightGreen">',
+            '[1;33m' => '<span style="color: yellow">',
+            '[1;34m' => '<span style="color: lightBlue">',
+            '[1;35m' => '<span style="color: lightPurple">',
+            '[1;36m' => '<span style="color: lightCyan">',
+            '[1;37m' => '<span style="color: white">',
+            '[0m'    => '</span>',
         ];
-               $log = str_replace('[0;31m',
-                           '<span style="color: red">',
-                           $log);
-        $log = str_replace('[0m',
-                           '</span>',
-                           $log);
 
-        return str_replace(array_keys($shellColours), $shellColours, $log);
+        $log = str_replace(
+            '[0;31m',
+            '<span style="color: red">',
+            $log
+        );
+
+        $log = str_replace(
+            '[0m',
+            '</span>',
+            $log
+        );
+
+        return str_replace(
+            array_keys($shellColours),
+            $shellColours,
+            $log
+        );
     }
 
     /**

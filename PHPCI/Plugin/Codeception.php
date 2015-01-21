@@ -82,7 +82,6 @@ class Codeception implements \PHPCI\Plugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, "runConfigFile"));
         } else {
-
             $codecept = $this->phpci->findBinary('codecept');
 
             if (!$codecept) {

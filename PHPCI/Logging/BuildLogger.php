@@ -67,7 +67,7 @@ class BuildLogger implements LoggerAwareInterface
         }
     }
 
-   /**
+    /**
      * Add a success-coloured message to the log.
      * @param string
      */

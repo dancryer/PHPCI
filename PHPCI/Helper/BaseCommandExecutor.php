@@ -104,12 +104,10 @@ abstract class BaseCommandExecutor implements CommandExecutor
         $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
 
         if (is_resource($process)) {
-
             /**
              * don't wait to the end of the process to output stdout
              */
-            while( !feof($pipes[1])) {
-
+            while (!feof($pipes[1])) {
                 /**
                  * sets string lengh to 64M because outputs of processes
                  * are managed by plugins
@@ -195,7 +193,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-
                 $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;

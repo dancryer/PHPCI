@@ -337,7 +337,7 @@ class Builder implements LoggerAwareInterface
         $this->buildLogger->log($message, $level, $context);
     }
 
-   /**
+    /**
      * Add a success-coloured message to the log.
      * @param string
      */

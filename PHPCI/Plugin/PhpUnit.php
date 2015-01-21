@@ -280,4 +280,24 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
         return $success;
     }
+
+    /**
+     * Returns Build
+     *
+     * @return Build
+     */
+    public function getBuild()
+    {
+        return $this->build;
+    }
+
+    /**
+     * Returns Phpci
+     *
+     * @return Phpci
+     */
+    public function getPHPCI()
+    {
+        return $this->phpci;
+    }
 }

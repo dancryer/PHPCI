@@ -25,7 +25,7 @@ var phpmdPlugin = ActiveBuild.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table" id="phpmd-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpmd-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>'+Lang.get('file')+'</th>' +
@@ -33,7 +33,7 @@ var phpmdPlugin = ActiveBuild.UiPlugin.extend({
             '   <th>'+Lang.get('end')+'</th>' +
             '   <th>'+Lang.get('message')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
     },
 
     onUpdate: function(e) {

@@ -135,8 +135,7 @@
     </ul>
 </li>
 
-
-<?php if (!$this->LoginIsDisabled()): ?>
+<?php if (!$this->LoginIsDisabled()->check()): ?>
 <!-- User Account: style can be found in dropdown.less -->
 <li class="dropdown user user-menu">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -174,7 +173,7 @@
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
 
-            <?php if (!$this->LoginIsDisabled()): ?>
+            <?php if (!$this->LoginIsDisabled()->check()): ?>
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">

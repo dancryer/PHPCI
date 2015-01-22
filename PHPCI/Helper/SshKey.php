@@ -63,7 +63,7 @@ class SshKey
      */
     public function canGenerateKeys()
     {
-        $keygen = @shell_exec('ssh-keygen -h');
+        $keygen = @shell_exec('ssh-keygen --help');
         $canGenerateKeys = !empty($keygen);
 
         return $canGenerateKeys;

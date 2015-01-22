@@ -46,12 +46,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
     protected $rootDir;
 
     /**
-     * Current build path
-     * @var string
-     */
-    protected $buildPath;
-
-    /**
      * @param BuildLogger $logger
      * @param string      $rootDir
      * @param bool        $quiet
@@ -92,7 +86,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
-        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+        $process = proc_open($command, $descriptorSpec, $pipes, null, null);
 
         if (is_resource($process)) {
             fclose($pipes[0]);

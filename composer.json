@@ -65,6 +65,8 @@
         "behat/behat": "Behat BDD Testing",
         "hipchat/hipchat-php": "Hipchat integration",
         "phptal/phptal": "PHPTAL templating engine",
-        "maknz/slack": "Slack integration"
+        "maknz/slack": "Slack integration",
+        "austp/phpci-pho-plugin": "Pho BDD Testing",
+        "austp/phpci-jasmine-node-plugin": "Jasmine BDD Testing via jasmine-node"
     }
 }

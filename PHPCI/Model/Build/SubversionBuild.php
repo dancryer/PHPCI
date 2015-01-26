@@ -33,16 +33,18 @@ class SubversionBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $key = trim($this->getProject()->getSshPrivateKey());
-
+        $this->handleConfig($builder, $buildPath);
+        
+        //$key = trim($this->getProject()->getSshPrivateKey());
+	
         //if (!empty($key)) {
         //    $success = $this->cloneBySsh($builder, $buildPath);
-        //} else {
+        //} else {           
             $success = $this->cloneByHttp($builder, $buildPath);
         //}
 
         if (!$success) {
-            $builder->logFailure('Failed to clone remote git repository.');
+            $builder->logFailure('Failed to export remote subversion repository.');
             return false;
         }
 
@@ -58,12 +60,18 @@ class SubversionBuild extends Build
 
         $depth = $builder->getConfig('clone_depth');
         
+        $svn = $builder->getConfig('svn');
+        if (!is_null($svn)) {
+	    foreach ($svn as $key => $value)
+		$cmd .= ' --' . $key . ' ' . $value . ' ';
+        }
+        
         if (!is_null($depth)) {
             $cmd .= ' --depth ' . intval($depth) . ' ';
         }
         
-        $cmd .= ' -q -r %s %s "%s"';
-        
+        $cmd .= ' --non-interactive -q -r %s %s "%s"';
+
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
         if ($success) {

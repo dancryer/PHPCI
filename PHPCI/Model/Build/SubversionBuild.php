@@ -13,7 +13,7 @@ use PHPCI\Model\Build;
 use PHPCI\Builder;
 
 /**
-* Remote Git Build Model
+* Remote Subversion Build Model
 * @author       Nadir Dzhilkibaev <imam.sharif@gmail.com>
 * @package      PHPCI
 * @subpackage   Core
@@ -52,7 +52,7 @@ class SubversionBuild extends Build
     }
 
     /**
-    * Use an HTTP-based git clone.
+    * Use an HTTP-based svn export.
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
@@ -82,7 +82,7 @@ class SubversionBuild extends Build
     }
 
     /**
-    * Use an SSH-based git clone.
+    * Use an SSH-based svn export.
     */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
@@ -119,7 +119,7 @@ class SubversionBuild extends Build
             $success = $this->postCloneSetup($builder, $cloneTo);
         }
 
-        // Remove the key file and git wrapper:
+        // Remove the key file and svn wrapper:
         unlink($keyFile);
         if (!IS_WIN) {
             unlink($sshWrapper);
@@ -151,7 +151,7 @@ class SubversionBuild extends Build
         $keyPath = dirname($cloneTo . '/temp');
         $keyFile = $keyPath . '.key';
 
-        // Write the contents of this project's git key to the file:
+        // Write the contents of this project's svn key to the file:
         file_put_contents($keyFile, $this->getProject()->getSshPrivateKey());
         chmod($keyFile, 0600);
 
@@ -160,7 +160,7 @@ class SubversionBuild extends Build
     }
 
     /**
-     * Create an SSH wrapper script for Git to use, to disable host key checking, etc.
+     * Create an SSH wrapper script for Svn to use, to disable host key checking, etc.
      * @param $cloneTo
      * @param $keyFile
      * @return string

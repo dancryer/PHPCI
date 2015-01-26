@@ -14,7 +14,7 @@ use PHPCI\Builder;
 
 /**
 * Remote Git Build Model
-* @author       Dan Cryer <dan@block8.co.uk>
+* @author       Nadir Dzhilkibaev <imam.sharif@gmail.com>
 * @package      PHPCI
 * @subpackage   Core
 */

@@ -35,13 +35,13 @@ class SubversionBuild extends Build
     {
         $this->handleConfig($builder, $buildPath);
         
-        //$key = trim($this->getProject()->getSshPrivateKey());
+        $key = trim($this->getProject()->getSshPrivateKey());
 	
-        //if (!empty($key)) {
-        //    $success = $this->cloneBySsh($builder, $buildPath);
-        //} else {           
+        if (!empty($key)) {
+            $success = $this->cloneBySsh($builder, $buildPath);
+        } else {           
             $success = $this->cloneByHttp($builder, $buildPath);
-        //}
+        }
 
         if (!$success) {
             $builder->logFailure('Failed to export remote subversion repository.');
@@ -56,15 +56,15 @@ class SubversionBuild extends Build
     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        $cmd = 'svn export ';
-
-        $depth = $builder->getConfig('clone_depth');
+        $cmd = 'svn export ';    
         
         $svn = $builder->getConfig('svn');
         if (!is_null($svn)) {
 	    foreach ($svn as $key => $value)
 		$cmd .= ' --' . $key . ' ' . $value . ' ';
         }
+        
+        $depth = $builder->getConfig('clone_depth');
         
         if (!is_null($depth)) {
             $cmd .= ' --depth ' . intval($depth) . ' ';
@@ -88,12 +88,18 @@ class SubversionBuild extends Build
     {
         $keyFile = $this->writeSshKey($cloneTo);
 
-        //if (!IS_WIN) {
-        //    $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
-        //}
+        if (!IS_WIN) {
+            $sshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
+        }
 
-        // Do the git clone:
+        // Do the svn export:
         $cmd = 'svn export ';
+
+        $svn = $builder->getConfig('svn');
+        if (!is_null($svn)) {
+	    foreach ($svn as $key => $value)
+		$cmd .= ' --' . $key . ' ' . $value . ' ';
+        }
 
         $depth = $builder->getConfig('clone_depth');
 
@@ -103,9 +109,9 @@ class SubversionBuild extends Build
 
         $cmd .= ' -b %s %s "%s"';
 
-        //if (!IS_WIN) {
-        //    $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
-        //}
+        if (!IS_WIN) {
+            $cmd = 'export SVN_SSH="'.$sshWrapper.'" && ' . $cmd;
+        }
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
@@ -116,7 +122,7 @@ class SubversionBuild extends Build
         // Remove the key file and git wrapper:
         unlink($keyFile);
         if (!IS_WIN) {
-            unlink($gitSshWrapper);
+            unlink($sshWrapper);
         }
 
         return $success;

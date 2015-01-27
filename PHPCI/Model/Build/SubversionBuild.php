@@ -13,33 +13,62 @@ use PHPCI\Model\Build;
 use PHPCI\Builder;
 
 /**
-* Remote Subversion Build Model
-* @author       Nadir Dzhilkibaev <imam.sharif@gmail.com>
-* @package      PHPCI
-* @subpackage   Core
-*/
+ * Remote Subversion Build Model
+ * @author       Nadir Dzhilkibaev <imam.sharif@gmail.com>
+ * @package      PHPCI
+ * @subpackage   Core
+ */
 class SubversionBuild extends Build
 {
+    protected $svnCommand = 'svn export -q --non-interactive ';
+
     /**
-    * Get the URL to be used to clone this remote repository.
-    */
+     * Get the URL to be used to clone this remote repository.
+     */
     protected function getCloneUrl()
     {
         return $this->getProject()->getReference();
     }
 
     /**
-    * Create a working copy by cloning, copying, or similar.
-    */
+     * @param Builder $builder
+     *
+     * @return void
+     */
+    protected function extendSvnCommandFromConfig(Builder $builder)
+    {
+        $cmd = $this->svnCommand;
+
+        $svn = $builder->getConfig('svn');
+        if ($svn) {
+            foreach ($svn as $key => $value) {
+                $cmd .= " --$key $value ";
+            }
+        }
+
+        $depth = $builder->getConfig('clone_depth');
+
+        if (!is_null($depth)) {
+            $cmd .= ' --depth ' . intval($depth) . ' ';
+        }
+
+        $this->svnCommand = $cmd;
+    }
+
+    /**
+     * Create a working copy by cloning, copying, or similar.
+     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
         $this->handleConfig($builder, $buildPath);
-        
+
+        $this->extendSvnCommandFromConfig($builder);
+
         $key = trim($this->getProject()->getSshPrivateKey());
-	
+
         if (!empty($key)) {
             $success = $this->cloneBySsh($builder, $buildPath);
-        } else {           
+        } else {
             $success = $this->cloneByHttp($builder, $buildPath);
         }
 
@@ -52,38 +81,22 @@ class SubversionBuild extends Build
     }
 
     /**
-    * Use an HTTP-based svn export.
-    */
+     * Use an HTTP-based svn export.
+     */
     protected function cloneByHttp(Builder $builder, $cloneTo)
     {
-        $cmd = 'svn export ';    
-        
-        $svn = $builder->getConfig('svn');
-        if (!is_null($svn)) {
-	    foreach ($svn as $key => $value)
-		$cmd .= ' --' . $key . ' ' . $value . ' ';
-        }
-        
-        $depth = $builder->getConfig('clone_depth');
-        
-        if (!is_null($depth)) {
-            $cmd .= ' --depth ' . intval($depth) . ' ';
-        }
-        
-        $cmd .= ' --non-interactive -q -r %s %s "%s"';
+        $cmd = $this->svnCommand;
+
+        $cmd .= ' -r %s %s "%s"';
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
-
-        if ($success) {
-            $success = $this->postCloneSetup($builder, $cloneTo);
-        }
 
         return $success;
     }
 
     /**
-    * Use an SSH-based svn export.
-    */
+     * Use an SSH-based svn export.
+     */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
         $keyFile = $this->writeSshKey($cloneTo);
@@ -92,25 +105,12 @@ class SubversionBuild extends Build
             $sshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
         }
 
-        // Do the svn export:
-        $cmd = 'svn export ';
-
-        $svn = $builder->getConfig('svn');
-        if (!is_null($svn)) {
-	    foreach ($svn as $key => $value)
-		$cmd .= ' --' . $key . ' ' . $value . ' ';
-        }
-
-        $depth = $builder->getConfig('clone_depth');
-
-        if (!is_null($depth)) {
-            $cmd .= ' -q --depth ' . intval($depth) . ' ';
-        }
+        $cmd = $this->svnCommand;
 
         $cmd .= ' -b %s %s "%s"';
 
         if (!IS_WIN) {
-            $cmd = 'export SVN_SSH="'.$sshWrapper.'" && ' . $cmd;
+            $cmd = 'export SVN_SSH="' . $sshWrapper . '" && ' . $cmd;
         }
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
@@ -124,19 +124,6 @@ class SubversionBuild extends Build
         if (!IS_WIN) {
             unlink($sshWrapper);
         }
-
-        return $success;
-    }
-
-    /**
-     * Handle any post-clone tasks, like switching branches.
-     * @param Builder $builder
-     * @param $cloneTo
-     * @return bool
-     */
-    protected function postCloneSetup(Builder $builder, $cloneTo)
-    {
-        $success = true;
 
         return $success;
     }
@@ -167,7 +154,7 @@ class SubversionBuild extends Build
      */
     protected function writeSshWrapper($cloneTo, $keyFile)
     {
-        $path = dirname($cloneTo . '/temp');
+        $path        = dirname($cloneTo . '/temp');
         $wrapperFile = $path . '.sh';
 
         $sshFlags = '-o CheckHostIP=no -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no';
@@ -180,7 +167,7 @@ ssh {$sshFlags} -o IdentityFile={$keyFile} $*
 OUT;
 
         file_put_contents($wrapperFile, $script);
-        shell_exec('chmod +x "'.$wrapperFile.'"');
+        shell_exec('chmod +x "' . $wrapperFile . '"');
 
         return $wrapperFile;
     }

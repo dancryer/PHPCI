@@ -99,29 +99,19 @@ class SubversionBuild extends Build
      */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        $keyFile = $this->writeSshKey($cloneTo);
+        $cmd = $this->svnCommand . ' -b %s %s "%s"';
 
         if (!IS_WIN) {
+            $keyFile    = $this->writeSshKey($cloneTo);
             $sshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
-        }
-
-        $cmd = $this->svnCommand;
-
-        $cmd .= ' -b %s %s "%s"';
-
-        if (!IS_WIN) {
-            $cmd = 'export SVN_SSH="' . $sshWrapper . '" && ' . $cmd;
+            $cmd        = 'export SVN_SSH="' . $sshWrapper . '" && ' . $cmd;
         }
 
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
-        if ($success) {
-            $success = $this->postCloneSetup($builder, $cloneTo);
-        }
-
-        // Remove the key file and svn wrapper:
-        unlink($keyFile);
         if (!IS_WIN) {
+            // Remove the key file and svn wrapper:
+            unlink($keyFile);
             unlink($sshWrapper);
         }
 

@@ -44,6 +44,7 @@ class ProjectBase extends Model
         'build_config' => null,
         'ssh_public_key' => null,
         'allow_public_status' => null,
+        'archived' => null,
     );
 
     /**
@@ -62,6 +63,7 @@ class ProjectBase extends Model
         'build_config' => 'getBuildConfig',
         'ssh_public_key' => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
+        'archived' => 'getArchived',
 
         // Foreign key getters:
     );
@@ -82,6 +84,7 @@ class ProjectBase extends Model
         'build_config' => 'setBuildConfig',
         'ssh_public_key' => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
+        'archived' => 'setArchived',
 
         // Foreign key setters:
     );
@@ -147,6 +150,12 @@ class ProjectBase extends Model
         'allow_public_status' => array(
             'type' => 'int',
             'length' => 11,
+        ),
+        'archived' => array(
+            'type' => 'tinyint',
+            'length' => 4,
+            'nullable' => true,
+            'default' => null,
         ),
     );
 
@@ -292,6 +301,18 @@ class ProjectBase extends Model
     public function getAllowPublicStatus()
     {
         $rtn    = $this->data['allow_public_status'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of Archived / archived.
+    *
+    * @return int
+    */
+    public function getArchived()
+    {
+        $rtn    = $this->data['archived'];
 
         return $rtn;
     }
@@ -504,6 +525,24 @@ class ProjectBase extends Model
         $this->data['allow_public_status'] = $value;
 
         $this->_setModified('allow_public_status');
+    }
+
+    /**
+    * Set the value of Archived / archived.
+    *
+    * @param $value int
+    */
+    public function setArchived($value)
+    {
+        $this->_validateInt('Archived', $value);
+
+        if ($this->data['archived'] === $value) {
+            return;
+        }
+
+        $this->data['archived'] = $value;
+
+        $this->_setModified('archived');
     }
 
     /**

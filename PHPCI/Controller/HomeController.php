@@ -48,7 +48,13 @@ class HomeController extends \PHPCI\Controller
     {
         $this->layout->title = Lang::get('dashboard');
 
-        $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        $projects = $this->projectStore->getWhere(
+            array('archived' => (int)isset($_GET['archived'])),
+            50,
+            0,
+            array(),
+            array('title' => 'ASC')
+        );
 
         $builds = $this->buildStore->getLatestBuilds(null, 10);
 

@@ -263,7 +263,7 @@ class ProjectController extends \PHPCI\Controller
             $view->type     = 'edit';
             $view->project  = $project;
             $view->form     = $form;
-            $view->key      = null;
+            $view->key      = $values['pubkey'];
 
             return $view->render();
         }

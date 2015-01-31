@@ -323,7 +323,7 @@ class BuildBase extends Model
     {
         $rtn    = $this->data['commit_message'];
 
-        return $rtn;
+        return htmlspecialchars($rtn);
     }
 
     /**

@@ -113,6 +113,7 @@ PHPCI',
                                 (if you cannot add a phpci.yml file in the project repository)',
     'default_branch' => 'Default branch name',
     'allow_public_status' => 'Enable public status page and image for this project?',
+    'archived' => 'Archived',
     'save_project' => 'Save Project',
 
     'error_mercurial' => 'Mercurial repository URL must be start with http:// or https://',

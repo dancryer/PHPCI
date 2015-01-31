@@ -147,6 +147,11 @@
                         <i class="fa fa-dashboard"></i> <span><?php Lang::out('dashboard'); ?></span>
                     </a>
                 </li>
+                <li class="archive">
+                    <a href="<?php print PHPCI_URL; ?>?archived">
+                        <i class="fa fa-archive"></i> <span><?php Lang::out('archived'); ?></span>
+                    </a>
+                </li>
 
                 <?php if ($this->User()->getIsAdmin()): ?>
                     <li class="treeview">

@@ -282,6 +282,7 @@ class ProjectController extends PHPCI\Controller
             'ssh_public_key' => $this->getParam('pubkey', null),
             'build_config' => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
+            'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
         );
 
@@ -351,6 +352,12 @@ class ProjectController extends PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Checkbox::create('allow_public_status', Lang::get('allow_public_status'), false);
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(0);
+        $form->addField($field);
+
+        $field = Form\Element\Checkbox::create('archived', Lang::get('archived'), false);
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
         $field->setValue(0);

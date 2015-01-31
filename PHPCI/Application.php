@@ -137,7 +137,13 @@ class Application extends b8\Application
     {
         /** @var \PHPCI\Store\ProjectStore $projectStore */
         $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getAll();
+        $layout->projects = $projectStore->getWhere(
+            array('archived' => (int)isset($_GET['archived'])),
+            50,
+            0,
+            array(),
+            array('title' => 'ASC')
+        );
     }
 
     /**

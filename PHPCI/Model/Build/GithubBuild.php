@@ -101,7 +101,7 @@ class GithubBuild extends RemoteGitBuild
      */
     public function getCommitMessage()
     {
-        $rtn = $this->data['commit_message'];
+        $rtn = parent::getCommitMessage($this->data['commit_message']);
 
         $reference = $this->getProject()->getReference();
         $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';

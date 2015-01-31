@@ -193,4 +193,11 @@ class Build extends BuildBase
 
         return $rtn;
     }
+
+    public function getCommitMessage()
+    {
+        $rtn = htmlspecialchars($this->data['commit_message']);
+
+        return $rtn;
+    }
 }

@@ -56,7 +56,7 @@ PHPCI',
     // Sidebar
     'hello_name' => 'Hallo, %s',
     'dashboard' => 'Dashboard',
-    'admin_options' => 'Administraion',
+    'admin_options' => 'Administration',
     'add_project' => 'Projekt hinzufügen',
     'settings' => 'Einstellungen',
     'manage_users' => 'Benutzereinstellungen',

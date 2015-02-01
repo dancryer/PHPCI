@@ -62,7 +62,7 @@ PHPCI',
     'manage_users' => 'Benutzereinstellungen',
     'plugins' => 'Plugins',
     'view' => 'Ansehen',
-    'build_now' => 'Aktueller Build',
+    'build_now' => 'Jetzt bauen',
     'edit_project' => 'Projekt bearbeiten',
     'delete_project' => 'Projekt löschen',
 

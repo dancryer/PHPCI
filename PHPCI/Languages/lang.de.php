@@ -13,7 +13,7 @@ $strings = array(
 
     // Log in:
     'log_in_to_phpci' => 'In PHPCI einloggen',
-    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passowrt',
+    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passwort',
     'forgotten_password_link' => 'Passwort vergessen?',
     'reset_emailed' => 'Wir haben Ihnen einen Link geschickt, um Ihr Passwort zurückzusetzen',
     'reset_header' => '<strong>Keine Panik!</strong><br>Geben Sie einfach unten Ihre Emailadresse an

@@ -55,7 +55,8 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
             hAxis: {title: Lang.get('builds')},
             vAxis: {title: Lang.get('lines')},
             backgroundColor: { fill: 'transparent' },
-            height: 275
+            height: 275,
+            legend: {position: 'bottom'}
         };
 
         $('#build-lines-chart').show();

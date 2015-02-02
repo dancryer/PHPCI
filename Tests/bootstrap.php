@@ -31,8 +31,10 @@ if (!file_exists($configFile)) {
     }
 }
 
+    
+$config = new b8\Config($conf);
+
 if (file_exists($configFile)) {
-    $config = new b8\Config($conf);
     $config->loadYaml($configFile);
 }
 

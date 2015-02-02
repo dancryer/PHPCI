@@ -36,22 +36,101 @@ class LocalBuild extends Build
         }
 
         $buildSettings = $this->handleConfig($builder, $reference);
-
-        if ($buildSettings === false) {
+        if (is_array($buildSettings) and isset($buildSettings['build_settings'])) {
+            $buildSettings = $buildSettings['build_settings'];
+        } else {
             return false;
         }
 
+        return $this->handleCreateWorkingCopy(
+            $builder,
+            $buildPath,
+            $reference,
+            $buildSettings
+        );
+    }
+
+    /**
+     * Handle the way to create a working copy
+     *
+     * @param Builder $builder
+     * @param string $buildPath
+     * @param string $reference
+     * @param array $buildSettings
+     * @return boolean
+     */
+    protected function handleCreateWorkingCopy(Builder $builder, $buildPath, $reference, $buildSettings)
+    {
         if (isset($buildSettings['prefer_symlink']) && $buildSettings['prefer_symlink'] === true) {
-            return $this->handleSymlink($builder, $reference, $buildPath);
+            return $this->handleSymlink(
+                $builder,
+                $reference,
+                $buildPath
+            );
+        } elseif (isset($buildSettings['prefer_rsync']) and $buildSettings['prefer_rsync'] === true) {
+            return $this->createWorkingCopyRsync(
+                $builder,
+                $buildPath,
+                $reference,
+                $buildSettings
+            );
         } else {
-            $cmd = 'cp -Rf "%s" "%s/"';
-            if (IS_WIN) {
-                $cmd = 'xcopy /E /Y "%s" "%s/*"';
-            }
-            $builder->executeCommand($cmd, $reference, $buildPath);
+            return $this->createWorkingCopyDefault(
+                $builder,
+                $reference,
+                $buildPath
+            );
+        }
+    }
+    /**
+     * Create working copy with rsync
+     *
+     * @param Builder $builder
+     * @param string $buildPath
+     * @param string $reference
+     * @param array $buildSettings
+     */
+    protected function createWorkingCopyRsync(Builder $builder, $buildPath, $reference, $buildSettings)
+    {
+        if (isset($buildSettings['ignore'])) {
+            $exclude = '--exclude ';
+            $exclude .= implode(
+                ' --exclude ',
+                $buildSettings['ignore']
+            );
+        } else {
+            $exclude = "";
+        }
+        $cmd = 'rsync -qav %s "%s/" "%s"';
+
+        return $builder->executeCommand(
+            $cmd,
+            $exclude,
+            $reference,
+            $buildPath
+        );
+    }
+
+
+    /**
+     * Create working copy copying all the files
+     *
+     * @param Builder $builder
+     * @param string $reference
+     * @param string $buildPath
+     */
+    protected function createWorkingCopyDefault(Builder $builder, $reference, $buildPath)
+    {
+        $cmd = 'cp -Rf "%s" "%s/"';
+        if (IS_WIN) {
+            $cmd = 'xcopy /E /Y "%s" "%s/*"';
         }
 
-        return true;
+        return $builder->executeCommand(
+            $cmd,
+            $reference,
+            $buildPath
+        );
     }
 
     /**

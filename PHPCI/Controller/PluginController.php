@@ -124,7 +124,7 @@ class PluginController extends \PHPCI\Controller
 
     /**
      * Convert array to json and save composer.json
-     * 
+     *
      * @param $array
      */
     protected function setComposerJson($array)

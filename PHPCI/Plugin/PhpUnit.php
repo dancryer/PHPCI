@@ -50,6 +50,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $xmlConfigFile;
 
     /**
+     * @var bool $logExecOutput Allow to configure if we want output execution to log.
+     */
+    protected $logExecOutput = false;
+
+    /**
      * Check if this plugin can be executed.
      * @param $stage
      * @param Builder $builder
@@ -112,28 +117,47 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
         }
 
-        if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
-        }
+        $this->setOptions($options);
+        
+    }
 
-        if (isset($options['config'])) {
-            $this->xmlConfigFile = $options['config'];
-        }
+    /**
+     * Set options in properties
+     *
+     * @param array $options
+     */
+    protected function setOptions($options)
+    {
+        foreach ($options as $option => $value) {
+            switch ($option) {
+                case 'directory':
+                    $this->directory = $value;
+                    break;
 
-        if (isset($options['run_from'])) {
-            $this->runFrom = $options['run_from'];
-        }
+                case 'config':
+                    $this->xmlConfigFile = $value;
+                    break;
 
-        if (isset($options['args'])) {
-            $this->args = $this->phpci->interpolate($options['args']);
-        }
+                case 'run_from':
+                    $this->runFrom = $value;
+                    break;
 
-        if (isset($options['path'])) {
-            $this->path = $options['path'];
-        }
+                case 'args':
+                    $this->args = $this->phpci->interpolate($value);
+                    break;
 
-        if (isset($options['coverage'])) {
-            $this->coverage = " --coverage-html {$options['coverage']} ";
+                case 'path':
+                    $this->args = $this->phpci->interpolate($value);
+                    break;
+
+                case 'coverage':
+                    $this->coverage = " --coverage-html {$value} ";
+                    break;
+
+                case 'log_exec_output':
+                    $this->logExecOutput = $value;
+                    break;
+            }
         }
     }
 
@@ -149,7 +173,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $success = true;
 
-        $this->phpci->logExecOutput(false);
+        $this->phpci->logExecOutput($this->logExecOutput);
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
@@ -255,5 +279,25 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $success &= call_user_func($callable, $subItem);
         }
         return $success;
+    }
+
+    /**
+     * Returns Build
+     *
+     * @return Build
+     */
+    public function getBuild()
+    {
+        return $this->build;
+    }
+
+    /**
+     * Returns Phpci
+     *
+     * @return Phpci
+     */
+    public function getPHPCI()
+    {
+        return $this->phpci;
     }
 }

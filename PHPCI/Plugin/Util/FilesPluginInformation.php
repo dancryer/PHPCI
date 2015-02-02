@@ -67,7 +67,7 @@ class FilesPluginInformation implements InstalledPluginInformation
     {
         return array_map(
             function ($plugin) {
-               return $plugin->class;
+                return $plugin->class;
             },
             $this->getInstalledPlugins()
         );

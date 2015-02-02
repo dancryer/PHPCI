@@ -81,7 +81,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         if ($this->quiet) {
             $this->logger->log('Executing: ' . $command);
+        } else {
+            /**
+             * show the command to execute in purple
+             * @link http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
+             */
+            $this->logger->log([null, null, "\033[0;35mExecuting: " . $command . "\033[0m", null]);
         }
+        
 
         $status = 0;
         $descriptorSpec = array(
@@ -92,25 +99,20 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
+        $shouldOutput = ($this->logExecOutput && $this->verbose);
+        
         $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
 
-        if (is_resource($process)) {
-            fclose($pipes[0]);
+        $status = $this->manageExecutionStandardOutput(
+            $process,
+            $pipes,
+            $shouldOutput
+        );
 
-            $this->lastOutput = stream_get_contents($pipes[1]);
-            $this->lastError = stream_get_contents($pipes[2]);
-
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-
-            $status = proc_close($process);
-        }
-
-        $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
-
-        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
-
-        if ($shouldOutput && !empty($this->lastOutput)) {
+        /**
+         * If we don't output passthru but we have an error, log it.
+         */
+        if (!$shouldOutput && $status != 0 && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);
         }
 
@@ -125,6 +127,70 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         return $rtn;
+    }
+
+    /**
+     * Manage the standard output of a process execution flushing data in
+     * realtime
+     *
+     * @param resource $process
+     * @param array $pipes proc_open pipes
+     * @param boolean $shouldOutput
+     * @return boolean
+     */
+    protected function manageExecutionStandardOutput($process, $pipes, $shouldOutput)
+    {
+        $status = false;
+
+        if (is_resource($process) and
+            is_array($pipes) and
+            isset($pipes[1])) {
+            /**
+             * don't wait to the end of the process to output stdout
+             */
+            while (!feof($pipes[1])) {
+                /**
+                 * sets string lengh to 64M because outputs of processes
+                 * are managed by plugins
+                 * @todo study the case of big strings.
+                 */
+                $stdOut = fgets(
+                    $pipes[1],
+                    67108864
+                );
+
+                if (strlen($stdOut) === 0) {
+                    break;
+                }
+
+                $aStdOut = array_filter(
+                    explode(
+                        PHP_EOL,
+                        $stdOut
+                    )
+                );
+
+                $this->lastOutput = array_merge(
+                    $this->lastOutput,
+                    $aStdOut
+                );
+
+                if ($shouldOutput) {
+                    $this->logger->log($aStdOut);
+                }
+            }
+            
+            fclose($pipes[0]);
+
+            $this->lastError = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $status = proc_close($process);
+        }
+
+        return $status;
     }
 
     /**
@@ -162,7 +228,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-
                 $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;

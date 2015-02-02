@@ -97,6 +97,11 @@ class BuildService
         unset($data['started']);
         unset($data['finished']);
 
+        /**
+         * Fix SQLSTATE[HY000]: General error: 1364 Field 'status' doesn't have a default value
+         */
+        $data['status'] = 0;
+
         $build = new Build();
         $build->setValues($data);
         $build->setCreated(new \DateTime());

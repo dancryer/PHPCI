@@ -93,20 +93,20 @@ class Build extends BuildBase
      * @param Builder $builder
      * @param string  $buildPath
      *
-     * @return bool
+     * @return array|bool
      */
     protected function handleConfig(Builder $builder, $buildPath)
     {
         $build_config = null;
 
-        // Try phpci.yml first:
-        if (is_file($buildPath . '/phpci.yml')) {
-            $build_config = file_get_contents($buildPath . '/phpci.yml');
-        }
-
         // Try getting the project build config from the database:
         if (empty($build_config)) {
             $build_config = $this->getProject()->getBuildConfig();
+        }
+
+        // Try phpci.yml first:
+        if (empty($build_config) and is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 
         // Fall back to zero config plugins:
@@ -120,7 +120,8 @@ class Build extends BuildBase
         }
 
         $builder->setConfigArray($build_config);
-        return true;
+        
+        return $build_config;
     }
 
     /**

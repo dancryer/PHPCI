@@ -86,7 +86,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
              * show the command to execute in purple
              * @link http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
              */
-            $this->logger->log([null, null, "\033[0;35mExecuting: {$command}\033[0m", null]);
+            $this->logger->log([null, null, "\033[0;35mExecuting: " . $command . "\033[0m", null]);
         }
         
 
@@ -117,7 +117,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         if (!empty($this->lastError)) {
-            $this->logger->log("\033[0;31m{$this->lastError}\033[0m", LogLevel::ERROR);
+            $this->logger->log("\033[0;31m" . $this->lastError . "\033[0m", LogLevel::ERROR);
         }
 
         $rtn = false;
@@ -133,14 +133,18 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * Manage the standard output of a process execution flushing data in
      * realtime
      *
+     * @param resource $process
      * @param array $pipes proc_open pipes
      * @param boolean $shouldOutput
+     * @return boolean
      */
     protected function manageExecutionStandardOutput($process, $pipes, $shouldOutput)
     {
         $status = false;
 
-        if (is_resource($process)) {
+        if (is_resource($process) and
+            is_array($pipes) and
+            isset($pipes[1])) {
             /**
              * don't wait to the end of the process to output stdout
              */

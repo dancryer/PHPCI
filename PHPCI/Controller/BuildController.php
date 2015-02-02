@@ -205,18 +205,6 @@ class BuildController extends \PHPCI\Controller
             '[0m'    => '</span>',
         ];
 
-        $log = str_replace(
-            '[0;31m',
-            '<span style="color: red">',
-            $log
-        );
-
-        $log = str_replace(
-            '[0m',
-            '</span>',
-            $log
-        );
-
         return str_replace(
             array_keys($shellColours),
             $shellColours,

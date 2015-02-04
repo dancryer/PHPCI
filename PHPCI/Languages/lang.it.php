@@ -11,7 +11,7 @@ $strings = array(
 
     'language_name' => 'Italiano',
     'language' => 'Lingua',
-    
+
     // Log in:
     'log_in_to_phpci' => 'Accedi a PHPCI',
     'login_error' => 'Indirizzo email o password errati',
@@ -169,6 +169,7 @@ PHPCI',
     'lines_of_code' => 'Linee di codice',
     'build_log' => 'Log della build',
     'quality_trend' => 'Trend della qualità',
+    'codeception_errors' => 'Errori di Codeception',
     'phpmd_warnings' => 'Avvisi di PHPMD',
     'phpcs_warnings' => 'Avvisi di PHPCS',
     'phpcs_errors' => 'Errori di PHPCS',
@@ -177,6 +178,7 @@ PHPCI',
     'phpdoccheck_warnings' => 'Docblocks mancanti',
     'issues' => 'Segnalazioni',
 
+    'codeception' => 'Codeception',
     'phpcpd' => 'PHP Copy/Paste Detector',
     'phpcs' => 'PHP Code Sniffer',
     'phpdoccheck' => 'Docblocks mancanti',

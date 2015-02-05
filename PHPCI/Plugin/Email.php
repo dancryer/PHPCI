@@ -56,7 +56,7 @@ class Email implements \PHPCI\Plugin
     }
 
     /**
-     * Send a notificaiton mail.
+     * Send a notification mail.
      */
     public function execute()
     {

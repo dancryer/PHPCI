@@ -224,17 +224,13 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $actualMails = [];
-        $this->catchMailPassedToSend($actualMails);
-
         $returnValue = $this->testedEmailPlugin->execute();
         $this->assertTrue($returnValue);
 
-        $this->assertCount(2, $actualMails);
+        $this->assertCount(2, $this->message['to']);
 
-        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
-        $this->assertContains('test-receiver@example.com', $actualTos);
-        $this->assertContains('test-receiver2@example.com', $actualTos);
+        $this->assertContains('test-receiver@example.com', $this->message['to']);
+        $this->assertContains('test-receiver2@example.com', $this->message['to']);
     }
 
     /**
@@ -249,15 +245,11 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $actualMails = [];
-        $this->catchMailPassedToSend($actualMails);
-
         $returnValue = $this->testedEmailPlugin->execute();
         $this->assertTrue($returnValue);
 
-        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
-        $this->assertContains('test-receiver@example.com', $actualTos);
-        $this->assertContains('committer@test.com', $actualTos);
+        $this->assertContains('test-receiver@example.com', $this->message['to']);
+        $this->assertContains('committer@test.com', $this->message['to']);
     }
 
     /**

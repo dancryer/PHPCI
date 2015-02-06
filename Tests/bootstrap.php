@@ -15,7 +15,7 @@ require_once(dirname(__DIR__) . '/vendor/autoload.php');
 
 // If the PHPCI config file is not where we expect it, try looking in
 // env for an alternative config path.
-$configFile = dirname(__FILE__) . '/PHPCI/config.yml';
+$configFile = dirname(__FILE__) . '/../PHPCI/config.yml';
 
 if (!file_exists($configFile)) {
     $configEnv = getenv('phpci_config_file');

@@ -48,7 +48,7 @@
                             ?>
                             <li class="time-label">
                     <span class="bg-gray">
-                        <?php print $last->format('M j Y'); ?>
+                        <?php print Lang::formatDateTime($last, 'll'); ?>
                     </span>
                             </li>
                         <?php endif; ?>
@@ -58,7 +58,7 @@
                         <li>
                             <i class="fa fa-<?php print $build->getProject()->getIcon(); ?> bg-<?php print $color; ?>"></i>
                             <div class="timeline-item">
-                                <span class="time"><i class="fa fa-clock-o"></i> <?php print $updated->format('H:i'); ?></span>
+                                <span class="time"><i class="fa fa-clock-o"></i> <?php print Lang::formatDateTime($updated, 'LT'); ?></span>
                                 <h3 class="timeline-header">
                                     <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
                                         <?php print $build->getProject()->getTitle(); ?>

@@ -97,7 +97,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
             vAxis: {title: Lang.get('issues'), logScale:true},
             backgroundColor: { fill: 'transparent' },
             height: 275,
-            pointSize: 3
+            pointSize: 3,
+            legend: {position: 'bottom'}
         };
 
         $('#build-warnings-chart').show();

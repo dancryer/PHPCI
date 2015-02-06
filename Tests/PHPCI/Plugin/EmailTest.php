@@ -212,6 +212,45 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
+    public function testExecute_UniqueRecipientsFromWithCommitter()
+    {
+        $this->loadEmailPluginWithOptions(
+            array(
+                'addresses' => array('test-receiver@example.com', 'test-receiver2@example.com')
+            )
+        );
+
+        $returnValue = $this->testedEmailPlugin->execute();
+        $this->assertTrue($returnValue);
+
+        $this->assertCount(2, $this->message['to']);
+
+        $this->assertContains('test-receiver@example.com', $this->message['to']);
+        $this->assertContains('test-receiver2@example.com', $this->message['to']);
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_UniqueRecipientsWithCommiter()
+    {
+        $this->loadEmailPluginWithOptions(
+            array(
+                'commiter'  => true,
+                'addresses' => array('test-receiver@example.com', 'committer@test.com')
+            )
+        );
+
+        $returnValue = $this->testedEmailPlugin->execute();
+        $this->assertTrue($returnValue);
+
+        $this->assertContains('test-receiver@example.com', $this->message['to']);
+        $this->assertContains('committer@test.com', $this->message['to']);
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
     public function testCcDefaultEmails()
     {
         $this->loadEmailPluginWithOptions(

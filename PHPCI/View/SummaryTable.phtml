@@ -3,7 +3,6 @@ use PHPCI\Helper\Lang;
 
 foreach($projects as $project):
     $statuses = array();
-    $successes = 0;
     $failures = 0;
     $subcls = '';
     $cls = '';
@@ -12,8 +11,24 @@ foreach($projects as $project):
     $failure = null;
 
     if (count($builds[$project->getId()])) {
+        // Get the most recent build status to determine the main block colour.
+        $last_build = $builds[$project->getId()][0];
+        $status = $last_build->getStatus();
+        switch($status) {
+            case 0:
+                $subcls = 'blue';
+                break;
+            case 1:
+                $subcls = 'yellow';
+                break;
+            case 2:
+                $subcls = 'green';
+                break;
+            case 3:
+                $subcls = 'red';
+                break;
+        }
         // Use the last 5 builds to determine project health:
-        $successes = 0;
         $failures = 0;
 
         foreach ($builds[$project->getId()] as $build) {
@@ -25,7 +40,6 @@ foreach($projects as $project):
                     $statuses[] = 'running';
                     break;
                 case 2:
-                    $successes++;
                     $statuses[] = 'ok';
                     $success = is_null($success) && !is_null($build->getFinished()) ? Lang::formatDateTime($build->getFinished()) : $success;
                     break;
@@ -37,15 +51,6 @@ foreach($projects as $project):
             }
         }
     }
-
-    if ($failures == 0) {
-        $subcls = 'green';
-    } elseif ($successes == 0) {
-        $subcls = 'red';
-    } else {
-        $subcls = 'yellow';
-    }
-
 
     $buildCount = count($builds[$project->getId()]);
     $lastSuccess = $successful[$project->getId()];
@@ -110,9 +115,37 @@ foreach($projects as $project):
         <div class="icon">
             <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
         </div>
-        <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>" class="small-box-footer">
+        <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>" class="small-box-footer small-box-footer-project">
             <?php Lang::out('view_project'); ?> <i class="fa fa-arrow-circle-right"></i>
         </a>
+        <?php for ($idx=0; $idx < 5; $idx++) {
+            if (empty($builds[$project->getId()][$idx])) {
+                echo '<span class="small-box-footer-build small-box-footer bg-blue"><i class="fa fa-minus"></i></span>';
+            } else {
+                $build = $builds[$project->getId()][$idx];
+                $link = PHPCI_URL . 'build/view/' . $build->id;
+                switch ($build->getStatus()) {
+                    case 0:
+                        $class = 'bg-blue';
+                        $icon = 'fa-minus';
+                        break;
+                    case 1:
+                        $class = 'bg-orange';
+                        $icon = 'fa-clock-o';
+                        break;
+                    case 2:
+                        $class = 'bg-green';
+                        $icon = 'fa-check';
+                        break;
+                    case 3:
+                        $class = 'bg-red';
+                        $icon = 'fa-times';
+                        break;
+                }
+                echo '<a href="' . $link .'" class="small-box-footer-build small-box-footer ' . $class . '"><i class="fa ' . $icon . '"></i></a>';
+            }
+        } ?>
+        <div style="clear: both;"></div>
     </div>
 
     <?php endif; ?>

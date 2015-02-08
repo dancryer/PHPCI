@@ -1302,6 +1302,17 @@ body > .header .logo .icon {
   width: 8%;
   float: left;
 }
+.small-box-minimal > .inner {
+  width: 71%;
+  float: left;
+}
+.small-box-minimal > .small-box-footer-build {
+  width: 5%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  margin-left: 1px;
+  margin-top: 19px;
+  font-size: 11px;
+}
 .small-box h3 {
   font-size: 38px;
   font-weight: bold;

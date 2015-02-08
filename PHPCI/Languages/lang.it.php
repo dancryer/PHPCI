@@ -156,7 +156,7 @@ PHPCI',
     'rebuild_now' => 'Esegui nuovamente la build ora',
 
 
-    'committed_by_x' => 'Committato da %s',
+    'committed_by_x' => 'Inviato da %s',
     'commit_id_x' => 'Commit: %s',
 
     'chart_display' => 'Questo grafico verrà mostrato una volta terminata la build.',

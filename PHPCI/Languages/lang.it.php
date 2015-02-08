@@ -16,20 +16,19 @@ $strings = array(
     'log_in_to_phpci' => 'Accedi a PHPCI',
     'login_error' => 'Indirizzo email o password errati',
     'forgotten_password_link' => 'Hai dimenticato la tua password?',
-    'reset_emailed' => 'Ti abbiamo inviato un link per ripristinare la tua password via email.',
+    'reset_emailed' => 'Ti abbiamo inviato un link via email per ripristinare la tua password.',
     'reset_header' => '<strong>Non preoccuparti!</strong><br>E\' sufficiente inserire il tuo indirizzo email di seguito e ti invieremo una email con il link per il ripristino della tua password.',
     'reset_email_address' => 'Inserisci il tuo indirizzo email:',
     'reset_send_email' => 'Invia il link di reset della password',
     'reset_enter_password' => 'Per favore inserisci la nuova password',
     'reset_new_password' => 'Nuova password:',
     'reset_change_password' => 'Cambia password',
-    'reset_no_user_exists' => 'No user exists with that email address, please try again.',
     'reset_no_user_exists' => 'Non esiste nessun utente con questo indirizzo email, per favore prova ancora.',
     'reset_email_body' => 'Ciao %s,
 
 hai ricevuto questa email perché tu, o qualcun\'altro, ha richiesto un reset della password per PHPCI.
 
-Se questa mail è tua, per favore apri il seguente link per resettare la tua password: %ssession/reset-password/%d/%s
+Se questa mail è tua, per favore apri il seguente link per ripristinare la tua password: %ssession/reset-password/%d/%s
 
 altrimenti, per favore, ignora questa email e nessuna azione verrà intrapresa.
 
@@ -137,16 +136,16 @@ PHPCI',
     'delete_build' => 'Rimuovi build',
 
     'webhooks' => 'Webhooks',
-    'webhooks_help_github' => 'Per efettuare la build automatica di questo progetto quando vengono pushati nuovi commit,
+    'webhooks_help_github' => 'Per effettuare la build automatica di questo progetto quando vengono inseriti nuovi commit,
                                 aggiungi l\'URL seguente come "Webhook" nella sezione
                                 <a href="https://github.com/%s/settings/hooks">Webhooks and Services</a> del tuo
                                 repository su GitHub.',
 
-    'webhooks_help_gitlab' => 'Per efettuare la build automatica di questo progetto quando vengono pushati nuovi commit,
+    'webhooks_help_gitlab' => 'Per effettuare la build automatica di questo progetto quando vengono inseriti nuovi commit,
                                 aggiungi l\'URL seguente come "Webhook URL" nella sezione "WebHook URL" del tuo
                                 repository GitLab.',
 
-    'webhooks_help_bitbucket' => 'Per efettuare la build automatica di questo progetto quando vengono pushati nuovi
+    'webhooks_help_bitbucket' => 'Per effettuare la build automatica di questo progetto quando vengono inseriti nuovi
                                     commit, aggiungi l\'URL seguente come serizio "POST" nella sezione
                                     <a href="https://bitbucket.org/%s/admin/services">Services</a> del tuo repository su
                                     BITBUCKET.',
@@ -169,9 +168,9 @@ PHPCI',
     'logical_lines' => 'Linee di logica',
     'lines_of_code' => 'Linee di codice',
     'build_log' => 'Log della build',
-    'quality_trend' => 'Trand della qualità',
-    'phpmd_warnings' => 'Warning di PHPMD',
-    'phpcs_warnings' => 'Warning di PHPCS',
+    'quality_trend' => 'Trend della qualità',
+    'phpmd_warnings' => 'Avvisi di PHPMD',
+    'phpcs_warnings' => 'Avvisi di PHPCS',
     'phpcs_errors' => 'Errori di PHPCS',
     'phplint_errors' => 'Errori di Lint',
     'phpunit_errors' => 'Errori di PHPUnit',
@@ -228,16 +227,16 @@ PHPCI',
     'settings_github_linked' => 'Il tuo account GitHub è stato collegato.',
     'settings_github_not_linked' => 'Il tuo account GitHub non può essere collegato.',
     'build_settings' => 'Configurazioni della build',
-    'github_application' => 'Applicatzione GitHub',
+    'github_application' => 'Applicazione GitHub',
     'github_sign_in' => 'Prima di poter iniziare ad usare GitHub, è necessario <a href="%s">collegarsi</a> e garantire
                             a PHPCI l\'accesso al tuo account.',
     'github_phpci_linked' => 'PHPCI è stato collegato correttamente al tuo account GitHub.',
     'github_where_to_find' => 'Dove trovare queste...',
-    'github_where_help' => 'Se sei il proprietario dell\'applicazione, puoi trovare queste informazioni nell\'are delle
+    'github_where_help' => 'Se sei il proprietario dell\'applicazione, puoi trovare queste informazioni nell\'area delle
                               configurazioni dell\'<a href="https://github.com/settings/applications">applicazione</a>.',
 
     'email_settings' => 'Impostazioni Email',
-    'email_settings_help' => 'Prima che possa inviare le email con lo status PHPCI, devi configurare l\'SMTP qio sotto.',
+    'email_settings_help' => 'Prima che possa inviare le email con lo status PHPCI, devi configurare l\'SMTP qui sotto.',
 
     'application_id' => 'ID dell\'Applicazione',
     'application_secret' => 'Secret dell\'Applicazione',
@@ -263,7 +262,7 @@ PHPCI',
     // Plugins
     'cannot_update_composer' => 'PHPCI non può aggiornare composer.json per te non essendo scrivibile.',
     'x_has_been_removed' => '%s è stato rimosso.',
-    'x_has_been_added' => '%s è stato aggiunto al composer.json per te verrà installato la prossima volta che eseguirai
+    'x_has_been_added' => '%s è stato aggiunto al file composer.json per te, verrà installato la prossima volta che eseguirai
                             composer update.',
     'enabled_plugins' => 'Plugins attivati',
     'provided_by_package' => 'Fornito dal pacchetto',
@@ -338,7 +337,7 @@ PHPCI',
     'finding_builds' => 'Ricerca delel build da processare',
     'found_n_builds' => 'Trovate %d build',
     'skipping_build' => 'Saltata la build %d - La build del progetto è già in corso.',
-    'marked_as_failed' => 'Build %d è satata contrassegnata come come fallita per un timeout.',
+    'marked_as_failed' => 'Build %d è stata contrassegnata come fallita per un timeout.',
 
     // Builder
     'missing_phpci_yml' => 'Questo progetto non contiene il file phpci.yml, o il file è vuoto.',

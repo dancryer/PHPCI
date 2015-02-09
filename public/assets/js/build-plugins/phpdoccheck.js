@@ -24,7 +24,7 @@ var phpdoccheckPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table" id="phpdoccheck-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpdoccheck-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>'+Lang.get('file')+'</th>' +
@@ -32,7 +32,7 @@ var phpdoccheckPlugin = ActiveBuild.UiPlugin.extend({
             '   <th>'+Lang.get('class')+'</th>' +
             '   <th>'+Lang.get('method')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
     },
 
     onUpdate: function(e) {

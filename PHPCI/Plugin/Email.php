@@ -182,7 +182,7 @@ class Email implements \PHPCI\Plugin
             $addresses[] = $this->options['default_mailto_address'];
             return $addresses;
         }
-        return $addresses;
+        return array_unique($addresses);
     }
 
     /**

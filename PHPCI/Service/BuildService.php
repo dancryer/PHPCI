@@ -100,6 +100,7 @@ class BuildService
         $build = new Build();
         $build->setValues($data);
         $build->setCreated(new \DateTime());
+        $build->setStatus(0);
 
         return $this->buildStore->save($build);
     }

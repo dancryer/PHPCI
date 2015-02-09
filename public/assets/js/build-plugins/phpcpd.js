@@ -23,14 +23,14 @@ var phpcpdPlugin = ActiveBuild.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table" id="phpcpd-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpcpd-data">' +
             '<thead>' +
             '<tr>' +
             '   <th>'+Lang.get('file')+'</th>' +
             '   <th>'+Lang.get('start')+'</th>' +
             '   <th>'+Lang.get('end')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
 
     },
 

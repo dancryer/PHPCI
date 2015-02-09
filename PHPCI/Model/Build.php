@@ -193,4 +193,15 @@ class Build extends BuildBase
 
         return $rtn;
     }
+
+    /**
+     * Returns the commit message for this build.
+     * @return string
+     */
+    public function getCommitMessage()
+    {
+        $rtn = htmlspecialchars($this->data['commit_message']);
+
+        return $rtn;
+    }
 }

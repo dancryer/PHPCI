@@ -13,7 +13,7 @@ $strings = array(
 
     // Log in:
     'log_in_to_phpci' => 'In PHPCI einloggen',
-    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passowrt',
+    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passwort',
     'forgotten_password_link' => 'Passwort vergessen?',
     'reset_emailed' => 'Wir haben Ihnen einen Link geschickt, um Ihr Passwort zurückzusetzen',
     'reset_header' => '<strong>Keine Panik!</strong><br>Geben Sie einfach unten Ihre Emailadresse an
@@ -56,13 +56,13 @@ PHPCI',
     // Sidebar
     'hello_name' => 'Hallo, %s',
     'dashboard' => 'Dashboard',
-    'admin_options' => 'Administraion',
+    'admin_options' => 'Administration',
     'add_project' => 'Projekt hinzufügen',
     'settings' => 'Einstellungen',
     'manage_users' => 'Benutzereinstellungen',
     'plugins' => 'Plugins',
     'view' => 'Ansehen',
-    'build_now' => 'Aktueller Build',
+    'build_now' => 'Jetzt bauen',
     'edit_project' => 'Projekt bearbeiten',
     'delete_project' => 'Projekt löschen',
 

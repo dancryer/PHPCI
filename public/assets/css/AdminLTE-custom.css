@@ -1,0 +1,77 @@
+.skin-blue .logo, .skin-blue .logo:hover  {
+    background-image: url('/assets/img/logo-large.png');
+    background-repeat: no-repeat;
+    background-size: 40%;
+    background-position: 65px;
+    text-indent: -5000px;
+}
+
+.build-info-panel {
+
+}
+
+    .build-info-panel .box-header h1.box-title {
+        border: 0;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-left: 110px;
+    }
+
+    .build-info-panel h1.box-title span {
+        font-weight: normal;
+    }
+
+    .build-info-panel img {
+        border: 2px solid #fff;
+        border-radius: 50%;
+        margin-top: -40px;
+    }
+
+    .build-info-panel #build-info {
+        margin-left: 110px;
+        min-height: 50px;
+    }
+
+    .build-info-panel .commit-message {
+        margin-bottom: 20px;
+    }
+
+.small-box h3 a, .small-box h4 a {
+    color: #fff;
+}
+
+.pagination>li>span {
+    font-weight: bold;
+    background: #337ab7;
+    color: #fff;
+}
+
+#plugins table td {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.small-box > .inner {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.small-box > .small-box-footer-project {
+    width: 60%;
+    float: left;
+}
+.small-box > .small-box-footer-build {
+    width: 8%;
+    float: left;
+}
+.small-box-minimal > .inner {
+    width: 71%;
+    float: left;
+}
+.small-box-minimal > .small-box-footer-build {
+    width: 5%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-left: 1px;
+    margin-top: 19px;
+    font-size: 11px;
+}

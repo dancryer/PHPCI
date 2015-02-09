@@ -51,3 +51,27 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.small-box > .inner {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.small-box > .small-box-footer-project {
+    width: 60%;
+    float: left;
+}
+.small-box > .small-box-footer-build {
+    width: 8%;
+    float: left;
+}
+.small-box-minimal > .inner {
+    width: 71%;
+    float: left;
+}
+.small-box-minimal > .small-box-footer-build {
+    width: 5%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-left: 1px;
+    margin-top: 19px;
+    font-size: 11px;
+}

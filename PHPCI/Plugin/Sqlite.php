@@ -70,7 +70,7 @@ class Sqlite implements \PHPCI\Plugin
             $pdo = new PDO('sqlite:' . $this->path, $opts);
 
             foreach ($this->queries as $query) {
-                $pdo->query($query);
+                $pdo->query($this->phpci->interpolate($query));
             }
         } catch (\Exception $ex) {
             $this->phpci->logFailure($ex->getMessage());

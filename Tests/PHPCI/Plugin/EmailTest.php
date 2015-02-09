@@ -57,6 +57,10 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             ->method('getStatus')
             ->will($this->returnValue(\PHPCI\Model\Build::STATUS_SUCCESS));
 
+        $this->mockBuild->expects($this->any())
+            ->method('getCommitterEmail')
+            ->will($this->returnValue("committer@test.com"));
+
         $this->mockCiBuilder = $this->getMock(
             '\PHPCI\Builder',
             array(
@@ -151,8 +155,53 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expectedReturn, $returnValue);
+    }
 
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_UniqueRecipientsFromWithCommitter()
+    {
+        $this->loadEmailPluginWithOptions(
+            array(
+                'addresses' => array('test-receiver@example.com', 'test-receiver2@example.com')
+            )
+        );
 
+        $actualMails = [];
+        $this->catchMailPassedToSend($actualMails);
+
+        $returnValue = $this->testedEmailPlugin->execute();
+        $this->assertTrue($returnValue);
+
+        $this->assertCount(2, $actualMails);
+
+        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
+        $this->assertContains('test-receiver@example.com', $actualTos);
+        $this->assertContains('test-receiver2@example.com', $actualTos);
+    }
+
+    /**
+     * @covers PHPUnit::execute
+     */
+    public function testExecute_UniqueRecipientsWithCommiter()
+    {
+        $this->loadEmailPluginWithOptions(
+            array(
+                'commiter'  => true,
+                'addresses' => array('test-receiver@example.com', 'committer@test.com')
+            )
+        );
+
+        $actualMails = [];
+        $this->catchMailPassedToSend($actualMails);
+
+        $returnValue = $this->testedEmailPlugin->execute();
+        $this->assertTrue($returnValue);
+
+        $actualTos = array(key($actualMails[0]->getTo()), key($actualMails[1]->getTo()));
+        $this->assertContains('test-receiver@example.com', $actualTos);
+        $this->assertContains('committer@test.com', $actualTos);
     }
 
     /**
@@ -215,12 +264,16 @@ class EmailTest extends \PHPUnit_Framework_TestCase
      */
     protected function catchMailPassedToSend(&$actualMail)
     {
-        $this->mockMailer->expects($this->once())
+        $this->mockMailer->expects(is_array($actualMail) ? $this->atLeast(1) : $this->once())
             ->method('send')
             ->will(
                 $this->returnCallback(
                     function ($passedMail) use (&$actualMail) {
-                        $actualMail = $passedMail;
+                        if(is_array($actualMail)) {
+                            $actualMail[] = $passedMail;
+                        } else {
+                            $actualMail = $passedMail;
+                        }
                         return array();
                     }
                 )

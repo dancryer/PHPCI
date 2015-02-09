@@ -62,6 +62,17 @@ if (file_exists($configFile)) {
     $config->loadYaml($configFile);
 }
 
+/**
+ * Allow to modify PHPCI configuration without modify versioned code.
+ * Dameons should be killed to apply changes in the file.
+ *
+ * @ticket 781
+ */
+$localVarsFile = dirname(__FILE__) . '/local_vars.php';
+if (is_readable($localVarsFile)) {
+    require_once $localVarsFile;
+}
+
 require_once(dirname(__FILE__) . '/vars.php');
 
 \PHPCI\Helper\Lang::init($config);

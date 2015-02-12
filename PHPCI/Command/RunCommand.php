@@ -47,7 +47,7 @@ class RunCommand extends Command
     /**
      * @var int
      */
-    protected $maxBuilds = null;
+    protected $maxBuilds = 100;
 
     /**
      * @var bool

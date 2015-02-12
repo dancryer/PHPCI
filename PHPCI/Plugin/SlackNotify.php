@@ -120,7 +120,7 @@ class SlackNotify implements \PHPCI\Plugin
 
         $success = true;
 
-        $message->send(''); // FIXME: Handle errors
+        $message->send('');
 
         return $success;
     }

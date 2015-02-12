@@ -202,7 +202,6 @@ class PhpTalLint implements PHPCI\Plugin
 
         list($suffixes, $tales) = $this->getFlags();
 
-        // FIXME: Find a way to clean this up
         $lint = dirname(__FILE__) . '/../../vendor/phptal/phptal/tools/phptal_lint.php';
         $cmd = '/usr/bin/env php ' . $lint . ' %s %s "%s"';
 
@@ -210,7 +209,6 @@ class PhpTalLint implements PHPCI\Plugin
 
         $output = $this->phpci->getLastOutput();
 
-        // FIXME: This is very messy, clean it up
         if (preg_match('/Found (.+?) (error|warning)/i', $output, $matches)) {
 
             $rows = explode(PHP_EOL, $output);

@@ -33,7 +33,7 @@ var PHPCI = {
             url: PHPCI_URL + 'build/latest',
 
             success: function (data) {
-                $(window).trigger('builds-updated', [JSON.parse(data)]);
+                $(window).trigger('builds-updated', [data]);
             },
 
             error: PHPCI.handleFailedAjax

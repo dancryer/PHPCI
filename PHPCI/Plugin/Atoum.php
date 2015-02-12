@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**

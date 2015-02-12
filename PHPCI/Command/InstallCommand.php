@@ -17,11 +17,9 @@ use b8\Database;
 use b8\Store\Factory;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
 use PHPCI\Service\UserService;
 
 /**
@@ -297,6 +295,8 @@ class InstallCommand extends Command
                     \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
                 )
             );
+
+            unset($pdo);
 
             return true;
 

@@ -12,7 +12,6 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Store;
 use PHPCI\BuildFactory;
-use PHPCI\Model\Build;
 use PHPCI\Service\BuildService;
 
 /**

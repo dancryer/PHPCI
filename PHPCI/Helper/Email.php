@@ -90,7 +90,7 @@ class Email
      * @param bool $isHtml
      * @return $this
      */
-    public function setIsHtml($isHtml = false)
+    public function setHtml($isHtml = false)
     {
         $this->isHtml = $isHtml;
 

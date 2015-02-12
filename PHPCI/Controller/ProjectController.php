@@ -10,17 +10,14 @@
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Controller;
 use b8\Form;
-use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use PHPCI;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\SshKey;
-use PHPCI\Model\Build;
-use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
@@ -30,7 +27,7 @@ use PHPCI\Service\ProjectService;
 * @package      PHPCI
 * @subpackage   Web
 */
-class ProjectController extends \PHPCI\Controller
+class ProjectController extends Controller
 {
     /**
      * @var \PHPCI\Store\ProjectStore

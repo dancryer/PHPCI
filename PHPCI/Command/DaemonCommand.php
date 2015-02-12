@@ -12,13 +12,8 @@ namespace PHPCI\Command;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Store\Factory;
-use PHPCI\Builder;
-use PHPCI\BuildFactory;
 
 /**
 * Daemon that loops and call the run-command.

@@ -21,11 +21,9 @@ use PHPCI\Model\Build;
  */
 class HipchatNotify implements \PHPCI\Plugin
 {
-    private $authToken;
-    private $userAgent;
-    private $cookie;
-    private $color;
-    private $notify;
+    protected $authToken;
+    protected $color;
+    protected $notify;
 
     /**
      * Set up the plugin, configure options, etc.

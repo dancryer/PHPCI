@@ -14,7 +14,6 @@ use b8\Form;
 use b8\HttpClient;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 

@@ -10,12 +10,10 @@
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\User;
 use PHPCI\Service\UserService;
 
 /**

@@ -12,12 +12,9 @@ namespace PHPCI\Command;
 use PHPCI\Helper\Lang;
 use PHPCI\Service\UserService;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
-use PHPCI\Builder;
 
 /**
 * Create admin command - creates an admin user
@@ -77,7 +74,7 @@ class CreateAdminCommand extends Command
 
         if (!$emptyOk && empty($rtn)) {
             $rtn = $this->ask($question, $emptyOk, $validationFilter);
-        } elseif ($validationFilter != null  && ! empty($rtn)) {
+        } elseif (!is_null($validationFilter) && ! empty($rtn)) {
             if (! $this -> controlFormat($rtn, $validationFilter, $statusMessage)) {
                 print $statusMessage;
                 $rtn = $this->ask($question, $emptyOk, $validationFilter);

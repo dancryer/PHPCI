@@ -2,6 +2,8 @@
 
 namespace PHPCI\Plugin\Util;
 
+use PHPCI\Plugin;
+
 /**
  * Class FilesPluginInformation
  * @package PHPCI\Plugin\Util
@@ -66,7 +68,7 @@ class FilesPluginInformation implements InstalledPluginInformation
     public function getPluginClasses()
     {
         return array_map(
-            function ($plugin) {
+            function (Plugin $plugin) {
                return $plugin->class;
             },
             $this->getInstalledPlugins()
@@ -114,8 +116,6 @@ class FilesPluginInformation implements InstalledPluginInformation
      */
     protected function getFullClassFromFile(\SplFileInfo $fileInfo)
     {
-        //TODO: Something less horrible than a regular expression
-        //      on the contents of a file
         $contents = file_get_contents($fileInfo->getRealPath());
         $matches = array();
 

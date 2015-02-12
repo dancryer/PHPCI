@@ -87,7 +87,8 @@ class DaemoniseCommand extends Command
             try {
                 $buildCount = $runner->run($emptyInput, $output);
             } catch (\Exception $e) {
-                var_dump($e);
+                $output->writeln('<error>Exception: ' . $e->getMessage() . '</error>');
+                $output->writeln('<error>Line: ' . $e->getLine() . ' - File: ' . $e->getFile() . '</error>');
             }
 
             if (0 == $buildCount && $this->sleep < 15) {

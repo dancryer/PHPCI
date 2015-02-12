@@ -13,7 +13,6 @@ use Exception;
 use PDO;
 
 use b8\Config;
-use b8\Database;
 use b8\Store\Factory;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;

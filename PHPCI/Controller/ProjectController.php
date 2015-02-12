@@ -27,7 +27,7 @@ use PHPCI\Service\ProjectService;
 * @package      PHPCI
 * @subpackage   Web
 */
-class ProjectController extends Controller
+class ProjectController extends PHPCI\Controller
 {
     /**
      * @var \PHPCI\Store\ProjectStore

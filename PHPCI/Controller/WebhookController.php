@@ -55,6 +55,9 @@ class WebhookController extends \PHPCI\Controller
      */
     public function bitbucket($project)
     {
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent(array('status' => 'ok'));
+
         $payload = json_decode($this->getParam('payload'), true);
 
         foreach ($payload['commits'] as $commit) {
@@ -65,13 +68,13 @@ class WebhookController extends \PHPCI\Controller
 
                 $this->createBuild($project, $commit['raw_node'], $commit['branch'], $email, $commit['message']);
             } catch (\Exception $ex) {
-                header('HTTP/1.1 500 Internal Server Error');
-                header('Ex: ' . $ex->getMessage());
-                die('FAIL');
+                $response->setResponseCode(500);
+                $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
+                break;
             }
         }
 
-        die('OK');
+        return $response;
     }
 
     /**
@@ -81,6 +84,9 @@ class WebhookController extends \PHPCI\Controller
      */
     public function git($project)
     {
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent(array('status' => 'ok'));
+
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
         $commitMessage = $this->getParam('message');
@@ -105,12 +111,11 @@ class WebhookController extends \PHPCI\Controller
 
             $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
         } catch (\Exception $ex) {
-            header('HTTP/1.1 400 Bad Request');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
+            $response->setResponseCode(500);
+            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
 
-        die('OK');
+        return $response;
     }
 
     /**
@@ -118,6 +123,9 @@ class WebhookController extends \PHPCI\Controller
      */
     public function github($project)
     {
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent(array('status' => 'ok'));
+
         switch ($_SERVER['CONTENT_TYPE']) {
             case 'application/json':
                 $payload = json_decode(file_get_contents('php://input'), true);
@@ -128,22 +136,22 @@ class WebhookController extends \PHPCI\Controller
                 break;
 
             default:
-                header('HTTP/1.1 400 Bad Request');
-                die('Request content type not supported');
+                $response->setResponseCode(401);
+                $response->setContent(array('status' => 'failed', 'error' => 'Content type not supported.'));
+                return $response;
         }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {
-            return $this->githubPullRequest($project, $payload);
+            return $this->githubPullRequest($project, $payload, $response);
         }
 
         // Handle Push web hooks:
         if (array_key_exists('commits', $payload)) {
-            return $this->githubCommitRequest($project, $payload);
+            return $this->githubCommitRequest($project, $payload, $response);
         }
 
-        header('HTTP/1.1 200 OK');
-        die('This request type is not supported, this is not an error.');
+        return $response;
     }
 
     /**
@@ -151,12 +159,12 @@ class WebhookController extends \PHPCI\Controller
      * @param $project
      * @param array $payload
      */
-    protected function githubCommitRequest($project, array $payload)
+    protected function githubCommitRequest($project, array $payload, b8\Http\Response\JsonResponse $response)
     {
         // Github sends a payload when you close a pull request with a
         // non-existant commit. We don't want this.
         if (array_key_exists('after', $payload) && $payload['after'] === '0000000000000000000000000000000000000000') {
-            die('OK');
+            return $response;
         }
 
         try {
@@ -182,12 +190,12 @@ class WebhookController extends \PHPCI\Controller
             }
 
         } catch (\Exception $ex) {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
+            $response->setResponseCode(500);
+            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
+
         }
 
-        die('OK');
+        return $response;
     }
 
     /**
@@ -195,11 +203,11 @@ class WebhookController extends \PHPCI\Controller
      * @param $projectId
      * @param array $payload
      */
-    protected function githubPullRequest($projectId, array $payload)
+    protected function githubPullRequest($projectId, array $payload, b8\Http\Response\JsonResponse $response)
     {
         // We only want to know about open pull requests:
         if (!in_array($payload['action'], array('opened', 'synchronize', 'reopened'))) {
-            die('OK');
+            return $response;
         }
 
         try {
@@ -217,9 +225,10 @@ class WebhookController extends \PHPCI\Controller
 
             // Check we got a success response:
             if (!$response['success']) {
-                header('HTTP/1.1 500 Internal Server Error');
-                header('Ex: Could not get commits, failed API request.');
-                die('FAIL');
+                $message = 'Could not get commits, failed API request.';
+                $response->setResponseCode(500);
+                $response->setContent(array('status' => 'failed', 'error' => $message));
+                return $response;
             }
 
             foreach ($response['body'] as $commit) {
@@ -238,12 +247,11 @@ class WebhookController extends \PHPCI\Controller
                 $this->createBuild($projectId, $commit['sha'], $branch, $committer, $message, $extra);
             }
         } catch (\Exception $ex) {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
+            $response->setResponseCode(500);
+            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
 
-        die('OK');
+        return $response;
     }
 
     /**
@@ -251,6 +259,9 @@ class WebhookController extends \PHPCI\Controller
      */
     public function gitlab($project)
     {
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent(array('status' => 'ok'));
+
         $payloadString = file_get_contents("php://input");
         $payload = json_decode($payloadString, true);
 
@@ -282,12 +293,11 @@ class WebhookController extends \PHPCI\Controller
             }
 
         } catch (\Exception $ex) {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Ex: ' . $ex->getMessage());
-            die('FAIL');
+            $response->setResponseCode(500);
+            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
 
-        die('OK');
+        return $response;
     }
 
     /**

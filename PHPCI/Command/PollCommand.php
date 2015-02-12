@@ -60,7 +60,7 @@ class PollCommand extends Command
 
         if (!$token) {
             $this->logger->error(Lang::get('no_token'));
-            exit();
+            return;
         }
 
         $buildStore = Factory::getStore('Build');

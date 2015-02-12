@@ -175,8 +175,9 @@ class UserController extends Controller
 
         $this->userService->createUser($name, $email, $password, $isAdmin);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 
     /**
@@ -215,8 +216,9 @@ class UserController extends Controller
 
         $this->userService->updateUser($user, $name, $email, $password, $isAdmin);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 
     /**
@@ -288,7 +290,8 @@ class UserController extends Controller
 
         $this->userService->deleteUser($user);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 }

@@ -49,7 +49,9 @@ class UpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->verifyInstalled($output);
+        if (!$this->verifyInstalled($output)) {
+            return;
+        }
 
         $output->write(Lang::get('updating_phpci'));
 
@@ -63,14 +65,16 @@ class UpdateCommand extends Command
         if (!file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
             $output->writeln('<error>'.Lang::get('not_installed').'</error>');
             $output->writeln('<error>'.Lang::get('install_instead').'</error>');
-            die;
+            return false;
         }
 
         $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
         if (empty($content)) {
             $output->writeln('<error>'.Lang::get('not_installed').'</error>');
             $output->writeln('<error>'.Lang::get('install_instead').'</error>');
-            die;
+            return false;
         }
+
+        return true;
     }
 }

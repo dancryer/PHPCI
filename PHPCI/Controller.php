@@ -92,6 +92,10 @@ class Controller extends \b8\Controller
         $this->setView($action);
         $response = parent::handleAction($action, $actionParams);
 
+        if ($response instanceof Response) {
+            return $response;
+        }
+
         if (is_string($response)) {
             $this->controllerView->content = $response;
         } elseif (isset($this->view)) {

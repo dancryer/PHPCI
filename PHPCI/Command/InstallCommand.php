@@ -59,7 +59,9 @@ class InstallCommand extends Command
     {
         $this->configFilePath = $input->getOption('config-path');
 
-        $this->verifyNotInstalled($output);
+        if (!$this->verifyNotInstalled($output)) {
+            return;
+        }
 
         $output->writeln('');
         $output->writeln('<info>******************</info>');
@@ -346,7 +348,6 @@ class InstallCommand extends Command
         } catch (\Exception $ex) {
             $output->writeln('<error>'.Lang::get('failed_to_create').'</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
-            die;
         }
     }
 
@@ -361,6 +362,7 @@ class InstallCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @return bool
      */
     protected function verifyNotInstalled(OutputInterface $output)
     {
@@ -370,8 +372,10 @@ class InstallCommand extends Command
             if (!empty($content)) {
                 $output->writeln('<error>'.Lang::get('config_exists').'</error>');
                 $output->writeln('<error>'.Lang::get('update_instead').'</error>');
-                die;
+                return false;
             }
         }
+
+        return true;
     }
 }

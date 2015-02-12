@@ -47,8 +47,9 @@ class SessionController extends \PHPCI\Controller
 
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['phpci_user_id']    = $user->getId();
-                header('Location: ' . $this->getLoginRedirect());
-                die;
+                $response = new b8\Http\Response\RedirectResponse();
+                $response->setHeader('Location', $this->getLoginRedirect());
+                return $response;
             } else {
                 $isLoginFailure = true;
             }
@@ -92,8 +93,10 @@ class SessionController extends \PHPCI\Controller
         unset($_SESSION['phpci_user_id']);
 
         session_destroy();
-        header('Location: ' . PHPCI_URL);
-        die;
+
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL);
+        return $response;
     }
 
     /**
@@ -151,8 +154,9 @@ class SessionController extends \PHPCI\Controller
             $_SESSION['phpci_user'] = $this->userStore->save($user);
             $_SESSION['phpci_user_id'] = $user->getId();
 
-            header('Location: ' . PHPCI_URL);
-            die;
+            $response = new b8\Http\Response\RedirectResponse();
+            $response->setHeader('Location', PHPCI_URL);
+            return $response;
         }
 
         $this->view->id = $userId;

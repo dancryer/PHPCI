@@ -147,6 +147,7 @@ class ProjectController extends \PHPCI\Controller
         $branch = $this->getParam('branch', '');
         $builds = $this->getLatestBuildsHtml($projectId, urldecode($branch));
 
+        $this->response->disableLayout();
         $this->response->setContent($builds[0]);
         return $this->response;
     }

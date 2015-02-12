@@ -17,7 +17,6 @@
 
                     <?php
                     foreach ($builds as $build):
-
                         switch ($build->getStatus()) {
                             case \PHPCI\Model\Build::STATUS_NEW:
                                 $updated = $build->getCreated();
@@ -42,6 +41,10 @@
                                 $label = Lang::get('failed');
                                 $color = 'red';
                                 break;
+                        }
+
+                        if (!$updated) {
+                            $updated = $build->getCreated();
                         }
 
                         if ($updated->format('Y-m-d') != $last->format('Y-m-d')): $last = $updated;

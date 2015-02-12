@@ -92,10 +92,10 @@ class HomeController extends \PHPCI\Controller
         $failures = array();
 
         foreach ($projects['items'] as $project) {
-            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+            $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId(), 5, $project->getBranch());
 
-            $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
-            $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
+            $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS, $project->getBranch());
+            $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED, $project->getBranch());
 
             $successes[$project->getId()] = $success;
             $failures[$project->getId()] = $failure;

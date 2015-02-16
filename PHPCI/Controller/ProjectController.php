@@ -412,7 +412,7 @@ class ProjectController extends PHPCI\Controller
                 ),
                 'beanstalk' => array(
                     'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
-                    'message' => Lang::get('error_beanstalk')
+                    'message' => Lang::get('error_bitbucket')
                 ),
 
             );

@@ -59,7 +59,7 @@
 
     <div class="col-lg-3 col-md-4 col-sm-4">
 
-        <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket'))): ?>
+        <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket', 'beanstalk'))): ?>
             <div class="box box-info">
                 <div class="box-header">
                     <h4 class="box-title"><?php Lang::out('webhooks'); ?></h4>
@@ -82,6 +82,10 @@
                         case 'bitbucket':
                             $url	= PHPCI_URL . 'webhook/bitbucket/' . $project->getId();
                             Lang::out('webhooks_help_bitbucket', $project->getReference());
+                            break;
+                        case 'beanstalk':
+                            $url	= PHPCI_URL . 'webhook/beanstalk/' . $project->getId();
+                            Lang::out('webhooks_help_beanstalk', $project->getReference());
                             break;
                     }
                     ?>

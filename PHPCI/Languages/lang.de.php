@@ -145,7 +145,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'webhooks_help_gitlab' => 'Um für dieses Projekt automatisch einen Build zu starten, wenn neue Commits gepushed werden, fügen Sie die untenstehende URL in der Web Hooks Sektion Ihres GitLab Repositories hinzu.',
 
     'webhooks_help_bitbucket' => 'Um für dieses Projekt automatisch einen Build zu starten, wenn neue Commits gepushed werden, fügen Sie die untenstehende URL als "POST" Service in der <a href="https://bitbucket.org/%s/admin/services">Services</a>-Sektion Ihres Bitbucket Repositories hinzu.',
-
+    'webhooks_help_beanstalk' => 'Um für dieses Projekt automatisch einen Build zu starten, wenn neue Commits gepushed werden, fügen Sie die untenstehende URL in der Web Hooks Sektion Ihres Beanstalk Repositories hinzu.',
     // View Build
     'build_x_not_found' => 'Build mit ID %d existiert nicht.',
     'build_n' => 'Build %d',

@@ -68,6 +68,7 @@ class ProjectController extends PHPCI\Controller
         $branch = $this->getParam('branch', '');
         $project = $this->projectStore->getById($projectId);
 
+
         if (empty($project)) {
             throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
@@ -166,6 +167,7 @@ class ProjectController extends PHPCI\Controller
 
         $order = array('id' => 'DESC');
         $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
+
         $view = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {

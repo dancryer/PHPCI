@@ -316,7 +316,11 @@ class WebhookController extends \PHPCI\Controller
 
                 foreach ($payload['commits'] as $commit) {
                     $committer = $commit['author']['email'];
-                    $this->createBuild($project, $commit['id'], $commit['branch'], $committer, $commit['message']);
+                    $extra = array(
+                        'changeset_url' => $commit['changeset_url']
+                    );
+                    $this->createBuild($project, $commit['id'], $commit['branch'], $committer, $commit['message'],
+                        $extra);
                 }
             }
         } catch (\Exception $ex) {

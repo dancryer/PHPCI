@@ -101,6 +101,7 @@ van je gekozen source code hosting platform',
     'remote' => 'Externe URL',
     'local' => 'Lokaal pad',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Waar wordt je project gehost?',
     'choose_github' => 'Selecteer een GitHub repository:',

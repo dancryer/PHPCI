@@ -100,6 +100,7 @@ PHPCI',
     'remote' => 'Віддалений URL',
     'local' => 'Локальний шлях',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Де зберігається ваш проект?',
     'choose_github' => 'Оберіть GitHub репозиторій:',

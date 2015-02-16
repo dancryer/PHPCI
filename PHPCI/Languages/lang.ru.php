@@ -99,6 +99,7 @@ PHPCI',
     'remote' => 'Внешний URL',
     'local' => 'Локальный путь',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Расположение проекта',
     'choose_github' => 'Выберите GitHub репозиторий:',

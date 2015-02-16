@@ -101,6 +101,7 @@ PHPCI',
     'remote' => 'URL distante',
     'local' => 'Chemin local',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Où est hébergé votre projet&nbsp;?',
     'choose_github' => 'Choisissez un dépôt GitHub&nbsp;:',

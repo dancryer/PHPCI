@@ -311,6 +311,7 @@ class ProjectController extends PHPCI\Controller
             'remote' => Lang::get('remote'),
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
+            'beanstalk'    => Lang::get('beanstalk')
             );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);

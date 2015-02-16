@@ -100,6 +100,7 @@ i din foretrukne hosting-platform.',
     'remote' => 'Ekstern URL',
     'local' => 'Lokalt filsystem',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Hvor er dit projekt hosted?',
     'choose_github' => 'Vælg et GitHub-repository:',

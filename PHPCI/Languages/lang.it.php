@@ -100,6 +100,7 @@ PHPCI',
     'remote' => 'URL Remoto',
     'local' => 'Percorso Locale',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Dove è archiviato il tuo progetto?',
     'choose_github' => 'Scegli il repository di GitHub:',

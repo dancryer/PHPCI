@@ -101,6 +101,7 @@ od wybranego kodu źródłowego platformy hostingowej.',
     'remote' => 'Zdalny URL ',
     'local' => 'Lokalna Ścieżka ',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Gdzie hostowany jest Twój projekt?',
     'choose_github' => 'Wybierz repozytorium GitHub:',

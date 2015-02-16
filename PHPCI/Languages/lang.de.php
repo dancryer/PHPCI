@@ -101,6 +101,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'remote' => 'Externe URL',
     'local' => 'Lokaler Pfad',
     'hg'    => 'Mercurial',
+    'beanstalk'    => 'Beanstalk',
 
     'where_hosted' => 'Wo wird Ihr Projekt gehostet?',
     'choose_github' => 'Wählen Sie ein GitHub Repository:',

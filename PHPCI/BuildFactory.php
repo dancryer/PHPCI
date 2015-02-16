@@ -61,6 +61,9 @@ class BuildFactory
             case 'hg':
                 $type = 'MercurialBuild';
                 break;
+            case 'beanstalk':
+                $type = 'BeanstalkBuild';
+                break;
         }
 
         $type = '\\PHPCI\\Model\\Build\\' . $type;

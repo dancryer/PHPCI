@@ -311,11 +311,11 @@ class ProjectController extends PHPCI\Controller
             'remote' => Lang::get('remote'),
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
-            'beanstalk'    => Lang::get('beanstalk')
+            'beanstalk' => Lang::get('beanstalk')
             );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
-        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|beanstalk)');
         $field->setOptions($options);
         $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
@@ -410,6 +410,11 @@ class ProjectController extends PHPCI\Controller
                     'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
                     'message' => Lang::get('error_bitbucket')
                 ),
+                'beanstalk' => array(
+                    'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
+                    'message' => Lang::get('error_beanstalk')
+                ),
+
             );
 
             if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {

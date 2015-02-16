@@ -13,6 +13,7 @@ use b8\View;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Helper\Email as EmailHelper;
 
 /**
 * Email Plugin - Provides simple email capability to PHPCI.
@@ -28,19 +29,14 @@ class Email implements \PHPCI\Plugin
     protected $phpci;
 
     /**
+     * @var \PHPCI\Model\Build
+     */
+    protected $build;
+
+    /**
      * @var array
      */
     protected $options;
-
-    /**
-     * @var \Swift_Mailer
-     */
-    protected $mailer;
-
-    /**
-     * @var string
-     */
-    protected $fromAddress;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -52,25 +48,16 @@ class Email implements \PHPCI\Plugin
     public function __construct(
         Builder $phpci,
         Build $build,
-        \Swift_Mailer $mailer,
         array $options = array()
     ) {
         $this->phpci        = $phpci;
         $this->build        = $build;
         $this->options      = $options;
-
-        $phpCiSettings      = $phpci->getSystemConfig('phpci');
-
-        $this->fromAddress = isset($phpCiSettings['email_settings']['from_address'])
-                           ? $phpCiSettings['email_settings']['from_address']
-                           : "notifications-ci@phptesting.org";
-
-        $this->mailer = $mailer;
     }
 
     /**
-    * Connects to MySQL and runs a specified set of queries.
-    */
+     * Send a notification mail.
+     */
     public function execute()
     {
         $addresses = $this->getEmailAddresses();
@@ -81,79 +68,73 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $subjectTemplate = "PHPCI - %s - %s";
-        $projectName = $this->phpci->getBuildProjectTitle();
-        $logText = $this->build->getLog();
+        $buildStatus  = $this->build->isSuccessful() ? Lang::get('passing_build') : Lang::get('failing_build');
+        $projectName  = $this->build->getProject()->getTitle();
+        $mailTemplate = $this->build->isSuccessful() ? 'Email/success' : 'Email/failed';
 
-        if ($this->build->isSuccessful()) {
-            $sendFailures = $this->sendSeparateEmails(
-                $addresses,
-                sprintf($subjectTemplate, $projectName, Lang::get('passing_build')),
-                sprintf(Lang::get('log_output')."<br><pre>%s</pre>", $logText)
-            );
-        } else {
-            $view = new View('Email/failed');
-            $view->build = $this->build;
-            $view->project = $this->build->getProject();
+        $view = new View($mailTemplate);
+        $view->build = $this->build;
+        $view->project = $this->build->getProject();
+        $body = $view->render();
 
-            $emailHtml = $view->render();
-
-            $sendFailures = $this->sendSeparateEmails(
-                $addresses,
-                sprintf($subjectTemplate, $projectName, Lang::get('failing_build')),
-                $emailHtml
-            );
-        }
+        $sendFailures = $this->sendSeparateEmails(
+            $addresses,
+            sprintf("PHPCI - %s - %s", $projectName, $buildStatus),
+            $body
+        );
 
         // This is a success if we've not failed to send anything.
-
         $this->phpci->log(Lang::get('n_emails_sent', (count($addresses) - count($sendFailures))));
         $this->phpci->log(Lang::get('n_emails_failed', count($sendFailures)));
 
-        return (count($sendFailures) == 0);
+        return ($sendFailures === 0);
     }
 
     /**
-     * @param string[]|string $toAddresses Array or single address to send to
+     * @param string $toAddress Single address to send to
      * @param string[] $ccList
      * @param string $subject Email subject
      * @param string $body Email body
      * @return array                      Array of failed addresses
      */
-    public function sendEmail($toAddresses, $ccList, $subject, $body)
+    public function sendEmail($toAddress, $ccList, $subject, $body)
     {
-        $message = \Swift_Message::newInstance($subject)
-            ->setFrom($this->fromAddress)
-            ->setTo($toAddresses)
-            ->setBody($body)
-            ->setContentType("text/html");
+        $email = new EmailHelper();
+
+        $email->setEmailTo($toAddress, $toAddress);
+        $email->setSubject($subject);
+        $email->setBody($body);
+        $email->setIsHtml(true);
 
         if (is_array($ccList) && count($ccList)) {
-            $message->setCc($ccList);
+            foreach ($ccList as $address) {
+                $email->addCc($address, $address);
+            }
         }
 
-        $failedAddresses = array();
-        $this->mailer->send($message, $failedAddresses);
-
-        return $failedAddresses;
+        return $email->send();
     }
 
     /**
-     * Send out build status emails.
+     * Send an email to a list of specified subjects.
+     *
      * @param array $toAddresses
-     * @param $subject
-     * @param $body
-     * @return array
+     *   List of destinatary of message.
+     * @param string $subject
+     *   Mail subject
+     * @param string $body
+     *   Mail body
+     *
+     * @return int number of failed messages
      */
     public function sendSeparateEmails(array $toAddresses, $subject, $body)
     {
-        $failures = array();
+        $failures = 0;
         $ccList = $this->getCcAddresses();
 
         foreach ($toAddresses as $address) {
-            $newFailures = $this->sendEmail($address, $ccList, $subject, $body);
-            foreach ($newFailures as $failure) {
-                $failures[] = $failure;
+            if (!$this->sendEmail($address, $ccList, $subject, $body)) {
+                $failures++;
             }
         }
         return $failures;

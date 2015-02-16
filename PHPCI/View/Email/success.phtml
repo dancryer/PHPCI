@@ -1,0 +1,15 @@
+<div style="background: #900; padding: 25px;">
+    <div style="background: #fff; padding: 15px; border-radius: 5px">
+        <div style="font-family: arial, verdana, sans-serif; font-size: 25px; margin-bottom: 15px">
+            <?php print $project->getTitle(); ?> - Build #<?php print $build->getId(); ?>
+        </div>
+
+        <div style="font-family: arial, verdana, sans-serif; font-size: 15px">
+            <p>Your commit <strong><?php print $build->getCommitId(); ?></strong> genrate a successfull build in project <strong><?php print $project->getTitle(); ?></strong>.</p>
+
+            <p style="margin: 10px; background: #fafafa"><?php print $build->getCommitMessage(); ?></p>
+            <pre><?php print $build->getLog(); ?></pre>
+            <p>You can review <a href="<?php print $build->getCommitLink(); ?>">your commit</a> and the <a href="<?php print PHPCI_URL . 'build/view/' . $build->getId(); ?>">build log</a>.</p>
+        </div>
+    </div>
+</div>

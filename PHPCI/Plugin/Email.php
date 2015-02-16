@@ -104,7 +104,7 @@ class Email implements \PHPCI\Plugin
         $email->setEmailTo($toAddress, $toAddress);
         $email->setSubject($subject);
         $email->setBody($body);
-        $email->setIsHtml(true);
+        $email->setHtml(true);
 
         if (is_array($ccList) && count($ccList)) {
             foreach ($ccList as $address) {

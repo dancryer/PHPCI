@@ -2,6 +2,8 @@
 
 namespace PHPCI\Plugin\Util;
 
+use PHPCI\Plugin;
+
 /**
  * Class ComposerPluginInformation
  * @package PHPCI\Plugin\Util
@@ -63,7 +65,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
     public function getPluginClasses()
     {
         return array_map(
-            function ($plugin) {
+            function (Plugin $plugin) {
                 return $plugin->class;
             },
             $this->getInstalledPlugins()

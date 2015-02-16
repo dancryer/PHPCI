@@ -14,7 +14,6 @@ use b8\Form;
 use b8\HttpClient;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
@@ -102,13 +101,15 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error                                       = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -123,13 +124,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -143,13 +146,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -162,13 +167,15 @@ class SettingsController extends Controller
         $this->settings['phpci']['basic'] = $this->getParams();
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -183,13 +190,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -212,14 +221,15 @@ class SettingsController extends Controller
                 $this->settings['phpci']['github']['token'] = $resp['access_token'];
                 $this->storeSettings();
 
-                header('Location: ' . PHPCI_URL . 'settings?linked=1');
-                die;
+                $response = new b8\Http\Response\RedirectResponse();
+                $response->setHeader('Location', PHPCI_URL . 'settings?linked=1');
+                return $response;
             }
         }
 
-
-        header('Location: ' . PHPCI_URL . 'settings?linked=2');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'settings?linked=2');
+        return $response;
     }
 
     /**

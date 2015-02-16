@@ -164,6 +164,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'lines_of_code' => 'Anzahl Codezeilen',
     'build_log' => 'Buildprotokoll',
     'quality_trend' => 'Qualitätstrend',
+    'codeception_errors' => 'Codeception Errors',
     'phpmd_warnings' => 'PHPMD Warnings',
     'phpcs_warnings' => 'PHPCS Warnings',
     'phpcs_errors' => 'PHPCS Errors',
@@ -172,6 +173,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'phpdoccheck_warnings' => 'Fehlende Docblocks',
     'issues' => 'Probleme',
 
+    'codeception' => 'Codeception',
     'phpcpd' => 'PHP Copy/Paste Detector',
     'phpcs' => 'PHP Code Sniffer',
     'phpdoccheck' => 'Fehlende Docblocks',

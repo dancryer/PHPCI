@@ -79,7 +79,7 @@ class Github
         $token = Config::getInstance()->get('phpci.github.token');
 
         if (!$token) {
-            die(json_encode(null));
+            return null;
         }
 
         $cache = Cache::getCache(Cache::TYPE_APC);

@@ -53,7 +53,7 @@ class BuildStatusController extends \PHPCI\Controller
             $status = 'passing';
 
             if (!$project->getAllowPublicStatus()) {
-                die();
+                return null;
             }
 
             if (isset($project) && $project instanceof Project) {
@@ -76,10 +76,20 @@ class BuildStatusController extends \PHPCI\Controller
     public function image($projectId)
     {
         $status = $this->getStatus($projectId);
+
+        if (is_null($status)) {
+            $response = new b8\Http\Response\RedirectResponse();
+            $response->setHeader('Location', '/');
+            return $response;
+        }
+
         $color = ($status == 'passing') ? 'green' : 'red';
-        
-        header('Content-Type: image/svg+xml');
-        die(file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg'));
+        $image = file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg');
+
+        $this->response->disableLayout();
+        $this->response->setHeader('Content-Type', 'image/svg+xml');
+        $this->response->setContent($image);
+        return $this->response;
     }
 
     /**

@@ -20,24 +20,11 @@ class BuildMetaStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\BuildMeta';
     protected $primaryKey  = 'id';
 
-    /**
-     * Get a BuildMeta by primary key.
-     * @param mixed $value Primary key.
-     * @param string $useConnection Connection to use (read / write)
-     * @return \PHPCI\Model\BuildMeta|null
-     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
-    /**
-     * Get a BuildMeta by Id.
-     * @param mixed $value.
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\BuildMeta|null;
-     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -57,31 +44,17 @@ class BuildMetaStoreBase extends Store
         return null;
     }
 
-    /**
-     * Get an array of BuildMeta by ProjectId.
-     * @param mixed $value.
-     * @param int $limit
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\BuildMeta[]
-     */
-    public function getByProjectId($value, $limit = null, $useConnection = 'read')
+    public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $add = '';
 
-        if ($limit) {
-            $add .= ' LIMIT ' . $limit;
-        }
-
-        $count = null;
-
-        $query = 'SELECT * FROM `build_meta` WHERE `project_id` = :project_id' . $add;
+        $query = 'SELECT * FROM `build_meta` WHERE `project_id` = :project_id LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':project_id', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -90,6 +63,8 @@ class BuildMetaStoreBase extends Store
                 return new BuildMeta($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
 
             return array('items' => $rtn, 'count' => $count);
         } else {
@@ -97,31 +72,17 @@ class BuildMetaStoreBase extends Store
         }
     }
 
-    /**
-     * Get an array of BuildMeta by BuildId.
-     * @param mixed $value.
-     * @param int $limit
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\BuildMeta[]
-     */
-    public function getByBuildId($value, $limit = null, $useConnection = 'read')
+    public function getByBuildId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $add = '';
 
-        if ($limit) {
-            $add .= ' LIMIT ' . $limit;
-        }
-
-        $count = null;
-
-        $query = 'SELECT * FROM `build_meta` WHERE `build_id` = :build_id' . $add;
+        $query = 'SELECT * FROM `build_meta` WHERE `build_id` = :build_id LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':build_id', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -130,6 +91,8 @@ class BuildMetaStoreBase extends Store
                 return new BuildMeta($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
 
             return array('items' => $rtn, 'count' => $count);
         } else {

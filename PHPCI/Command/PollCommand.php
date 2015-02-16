@@ -14,9 +14,7 @@ use b8\HttpClient;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 use PHPCI\Model\Build;
@@ -60,7 +58,7 @@ class PollCommand extends Command
 
         if (!$token) {
             $this->logger->error(Lang::get('no_token'));
-            exit();
+            return;
         }
 
         $buildStore = Factory::getStore('Build');

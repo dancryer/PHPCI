@@ -68,7 +68,9 @@ class HomeController extends \PHPCI\Controller
     */
     public function latest()
     {
-        die($this->getLatestBuildsHtml());
+        $this->response->disableLayout();
+        $this->response->setContent($this->getLatestBuildsHtml());
+        return $this->response;
     }
 
     /**
@@ -76,8 +78,10 @@ class HomeController extends \PHPCI\Controller
      */
     public function summary()
     {
+        $this->response->disableLayout();
         $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
-        die($this->getSummaryHtml($projects));
+        $this->response->setContent($this->getSummaryHtml($projects));
+        return $this->response;
     }
 
     /**

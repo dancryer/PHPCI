@@ -15,11 +15,8 @@ use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
 use PHPCI\Logging\OutputLogHandler;
-use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
 use PHPCI\Builder;
@@ -47,7 +44,7 @@ class RunCommand extends Command
     /**
      * @var int
      */
-    protected $maxBuilds = null;
+    protected $maxBuilds = 100;
 
     /**
      * @var bool
@@ -143,7 +140,7 @@ class RunCommand extends Command
         $this->maxBuilds = (int)$numBuilds;
     }
 
-    public function setIsDaemon($fromDaemon)
+    public function setDaemon($fromDaemon)
     {
         $this->isFromDaemon = (bool)$fromDaemon;
     }

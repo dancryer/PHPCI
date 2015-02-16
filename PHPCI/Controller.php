@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use b8\Config;
+use b8\Exception\HttpException\ForbiddenException;
 use b8\Http\Request;
 use b8\Http\Response;
 use b8\View;
@@ -90,6 +91,10 @@ class Controller extends \b8\Controller
     {
         $this->setView($action);
         $response = parent::handleAction($action, $actionParams);
+
+        if ($response instanceof Response) {
+            return $response;
+        }
 
         if (is_string($response)) {
             $this->controllerView->content = $response;

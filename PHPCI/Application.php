@@ -14,7 +14,6 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
-use PHPCI\Model\Build;
 
 /**
 * PHPCI Front Controller
@@ -58,7 +57,7 @@ class Application extends b8\Application
         $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession() && !$skipAuth()) {
+            if (!$skipValidation && !$validateSession() && (!is_callable($skipAuth) || !$skipAuth())) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');

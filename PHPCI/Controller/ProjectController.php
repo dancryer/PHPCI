@@ -253,7 +253,7 @@ class ProjectController extends PHPCI\Controller
         $values['key'] = $values['ssh_private_key'];
         $values['pubkey'] = $values['ssh_public_key'];
 
-        if ($values['type'] == "gitlab") {
+        if ($values['type'] == "gitlab" || $values['type'] == "beanstalk") {
             $accessInfo = $project->getAccessInformation();
             $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
             $values['reference'] = $reference;

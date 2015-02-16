@@ -20,11 +20,24 @@ class ProjectStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\Project';
     protected $primaryKey  = 'id';
 
+    /**
+     * Returns a Project model by primary key.
+     * @param mixed $value
+     * @param string $useConnection
+     * @return \@appNamespace\Model\Project|null
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Returns a Project model by Id.
+     * @param mixed $value
+     * @param string $useConnection
+     * @throws HttpException
+     * @return \@appNamespace\Model\Project|null
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +57,14 @@ class ProjectStoreBase extends Store
         return null;
     }
 
+    /**
+     * Returns an array of Project models by Title.
+     * @param mixed $value
+     * @param int $limit
+     * @param string $useConnection
+     * @throws HttpException
+     * @return array
+     */
     public function getByTitle($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {

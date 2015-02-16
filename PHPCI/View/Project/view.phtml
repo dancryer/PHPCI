@@ -83,6 +83,7 @@
                             $url	= PHPCI_URL . 'webhook/bitbucket/' . $project->getId();
                             Lang::out('webhooks_help_bitbucket', $project->getReference());
                             break;
+
                         case 'beanstalk':
                             $url	= PHPCI_URL . 'webhook/beanstalk/' . $project->getId();
                             Lang::out('webhooks_help_beanstalk', $project->getReference());

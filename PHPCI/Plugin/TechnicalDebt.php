@@ -128,9 +128,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $this->phpci->logExecOutput(false);
 
-        $ignores = $this->ignore;
-        $ignores[] = 'phpci.yml';
-
         list($errorCount, $data) = $this->getErrorList();
 
         $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
@@ -155,6 +152,9 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $dirIterator = new \RecursiveDirectoryIterator($this->directory);
         $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
         $files = [];
+
+        $ignores = $this->ignore;
+        $ignores[] = 'phpci.yml';
 
         foreach ($iterator as $file) {
             $filePath = $file->getRealPath();

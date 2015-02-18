@@ -183,6 +183,7 @@ PHPCI',
     'phpmd' => 'PHP Mess Detector',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHP Unit',
+    'technical_debt' => 'Technical Debt',
 
     'file' => 'File',
     'line' => 'Line',

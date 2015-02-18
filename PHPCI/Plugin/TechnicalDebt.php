@@ -126,6 +126,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
+        $success = true;
         $this->phpci->logExecOutput(false);
 
         list($errorCount, $data) = $this->getErrorList();

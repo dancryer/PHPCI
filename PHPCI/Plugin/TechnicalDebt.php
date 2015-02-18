@@ -122,7 +122,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-    * Runs in a specified directory, to a specified standard.
+    * Runs the plugin
     */
     public function execute()
     {
@@ -131,12 +131,33 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $ignores = $this->ignore;
         $ignores[] = 'phpci.yml';
 
+        list($errorCount, $data) = $this->getErrorList();
+
+        $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
+
+        $this->build->storeMeta('technical_debt-warnings', $errorCount);
+        $this->build->storeMeta('technical_debt-data', $data);
+
+        if ($this->allowed_errors != -1 && $errorCount > $this->allowed_errors) {
+            $success = false;
+        }
+
+        return $success;
+    }
+
+    /**
+     * Gets the number and list of errors returned from the search
+     *
+     * @return array
+     */
+    public function getErrorList()
+    {
         $dirIterator = new \RecursiveDirectoryIterator($this->directory);
         $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
         $files = [];
 
         foreach ($iterator as $file) {
-        $filePath = $file->getRealPath();
+            $filePath = $file->getRealPath();
             $skipFile = false;
             foreach ($ignores as $ignore) {
                 if (stripos($filePath, $ignore) !== false) {
@@ -180,16 +201,5 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 }
             }
         }
-
-        $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
-
-        $this->build->storeMeta('technical_debt-warnings', $errorCount);
-        $this->build->storeMeta('technical_debt-data', $data);
-
-        if ($this->allowed_errors != -1 && $errorCount > $this->allowed_errors) {
-            $success = false;
-        }
-
-        return $success;
     }
 }

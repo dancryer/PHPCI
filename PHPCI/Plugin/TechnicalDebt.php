@@ -63,6 +63,15 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected $searches;
 
+
+    /**
+     * Check if this plugin can be executed.
+     *
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
@@ -99,6 +108,10 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
     }
 
+    /**
+     * Handle this plugin's options.
+     * @param $options
+     */
     protected function setOptions($options)
     {
         foreach (array('directory', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
@@ -123,7 +136,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $files = [];
 
         foreach ($iterator as $file) {
-		$filePath = $file->getRealPath();
+        $filePath = $file->getRealPath();
             $skipFile = false;
             foreach ($ignores as $ignore) {
                 if (stripos($filePath, $ignore) !== false) {
@@ -168,7 +181,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             }
         }
 
-	    $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
+        $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
 
         $this->build->storeMeta('technical_debt-warnings', $errorCount);
         $this->build->storeMeta('technical_debt-data', $data);
@@ -180,4 +193,3 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         return $success;
     }
 }
-

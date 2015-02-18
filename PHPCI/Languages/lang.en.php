@@ -184,6 +184,7 @@ PHPCI',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHP Unit',
     'technical_debt' => 'Technical Debt',
+    'behat' => 'Behat',
 
     'file' => 'File',
     'line' => 'Line',

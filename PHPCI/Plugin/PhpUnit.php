@@ -162,7 +162,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         $tapString = $this->phpci->getLastOutput();
-        $tapString = mb_convert_encoding( $tapString, "UTF-8", "ISO-8859-1" );
+        $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
 
         try {
             $tapParser = new TapParser($tapString);

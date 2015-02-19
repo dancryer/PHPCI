@@ -39,33 +39,22 @@ class SshKey
 
         $return = array('private_key' => '', 'public_key' => '');
 
-        if ($this->canGenerateKeys()) {
-            shell_exec('ssh-keygen -q -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
+        $output = @shell_exec('ssh-keygen -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
 
-            $pub = file_get_contents($keyFile . '.pub');
-            $prv = file_get_contents($keyFile);
+        if (!empty($output)) {
+	        $pub = file_get_contents($keyFile . '.pub');
+	        $prv = file_get_contents($keyFile);
 
-            if (!empty($pub)) {
-                $return['public_key'] = $pub;
-            }
+	        if (!empty($pub)) {
+	            $return['public_key'] = $pub;
+	        }
 
-            if (!empty($prv)) {
-                $return['private_key'] = $prv;
-            }
+	        if (!empty($prv)) {
+	            $return['private_key'] = $prv;
+	        }
         }
 
         return $return;
     }
 
-    /**
-     * Checks whether or not we can generate keys, by quietly test running ssh-keygen.
-     * @return bool
-     */
-    public function canGenerateKeys()
-    {
-        $keygen = @shell_exec('ssh-keygen --help');
-        $canGenerateKeys = !empty($keygen);
-
-        return $canGenerateKeys;
-    }
 }

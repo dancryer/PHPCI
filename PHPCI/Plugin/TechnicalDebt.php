@@ -202,5 +202,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 }
             }
         }
+
+        return array($errorCount, $data);
     }
 }

@@ -10,6 +10,8 @@
 namespace PHPCI\Model\Build;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Diff;
+use PHPCI\Helper\Github;
 use PHPCI\Model\Build\RemoteGitBuild;
 
 /**
@@ -166,5 +168,57 @@ class GithubBuild extends RemoteGitBuild
         }
 
         return $success;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reportError(Builder $builder, $file, $line, $message)
+    {
+        $diffLineNumber = $this->getDiffLineNumber($builder, $file, $line);
+
+        if (!is_null($diffLineNumber)) {
+            $helper = new Github();
+
+            $repo = $this->getProject()->getReference();
+            $prNumber = $this->getExtra('pull_request_number');
+            $commit = $this->getCommitId();
+
+            if (!empty($prNumber)) {
+                $helper->createPullRequestComment($repo, $prNumber, $commit, $file, $diffLineNumber, $message);
+            } else {
+                $helper->createCommitComment($repo, $commit, $file, $diffLineNumber, $message);
+            }
+        }
+    }
+
+    /**
+     * Uses git diff to figure out what the diff line position is, based on the error line number.
+     * @param Builder $builder
+     * @param $file
+     * @param $line
+     * @return int|null
+     */
+    protected function getDiffLineNumber(Builder $builder, $file, $line)
+    {
+        $builder->logExecOutput(false);
+
+        $prNumber = $this->getExtra('pull_request_number');
+        $path = $builder->buildPath;
+
+        if (!empty($prNumber)) {
+            $builder->executeCommand('cd %s && git diff origin/%s "%s"', $path, $this->getBranch(), $file);
+        } else {
+            $builder->executeCommand('cd %s && git diff %s^! "%s"', $path, $this->getCommitId(), $file);
+        }
+
+        $builder->logExecOutput(true);
+
+        $diff = $builder->getLastOutput();
+
+        $helper = new Diff();
+        $lines = $helper->getLinePositions($diff);
+
+        return $lines[$line];
     }
 }

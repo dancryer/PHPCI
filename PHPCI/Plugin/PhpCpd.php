@@ -140,6 +140,17 @@ class PhpCpd implements \PHPCI\Plugin
                     'line_end' => (int) $file['line'] + (int) $duplication['lines'],
                     'code' => (string) $duplication->codefragment
                 );
+
+                $message = <<<CPD
+Copy and paste detected:
+
+```
+{$duplication->codefragment}
+```
+CPD;
+
+                $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
+
             }
 
             $warnings++;

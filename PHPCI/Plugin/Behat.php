@@ -100,7 +100,7 @@ class Behat implements \PHPCI\Plugin
 
         $errorCount = 0;
         $storeFailures = false;
-        $data = [];
+        $data = array();
 
         foreach ($lines as $line) {
             $line = trim($line);
@@ -119,6 +119,8 @@ class Behat implements \PHPCI\Plugin
                     'file' => $lineParts[0],
                     'line' => $lineParts[1]
                 );
+
+                $this->build->reportError($this->phpci, $lineParts[0], $lineParts[1], 'Behat scenario failed.');
             }
         }
 

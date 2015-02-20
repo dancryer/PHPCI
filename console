@@ -13,6 +13,7 @@ define('PHPCI_IS_CONSOLE', true);
 require('bootstrap.php');
 
 use PHPCI\Command\RunCommand;
+use PHPCI\Command\RebuildCommand;
 use PHPCI\Command\GenerateCommand;
 use PHPCI\Command\UpdateCommand;
 use PHPCI\Command\InstallCommand;
@@ -25,6 +26,7 @@ use b8\Store\Factory;
 $application = new Application();
 
 $application->add(new RunCommand($loggerConfig->getFor('RunCommand')));
+$application->add(new RebuildCommand($loggerConfig->getFor('RunCommand')));
 $application->add(new InstallCommand);
 $application->add(new UpdateCommand($loggerConfig->getFor('UpdateCommand')));
 $application->add(new GenerateCommand);

@@ -48,27 +48,20 @@ class Executor
         foreach ($config[$stage] as $plugin => $options) {
             $this->logger->log(Lang::get('running_plugin', $plugin));
 
-            // Is this plugin allowed to fail?
-            if ($stage == 'test' && !isset($options['allow_failures'])) {
-                $options['allow_failures'] = false;
-            }
-
             // Try and execute it:
             if ($this->executePlugin($plugin, $options)) {
 
                 // Execution was successful:
                 $this->logger->logSuccess(Lang::get('plugin_success'));
 
-            } else {
+            } elseif ($stage == 'setup') {
                 // If we're in the "setup" stage, execution should not continue after
                 // a plugin has failed:
-                if ($stage == 'setup') {
-                    throw new \Exception('Plugin failed: ' . $plugin);
-                }
-
+                throw new \Exception('Plugin failed: ' . $plugin);
+            } else {
                 // If we're in the "test" stage and the plugin is not allowed to fail,
                 // then mark the build as failed:
-                if ($stage == 'test' && !$options['allow_failures']) {
+                if ($stage == 'test' && (!isset($options['allow_failures']) || !$options['allow_failures'])) {
                     $success = false;
                 }
 

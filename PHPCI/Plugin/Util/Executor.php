@@ -60,6 +60,11 @@ class Executor
                 $this->logger->logSuccess(Lang::get('plugin_success'));
 
             } else {
+                // If we're in the "setup" stage, execution should not continue after
+                // a plugin has failed:
+                if ($stage == 'setup') {
+                    throw new \Exception('Plugin failed: ' . $plugin);
+                }
 
                 // If we're in the "test" stage and the plugin is not allowed to fail,
                 // then mark the build as failed:

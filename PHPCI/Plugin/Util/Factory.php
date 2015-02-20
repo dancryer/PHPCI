@@ -76,11 +76,11 @@ class Factory
      * be passed along with any resources registered with the factory.
      *
      * @param $className
-     * @param array $options
+     * @param array|null $options
      * @throws \InvalidArgumentException if $className doesn't represent a valid plugin
      * @return \PHPCI\Plugin
      */
-    public function buildPlugin($className, array $options = array())
+    public function buildPlugin($className, $options = array())
     {
         $this->currentPluginOptions = $options;
 

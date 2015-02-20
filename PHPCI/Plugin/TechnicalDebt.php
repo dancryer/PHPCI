@@ -194,11 +194,16 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
                     $errorCount++;
                     $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");
+
+                    $fileName = str_replace($this->directory, '', $file);
                     $data[] = array(
-                        'file' => str_replace($this->directory, '', $file),
+                        'file' => $fileName,
                         'line' => $lineNumber,
                         'message' => $content
                     );
+
+                    $this->build->reportError($this->phpci, $fileName, $lineNumber, $content);
+
                 }
             }
         }

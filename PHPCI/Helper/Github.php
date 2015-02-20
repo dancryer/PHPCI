@@ -108,4 +108,74 @@ class Github
 
         return $rtn;
     }
+
+    /**
+     * Create a comment on a specific file (and commit) in a Github Pull Request.
+     * @param $repo
+     * @param $pullId
+     * @param $commitId
+     * @param $file
+     * @param $line
+     * @param $comment
+     * @return null
+     */
+    public function createPullRequestComment($repo, $pullId, $commitId, $file, $line, $comment)
+    {
+        $token = Config::getInstance()->get('phpci.github.token');
+
+        if (!$token) {
+            return null;
+        }
+
+        $url = '/repos/' . strtolower($repo) . '/pulls/' . $pullId . '/comments';
+
+        $params = array(
+            'body' => $comment,
+            'commit_id' => $commitId,
+            'path' => $file,
+            'position' => $line,
+        );
+
+        $http = new HttpClient('https://api.github.com');
+        $http->setHeaders(array(
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . base64_encode($token . ':x-oauth-basic'),
+        ));
+
+        $http->post($url, json_encode($params));
+    }
+
+    /**
+     * Create a comment on a Github commit.
+     * @param $repo
+     * @param $commitId
+     * @param $file
+     * @param $line
+     * @param $comment
+     * @return null
+     */
+    public function createCommitComment($repo, $commitId, $file, $line, $comment)
+    {
+        $token = Config::getInstance()->get('phpci.github.token');
+
+        if (!$token) {
+            return null;
+        }
+
+        $url = '/repos/' . strtolower($repo) . '/commits/' . $commitId . '/comments';
+
+        $params = array(
+            'body' => $comment,
+            'path' => $file,
+            'position' => $line,
+        );
+
+        $http = new HttpClient('https://api.github.com');
+        $http->setHeaders(array(
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . base64_encode($token . ':x-oauth-basic'),
+        ));
+
+        $http->post($url, json_encode($params));
+    }
 }

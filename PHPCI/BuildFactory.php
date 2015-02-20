@@ -61,6 +61,9 @@ class BuildFactory
             case 'hg':
                 $type = 'MercurialBuild';
                 break;
+            case 'svn':
+                $type = 'SubversionBuild';
+                break;
         }
 
         $type = '\\PHPCI\\Model\\Build\\' . $type;

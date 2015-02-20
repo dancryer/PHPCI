@@ -311,10 +311,11 @@ class ProjectController extends PHPCI\Controller
             'remote' => Lang::get('remote'),
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
+            'svn'    => Lang::get('svn'),
             );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
-        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|svn)');
         $field->setOptions($options);
         $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);

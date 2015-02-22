@@ -56,5 +56,4 @@ class SshKey
 
         return $return;
     }
-
 }

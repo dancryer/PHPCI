@@ -42,16 +42,16 @@ class SshKey
         $output = @shell_exec('ssh-keygen -t rsa -b 2048 -f '.$keyFile.' -N "" -C "deploy@phpci"');
 
         if (!empty($output)) {
-	        $pub = file_get_contents($keyFile . '.pub');
-	        $prv = file_get_contents($keyFile);
+            $pub = file_get_contents($keyFile . '.pub');
+            $prv = file_get_contents($keyFile);
 
-	        if (!empty($pub)) {
-	            $return['public_key'] = $pub;
-	        }
+            if (!empty($pub)) {
+                $return['public_key'] = $pub;
+            }
 
-	        if (!empty($prv)) {
-	            $return['private_key'] = $prv;
-	        }
+            if (!empty($prv)) {
+                $return['private_key'] = $prv;
+            }
         }
 
         return $return;

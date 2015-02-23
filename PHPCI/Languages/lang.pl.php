@@ -114,6 +114,7 @@ od wybranego kodu źródłowego platformy hostingowej.',
 (jeśli nie możesz dodać pliku phpci.yml do repozytorium projektu)',
     'default_branch' => 'Domyślna nazwa gałęzi',
     'allow_public_status' => 'Włączyć status publiczny dla tego projektu?',
+    'archived' => 'Archived',
     'save_project' => 'Zachowaj Projekt',
 
     'error_mercurial' => 'URL repozytorium Mercurialnego powinno zaczynać się od http:// and https://',

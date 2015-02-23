@@ -113,6 +113,7 @@ PHPCI',
     'default_branch' => 'Nome del branch di default',
     'allow_public_status' => 'Vuoi rendere pubblica la pagina dello stato e l\'immagine per questo progetto?',
     'save_project' => 'Salva il Progetto',
+    'archived' => 'Archived',
 
     'error_mercurial' => 'L\'URL del repository Mercurial URL deve iniziare con http:// o https://',
     'error_remote' => 'L\'URL del repository deve iniziare con git://, http:// o https://',

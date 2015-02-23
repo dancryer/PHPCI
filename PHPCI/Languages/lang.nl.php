@@ -113,6 +113,7 @@ van je gekozen source code hosting platform',
 (indien je geen phpci.yml bestand aan de project repository kan toevoegen)',
     'default_branch' => 'Standaard branch naam',
     'allow_public_status' => 'Publieke statuspagina en afbeelding beschikbaar maken voor dit project?',
+    'archived' => 'Archived',
     'save_project' => 'Project opslaan',
 
     'error_mercurial' => 'Mercurial repository URL dient te starten met http:// of https://',

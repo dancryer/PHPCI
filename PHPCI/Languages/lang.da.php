@@ -112,6 +112,7 @@ i din foretrukne hosting-platform.',
 (hvis du ikke har mulighed for at tilføje en phpci.yml fil i projektets repository)',
     'default_branch' => 'Default branch navn',
     'allow_public_status' => 'Tillad offentlig status-side og -billede for dette projekt?',
+    'archived' => 'Archived',
     'save_project' => 'Gem Projekt',
 
     'error_mercurial' => 'Mercurial repository-URL skal starte med http:// eller https://',

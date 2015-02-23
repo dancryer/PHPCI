@@ -62,9 +62,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         $this->logger = $logger;
         $this->quiet = $quiet;
         $this->verbose = $verbose;
-
         $this->lastOutput = array();
-
         $this->rootDir = $rootDir;
     }
 
@@ -92,7 +90,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
-        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+        $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {
             fclose($pipes[0]);
@@ -218,5 +216,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
             }
         }
         return null;
+    }
+
+    /**
+     * Set the buildPath property.
+     * @param string $path
+     */
+    public function setBuildPath($path)
+    {
+        $this->buildPath = $path;
     }
 }

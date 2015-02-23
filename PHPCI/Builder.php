@@ -296,6 +296,8 @@ class Builder implements LoggerAwareInterface
             PHPCI_URL
         );
 
+        $this->commandExecutor->setBuildPath($this->buildPath);
+
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {
             throw new \Exception(Lang::get('could_not_create_working'));

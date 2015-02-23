@@ -92,7 +92,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
-        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+        $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {
             fclose($pipes[0]);
@@ -218,5 +218,13 @@ abstract class BaseCommandExecutor implements CommandExecutor
             }
         }
         return null;
+    }
+
+    /**
+     * The build path should be update in every build
+     * @param  string $path
+     */
+    public function setBuildPath($path){
+        $this->buildPath=$path;
     }
 }

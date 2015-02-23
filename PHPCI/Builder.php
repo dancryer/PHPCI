@@ -301,6 +301,7 @@ class Builder implements LoggerAwareInterface
             throw new \Exception(Lang::get('could_not_create_working'));
         }
 
+        $this->commandExecutor->setBuildPath($this->buildPath);
         // Does the project's phpci.yml request verbose mode?
         if (!isset($this->config['build_settings']['verbose']) || !$this->config['build_settings']['verbose']) {
             $this->verbose = false;

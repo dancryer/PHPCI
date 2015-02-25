@@ -9,6 +9,7 @@
 
 namespace PHPCI\Command;
 
+use b8\Config;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
@@ -59,19 +60,9 @@ class UpdateCommand extends Command
 
     protected function verifyInstalled(OutputInterface $output)
     {
-        if (!file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
-            $output->writeln('<error>'.Lang::get('not_installed').'</error>');
-            $output->writeln('<error>'.Lang::get('install_instead').'</error>');
-            return false;
-        }
+        $config = Config::getInstance();
+        $phpciUrl = $config->get('phpci.url');
 
-        $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
-        if (empty($content)) {
-            $output->writeln('<error>'.Lang::get('not_installed').'</error>');
-            $output->writeln('<error>'.Lang::get('install_instead').'</error>');
-            return false;
-        }
-
-        return true;
+        return !empty($phpciUrl);
     }
 }

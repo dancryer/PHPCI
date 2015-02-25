@@ -40,7 +40,7 @@ class SettingsController extends Controller
         parent::init();
 
         $parser         = new Parser();
-        $yaml           = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+        $yaml           = file_get_contents(PHPCI_CONFIG_FILE);
         $this->settings = $parser->parse($yaml);
     }
 
@@ -76,6 +76,7 @@ class SettingsController extends Controller
             $authSettings = $this->settings['phpci']['authentication_settings'];
         }
 
+        $this->view->configFile = PHPCI_CONFIG_FILE;
         $this->view->basicSettings = $this->getBasicForm($basicSettings);
         $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->github = $this->getGithubForm();
@@ -241,7 +242,7 @@ class SettingsController extends Controller
     {
         $dumper = new Dumper();
         $yaml   = $dumper->dump($this->settings, 4);
-        file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
+        file_put_contents(PHPCI_CONFIG_FILE, $yaml);
 
         if (error_get_last()) {
             $error_get_last = error_get_last();
@@ -386,7 +387,7 @@ class SettingsController extends Controller
      */
     protected function canWriteConfig()
     {
-        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
+        return is_writeable(PHPCI_CONFIG_FILE);
     }
 
     /**

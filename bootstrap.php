@@ -25,6 +25,8 @@ if (!empty($configEnv)) {
     $configFile = $configEnv;
 }
 
+define('PHPCI_CONFIG_FILE', $configFile);
+
 // If we don't have a config file at all, fail at this point and tell the user to install:
 if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
     $message = 'PHPCI has not yet been installed - Please use the command "./console phpci:install" ';

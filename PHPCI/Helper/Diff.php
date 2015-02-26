@@ -26,11 +26,15 @@ class Diff
      */
     public function getLinePositions($diff)
     {
+        if (empty($diff)) {
+            return null;
+        }
+
         $rtn = array();
 
         $diffLines = explode(PHP_EOL, $diff);
 
-        while (1) {
+        while (count($diffLines)) {
             $line = array_shift($diffLines);
 
             if (substr($line, 0, 2) == '@@') {

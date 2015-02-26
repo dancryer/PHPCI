@@ -16,16 +16,12 @@ if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-// If the PHPCI config file is not where we expect it, try looking in
-// env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
-
 $configEnv = getenv('phpci_config_file');
-if (!empty($configEnv)) {
+
+if (!empty($configEnv) && file_exists($configEnv)) {
     $configFile = $configEnv;
 }
-
-define('PHPCI_CONFIG_FILE', $configFile);
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
 if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {

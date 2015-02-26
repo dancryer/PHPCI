@@ -160,7 +160,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-
                 $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;

@@ -50,10 +50,8 @@ class Executor
 
             // Try and execute it:
             if ($this->executePlugin($plugin, $options)) {
-
                 // Execution was successful:
                 $this->logger->logSuccess(Lang::get('plugin_success'));
-
             } elseif ($stage == 'setup') {
                 // If we're in the "setup" stage, execution should not continue after
                 // a plugin has failed:

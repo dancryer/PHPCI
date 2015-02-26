@@ -210,7 +210,6 @@ class PhpTalLint implements PHPCI\Plugin
         $output = $this->phpci->getLastOutput();
 
         if (preg_match('/Found (.+?) (error|warning)/i', $output, $matches)) {
-
             $rows = explode(PHP_EOL, $output);
 
             unset($rows[0]);

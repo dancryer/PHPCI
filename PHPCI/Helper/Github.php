@@ -48,24 +48,18 @@ class Github
         $res = $http->get($url, $params);
 
         foreach ($res['body'] as $item) {
-
             $results[] = $item;
-
         }
 
         foreach ($res['headers'] as $header) {
-
             if (preg_match('/^Link: <([^>]+)>; rel="next"/', $header, $r)) {
-
                 $host = parse_url($r[1]);
 
                 parse_str($host['query'], $params);
                 $results = $this->makeRecursiveRequest($host['path'], $params, $results);
 
                 break;
-
             }
-
         }
 
         return $results;

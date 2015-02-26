@@ -17,6 +17,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
+use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 /**
 * Build Controller - Allows users to run and view builds.
@@ -198,11 +199,8 @@ class BuildController extends \PHPCI\Controller
     */
     protected function cleanLog($log)
     {
-        $log = str_replace('[0;32m', '<span style="color: green">', $log);
-        $log = str_replace('[0;31m', '<span style="color: red">', $log);
-        $log = str_replace('[0m', '</span>', $log);
-
-        return $log;
+	$converter = new AnsiToHtmlConverter();
+	return $converter->convert($log);
     }
 
     /**

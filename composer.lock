@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4ae188c6be1c1388de6271a3b0e0475d",
+    "hash": "5fc23800ea77b50b496d34f7aa5cf6b3",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -314,6 +314,50 @@
                 "phinx"
             ],
             "time": "2015-02-23 16:38:12"
+        },
+        {
+            "name": "sensiolabs/ansi-to-html",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sensiolabs/ansi-to-html.git",
+                "reference": "92d2ef7ffba5418be060d8ba8adaf7223d741f93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sensiolabs/ansi-to-html/zipball/92d2ef7ffba5418be060d8ba8adaf7223d741f93",
+                "reference": "92d2ef7ffba5418be060d8ba8adaf7223d741f93",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "twig/twig": "Provides nice templating features"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "SensioLabs\\AnsiConverter": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "A library to convert a text with ANSI codes to HTML",
+            "time": "2014-08-01 14:02:39"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2030,6 +2074,7 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.8",
         "ext-pdo": "*",

@@ -40,7 +40,8 @@
         "psr/log": "~1.0",
         "monolog/monolog": "~1.6",
         "pimple/pimple": "~1.1",
-        "robmorgan/phinx": "~0.4"
+        "robmorgan/phinx": "~0.4",
+        "sensiolabs/ansi-to-html": "~1.1"
     },
 
     "require-dev": {

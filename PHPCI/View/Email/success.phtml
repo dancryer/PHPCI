@@ -1,3 +1,5 @@
+<?php use PHPCI\Helper\AnsiConverter; ?>
+<style><?php include(__DIR__ . '/../../../public/assets/css/ansi-colors.css'); ?></style>
 <div style="background: #090; padding: 25px;">
     <div style="background: #fff; padding: 15px; border-radius: 5px">
         <div style="font-family: arial, verdana, sans-serif; font-size: 25px; margin-bottom: 15px">
@@ -8,7 +10,7 @@
             <p>Your commit <strong><?php print $build->getCommitId(); ?></strong> genrate a successfull build in project <strong><?php print $project->getTitle(); ?></strong>.</p>
 
             <p style="margin: 10px; background: #fafafa"><?php print $build->getCommitMessage(); ?></p>
-            <pre><?php print $build->getLog(); ?></pre>
+            <pre class="ansi_color_bg_black ansi_color_fg_white" style="padding: 4px"><?php print AnsiConverter::convert($build->getLog()); ?></pre>
             <p>You can review <a href="<?php print $build->getCommitLink(); ?>">your commit</a> and the <a href="<?php print PHPCI_URL . 'build/view/' . $build->getId(); ?>">build log</a>.</p>
         </div>
     </div>

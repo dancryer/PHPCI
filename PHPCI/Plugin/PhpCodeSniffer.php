@@ -237,6 +237,8 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $fileName = str_replace($this->phpci->buildPath, '', $fileName);
 
             foreach ($file['messages'] as $message) {
+                $this->build->reportError($this->phpci, $fileName, $message['line'], 'PHPCS: ' . $message['message']);
+
                 $rtn[] = array(
                     'file' => $fileName,
                     'line' => $message['line'],

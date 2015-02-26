@@ -16,12 +16,10 @@ if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-// If the PHPCI config file is not where we expect it, try looking in
-// env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
-
 $configEnv = getenv('phpci_config_file');
-if (!empty($configEnv)) {
+
+if (!empty($configEnv) && file_exists($configEnv)) {
     $configFile = $configEnv;
 }
 

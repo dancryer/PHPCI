@@ -148,7 +148,6 @@ class Campfire implements \PHPCI\Plugin
             return json_decode($output);
         }
         // Simple 200 OK response (such as for joining a room)
-        // TODO: check for other result codes here
         return true;
     }
 }

@@ -134,7 +134,7 @@
                 <div class="pull-left image">
                     <img src="https://www.gravatar.com/avatar/<?php print md5($this->User()->getEmail()); ?>?d=mm" class="img-circle" alt="<?php print $this->User()->getName(); ?>" />
                 </div>
-                <div class="pull-left info">
+                <div class="info">
                     <p><?php Lang::out('hello_name', $this->User()->getName()); ?></p>
                 </div>
             </div>
@@ -147,7 +147,7 @@
                         <i class="fa fa-dashboard"></i> <span><?php Lang::out('dashboard'); ?></span>
                     </a>
                 </li>
-
+                
                 <?php if ($this->User()->getIsAdmin()): ?>
                     <li class="treeview">
                         <a href="#">
@@ -241,6 +241,12 @@
                         </ul>
                     </li>
                 <?php endif; ?>
+
+                <li class="archive">
+                    <a href="<?php print PHPCI_URL; ?>?archived">
+                        <i class="fa fa-archive"></i> <span><?php Lang::out('archived'); ?></span>
+                    </a>
+                </li>
 
             </ul>
         </section>

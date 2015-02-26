@@ -9,8 +9,9 @@ var PHPCI = {
         $(document).ready(function () {
             // Format datetimes
             $('time[datetime]').each(function() {
-                var $this = $(this);
-                $this.text(moment(this.dateTime).format($this.data('format') || 'lll'));
+                var thisDate = $(this).attr('datetime');
+                var formattedDate = moment(thisDate).format($(this).data('format') || 'lll');
+                $(this).text(formattedDate);
             });
 
             // Update latest builds every 5 seconds:
@@ -33,7 +34,7 @@ var PHPCI = {
             url: PHPCI_URL + 'build/latest',
 
             success: function (data) {
-                $(window).trigger('builds-updated', [JSON.parse(data)]);
+                $(window).trigger('builds-updated', [data]);
             },
 
             error: PHPCI.handleFailedAjax

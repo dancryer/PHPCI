@@ -11,7 +11,7 @@ $strings = array(
 
     'language_name' => 'Italiano',
     'language' => 'Lingua',
-    
+
     // Log in:
     'log_in_to_phpci' => 'Accedi a PHPCI',
     'login_error' => 'Indirizzo email o password errati',
@@ -113,6 +113,7 @@ PHPCI',
     'default_branch' => 'Nome del branch di default',
     'allow_public_status' => 'Vuoi rendere pubblica la pagina dello stato e l\'immagine per questo progetto?',
     'save_project' => 'Salva il Progetto',
+    'archived' => 'Archived',
 
     'error_mercurial' => 'L\'URL del repository Mercurial URL deve iniziare con http:// o https://',
     'error_remote' => 'L\'URL del repository deve iniziare con git://, http:// o https://',
@@ -169,6 +170,7 @@ PHPCI',
     'lines_of_code' => 'Linee di codice',
     'build_log' => 'Log della build',
     'quality_trend' => 'Trend della qualità',
+    'codeception_errors' => 'Errori di Codeception',
     'phpmd_warnings' => 'Avvisi di PHPMD',
     'phpcs_warnings' => 'Avvisi di PHPCS',
     'phpcs_errors' => 'Errori di PHPCS',
@@ -177,6 +179,7 @@ PHPCI',
     'phpdoccheck_warnings' => 'Docblocks mancanti',
     'issues' => 'Segnalazioni',
 
+    'codeception' => 'Codeception',
     'phpcpd' => 'PHP Copy/Paste Detector',
     'phpcs' => 'PHP Code Sniffer',
     'phpdoccheck' => 'Docblocks mancanti',

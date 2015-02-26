@@ -13,15 +13,12 @@ use Exception;
 use PDO;
 
 use b8\Config;
-use b8\Database;
 use b8\Store\Factory;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
 use PHPCI\Service\UserService;
 
 /**
@@ -59,7 +56,9 @@ class InstallCommand extends Command
     {
         $this->configFilePath = $input->getOption('config-path');
 
-        $this->verifyNotInstalled($output);
+        if (!$this->verifyNotInstalled($output)) {
+            return;
+        }
 
         $output->writeln('');
         $output->writeln('<info>******************</info>');
@@ -96,7 +95,7 @@ class InstallCommand extends Command
 
         $this->writeConfigFile($conf);
         $this->setupDatabase($output);
-        $admin = $this->getAdminInforamtion($input, $output);
+        $admin = $this->getAdminInformation($input, $output);
         $this->createAdminUser($admin, $output);
     }
 
@@ -161,7 +160,7 @@ class InstallCommand extends Command
      * @param OutputInterface $output
      * @return array
      */
-    protected function getAdminInforamtion(InputInterface $input, OutputInterface $output)
+    protected function getAdminInformation(InputInterface $input, OutputInterface $output)
     {
         $admin = array();
 
@@ -173,7 +172,7 @@ class InstallCommand extends Command
         // Function to validate mail address.
         $mailValidator = function ($answer) {
             if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception(Lang::get('must_be_valid_email'));
+                throw new \InvalidArgumentException(Lang::get('must_be_valid_email'));
             }
 
             return $answer;
@@ -296,6 +295,8 @@ class InstallCommand extends Command
                 )
             );
 
+            unset($pdo);
+
             return true;
 
         } catch (Exception $ex) {
@@ -346,7 +347,6 @@ class InstallCommand extends Command
         } catch (\Exception $ex) {
             $output->writeln('<error>'.Lang::get('failed_to_create').'</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
-            die;
         }
     }
 
@@ -361,6 +361,7 @@ class InstallCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @return bool
      */
     protected function verifyNotInstalled(OutputInterface $output)
     {
@@ -370,8 +371,10 @@ class InstallCommand extends Command
             if (!empty($content)) {
                 $output->writeln('<error>'.Lang::get('config_exists').'</error>');
                 $output->writeln('<error>'.Lang::get('update_instead').'</error>');
-                die;
+                return false;
             }
         }
+
+        return true;
     }
 }

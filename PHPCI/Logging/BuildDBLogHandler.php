@@ -12,6 +12,7 @@ namespace PHPCI\Logging;
 use b8\Store\Factory;
 use Monolog\Handler\AbstractProcessingHandler;
 use PHPCI\Model\Build;
+use Psr\Log\LogLevel;
 
 /**
  * Class BuildDBLogHandler writes the build log to the database.

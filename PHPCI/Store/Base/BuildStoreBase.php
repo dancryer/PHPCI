@@ -21,10 +21,10 @@ class BuildStoreBase extends Store
     protected $primaryKey  = 'id';
 
     /**
-     * Get a Build by primary key.
-     * @param mixed $value Primary key.
-     * @param string $useConnection Connection to use (read / write)
-     * @return \PHPCI\Model\Build|null
+     * Returns a Build model by primary key.
+     * @param mixed $value
+     * @param string $useConnection
+     * @return \@appNamespace\Model\Build|null
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -32,11 +32,11 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Get a Build by Id.
-     * @param mixed $value.
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\Build|null;
+     * Returns a Build model by Id.
+     * @param mixed $value
+     * @param string $useConnection
+     * @throws HttpException
+     * @return \@appNamespace\Model\Build|null
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -58,30 +58,24 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Get an array of Build by ProjectId.
-     * @param mixed $value.
+     * Returns an array of Build models by ProjectId.
+     * @param mixed $value
      * @param int $limit
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\Build[]
+     * @param string $useConnection
+     * @throws HttpException
+     * @return array
      */
-    public function getByProjectId($value, $limit = null, $useConnection = 'read')
+    public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $add = '';
 
-        if ($limit) {
-            $add .= ' LIMIT ' . $limit;
-        }
-
-        $count = null;
-
-        $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id' . $add;
+        $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':project_id', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -90,6 +84,8 @@ class BuildStoreBase extends Store
                 return new Build($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
 
             return array('items' => $rtn, 'count' => $count);
         } else {
@@ -98,30 +94,24 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Get an array of Build by Status.
-     * @param mixed $value.
+     * Returns an array of Build models by Status.
+     * @param mixed $value
      * @param int $limit
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\Build[]
+     * @param string $useConnection
+     * @throws HttpException
+     * @return array
      */
-    public function getByStatus($value, $limit = null, $useConnection = 'read')
+    public function getByStatus($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $add = '';
 
-        if ($limit) {
-            $add .= ' LIMIT ' . $limit;
-        }
-
-        $count = null;
-
-        $query = 'SELECT * FROM `build` WHERE `status` = :status' . $add;
+        $query = 'SELECT * FROM `build` WHERE `status` = :status LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':status', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -130,6 +120,8 @@ class BuildStoreBase extends Store
                 return new Build($item);
             };
             $rtn = array_map($map, $res);
+
+            $count = count($rtn);
 
             return array('items' => $rtn, 'count' => $count);
         } else {

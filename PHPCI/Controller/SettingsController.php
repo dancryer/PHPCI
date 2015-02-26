@@ -14,7 +14,6 @@ use b8\Form;
 use b8\HttpClient;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
@@ -41,7 +40,7 @@ class SettingsController extends Controller
         parent::init();
 
         $parser         = new Parser();
-        $yaml           = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+        $yaml           = file_get_contents(PHPCI_CONFIG_FILE);
         $this->settings = $parser->parse($yaml);
     }
 
@@ -77,6 +76,7 @@ class SettingsController extends Controller
             $authSettings = $this->settings['phpci']['authentication_settings'];
         }
 
+        $this->view->configFile = PHPCI_CONFIG_FILE;
         $this->view->basicSettings = $this->getBasicForm($basicSettings);
         $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->github = $this->getGithubForm();
@@ -102,13 +102,15 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error                                       = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -123,13 +125,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -143,13 +147,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -162,13 +168,15 @@ class SettingsController extends Controller
         $this->settings['phpci']['basic'] = $this->getParams();
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -183,13 +191,15 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if ($error) {
-            header('Location: ' . PHPCI_URL . 'settings?saved=2');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
         } else {
-            header('Location: ' . PHPCI_URL . 'settings?saved=1');
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
         }
 
-        die;
+        return $response;
     }
 
     /**
@@ -212,14 +222,15 @@ class SettingsController extends Controller
                 $this->settings['phpci']['github']['token'] = $resp['access_token'];
                 $this->storeSettings();
 
-                header('Location: ' . PHPCI_URL . 'settings?linked=1');
-                die;
+                $response = new b8\Http\Response\RedirectResponse();
+                $response->setHeader('Location', PHPCI_URL . 'settings?linked=1');
+                return $response;
             }
         }
 
-
-        header('Location: ' . PHPCI_URL . 'settings?linked=2');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'settings?linked=2');
+        return $response;
     }
 
     /**
@@ -231,7 +242,7 @@ class SettingsController extends Controller
     {
         $dumper = new Dumper();
         $yaml   = $dumper->dump($this->settings, 4);
-        file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
+        file_put_contents(PHPCI_CONFIG_FILE, $yaml);
 
         if (error_get_last()) {
             $error_get_last = error_get_last();
@@ -376,7 +387,7 @@ class SettingsController extends Controller
      */
     protected function canWriteConfig()
     {
-        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
+        return is_writeable(PHPCI_CONFIG_FILE);
     }
 
     /**

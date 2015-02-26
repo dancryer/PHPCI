@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b24b68e21f65f3de2b7c3c84a67a0e6f",
+    "hash": "4ae188c6be1c1388de6271a3b0e0475d",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -255,16 +255,16 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "v0.4.2.1",
+            "version": "v0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/robmorgan/phinx.git",
-                "reference": "1bc1396392d4073b8b29ee5289e445889cbc12b5"
+                "reference": "0d1f9cb9939f65f506a8a3f5fee356764c310fd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/1bc1396392d4073b8b29ee5289e445889cbc12b5",
-                "reference": "1bc1396392d4073b8b29ee5289e445889cbc12b5",
+                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/0d1f9cb9939f65f506a8a3f5fee356764c310fd4",
+                "reference": "0d1f9cb9939f65f506a8a3f5fee356764c310fd4",
                 "shasum": ""
             },
             "require": {
@@ -313,7 +313,7 @@
                 "migrations",
                 "phinx"
             ],
-            "time": "2015-02-08 03:41:44"
+            "time": "2015-02-23 16:38:12"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -935,21 +935,21 @@
         },
         {
             "name": "phpspec/prophecy-phpunit",
-            "version": "v1.0.1",
-            "target-dir": "Prophecy/PhpUnit",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy-phpunit.git",
-                "reference": "640c8c3bc9e02d7878e5ed22b1f79818d6bb6caf"
+                "reference": "0d06c84b9f26aab2b9940354f0fe6037dd9799c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy-phpunit/zipball/640c8c3bc9e02d7878e5ed22b1f79818d6bb6caf",
-                "reference": "640c8c3bc9e02d7878e5ed22b1f79818d6bb6caf",
+                "url": "https://api.github.com/repos/phpspec/prophecy-phpunit/zipball/0d06c84b9f26aab2b9940354f0fe6037dd9799c3",
+                "reference": "0d06c84b9f26aab2b9940354f0fe6037dd9799c3",
                 "shasum": ""
             },
             "require": {
-                "phpspec/prophecy": "~1.0"
+                "php": ">=5.3.3",
+                "phpspec/prophecy": "~1.3"
             },
             "suggest": {
                 "phpunit/phpunit": "if it is not installed globally"
@@ -961,7 +961,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Prophecy\\PhpUnit\\": ""
                 }
             },
@@ -976,12 +976,12 @@
                 }
             ],
             "description": "PhpUnit test case integrating the Prophecy mocking library",
-            "homepage": "http://phpspec.org",
+            "homepage": "http://phpspec.net",
             "keywords": [
                 "phpunit",
                 "prophecy"
             ],
-            "time": "2014-03-03 23:03:12"
+            "time": "2015-02-09 11:20:26"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1812,46 +1812,39 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "1.5.6",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "6f3e42d311b882b25b4d409d23a289f4d3b803d5"
+                "reference": "b301c98f19414d836fdaa678648745fcca5aeb4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/6f3e42d311b882b25b4d409d23a289f4d3b803d5",
-                "reference": "6f3e42d311b882b25b4d409d23a289f4d3b803d5",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/b301c98f19414d836fdaa678648745fcca5aeb4f",
+                "reference": "b301c98f19414d836fdaa678648745fcca5aeb4f",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
                 "php": ">=5.1.2"
             },
-            "suggest": {
-                "phpunit/php-timer": "dev-master"
-            },
             "bin": [
-                "scripts/phpcs"
+                "scripts/phpcs",
+                "scripts/phpcbf"
             ],
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-phpcs-fixer": "2.0.x-dev"
-                }
-            },
             "autoload": {
                 "classmap": [
                     "CodeSniffer.php",
                     "CodeSniffer/CLI.php",
                     "CodeSniffer/Exception.php",
                     "CodeSniffer/File.php",
+                    "CodeSniffer/Fixer.php",
                     "CodeSniffer/Report.php",
                     "CodeSniffer/Reporting.php",
                     "CodeSniffer/Sniff.php",
                     "CodeSniffer/Tokens.php",
                     "CodeSniffer/Reports/",
-                    "CodeSniffer/CommentParser/",
                     "CodeSniffer/Tokenizers/",
                     "CodeSniffer/DocGenerators/",
                     "CodeSniffer/Standards/AbstractPatternSniff.php",
@@ -1877,13 +1870,13 @@
                     "role": "lead"
                 }
             ],
-            "description": "PHP_CodeSniffer tokenises PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
             "homepage": "http://www.squizlabs.com/php-codesniffer",
             "keywords": [
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-12-04 22:32:15"
+            "time": "2015-01-21 22:44:05"
         },
         {
             "name": "symfony/dependency-injection",

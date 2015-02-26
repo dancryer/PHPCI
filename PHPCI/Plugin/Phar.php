@@ -227,7 +227,6 @@ class Phar implements \PHPCI\Plugin
         $success = false;
 
         try {
-
             $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
             $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
 

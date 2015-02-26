@@ -12,9 +12,7 @@ namespace PHPCI\Command;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -76,7 +74,7 @@ class DaemoniseCommand extends Command
         $this->sleep = 0;
         $runner      = new RunCommand($this->logger);
         $runner->setMaxBuilds(1);
-        $runner->setIsDaemon(true);
+        $runner->setDaemon(true);
 
         $emptyInput = new ArgvInput(array());
 
@@ -87,7 +85,8 @@ class DaemoniseCommand extends Command
             try {
                 $buildCount = $runner->run($emptyInput, $output);
             } catch (\Exception $e) {
-                var_dump($e);
+                $output->writeln('<error>Exception: ' . $e->getMessage() . '</error>');
+                $output->writeln('<error>Line: ' . $e->getLine() . ' - File: ' . $e->getFile() . '</error>');
             }
 
             if (0 == $buildCount && $this->sleep < 15) {

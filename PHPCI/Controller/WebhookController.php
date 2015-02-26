@@ -260,12 +260,14 @@ class WebhookController extends \b8\Controller
                 $committer = $commit['commit']['author']['email'];
                 $message = $commit['commit']['message'];
 
+                $remoteUrlKey = $payload['pull_request']['head']['repo']['private'] ? 'ssh_url' : 'clone_url';
+
                 $extra = array(
                     'build_type' => 'pull_request',
                     'pull_request_id' => $payload['pull_request']['id'],
                     'pull_request_number' => $payload['number'],
                     'remote_branch' => $payload['pull_request']['head']['ref'],
-                    'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
+                    'remote_url' => $payload['pull_request']['head']['repo'][$remoteUrlKey],
                 );
 
                 $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);

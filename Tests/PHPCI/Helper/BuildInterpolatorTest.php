@@ -45,5 +45,16 @@ class BuildInterpolatorTest extends ProphecyTestCase
 
         $this->assertEquals($expectedOutput, $actualOutput);
     }
+
+    public function testInterpolate_setInterpolationVar()
+    {
+        $string = "Hello %FOO%";
+        $expectedOutput = "Hello BAR";
+
+        $this->testedInterpolator->setInterpolationVar('FOO', 'BAR');
+
+        $actualOutput = $this->testedInterpolator->interpolate($string);
+
+        $this->assertEquals($expectedOutput, $actualOutput);
+    }
 }
- 

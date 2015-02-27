@@ -73,4 +73,15 @@ class BuildInterpolator
         $values = array_values($this->interpolation_vars);
         return str_replace($keys, $values, $input);
     }
+
+    /**
+     * Set an interpolation variable.
+     *
+     * @param string $name The name of the variable to set, without the '%'.
+     * @param string $value The value to assign.
+     */
+    public function setInterpolationVar($name, $value)
+    {
+        $this->interpolation_vars['%' . $name . '%'] = (string)$value;
+    }
 }

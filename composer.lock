@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "31f9aa8adcbc1c8ea7a274560bd1e8d1",
+    "hash": "6ce9f81a7e9fecae63bf90c527f103f2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -998,28 +998,35 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v3.0.16",
+            "version": "v3.0.18",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "aa30f8cd3ee68144e043ca30713aa7d7df35c5fa"
+                "reference": "ac026149ffb1d3a5c893290d2d3ca8795013de08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/aa30f8cd3ee68144e043ca30713aa7d7df35c5fa",
-                "reference": "aa30f8cd3ee68144e043ca30713aa7d7df35c5fa",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/ac026149ffb1d3a5c893290d2d3ca8795013de08",
+                "reference": "ac026149ffb1d3a5c893290d2d3ca8795013de08",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "sensiolabs/security-checker": "~2.0",
                 "symfony/class-loader": "~2.2",
-                "symfony/form": "~2.2",
                 "symfony/framework-bundle": "~2.3",
-                "symfony/process": "~2.2",
+                "symfony/process": "~2.2"
+            },
+            "require-dev": {
+                "symfony/form": "~2.2",
                 "symfony/validator": "~2.2",
                 "symfony/yaml": "~2.2"
+            },
+            "suggest": {
+                "symfony/form": "If you want to use the configurator",
+                "symfony/validator": "If you want to use the configurator",
+                "symfony/yaml": "If you want to use  the configurator"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -1047,7 +1054,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-02-01 05:42:21"
+            "time": "2015-02-27 12:59:18"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -1388,12 +1395,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "a630d87d5765f63571c7948bab253e18d1a9a194"
+                "reference": "2b036ecbb547afcaf4a785448638b2f7f97658fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/a630d87d5765f63571c7948bab253e18d1a9a194",
-                "reference": "a630d87d5765f63571c7948bab253e18d1a9a194",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2b036ecbb547afcaf4a785448638b2f7f97658fc",
+                "reference": "2b036ecbb547afcaf4a785448638b2f7f97658fc",
                 "shasum": ""
             },
             "require": {
@@ -1426,6 +1433,7 @@
                 "symfony/locale": "self.version",
                 "symfony/monolog-bridge": "self.version",
                 "symfony/options-resolver": "self.version",
+                "symfony/phpunit-bridge": "self.version",
                 "symfony/process": "self.version",
                 "symfony/property-access": "self.version",
                 "symfony/proxy-manager-bridge": "self.version",
@@ -1496,7 +1504,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-02-17 11:55:01"
+            "time": "2015-02-25 12:51:44"
         },
         {
             "name": "twig/extensions",

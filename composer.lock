@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d4afdc2d61022c966f64a067374f7e02",
+    "hash": "8b02bb324925eec9e704367ae521a85a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -998,17 +998,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v2.3.10",
+            "version": "v2.3.11",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "ca7ddf6911a3ad1378d2d3b73e5ecf61f775ab31"
+                "reference": "374bbea795fa69a85b1623048798a89aebffe62b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/ca7ddf6911a3ad1378d2d3b73e5ecf61f775ab31",
-                "reference": "ca7ddf6911a3ad1378d2d3b73e5ecf61f775ab31",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/374bbea795fa69a85b1623048798a89aebffe62b",
+                "reference": "374bbea795fa69a85b1623048798a89aebffe62b",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-02-27 09:45:33"
+            "time": "2015-02-27 12:58:18"
         },
         {
             "name": "sensio/framework-extra-bundle",

@@ -17,9 +17,4 @@ class AnsiConverterTest extends ProphecyTestCase
 
         $this->assertEquals($expectedOutput, $actualOutput);
     }
-
-    public function testGetThemeCss_returnSomething()
-    {
-        $this->assertNotNull(AnsiConverter::getThemeCss());
-    }
 }

@@ -10,7 +10,6 @@
 namespace PHPCI\Helper;
 
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
-use SensioLabs\AnsiConverter\Theme\Theme;
 
 /**
  * Converts ANSI output to HTML.
@@ -29,8 +28,7 @@ final class AnsiConverter
     private static function getInstance()
     {
         if (self::$converter === null) {
-            $theme = new Theme();
-            self::$converter = new AnsiToHtmlConverter($theme, false);
+            self::$converter = new AnsiToHtmlConverter(null, false);
         }
 
         return self::$converter;
@@ -49,15 +47,9 @@ final class AnsiConverter
     }
 
     /**
-     * Return the CSS style corresponding to the converter theme.
-     *
-     * @return string
+     * Do not instanciate this class.
      */
-    public static function getThemeCss()
+    private function __construct()
     {
-        return self::getInstance()->getTheme()->asCss();
     }
-
-    // Static class
-    private function __construct() {}
 }

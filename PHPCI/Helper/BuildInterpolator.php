@@ -27,53 +27,44 @@ class BuildInterpolator
 
     /**
      * Sets the variables that will be used for interpolation.
+     *
      * @param Build $build
      * @param string $buildPath
      * @param string $phpCiUrl
      */
     public function setupInterpolationVars(Build $build, $buildPath, $phpCiUrl)
     {
-        $this->interpolation_vars = array();
-        $this->interpolation_vars['%PHPCI%'] = 1;
-        $this->interpolation_vars['%COMMIT%'] = $build->getCommitId();
-        $this->interpolation_vars['%SHORT_COMMIT%'] = substr($build->getCommitId(), 0, 7);
-        $this->interpolation_vars['%COMMIT_EMAIL%'] = $build->getCommitterEmail();
-        $this->interpolation_vars['%COMMIT_URI%'] = $build->getCommitLink();
-        $this->interpolation_vars['%BRANCH%'] = $build->getBranch();
-        $this->interpolation_vars['%BRANCH_URI%'] = $build->getBranchLink();
-        $this->interpolation_vars['%PROJECT%'] = $build->getProjectId();
-        $this->interpolation_vars['%BUILD%'] = $build->getId();
-        $this->interpolation_vars['%PROJECT_TITLE%'] = $build->getProjectTitle();
-        $this->interpolation_vars['%PROJECT_URI%'] = $phpCiUrl . "project/view/" . $build->getProjectId();
-        $this->interpolation_vars['%BUILD_PATH%'] = $buildPath;
-        $this->interpolation_vars['%BUILD_URI%'] = $phpCiUrl . "build/view/" . $build->getId();
-        $this->interpolation_vars['%PHPCI_COMMIT%'] = $this->interpolation_vars['%COMMIT%'];
-        $this->interpolation_vars['%PHPCI_SHORT_COMMIT%'] = $this->interpolation_vars['%SHORT_COMMIT%'];
-        $this->interpolation_vars['%PHPCI_COMMIT_EMAIL%'] = $this->interpolation_vars['%COMMIT_EMAIL%'];
-        $this->interpolation_vars['%PHPCI_COMMIT_URI%'] = $this->interpolation_vars['%COMMIT_URI%'];
-        $this->interpolation_vars['%PHPCI_PROJECT%'] = $this->interpolation_vars['%PROJECT%'];
-        $this->interpolation_vars['%PHPCI_BUILD%'] = $this->interpolation_vars['%BUILD%'];
-        $this->interpolation_vars['%PHPCI_PROJECT_TITLE%'] = $this->interpolation_vars['%PROJECT_TITLE%'];
-        $this->interpolation_vars['%PHPCI_PROJECT_URI%'] = $this->interpolation_vars['%PROJECT_URI%'];
-        $this->interpolation_vars['%PHPCI_BUILD_PATH%'] = $this->interpolation_vars['%BUILD_PATH%'];
-        $this->interpolation_vars['%PHPCI_BUILD_URI%'] = $this->interpolation_vars['%BUILD_URI%'];
+        $vars = array(
+            'COMMIT'        => $build->getCommitId(),
+            'SHORT_COMMIT'  => substr($build->getCommitId(), 0, 7),
+            'COMMIT_EMAIL'  => $build->getCommitterEmail(),
+            'COMMIT_URI'    => $build->getCommitLink(),
+            'BRANCH'        => $build->getBranch(),
+            'BRANCH_URI'    => $build->getBranchLink(),
+            'PROJECT'       => $build->getProjectId(),
+            'BUILD'         => $build->getId(),
+            'PROJECT_TITLE' => $build->getProjectTitle(),
+            'PROJECT_URI'   => $phpCiUrl . "project/view/" . $build->getProjectId(),
+            'BUILD_PATH'    => $buildPath,
+            'BUILD_URI'     => $phpCiUrl . "build/view/" . $build->getId()
+        );
 
+        $this->interpolation_vars['%PHPCI%'] = 1;
         putenv('PHPCI=1');
-        putenv('PHPCI_COMMIT=' . $this->interpolation_vars['%COMMIT%']);
-        putenv('PHPCI_SHORT_COMMIT=' . $this->interpolation_vars['%SHORT_COMMIT%']);
-        putenv('PHPCI_COMMIT_EMAIL=' . $this->interpolation_vars['%COMMIT_EMAIL%']);
-        putenv('PHPCI_COMMIT_URI=' . $this->interpolation_vars['%COMMIT_URI%']);
-        putenv('PHPCI_PROJECT=' . $this->interpolation_vars['%PROJECT%']);
-        putenv('PHPCI_BUILD=' . $this->interpolation_vars['%BUILD%']);
-        putenv('PHPCI_PROJECT_TITLE=' . $this->interpolation_vars['%PROJECT_TITLE%']);
-        putenv('PHPCI_BUILD_PATH=' . $this->interpolation_vars['%BUILD_PATH%']);
-        putenv('PHPCI_BUILD_URI=' . $this->interpolation_vars['%BUILD_URI%']);
+
+        foreach($vars as $name => $value) {
+            $this->interpolation_vars['%' . $name . '%'] = $value;
+            $this->interpolation_vars['%PHPCI_' . $name . '%'] = $value;
+            putenv(sprintf('PHPCI_%s=%s', $name, $value));
+        }
     }
 
     /**
      * Replace every occurrence of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
+     *
      * @param string $input
+     *
      * @return string
      */
     public function interpolate($input)

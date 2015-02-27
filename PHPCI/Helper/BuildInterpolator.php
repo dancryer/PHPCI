@@ -52,7 +52,7 @@ class BuildInterpolator
         $this->interpolation_vars['%PHPCI%'] = 1;
         putenv('PHPCI=1');
 
-        foreach($vars as $name => $value) {
+        foreach ($vars as $name => $value) {
             $this->interpolation_vars['%' . $name . '%'] = $value;
             $this->interpolation_vars['%PHPCI_' . $name . '%'] = $value;
             putenv(sprintf('PHPCI_%s=%s', $name, $value));

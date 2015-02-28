@@ -123,7 +123,7 @@ foreach($projects as $project):
             <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
         </div>
         <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>" class="small-box-footer small-box-footer-project">
-            <?php Lang::out('view_project'); ?> <i class="fa fa-arrow-circle-right"></i>
+            <?php Lang::out('view_project'); ?> (<?php print $counts[$project->getId()]; ?>) <i class="fa fa-arrow-circle-right"></i>
         </a>
 
     <?php endif; ?>

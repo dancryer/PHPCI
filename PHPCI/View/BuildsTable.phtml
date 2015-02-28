@@ -39,6 +39,7 @@ switch($build->getStatus())
 ?>
 <tr class="<?php print $cls; ?>">
 	<td><a href="<?php echo PHPCI_URL ?>build/view/<?php print $build->getId(); ?>">#<?php print str_pad($build->getId(), 6, '0', STR_PAD_LEFT); ?></a></td>
+    <td><?php print $build->getCreated()->format('Y-m-d H:i:s'); ?></td>
 	<td><a href="<?php echo PHPCI_URL ?>project/view/<?php print $build->getProjectId(); ?>">
         <?php
             if (is_object($build->getProject())) {

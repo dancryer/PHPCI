@@ -85,7 +85,3 @@
     font-size: inherit;
     line-height: inherit;
 }
-
-#build-log pre {
-	background-color: black;
-}

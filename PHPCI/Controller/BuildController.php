@@ -13,11 +13,11 @@ use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\AnsiConverter;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
-use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 /**
 * Build Controller - Allows users to run and view builds.
@@ -199,8 +199,7 @@ class BuildController extends \PHPCI\Controller
     */
     protected function cleanLog($log)
     {
-	$converter = new AnsiToHtmlConverter();
-	return $converter->convert($log);
+        return AnsiConverter::convert($log);
     }
 
     /**

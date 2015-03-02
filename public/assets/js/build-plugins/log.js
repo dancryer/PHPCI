@@ -8,7 +8,7 @@ var logPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        var container = $('<pre></pre>');
+        var container = $('<pre class="ansi_color_bg_black ansi_color_fg_white"></pre>');
         container.css({height: '300px', 'overflow-y': 'auto'});
         container.html(ActiveBuild.buildData.log);
 

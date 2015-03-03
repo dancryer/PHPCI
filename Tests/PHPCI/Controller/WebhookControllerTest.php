@@ -1,18 +1,18 @@
 <?php
+
 /**
  * PHPCI - Continuous Integration for PHP
  *
  * @copyright    Copyright 2014, Block 8 Limited.
- * @license        https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- * @link            http://www.phptesting.org/
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
  */
 
-namespace PHPCI\Tests\Controller;
+namespace Tests\PHPCI\Controller;
 
 use PHPCI\Controller\WebhookController;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class WebhookControllerTest extends ProphecyTestCase
+class WebhookControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function test_wrong_action_name_return_json_with_error()
     {

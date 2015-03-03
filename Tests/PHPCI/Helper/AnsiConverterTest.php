@@ -3,9 +3,9 @@
 namespace PHPCI\Helper\Tests;
 
 use PHPCI\Helper\AnsiConverter;
-use Prophecy\PhpUnit\ProphecyTestCase;
+use PHPUnit_Framework_TestCase;
 
-class AnsiConverterTest extends ProphecyTestCase
+class AnsiConverterTest extends PHPUnit_Framework_TestCase
 {
     public function testConvert_convertToHtml()
     {

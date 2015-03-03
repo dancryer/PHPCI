@@ -14,6 +14,10 @@ class CommandExecutorTest extends ProphecyTestCase
 
     protected function setUp()
     {
+        if(IS_WIN) {
+            $this->markTestSkipped("Cannot test UnixCommandExecutor on ".PHP_OS);
+            return;
+        }
         parent::setUp();
         $mockBuildLogger = $this->prophesize('PHPCI\Logging\BuildLogger');
         $this->testedExecutor = new UnixCommandExecutor($mockBuildLogger->reveal(), __DIR__ . "/");

@@ -115,6 +115,8 @@ class TapParser
             }
             $test['suite'] = $moreMatches[2];
             $test['test'] = $moreMatches[3];
+        } elseif (!empty($matches[3])) {
+            $test['message'] = $matches[3];
         }
 
         if (isset($matches[4])) {

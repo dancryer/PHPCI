@@ -147,4 +147,36 @@ TAP;
         $parser = new TapParser($content);
         $parser->parse();
     }
+
+    public function testCodeception()
+    {
+        $content = <<< TAP
+TAP version 13
+ok 1 - try to access the dashboard as a guest (Auth/GuestAccessDashboardAndRedirectCept)
+ok 2 - see the login page (Auth/SeeLoginCept)
+ok 3 - click forgot password and see the email form (Auth/SeeLoginForgotPasswordCept)
+ok 4 - see powered by runmybusiness branding (Auth/ShouldSeePoweredByBrandingCept)
+ok 5 - submit invalid credentials (Auth/SubmitLoginAndFailCept)
+ok 6 - submit valid credentials and see the dashboard (Auth/SubmitLoginAndSucceedCept)
+1..6
+TAP;
+
+        $parser = new TapParser($content);
+        $result = $parser->parse();
+
+        $this->assertEquals(
+            array(
+                array('pass' => true, 'message' => 'try to access the dashboard as a guest (Auth/GuestAccessDashboardAndRedirectCept)'),
+                array('pass' => true, 'message' => 'see the login page (Auth/SeeLoginCept)'),
+                array('pass' => true, 'message' => 'click forgot password and see the email form (Auth/SeeLoginForgotPasswordCept)'),
+                array('pass' => true, 'message' => 'see powered by runmybusiness branding (Auth/ShouldSeePoweredByBrandingCept)'),
+                array('pass' => true, 'message' => 'submit invalid credentials (Auth/SubmitLoginAndFailCept)'),
+                array('pass' => true, 'message' => 'submit valid credentials and see the dashboard (Auth/SubmitLoginAndSucceedCept)'),
+            ),
+            $result
+        );
+
+        $this->assertEquals(0, $parser->getTotalFailures());
+
+    }
 }

@@ -2,7 +2,9 @@
 
 namespace PHPCI\Plugin\Util;
 
+use Exception;
 use PHPCI\Helper\Lang;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Processes TAP format strings into usable test result data.
@@ -10,11 +12,10 @@ use PHPCI\Helper\Lang;
  */
 class TapParser
 {
-    const TEST_COUNTS_PATTERN = '/([0-9]+)\.\.([0-9]+)/';
-    const TEST_LINE_PATTERN = '/(ok|not ok)\s+[0-9]+\s+\-\s+([^\n]+)::([^\n]+)/';
-    const TEST_MESSAGE_PATTERN = '/message\:\s+\'([^\']+)\'/';
-    const TEST_COVERAGE_PATTERN = '/Generating code coverage report/';
-    const TEST_SKIP_PATTERN = '/ok\s+[0-9]+\s+\-\s+#\s+SKIP/';
+    const TEST_COUNTS_PATTERN = '/^\d+\.\.(\d+)/';
+    const TEST_LINE_PATTERN = '/^(ok|not ok)(?:\s+(\d+))?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
+    const TEST_YAML_START = '/^(\s*)---/';
+    const TEST_DIAGNOSTIC = '/^#/';
 
     /**
      * @var string
@@ -39,80 +40,96 @@ class TapParser
         // Split up the TAP string into an array of lines, then
         // trim all of the lines so there's no leading or trailing whitespace.
         $lines = explode("\n", $this->tapString);
-        $lines = array_map(function ($line) {
-            return trim($line);
-        }, $lines);
+        $lines = array_map('rtrim', $lines);
 
         // Check TAP version:
         $versionLine = array_shift($lines);
 
         if ($versionLine != 'TAP version 13') {
-            throw new \Exception(Lang::get('tap_version'));
+            throw new Exception(Lang::get('tap_version'));
         }
 
-        if (isset($lines[count($lines) - 1]) && preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
-            array_pop($lines);
-            if ($lines[count($lines) - 1] == "") {
-                array_pop($lines);
+        $matches;
+        $results = array();
+        $totalTests = false;
+        $totalLines = count($lines);
+        $numTests = 0;
+
+        for ($lineNumber = 0;
+            $lineNumber < $totalLines && ($totalTests === false || $numTests < $totalTests);
+            $lineNumber++) {
+            $line = $lines[$lineNumber];
+
+            if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
+                $totalTests = intval($matches[1]);
+            } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
+                continue;
+            } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
+                $results[] = $this->processTestLine($matches);
+                $numTests++;
+            } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
+                $indent = $matches[1];
+                $endLine = $indent.'...';
+                $yamlLines = array();
+                for ($yamlEnd = $lineNumber + 1; $yamlEnd < $totalLines && $endLine !== $lines[$yamlEnd]; $yamlEnd++) {
+                    $yamlLines[] = substr($lines[$yamlEnd], strlen($indent));
+                }
+                if ($yamlEnd >= $totalLines) {
+                    throw new Exception(Lang::get('tap_error_endless_yaml', $lineNumber));
+                }
+                $data = Yaml::parse(join("\n", $yamlLines));
+                $results[$numTests-1] = array_merge($results[$numTests-1], $data);
+                $lineNumber = $yamlEnd;
+            } else {
+                throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $lineNumber, $line));
             }
         }
 
-        $matches = array();
-        $totalTests = 0;
-        if (preg_match(self::TEST_COUNTS_PATTERN, $lines[0], $matches)) {
-            array_shift($lines);
-            $totalTests = (int) $matches[2];
+        if ($numTests != $totalTests) {
+            throw new Exception(Lang::get('tap_error'));
         }
 
-        if (isset($lines[count($lines) - 1]) &&
-            preg_match(self::TEST_COUNTS_PATTERN, $lines[count($lines) - 1], $matches)) {
-            array_pop($lines);
-            $totalTests = (int) $matches[2];
-        }
-
-        $rtn = $this->processTestLines($lines);
-
-        if ($totalTests != count($rtn)) {
-            throw new \Exception(Lang::get('tap_error'));
-        }
-
-        return $rtn;
+        return $results;
     }
 
     /**
-     * Process the individual test lines within a TAP string.
-     * @param $lines
+     * Process an individual test line.
+     *
+     * @param array $matches The regex matches.
+     *
      * @return array
      */
-    protected function processTestLines($lines)
+    protected function processTestLine($matches)
     {
-        $rtn = array();
+        $test = array();
+        $test['pass'] = ($matches[1] === 'ok');
+        if (!$test['pass']) {
+            $this->failures++;
+        }
 
-        foreach ($lines as $line) {
-            $matches = array();
+        if (preg_match('/(?:(Error|Failure):\s*)?(\S+)::(\S+)/', $matches[3], $moreMatches)) {
+            if ($moreMatches[1] === 'Error') {
+                $test['severity'] = 'error';
+            } elseif ($moreMatches[1] === 'Failure') {
+                $test['severity'] = 'fail';
+            }
+            $test['suite'] = $moreMatches[2];
+            $test['test'] = $moreMatches[3];
+        }
 
-            if (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
-                $ok = ($matches[1] == 'ok' ? true : false);
-
-                if (!$ok) {
-                    $this->failures++;
-                }
-
-                $item = array(
-                    'pass' => $ok,
-                    'suite' => $matches[2],
-                    'test' => $matches[3],
-                );
-
-                $rtn[] = $item;
-            } elseif (preg_match(self::TEST_SKIP_PATTERN, $line, $matches)) {
-                $rtn[] = array('message' => 'SKIP');
-            } elseif (preg_match(self::TEST_MESSAGE_PATTERN, $line, $matches)) {
-                $rtn[count($rtn) - 1]['message'] = $matches[1];
+        if (isset($matches[4])) {
+            switch (strtolower($matches[4])) {
+                case 'skip':
+                    $test['skipped'] = true;
+                    $test['message'] = $matches[5] ?: "skipped";
+                    break;
+                case 'todo':
+                    $test['todo'] = $matches[5] ?: "todo";
+                    break;
             }
         }
 
-        return $rtn;
+        return $test;
     }
 
     /**

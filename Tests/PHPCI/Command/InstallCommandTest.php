@@ -55,6 +55,7 @@ class InstallCommandTest extends ProphecyTestCase
                 'setupDatabase',
                 'createAdminUser',
                 'writeConfigFile',
+                'checkRequirements',
             ))
             ->getMock();
 
@@ -71,6 +72,7 @@ class InstallCommandTest extends ProphecyTestCase
                 $this->config = $cfg;
             })
         );
+        $command->expects($this->once())->method('checkRequirements');
 
         return $command;
     }

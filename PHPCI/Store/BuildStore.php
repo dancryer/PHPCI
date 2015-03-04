@@ -10,7 +10,6 @@
 namespace PHPCI\Store;
 
 use b8\Database;
-use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
 use PHPCI\Store\Base\BuildStoreBase;
 
@@ -30,13 +29,12 @@ class BuildStore extends BuildStoreBase
      */
     public function getLatestBuilds($projectId = null, $limit = 5)
     {
-        $where = '';
-
         if (!is_null($projectId)) {
-            $where = ' WHERE `project_id` = :pid ';
+            $query = 'SELECT * FROM build WHERE `project_id` = :pid ORDER BY id DESC LIMIT :limit';
+        } else {
+            $query = 'SELECT * FROM build ORDER BY id DESC LIMIT :limit';
         }
 
-        $query = 'SELECT * FROM build '.$where.' ORDER BY id DESC LIMIT :limit';
         $stmt = Database::getConnection('read')->prepare($query);
 
         if (!is_null($projectId)) {
@@ -120,17 +118,26 @@ class BuildStore extends BuildStoreBase
      */
     public function getMeta($key, $projectId, $buildId = null, $branch = null, $numResults = 1)
     {
-        $select = '`bm`.`build_id`, `bm`.`meta_key`, `bm`.`meta_value`';
-        $and = $numResults > 1 ? ' AND (`bm`.`build_id` <= :buildId) ' : ' AND (`bm`.`build_id` = :buildId) ';
-        $where = '`bm`.`meta_key` = :key AND `bm`.`project_id` = :projectId ' . $and;
-        $from = ' `build_meta` AS `bm`';
+        $query = 'SELECT bm.build_id, bm.meta_key, bm.meta_value
+                    FROM build_meta AS bm
+                    LEFT JOIN build b ON b.id = bm.build_id
+                    WHERE   bm.meta_key = :key
+                      AND   bm.project_id = :projectId';
 
-        if ($branch !== null) {
-            $where .= ' AND `b`.`branch` = :branch AND `b`.`id`= `bm`.`build_id` ';
-            $from .= ', `build` AS `b`';
+        // If we're getting comparative meta data, include previous builds
+        // otherwise just include the specified build ID:
+        if ($numResults > 1) {
+            $query .= ' AND bm.build_id <= :buildId ';
+        } else {
+            $query .= ' AND bm.build_id = :buildId ';
         }
 
-        $query = 'SELECT '.$select.' FROM '.$from.' WHERE '.$where.' ORDER BY `bm`.id DESC LIMIT :numResults';
+        // Include specific branch information if required:
+        if (!is_null($branch)) {
+            $query .= ' AND b.branch = :branch ';
+        }
+
+        $query .= ' ORDER BY bm.id DESC LIMIT :numResults';
 
         $stmt = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);

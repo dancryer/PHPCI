@@ -7,10 +7,8 @@
 * @link         https://www.phptesting.org/
 */
 
+session_set_cookie_params(43200); // Set session cookie to last 12 hours.
 session_start();
-
-error_reporting(E_ALL);
-ini_set('display_errors', 'on');
 
 require_once('../bootstrap.php');
 

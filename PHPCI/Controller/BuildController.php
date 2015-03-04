@@ -11,6 +11,7 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Exception\HttpException\NotFoundException;
+use b8\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
@@ -61,7 +62,7 @@ class BuildController extends \PHPCI\Controller
 
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
-        $this->view->data     = $this->getBuildData($build);
+        $this->view->data     = json_encode($this->getBuildData($build));
 
         $this->layout->title = Lang::get('build_n', $buildId);
         $this->layout->subtitle = $build->getProjectTitle();
@@ -107,7 +108,17 @@ class BuildController extends \PHPCI\Controller
     */
     public function data($buildId)
     {
-        die($this->getBuildData(BuildFactory::getBuildById($buildId)));
+        $response = new JsonResponse();
+        $build = BuildFactory::getBuildById($buildId);
+
+        if (!$build) {
+            $response->setResponseCode(404);
+            $response->setContent(array());
+            return $response;
+        }
+
+        $response->setContent($this->getBuildData($build));
+        return $response;
     }
 
     /**
@@ -124,7 +135,9 @@ class BuildController extends \PHPCI\Controller
             $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $build->getBranch(), $numBuilds);
         }
 
-        die(json_encode($data));
+        $response = new JsonResponse();
+        $response->setContent($data);
+        return $response;
     }
 
     /**
@@ -139,7 +152,7 @@ class BuildController extends \PHPCI\Controller
         $data['started']    = !is_null($build->getStarted()) ? $build->getStarted()->format('Y-m-d H:i:s') : null;
         $data['finished']   = !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : null;
 
-        return json_encode($data);
+        return $data;
     }
 
     /**
@@ -155,8 +168,9 @@ class BuildController extends \PHPCI\Controller
 
         $build = $this->buildService->createDuplicateBuild($copy);
 
-        header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
+        return $response;
     }
 
     /**
@@ -174,8 +188,9 @@ class BuildController extends \PHPCI\Controller
 
         $this->buildService->deleteBuild($build);
 
-        header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'project/view/' . $build->getProjectId());
+        return $response;
     }
 
     /**
@@ -200,9 +215,9 @@ class BuildController extends \PHPCI\Controller
             'running' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_RUNNING)),
         );
 
-        if ($this->request->isAjax()) {
-            die(json_encode($rtn));
-        }
+        $response = new JsonResponse();
+        $response->setContent($rtn);
+        return $response;
     }
 
     /**

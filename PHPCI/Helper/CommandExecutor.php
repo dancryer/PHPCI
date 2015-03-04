@@ -30,4 +30,10 @@ interface CommandExecutor
      * @return null|string
      */
     public function findBinary($binary, $buildPath = null);
+
+    /**
+     * Set the buildPath property.
+     * @param string $path
+     */
+    public function setBuildPath($path);
 }

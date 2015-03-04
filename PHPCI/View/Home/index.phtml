@@ -17,7 +17,6 @@
 
                     <?php
                     foreach ($builds as $build):
-
                         switch ($build->getStatus()) {
                             case \PHPCI\Model\Build::STATUS_NEW:
                                 $updated = $build->getCreated();
@@ -44,11 +43,15 @@
                                 break;
                         }
 
+                        if (!$updated) {
+                            $updated = $build->getCreated();
+                        }
+
                         if ($updated->format('Y-m-d') != $last->format('Y-m-d')): $last = $updated;
                             ?>
                             <li class="time-label">
                     <span class="bg-gray">
-                        <?php print $last->format('M j Y'); ?>
+                        <?php print Lang::formatDateTime($last, 'll'); ?>
                     </span>
                             </li>
                         <?php endif; ?>
@@ -58,7 +61,7 @@
                         <li>
                             <i class="fa fa-<?php print $build->getProject()->getIcon(); ?> bg-<?php print $color; ?>"></i>
                             <div class="timeline-item">
-                                <span class="time"><i class="fa fa-clock-o"></i> <?php print $updated->format('H:i'); ?></span>
+                                <span class="time"><i class="fa fa-clock-o"></i> <?php print Lang::formatDateTime($updated, 'LT'); ?></span>
                                 <h3 class="timeline-header">
                                     <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
                                         <?php print $build->getProject()->getTitle(); ?>

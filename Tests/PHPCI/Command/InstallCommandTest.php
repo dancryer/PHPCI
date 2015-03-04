@@ -3,7 +3,6 @@
 namespace PHPCI\Plugin\Tests\Command;
 
 use Symfony\Component\Console\Application;
-use PHPCI\Command\InstallCommand;
 use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -12,17 +11,43 @@ class InstallCommandTest extends ProphecyTestCase
 {
     protected $config;
     protected $admin;
-    protected $command;
-    protected $dialog;
     protected $application;
 
     public function setup()
     {
         parent::setup();
 
+        $this->application = new Application();
+        $this->application->setHelperSet(new HelperSet());
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockBuilder
+     */
+    protected function getDialogHelperMock()
+    {
+        // We check that there's no interaction with user.
+        $dialog = $this->getMockBuilder('Symfony\\Component\\Console\\Helper\\DialogHelper')
+                       ->setMethods(array(
+                           'ask',
+                           'askConfirmation',
+                           'askAndValidate',
+                           'askHiddenResponse',
+                           'askHiddenResponseAndValidate',
+                       ))
+                       ->getMock();
+
+        return $dialog;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockBuilder
+     */
+    protected function getInstallCommandMock()
+    {
         // Current command, we need to mock all method that interact with
         // Database & File system.
-        $this->command = $this->getMockBuilder('PHPCI\\Command\\InstallCommand')
+        $command = $this->getMockBuilder('PHPCI\\Command\\InstallCommand')
             ->setMethods(array(
                 'reloadConfig',
                 'verifyNotInstalled',
@@ -33,38 +58,27 @@ class InstallCommandTest extends ProphecyTestCase
             ))
             ->getMock();
 
-        $this->command->expects($this->once())->method('verifyDatabaseDetails')->willReturn(true);
-        $this->command->expects($this->once())->method('setupDatabase')->willReturn(true);
-        $this->command->expects($this->once())->method('createAdminUser')->will(
+        $command->expects($this->once())->method('verifyNotInstalled')->willReturn(true);
+        $command->expects($this->once())->method('verifyDatabaseDetails')->willReturn(true);
+        $command->expects($this->once())->method('setupDatabase')->willReturn(true);
+        $command->expects($this->once())->method('createAdminUser')->will(
             $this->returnCallback(function ($adm) {// use (&$admin) {
                 $this->admin = $adm;
             })
         );
-        $this->command->expects($this->once())->method('writeConfigFile')->will(
+        $command->expects($this->once())->method('writeConfigFile')->will(
             $this->returnCallback(function ($cfg) { //use (&$config) {
                 $this->config = $cfg;
             })
         );
 
-        // We check that there's no interaction with user.
-        $this->dialog = $this->getMockBuilder('Symfony\\Component\\Console\\Helper\\DialogHelper')
-            ->setMethods(array(
-                'ask',
-                'askConfirmation',
-                'askAndValidate',
-                'askHiddenResponse',
-                'askHiddenResponseAndValidate',
-            ))
-            ->getMock();
-
-        $this->application = new Application();
-        $this->application->setHelperSet(new HelperSet());
+        return $command;
     }
 
-    protected function getCommandTester()
+    protected function getCommandTester($dialog)
     {
-        $this->application->getHelperSet()->set($this->dialog, 'dialog');
-        $this->application->add($this->command);
+        $this->application->getHelperSet()->set($dialog, 'dialog');
+        $this->application->add($this->getInstallCommandMock());
         $command = $this->application->find('phpci:install');
         $commandTester = new CommandTester($command);
 
@@ -91,39 +105,42 @@ class InstallCommandTest extends ProphecyTestCase
         return $config;
     }
 
-    protected function executeWithoutParam($param = null)
+    protected function executeWithoutParam($param = null, $dialog)
     {
         // Clean result variables.
         $this->admin = array();
         $this->config = array();
 
         // Get tester and execute with extracted parameters.
-        $commandTester = $this->getCommandTester();
+        $commandTester = $this->getCommandTester($dialog);
         $parameters = $this->getConfig($param);
         $commandTester->execute($parameters);
     }
 
-    public function testAutomticInstallation()
+    public function testAutomaticInstallation()
     {
-        $this->dialog->expects($this->never())->method('ask');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
+        $dialog->expects($this->never())->method('ask');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
 
-        $this->executeWithoutParam();
+        $this->executeWithoutParam(null, $dialog);
     }
 
     public function testDatabaseHostnameConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--db-host');
+        // We specified an input value for hostname.
+        $dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--db-host', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->config['b8']['database']['servers']['read']);
@@ -132,14 +149,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testDatabaseNameConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--db-name');
+        // We specified an input value for hostname.
+        $dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--db-name', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->config['b8']['database']['name']);
@@ -147,14 +166,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testDatabaseUserameConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--db-user');
+        // We specified an input value for hostname.
+        $dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--db-user', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->config['b8']['database']['username']);
@@ -162,14 +183,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testDatabasePasswordConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->never())->method('ask');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->once())->method('askHiddenResponse')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--db-pass');
+        // We specified an input value for hostname.
+        $dialog->expects($this->never())->method('ask');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->once())->method('askHiddenResponse')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--db-pass', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->config['b8']['database']['password']);
@@ -177,14 +200,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testPhpciUrlConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->never())->method('ask');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->once())->method('askAndValidate')->willReturn('http://testedvalue.com');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--url');
+        // We specified an input value for hostname.
+        $dialog->expects($this->never())->method('ask');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->once())->method('askAndValidate')->willReturn('http://testedvalue.com');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--url', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('http://testedvalue.com', $this->config['phpci']['url']);
@@ -192,14 +217,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testAdminEmailConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->never())->method('ask');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->once())->method('askAndValidate')->willReturn('test@phpci.com');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--admin-mail');
+        // We specified an input value for hostname.
+        $dialog->expects($this->never())->method('ask');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->once())->method('askAndValidate')->willReturn('test@phpci.com');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--admin-mail', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('test@phpci.com', $this->admin['mail']);
@@ -207,14 +234,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testAdminUserameConfig()
     {
-        // Define expectation for dialog.
-        $this->dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->never())->method('askHiddenResponse');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--admin-name');
+        // Define expectation for dialog.
+        $dialog->expects($this->once())->method('ask')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->never())->method('askHiddenResponse');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--admin-name', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->admin['name']);
@@ -222,14 +251,16 @@ class InstallCommandTest extends ProphecyTestCase
 
     public function testAdminPasswordConfig()
     {
-        // We specified an input value for hostname.
-        $this->dialog->expects($this->never())->method('ask');
-        $this->dialog->expects($this->never())->method('askConfirmation');
-        $this->dialog->expects($this->never())->method('askAndValidate');
-        $this->dialog->expects($this->once())->method('askHiddenResponse')->willReturn('testedvalue');
-        $this->dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+        $dialog = $this->getDialogHelperMock();
 
-        $this->executeWithoutParam('--admin-pass');
+        // We specified an input value for hostname.
+        $dialog->expects($this->never())->method('ask');
+        $dialog->expects($this->never())->method('askConfirmation');
+        $dialog->expects($this->never())->method('askAndValidate');
+        $dialog->expects($this->once())->method('askHiddenResponse')->willReturn('testedvalue');
+        $dialog->expects($this->never())->method('askHiddenResponseAndValidate');
+
+        $this->executeWithoutParam('--admin-pass', $dialog);
 
         // Check that specified arguments are correctly loaded.
         $this->assertEquals('testedvalue', $this->admin['pass']);

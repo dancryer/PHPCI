@@ -16,12 +16,10 @@ if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-// If the PHPCI config file is not where we expect it, try looking in
-// env for an alternative config path.
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
-
 $configEnv = getenv('phpci_config_file');
-if (!empty($configEnv)) {
+
+if (!empty($configEnv) && file_exists($configEnv)) {
     $configFile = $configEnv;
 }
 
@@ -60,6 +58,17 @@ $config = new b8\Config($conf);
 
 if (file_exists($configFile)) {
     $config->loadYaml($configFile);
+}
+
+/**
+ * Allow to modify PHPCI configuration without modify versioned code.
+ * Dameons should be killed to apply changes in the file.
+ *
+ * @ticket 781
+ */
+$localVarsFile = dirname(__FILE__) . '/local_vars.php';
+if (is_readable($localVarsFile)) {
+    require_once $localVarsFile;
 }
 
 require_once(dirname(__FILE__) . '/vars.php');

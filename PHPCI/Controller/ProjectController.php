@@ -10,17 +10,14 @@
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Controller;
 use b8\Form;
-use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use PHPCI;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\SshKey;
-use PHPCI\Model\Build;
-use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
@@ -30,7 +27,7 @@ use PHPCI\Service\ProjectService;
 * @package      PHPCI
 * @subpackage   Web
 */
-class ProjectController extends \PHPCI\Controller
+class ProjectController extends PHPCI\Controller
 {
     /**
      * @var \PHPCI\Store\ProjectStore
@@ -81,8 +78,9 @@ class ProjectController extends \PHPCI\Controller
         $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
         if ($page > $pages) {
-            header('Location: '.PHPCI_URL.'project/view/'.$projectId);
-            die;
+            $response = new b8\Http\Response\RedirectResponse();
+            $response->setHeader('Location', PHPCI_URL.'project/view/'.$projectId);
+            return $response;
         }
 
         $this->view->builds   = $builds[0];
@@ -118,8 +116,9 @@ class ProjectController extends \PHPCI\Controller
         $email = $_SESSION['phpci_user']->getEmail();
         $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
-        header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
+        return $response;
     }
 
     /**
@@ -132,8 +131,9 @@ class ProjectController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
         $this->projectService->deleteProject($project);
 
-        header('Location: '.PHPCI_URL);
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL);
+        return $response;
     }
 
     /**
@@ -143,7 +143,10 @@ class ProjectController extends \PHPCI\Controller
     {
         $branch = $this->getParam('branch', '');
         $builds = $this->getLatestBuildsHtml($projectId, urldecode($branch));
-        die($builds[0]);
+
+        $this->response->disableLayout();
+        $this->response->setContent($builds[0]);
+        return $this->response;
     }
 
     /**
@@ -220,8 +223,10 @@ class ProjectController extends \PHPCI\Controller
             );
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
-            header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
-            die;
+
+            $response = new b8\Http\Response\RedirectResponse();
+            $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
+            return $response;
         }
     }
 
@@ -263,7 +268,7 @@ class ProjectController extends \PHPCI\Controller
             $view->type     = 'edit';
             $view->project  = $project;
             $view->form     = $form;
-            $view->key      = null;
+            $view->key      = $values['pubkey'];
 
             return $view->render();
         }
@@ -277,13 +282,15 @@ class ProjectController extends \PHPCI\Controller
             'ssh_public_key' => $this->getParam('pubkey', null),
             'build_config' => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
+            'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
         );
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
 
-        header('Location: '.PHPCI_URL.'project/view/' . $project->getId());
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
+        return $response;
     }
 
     /**
@@ -351,6 +358,12 @@ class ProjectController extends \PHPCI\Controller
         $field->setValue(0);
         $form->addField($field);
 
+        $field = Form\Element\Checkbox::create('archived', Lang::get('archived'), false);
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(0);
+        $form->addField($field);
+
         $field = new Form\Element\Submit();
         $field->setValue(Lang::get('save_project'));
         $field->setContainerClass('form-group');
@@ -367,7 +380,10 @@ class ProjectController extends \PHPCI\Controller
     protected function githubRepositories()
     {
         $github = new Github();
-        die(json_encode($github->getRepositories()));
+
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent($github->getRepositories());
+        return $response;
     }
 
     /**

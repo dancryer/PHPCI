@@ -1,7 +1,6 @@
 <?php
 /**
  * PHPCI - Continuous Integration for PHP
- *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
  * @link         https://www.phptesting.org/
@@ -64,7 +63,6 @@ class SlackNotify implements \PHPCI\Plugin
             if (isset($options['icon'])) {
                 $this->icon = $options['icon'];
             }
-
         } else {
             throw new \Exception('Please define the webhook_url for slack_notify plugin!');
         }
@@ -91,9 +89,9 @@ class SlackNotify implements \PHPCI\Plugin
         // Build up the attachment data
         $attachment = new \Maknz\Slack\Attachment(array(
             'fallback' => $message,
-            'pretext' => $message,
-            'color' => $color,
-            'fields' => array(
+            'pretext'  => $message,
+            'color'    => $color,
+            'fields'   => array(
                 new \Maknz\Slack\AttachmentField(array(
                     'title' => 'Status',
                     'value' => $status,
@@ -104,23 +102,25 @@ class SlackNotify implements \PHPCI\Plugin
 
         $client = new \Maknz\Slack\Client($this->webHook);
 
+        $message = $client->createMessage();
+
         if (!empty($this->room)) {
-            $client->setChannel($this->room);
+            $message->setChannel($this->room);
         }
 
         if (!empty($this->username)) {
-            $client->setUsername($this->username);
+            $message->setUsername($this->username);
         }
 
         if (!empty($this->icon)) {
-            $client->setIcon($this->icon);
+            $message->setIcon($this->icon);
         }
 
-        $client->attach($attachment);
+        $message->attach($attachment);
 
         $success = true;
 
-        $client->send(''); // FIXME: Handle errors
+        $message->send('');
 
         return $success;
     }

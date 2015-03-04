@@ -14,7 +14,6 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
-use PHPCI\Model\Build;
 
 /**
 * PHPCI Front Controller
@@ -22,6 +21,11 @@ use PHPCI\Model\Build;
 */
 class Application extends b8\Application
 {
+    /**
+     * @var \PHPCI\Controller
+     */
+    protected $controller;
+
     /**
      * Initialise PHPCI - Handles session verification, routing, etc.
      */
@@ -53,7 +57,7 @@ class Application extends b8\Application
         $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession() && !$skipAuth()) {
+            if (!$skipValidation && !$validateSession() && (!is_callable($skipAuth) || !$skipAuth())) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');
@@ -100,7 +104,7 @@ class Application extends b8\Application
             $this->response->setContent($view->render());
         }
 
-        if ($this->response->hasLayout()) {
+        if ($this->response->hasLayout() && $this->controller->layout) {
             $this->setLayoutVariables($this->controller->layout);
 
             $this->controller->layout->content  = $this->response->getContent();
@@ -133,7 +137,13 @@ class Application extends b8\Application
     {
         /** @var \PHPCI\Store\ProjectStore $projectStore */
         $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getAll();
+        $layout->projects = $projectStore->getWhere(
+            array('archived' => (int)isset($_GET['archived'])),
+            50,
+            0,
+            array(),
+            array('title' => 'ASC')
+        );
     }
 
     /**

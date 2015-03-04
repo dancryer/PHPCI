@@ -62,9 +62,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         $this->logger = $logger;
         $this->quiet = $quiet;
         $this->verbose = $verbose;
-
         $this->lastOutput = array();
-
         $this->rootDir = $rootDir;
     }
 
@@ -92,7 +90,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
-        $process = proc_open($command, $descriptorSpec, $pipes, dirname($this->buildPath), null);
+        $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {
             fclose($pipes[0]);
@@ -162,7 +160,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
             if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-
                 $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 $binaryPath = $composerBin . '/' . $bin;
                 break;
@@ -218,5 +215,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
             }
         }
         return null;
+    }
+
+    /**
+     * Set the buildPath property.
+     * @param string $path
+     */
+    public function setBuildPath($path)
+    {
+        $this->buildPath = $path;
     }
 }

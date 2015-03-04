@@ -3,6 +3,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
     title: Lang.get('quality_trend'),
     keys: {
+        'codeception-errors': Lang.get('codeception_errors'),
         'phpmd-warnings': Lang.get('phpmd_warnings'),
         'phpcs-warnings': Lang.get('phpcs_warnings'),
         'phpcs-errors': Lang.get('phpcs_errors'),
@@ -24,7 +25,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
           queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('phpmd-warnings phpcs-warnings phptallint-warnings phptallint-errors phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
+        $(window).on('codeception-errors phpmd-warnings phpcs-warnings phptallint-warnings phptallint-errors phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
             self.onUpdate(data);
         });
 
@@ -97,7 +98,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
             vAxis: {title: Lang.get('issues'), logScale:true},
             backgroundColor: { fill: 'transparent' },
             height: 275,
-            pointSize: 3
+            pointSize: 3,
+            legend: {position: 'bottom'}
         };
 
         $('#build-warnings-chart').show();

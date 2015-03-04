@@ -3,7 +3,17 @@ var PHPCI = {
     intervals: {},
 
     init: function () {
+        // Setup the date locale
+        moment.locale(PHPCI_LANGUAGE);
+
         $(document).ready(function () {
+            // Format datetimes
+            $('time[datetime]').each(function() {
+                var thisDate = $(this).attr('datetime');
+                var formattedDate = moment(thisDate).format($(this).data('format') || 'lll');
+                $(this).text(formattedDate);
+            });
+
             // Update latest builds every 5 seconds:
             PHPCI.getBuilds();
             PHPCI.intervals.getBuilds = setInterval(PHPCI.getBuilds, 5000);
@@ -24,7 +34,7 @@ var PHPCI = {
             url: PHPCI_URL + 'build/latest',
 
             success: function (data) {
-                $(window).trigger('builds-updated', [JSON.parse(data)]);
+                $(window).trigger('builds-updated', [data]);
             },
 
             error: PHPCI.handleFailedAjax

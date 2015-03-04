@@ -29,3 +29,9 @@ if (!defined('PHPCI_IS_CONSOLE')) {
 if (!defined('IS_WIN')) {
     define('IS_WIN', ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? true : false));
 }
+
+// If an environment variable is set defining our config location, use that
+// otherwise fall back to PHPCI/config.yml.
+if (!defined('PHPCI_CONFIG_FILE')) {
+    define('PHPCI_CONFIG_FILE', $configFile);
+}

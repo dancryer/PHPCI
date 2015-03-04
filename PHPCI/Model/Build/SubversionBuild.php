@@ -27,7 +27,21 @@ class SubversionBuild extends Build
      */
     protected function getCloneUrl()
     {
-        return $this->getProject()->getReference();
+        $url = $this->getProject()->getReference();
+
+        if (substr($url, -1) != '/') {
+            $url .= '/';
+        }
+
+        $branch = $this->getBranch();
+
+        if (empty($branch) || $branch == 'trunk') {
+            $url .= 'trunk';
+        } else {
+            $url .= 'branches/' . $branch;
+        }
+
+        return $url;
     }
 
     /**
@@ -87,9 +101,13 @@ class SubversionBuild extends Build
     {
         $cmd = $this->svnCommand;
 
-        $cmd .= ' -r %s %s "%s"';
-
-        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        if ($this->getCommitId() != 'Manual') {
+            $cmd .= ' -r %s %s "%s"';
+            $success = $builder->executeCommand($cmd, $this->getCommitId(), $this->getCloneUrl(), $cloneTo);
+        } else {
+            $cmd .= ' %s "%s"';
+            $success = $builder->executeCommand($cmd, $this->getCloneUrl(), $cloneTo);
+        }
 
         return $success;
     }
@@ -99,7 +117,7 @@ class SubversionBuild extends Build
      */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        $cmd = $this->svnCommand . ' -b %s %s "%s"';
+        $cmd = $this->svnCommand . ' %s "%s"';
 
         if (!IS_WIN) {
             $keyFile    = $this->writeSshKey($cloneTo);
@@ -107,7 +125,7 @@ class SubversionBuild extends Build
             $cmd        = 'export SVN_SSH="' . $sshWrapper . '" && ' . $cmd;
         }
 
-        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $success = $builder->executeCommand($cmd, $this->getCloneUrl(), $cloneTo);
 
         if (!IS_WIN) {
             // Remove the key file and svn wrapper:

@@ -13,7 +13,7 @@ $strings = array(
 
     // Log in:
     'log_in_to_phpci' => 'In PHPCI einloggen',
-    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passowrt',
+    'login_error' => 'Fehlerhafte Emailadresse oder fehlerhaftes Passwort',
     'forgotten_password_link' => 'Passwort vergessen?',
     'reset_emailed' => 'Wir haben Ihnen einen Link geschickt, um Ihr Passwort zurückzusetzen',
     'reset_header' => '<strong>Keine Panik!</strong><br>Geben Sie einfach unten Ihre Emailadresse an
@@ -56,13 +56,13 @@ PHPCI',
     // Sidebar
     'hello_name' => 'Hallo, %s',
     'dashboard' => 'Dashboard',
-    'admin_options' => 'Administraion',
+    'admin_options' => 'Administration',
     'add_project' => 'Projekt hinzufügen',
     'settings' => 'Einstellungen',
     'manage_users' => 'Benutzereinstellungen',
     'plugins' => 'Plugins',
     'view' => 'Ansehen',
-    'build_now' => 'Aktueller Build',
+    'build_now' => 'Jetzt bauen',
     'edit_project' => 'Projekt bearbeiten',
     'delete_project' => 'Projekt löschen',
 
@@ -113,6 +113,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
                                 (falls Sie Ihrem Projektrepository kein phpci.yml hinzufügen können)',
     'default_branch' => 'Name des Standardbranches',
     'allow_public_status' => 'Öffentliche Statusseite und -bild für dieses Projekt einschalten?',
+    'archived' => 'Archived',
     'save_project' => 'Projekt speichern',
 
     'error_mercurial' => 'Mercurial Repository-URL muss mit http://, oder https:// beginnen',
@@ -164,6 +165,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'lines_of_code' => 'Anzahl Codezeilen',
     'build_log' => 'Buildprotokoll',
     'quality_trend' => 'Qualitätstrend',
+    'codeception_errors' => 'Codeception Errors',
     'phpmd_warnings' => 'PHPMD Warnings',
     'phpcs_warnings' => 'PHPCS Warnings',
     'phpcs_errors' => 'PHPCS Errors',
@@ -172,6 +174,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'phpdoccheck_warnings' => 'Fehlende Docblocks',
     'issues' => 'Probleme',
 
+    'codeception' => 'Codeception',
     'phpcpd' => 'PHP Copy/Paste Detector',
     'phpcs' => 'PHP Code Sniffer',
     'phpdoccheck' => 'Fehlende Docblocks',

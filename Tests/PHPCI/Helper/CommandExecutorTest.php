@@ -14,7 +14,7 @@ class CommandExecutorTest extends ProphecyTestCase
 
     protected function setUp()
     {
-        if(IS_WIN) {
+        if (IS_WIN) {
             $this->markTestSkipped("Cannot test UnixCommandExecutor on ".PHP_OS);
             return;
         }

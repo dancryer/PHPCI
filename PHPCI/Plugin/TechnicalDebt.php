@@ -152,7 +152,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $dirIterator = new \RecursiveDirectoryIterator($this->directory);
         $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
-        $files = [];
+        $files = array();
 
         $ignores = $this->ignore;
         $ignores[] = 'phpci.yml';
@@ -207,7 +207,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 }
             }
         }
-        
+
         return array( $errorCount, $data );
     }
 }

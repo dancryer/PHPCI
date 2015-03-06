@@ -4,6 +4,12 @@ namespace PHPCI\Plugin\Util\TestResultParsers;
 
 use PHPCI\Builder;
 
+/**
+ * Class Codeception
+ *
+ * @author  Adam Cooper <adam@networkpie.co.uk>
+ * @package PHPCI\Plugin\Util\TestResultParsers
+ */
 class Codeception implements ParserInterface
 {
     protected $phpci;
@@ -15,6 +21,10 @@ class Codeception implements ParserInterface
     protected $totalTimeTaken;
     protected $totalFailures;
 
+    /**
+     * @param Builder $phpci
+     * @param $resultsXml
+     */
     public function __construct(Builder $phpci, $resultsXml)
     {
         $this->phpci = $phpci;
@@ -66,16 +76,31 @@ class Codeception implements ParserInterface
         return $rtn;
     }
 
+    /**
+     * Get the total number of tests performed.
+     *
+     * @return int
+     */
     public function getTotalTests()
     {
         return $this->totalTests;
     }
 
+    /**
+     * The time take to complete all tests
+     *
+     * @return mixed
+     */
     public function getTotalTimeTaken()
     {
         return $this->totalTimeTaken;
     }
 
+    /**
+     * A count of the test failures
+     *
+     * @return mixed
+     */
     public function getTotalFailures()
     {
         return $this->totalFailures;

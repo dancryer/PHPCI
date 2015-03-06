@@ -9,7 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
@@ -17,49 +16,63 @@ use PHPCI\Plugin\Util\TestResultParsers\Codeception as Parser;
 use Psr\Log\LogLevel;
 
 /**
- * Codeception Plugin - Enables full acceptance, unit, and functional testing
- *
+ * Codeception Plugin - Enables full acceptance, unit, and functional testing.
  * @author       Don Gilbert <don@dongilbert.net>
  * @author       Igor Timoshenko <contact@igortimoshenko.com>
  * @author       Adam Cooper <adam@networkpie.co.uk>
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $args = '';
 
-    /**
-     * @var Build
-     */
+    /** @var Builder */
+    protected $phpci;
+
+    /** @var Build */
     protected $build;
 
     /**
-     * @var Builder
+     * @var string $ymlConfigFile The path of a yml config for Codeception
      */
-    protected $phpci;
-
-    /**
-     * @var string|string[] The path (or array of paths) of an yml config for Codeception
-     */
-    protected $configFile;
-
-    /**
-     * @var string The path where the reports and logs are stored
-     */
-    protected $logPath = 'tests/_output';
+    protected $ymlConfigFile;
 
     /**
      * @var string $path The path to the codeception tests folder.
      */
     protected $path;
 
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Try and find the codeception YML config file.
+     * @param $buildPath
+     * @return null|string
+     */
+    public static function findConfigFile($buildPath)
+    {
+        if (file_exists($buildPath . 'codeception.yml')) {
+            return 'codeception.yml';
+        }
+
+        if (file_exists($buildPath . 'codeception.dist.yml')) {
+            return 'codeception.dist.yml';
+        }
+
+        return null;
+    }
+
     /**
      * Set up the plugin, configure options, etc.
-     *
      * @param Builder $phpci
      * @param Build $build
      * @param array $options
@@ -70,69 +83,43 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->build = $build;
         $this->path = 'tests/';
 
-        if (isset($options['config'])) {
-            $this->configFile = $options['config'];
+        if (empty($options['config'])) {
+            $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
         }
-
+        if (isset($options['config'])) {
+            $this->ymlConfigFile = $options['config'];
+        }
         if (isset($options['args'])) {
             $this->args = (string) $options['args'];
         }
-
         if (isset($options['path'])) {
             $this->path = $options['path'];
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Runs Codeception tests, optionally using specified config file(s).
      */
     public function execute()
     {
+        if (empty($this->ymlConfigFile)) {
+            $this->phpci->logFailure('No configuration file found');
+            return false;
+        }
+
         $success = true;
 
-        $this->phpci->logExecOutput(false);
-
-        // Run any config files first. This can be either a single value or an array
-        if ($this->configFile !== null) {
-            $success &= $this->runConfigFile($this->configFile);
-        }
-
-        $tapString = file_get_contents(
-            $this->phpci->buildPath . $this->logPath . DIRECTORY_SEPARATOR . 'report.tap.log'
-        );
-
-        try {
-            $tapParser = new TapParser($tapString);
-            $output = $tapParser->parse();
-        } catch (\Exception $ex) {
-            $this->phpci->logFailure($tapString);
-
-            throw $ex;
-        }
-
-        $failures = $tapParser->getTotalFailures();
-
-        $this->build->storeMeta('codeception-errors', $failures);
-        $this->build->storeMeta('codeception-data', $output);
-
-        $this->phpci->logExecOutput(true);
+        // Run any config files first. This can be either a single value or an array.
+        $success &= $this->runConfigFile($this->ymlConfigFile);
 
         return $success;
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public static function canExecute($stage, Builder $builder, Build $build)
-    {
-        return $stage === 'test';
-    }
-
-    /**
-     * Run tests from a Codeception config file
-     *
-     * @param string $configPath
+     * Run tests from a Codeception config file.
+     * @param $configPath
      * @return bool|mixed
+     * @throws \Exception
      */
     protected function runConfigFile($configPath)
     {
@@ -157,6 +144,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $configPath = $this->phpci->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
+
 
             $this->phpci->log(
                 'Codeception XML path: '. $this->phpci->buildPath . $this->path . '_output/report.xml',
@@ -185,21 +173,5 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             return $success;
         }
-    }
-
-    /**
-     * @param array $array
-     * @param \Callback $callable
-     * @return bool|mixed
-     */
-    protected function recurseArg(array $array, $callable)
-    {
-        $success = true;
-
-        foreach ($array as $subItem) {
-            $success &= call_user_func($callable, $subItem);
-        }
-
-        return $success;
     }
 }

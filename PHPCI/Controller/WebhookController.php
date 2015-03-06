@@ -119,6 +119,8 @@ class WebhookController extends \PHPCI\Controller
 
     /**
      * Called by Github Webhooks:
+     * @param int $project Project ID
+     * @return b8\Http\Response\JsonResponse
      */
     public function github($project)
     {
@@ -135,19 +137,27 @@ class WebhookController extends \PHPCI\Controller
                 break;
 
             default:
-                $response->setResponseCode(401);
+                $response->setResponseCode(400);
                 $response->setContent(array('status' => 'failed', 'error' => 'Content type not supported.'));
                 return $response;
         }
 
-        // Handle Pull Request web hooks:
-        if (array_key_exists('pull_request', $payload)) {
-            return $this->githubPullRequest($project, $payload, $response);
-        }
+        if (is_array($payload) && !empty($payload)) {
+            // Handle Pull Request web hooks:
+            if (array_key_exists('pull_request', $payload)) {
+                return $this->githubPullRequest($project, $payload, $response);
+            }
 
-        // Handle Push web hooks:
-        if (array_key_exists('commits', $payload)) {
-            return $this->githubCommitRequest($project, $payload, $response);
+            // Handle Push web hooks:
+            if (array_key_exists('commits', $payload)) {
+                return $this->githubCommitRequest($project, $payload, $response);
+            }
+        } else {
+            $response->setResponseCode(400);
+            $response->setContent(array(
+                'status' => 'failed',
+                'error' => 'Bad Request. Payload is missing or invalid or could not be decoded.'
+            ));
         }
 
         return $response;

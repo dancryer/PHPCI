@@ -1,5 +1,5 @@
 .skin-blue .logo, .skin-blue .logo:hover  {
-    background-image: url('/assets/img/logo-large.png');
+    background-image: url('../img/logo-large.png');
     background-repeat: no-repeat;
     background-size: 40%;
     background-position: 65px;

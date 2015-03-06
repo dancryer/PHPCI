@@ -351,7 +351,7 @@ class SettingsController extends Controller
         $form->addField($field);
 
         $field = new Form\Element\Select('smtp_encryption');
-        $field->setOptions(['' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')]);
+        $field->setOptions(array('' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')));
         $field->setRequired(false);
         $field->setLabel(Lang::get('use_smtp_encryption'));
         $field->setContainerClass('form-group');
@@ -406,13 +406,13 @@ class SettingsController extends Controller
         $field->setLabel(Lang::get('failed_after'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setOptions([
+        $field->setOptions(array(
             300 => Lang::get('5_mins'),
             900 => Lang::get('15_mins'),
             1800 => Lang::get('30_mins'),
             3600 => Lang::get('1_hour'),
             10800 => Lang::get('3_hours'),
-        ]);
+        ));
         $field->setValue(1800);
         $form->addField($field);
 

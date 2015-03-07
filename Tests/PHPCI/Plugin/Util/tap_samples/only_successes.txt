@@ -1,0 +1,4 @@
+TAP version 13
+ok 1 - testNewArrayIsEmpty(ArrayTest)
+ok 2 - testArrayContainsAnElement(ArrayTest)
+1..2

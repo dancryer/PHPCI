@@ -1,0 +1,4 @@
+TAP version 13
+ok 1 - SomeTest::testAnother
+ok 2 - # SKIP
+1..2

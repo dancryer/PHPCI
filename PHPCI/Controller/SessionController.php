@@ -53,6 +53,7 @@ class SessionController extends \PHPCI\Controller
                 $user = $this->userStore->getByEmail($this->getParam('email'));
 
                 if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
+                    session_regenerate_id(true);
                     $_SESSION['phpci_user_id']    = $user->getId();
                     $response = new b8\Http\Response\RedirectResponse();
                     $response->setHeader('Location', $this->getLoginRedirect());

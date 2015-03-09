@@ -2,6 +2,8 @@
 
 namespace PHPCI\Plugin\Util;
 
+use PHPCI\Helper\Lang;
+
 /**
  * Processes TAP format strings into usable test result data.
  * @package PHPCI\Plugin\Util
@@ -45,7 +47,7 @@ class TapParser
         $versionLine = array_shift($lines);
 
         if ($versionLine != 'TAP version 13') {
-            throw new \Exception('TapParser only supports TAP version 13');
+            throw new \Exception(Lang::get('tap_version'));
         }
 
         if (isset($lines[count($lines) - 1]) && preg_match(self::TEST_COVERAGE_PATTERN, $lines[count($lines) - 1])) {
@@ -71,7 +73,7 @@ class TapParser
         $rtn = $this->processTestLines($lines);
 
         if ($totalTests != count($rtn)) {
-            throw new \Exception('Invalid TAP string, number of tests does not match specified test count.');
+            throw new \Exception(Lang::get('tap_error'));
         }
 
         return $rtn;

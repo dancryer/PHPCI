@@ -193,4 +193,28 @@ class Build extends BuildBase
 
         return $rtn;
     }
+
+    /**
+     * Returns the commit message for this build.
+     * @return string
+     */
+    public function getCommitMessage()
+    {
+        $rtn = htmlspecialchars($this->data['commit_message']);
+
+        return $rtn;
+    }
+
+    /**
+     * Allows specific build types (e.g. Github) to report violations back to their respective services.
+     * @param Builder $builder
+     * @param $file
+     * @param $line
+     * @param $message
+     * @return mixed
+     */
+    public function reportError(Builder $builder, $file, $line, $message)
+    {
+        return array($builder, $file, $line, $message);
+    }
 }

@@ -14,7 +14,6 @@ use b8\Exception\HttpException;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\View;
-use PHPCI\Model\Build;
 
 /**
 * PHPCI Front Controller
@@ -22,6 +21,11 @@ use PHPCI\Model\Build;
 */
 class Application extends b8\Application
 {
+    /**
+     * @var \PHPCI\Controller
+     */
+    protected $controller;
+
     /**
      * Initialise PHPCI - Handles session verification, routing, etc.
      */
@@ -47,11 +51,13 @@ class Application extends b8\Application
             return false;
         };
 
+        $skipAuth = array($this, 'shouldSkipAuth');
+
         // Handler for the route we're about to register, checks for a valid session where necessary:
-        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession) {
+        $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
             $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
 
-            if (!$skipValidation && !$validateSession()) {
+            if (!$skipValidation && !$validateSession() && (!is_callable($skipAuth) || !$skipAuth())) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');
@@ -72,8 +78,10 @@ class Application extends b8\Application
     }
 
     /**
-    * Handle an incoming web request.
-    */
+     * Handle an incoming web request.
+     *
+     * @return b8\b8\Http\Response|Response
+     */
     public function handleRequest()
     {
         try {
@@ -96,7 +104,7 @@ class Application extends b8\Application
             $this->response->setContent($view->render());
         }
 
-        if ($this->response->hasLayout()) {
+        if ($this->response->hasLayout() && $this->controller->layout) {
             $this->setLayoutVariables($this->controller->layout);
 
             $this->controller->layout->content  = $this->response->getContent();
@@ -129,6 +137,35 @@ class Application extends b8\Application
     {
         /** @var \PHPCI\Store\ProjectStore $projectStore */
         $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getAll();
+        $layout->projects = $projectStore->getWhere(
+            array('archived' => (int)isset($_GET['archived'])),
+            50,
+            0,
+            array(),
+            array('title' => 'ASC')
+        );
+    }
+
+    /**
+     * Check whether we should skip auth (because it is disabled)
+     * @return bool
+     */
+    protected function shouldSkipAuth()
+    {
+        $config = b8\Config::getInstance();
+        $state = (bool)$config->get('phpci.authentication_settings.state', false);
+        $userId    = $config->get('phpci.authentication_settings.user_id', 0);
+
+        if (false !== $state && 0 != (int)$userId) {
+            $user = b8\Store\Factory::getStore('User')
+                ->getByPrimaryKey($userId);
+
+            if ($user) {
+                $_SESSION['phpci_user'] = $user;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

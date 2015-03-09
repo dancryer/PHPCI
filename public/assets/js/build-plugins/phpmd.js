@@ -1,7 +1,7 @@
 var phpmdPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpmd-warnings',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Mess Detector',
+    title: Lang.get('phpmd'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -25,15 +25,15 @@ var phpmdPlugin = ActiveBuild.UiPlugin.extend({
 
     render: function() {
 
-        return $('<table class="table" id="phpmd-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpmd-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Start</th>' +
-            '   <th>End</th>' +
-            '   <th>Message</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('start')+'</th>' +
+            '   <th>'+Lang.get('end')+'</th>' +
+            '   <th>'+Lang.get('message')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
     },
 
     onUpdate: function(e) {

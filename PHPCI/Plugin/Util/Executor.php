@@ -2,6 +2,7 @@
 
 namespace PHPCI\Plugin\Util;
 
+use PHPCI\Helper\Lang;
 use \PHPCI\Logging\BuildLogger;
 
 /**
@@ -45,28 +46,24 @@ class Executor
         }
 
         foreach ($config[$stage] as $plugin => $options) {
-            $this->logger->log('RUNNING PLUGIN: ' . $plugin);
-
-            // Is this plugin allowed to fail?
-            if ($stage == 'test' && !isset($options['allow_failures'])) {
-                $options['allow_failures'] = false;
-            }
+            $this->logger->log(Lang::get('running_plugin', $plugin));
 
             // Try and execute it:
             if ($this->executePlugin($plugin, $options)) {
-
                 // Execution was successful:
-                $this->logger->logSuccess('PLUGIN STATUS: SUCCESS!');
-
+                $this->logger->logSuccess(Lang::get('plugin_success'));
+            } elseif ($stage == 'setup') {
+                // If we're in the "setup" stage, execution should not continue after
+                // a plugin has failed:
+                throw new \Exception('Plugin failed: ' . $plugin);
             } else {
-
                 // If we're in the "test" stage and the plugin is not allowed to fail,
                 // then mark the build as failed:
-                if ($stage == 'test' && !$options['allow_failures']) {
+                if ($stage == 'test' && (!isset($options['allow_failures']) || !$options['allow_failures'])) {
                     $success = false;
                 }
 
-                $this->logger->logFailure('PLUGIN STATUS: FAILED');
+                $this->logger->logFailure(Lang::get('plugin_failed'));
             }
         }
 
@@ -90,7 +87,7 @@ class Executor
         }
 
         if (!class_exists($class)) {
-            $this->logger->logFailure('Plugin does not exist: ' . $plugin);
+            $this->logger->logFailure(Lang::get('plugin_missing', $plugin));
             return false;
         }
 
@@ -104,7 +101,7 @@ class Executor
                 $rtn = false;
             }
         } catch (\Exception $ex) {
-            $this->logger->logFailure('EXCEPTION: ' . $ex->getMessage(), $ex);
+            $this->logger->logFailure(Lang::get('exception') . $ex->getMessage(), $ex);
             $rtn = false;
         }
 

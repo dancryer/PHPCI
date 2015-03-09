@@ -11,7 +11,9 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Exception\HttpException\NotFoundException;
+use b8\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
@@ -55,26 +57,26 @@ class BuildController extends \PHPCI\Controller
         }
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $this->view->plugins  = $this->getUiPlugins();
         $this->view->build    = $build;
-        $this->view->data     = $this->getBuildData($build);
+        $this->view->data     = json_encode($this->getBuildData($build));
 
-        $this->layout->title = 'Build #' . $build->getId();
+        $this->layout->title = Lang::get('build_n', $buildId);
         $this->layout->subtitle = $build->getProjectTitle();
 
         $nav = array(
-            'title' => 'Build '.$build->getId(),
+            'title' => Lang::get('build_n', $buildId),
             'icon' => 'cog',
             'links' => array(
-                'build/rebuild/' . $build->getId() => 'Rebuild Now',
+                'build/rebuild/' . $build->getId() => Lang::get('rebuild_now'),
             ),
         );
 
         if ($this->currentUserIsAdmin()) {
-            $nav['links']['build/delete/' . $build->getId()] = 'Delete Build';
+            $nav['links']['build/delete/' . $build->getId()] = Lang::get('delete_build');
         }
 
         $this->layout->nav = $nav;
@@ -106,7 +108,17 @@ class BuildController extends \PHPCI\Controller
     */
     public function data($buildId)
     {
-        die($this->getBuildData(BuildFactory::getBuildById($buildId)));
+        $response = new JsonResponse();
+        $build = BuildFactory::getBuildById($buildId);
+
+        if (!$build) {
+            $response->setResponseCode(404);
+            $response->setContent(array());
+            return $response;
+        }
+
+        $response->setContent($this->getBuildData($build));
+        return $response;
     }
 
     /**
@@ -120,10 +132,12 @@ class BuildController extends \PHPCI\Controller
         $data = null;
 
         if ($key && $build) {
-            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $numBuilds);
+            $data = $this->buildStore->getMeta($key, $build->getProjectId(), $buildId, $build->getBranch(), $numBuilds);
         }
 
-        die(json_encode($data));
+        $response = new JsonResponse();
+        $response->setContent($data);
+        return $response;
     }
 
     /**
@@ -138,7 +152,7 @@ class BuildController extends \PHPCI\Controller
         $data['started']    = !is_null($build->getStarted()) ? $build->getStarted()->format('Y-m-d H:i:s') : null;
         $data['finished']   = !is_null($build->getFinished()) ? $build->getFinished()->format('Y-m-d H:i:s') : null;
 
-        return json_encode($data);
+        return $data;
     }
 
     /**
@@ -149,13 +163,14 @@ class BuildController extends \PHPCI\Controller
         $copy   = BuildFactory::getBuildById($buildId);
 
         if (empty($copy)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $build = $this->buildService->createDuplicateBuild($copy);
 
-        header('Location: '.PHPCI_URL.'build/view/' . $build->getId());
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
+        return $response;
     }
 
     /**
@@ -168,13 +183,14 @@ class BuildController extends \PHPCI\Controller
         $build = BuildFactory::getBuildById($buildId);
 
         if (empty($build)) {
-            throw new NotFoundException('Build with ID: ' . $buildId . ' does not exist.');
+            throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
         }
 
         $this->buildService->deleteBuild($build);
 
-        header('Location: '.PHPCI_URL.'project/view/' . $build->getProjectId());
-        exit;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL.'project/view/' . $build->getProjectId());
+        return $response;
     }
 
     /**
@@ -199,9 +215,9 @@ class BuildController extends \PHPCI\Controller
             'running' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_RUNNING)),
         );
 
-        if ($this->request->isAjax()) {
-            die(json_encode($rtn));
-        }
+        $response = new JsonResponse();
+        $response->setContent($rtn);
+        return $response;
     }
 
     /**

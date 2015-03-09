@@ -142,6 +142,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
+        if (empty($this->xmlConfigFile) && empty($this->directory)) {
+            $this->phpci->logFailure('Neither configuration file nor test directory found.');
+            return false;
+        }
+
         $success = true;
 
         $this->phpci->logExecOutput(false);
@@ -157,6 +162,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         $tapString = $this->phpci->getLastOutput();
+        $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
 
         try {
             $tapParser = new TapParser($tapString);
@@ -195,7 +201,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 
@@ -227,7 +233,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $phpunit = $this->phpci->findBinary('phpunit');
 
             if (!$phpunit) {
-                $this->phpci->logFailure('Could not find phpunit.');
+                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
                 return false;
             }
 

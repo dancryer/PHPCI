@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -78,7 +79,7 @@ class PhpParallelLint implements \PHPCI\Plugin
         $phplint = $this->phpci->findBinary('parallel-lint');
 
         if (!$phplint) {
-            $this->phpci->logFailure('Could not find parallel-lint.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'parallel-lint'));
             return false;
         }
 
@@ -105,10 +106,11 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     protected function getFlags()
     {
-        $ignore = '';
-        if (count($this->ignore)) {
-            $ignore = ' --exclude ' . implode(' --exclude ', $this->ignore);
+        $ignoreFlags = array();
+        foreach ($this->ignore as $ignoreDir) {
+            $ignoreFlags[] = '--exclude "' . $this->phpci->buildPath . $ignoreDir . '"';
         }
+        $ignore = implode(' ', $ignoreFlags);
 
         return array($ignore);
     }

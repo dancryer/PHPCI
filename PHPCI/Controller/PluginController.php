@@ -10,7 +10,7 @@
 namespace PHPCI\Controller;
 
 use b8;
-use PHPCI\Model\Build;
+use PHPCI\Helper\Lang;
 use PHPCI\Plugin\Util\ComposerPluginInformation;
 use PHPCI\Plugin\Util\FilesPluginInformation;
 use PHPCI\Plugin\Util\PluginInformationCollection;
@@ -66,7 +66,7 @@ class PluginController extends \PHPCI\Controller
 
         $this->view->plugins = $pluginInfo->getInstalledPlugins();
 
-        $this->layout->title = 'Plugins';
+        $this->layout->title = Lang::get('plugins');
 
         return $this->view->render();
     }
@@ -81,16 +81,18 @@ class PluginController extends \PHPCI\Controller
         $package = $this->getParam('package', null);
         $json = $this->getComposerJson();
 
+        $response = new b8\Http\Response\RedirectResponse();
+
         if (!in_array($package, $this->required)) {
             unset($json['require'][$package]);
             $this->setComposerJson($json);
 
-            header('Location: ' . PHPCI_URL . 'plugin?r=' . $package);
-            die;
+            $response->setHeader('Location', PHPCI_URL . 'plugin?r=' . $package);
+            return $response;
         }
 
-        header('Location: ' . PHPCI_URL);
-        die;
+        $response->setHeader('Location', PHPCI_URL);
+        return $response;
     }
 
     /**
@@ -107,8 +109,9 @@ class PluginController extends \PHPCI\Controller
         $json['require'][$package] = $version;
         $this->setComposerJson($json);
 
-        header('Location: ' . PHPCI_URL . 'plugin?w=' . $package);
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'plugin?w=' . $package);
+        return $response;
     }
 
     /**
@@ -123,7 +126,7 @@ class PluginController extends \PHPCI\Controller
 
     /**
      * Convert array to json and save composer.json
-     * 
+     *
      * @param $array
      */
     protected function setComposerJson($array)
@@ -180,7 +183,9 @@ class PluginController extends \PHPCI\Controller
         $http->setHeaders(array('User-Agent: PHPCI/1.0 (+https://www.phptesting.org)'));
         $res = $http->get('https://packagist.org/search.json', array('q' => $searchQuery));
 
-        die(json_encode($res['body']));
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent($res['body']);
+        return $response;
     }
 
     /**
@@ -193,6 +198,8 @@ class PluginController extends \PHPCI\Controller
         $http->setHeaders(array('User-Agent: PHPCI/1.0 (+https://www.phptesting.org)'));
         $res = $http->get('https://packagist.org/packages/'.$name.'.json');
 
-        die(json_encode($res['body']));
+        $response = new b8\Http\Response\JsonResponse();
+        $response->setContent($res['body']);
+        return $response;
     }
 }

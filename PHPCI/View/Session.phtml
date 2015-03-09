@@ -1,8 +1,10 @@
+<?php use PHPCI\Helper\Lang; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Log in to PHPCI</title>
+    <title><?php Lang::out('log_in_to_phpci'); ?></title>
 
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" type="text/css" href="<?php echo PHPCI_URL ?>assets/css/bootstrap.min.css">
@@ -54,15 +56,20 @@
         }
 
         #logo {
-            background: transparent url('//www.block8.co.uk/badge-dark-muted.png') no-repeat top left;
+            background: transparent url('https://www.block8.co.uk/assets/images/b8-phpci-logo-muted.png') no-repeat top left;
+            background-size: 130px 46px;
             display: inline-block;
-            height: 26px;
-            margin: 40px auto;
-            width: 90px;
+            height: 46px;
+            width: 130px;
+            text-indent: -5000px;
+
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
         }
 
         #logo:hover {
-            background-image: url('//www.block8.co.uk/badge-dark.png');
+            background-image: url('https://www.block8.co.uk/assets/images/b8-phpci-logo.png');
         }
 
         #phpci-logo img {
@@ -81,7 +88,7 @@
             <?php print $content; ?>
         </div>
 
-        <a id="logo" href="http://www.block8.co.uk/"></a>
+        <a id="logo" href="https://www.block8.co.uk">Block 8 - Manchester Web Development Specialists</a>
     </div>
 </div>
 </body>

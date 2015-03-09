@@ -1,7 +1,7 @@
 var locPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-lines-chart',
     css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
-    title: 'Lines of Code',
+    title: Lang.get('lines_of_code'),
     lastData: null,
     displayOnUpdate: false,
     rendered: false,
@@ -24,7 +24,7 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<div id="phploc-lines"></div>').text('This chart will display once the build has completed.');
+        return $('<div id="phploc-lines"></div>').text(Lang.get('chart_display'));
     },
 
     onUpdate: function(e) {
@@ -44,7 +44,7 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
 
         $('#phploc-lines').empty().animate({height: '275px'});
 
-        var titles = ['Build', 'Lines', 'Comment Lines', 'Non-Comment Lines', 'Logical Lines'];
+        var titles = [Lang.get('build'), Lang.get('lines'), Lang.get('comment_lines'), Lang.get('noncomment_lines'), Lang.get('logical_lines')];
         var data = [titles];
         for (var i in builds) {
             data.push(['#' + builds[i].build_id, parseInt(builds[i].meta_value.LOC), parseInt(builds[i].meta_value.CLOC), parseInt(builds[i].meta_value.NCLOC), parseInt(builds[i].meta_value.LLOC)]);
@@ -52,10 +52,11 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
 
         var data = google.visualization.arrayToDataTable(data);
         var options = {
-            hAxis: {title: 'Builds'},
-            vAxis: {title: 'Lines'},
+            hAxis: {title: Lang.get('builds')},
+            vAxis: {title: Lang.get('lines')},
             backgroundColor: { fill: 'transparent' },
-            height: 275
+            height: 275,
+            legend: {position: 'bottom'}
         };
 
         $('#build-lines-chart').show();

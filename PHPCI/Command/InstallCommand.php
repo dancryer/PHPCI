@@ -13,14 +13,12 @@ use Exception;
 use PDO;
 
 use b8\Config;
-use b8\Database;
 use b8\Store\Factory;
+use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\DialogHelper;
 use PHPCI\Service\UserService;
 
 /**
@@ -39,16 +37,16 @@ class InstallCommand extends Command
         
         $this
             ->setName('phpci:install')
-            ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'PHPCI Installation URL')
-            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'Database hostname')
-            ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, 'Database name')
-            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'Database username')
-            ->addOption('db-pass', null, InputOption::VALUE_OPTIONAL, 'Database password')
-            ->addOption('admin-name', null, InputOption::VALUE_OPTIONAL, 'Admin username')
-            ->addOption('admin-pass', null, InputOption::VALUE_OPTIONAL, 'Admin password')
-            ->addOption('admin-mail', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail')
-            ->addOption('config-path', null, InputOption::VALUE_OPTIONAL, 'Config file path', $defaultPath)
-            ->setDescription('Install PHPCI.');
+            ->addOption('url', null, InputOption::VALUE_OPTIONAL, Lang::get('installation_url'))
+            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, Lang::get('db_host'))
+            ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, Lang::get('db_name'))
+            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, Lang::get('db_user'))
+            ->addOption('db-pass', null, InputOption::VALUE_OPTIONAL, Lang::get('db_pass'))
+            ->addOption('admin-name', null, InputOption::VALUE_OPTIONAL, Lang::get('admin_name'))
+            ->addOption('admin-pass', null, InputOption::VALUE_OPTIONAL, Lang::get('admin_pass'))
+            ->addOption('admin-mail', null, InputOption::VALUE_OPTIONAL, Lang::get('admin_email'))
+            ->addOption('config-path', null, InputOption::VALUE_OPTIONAL, Lang::get('config_path'), $defaultPath)
+            ->setDescription(Lang::get('install_phpci'));
     }
 
     /**
@@ -58,17 +56,19 @@ class InstallCommand extends Command
     {
         $this->configFilePath = $input->getOption('config-path');
 
-        $this->verifyNotInstalled($output);
+        if (!$this->verifyNotInstalled($output)) {
+            return;
+        }
 
         $output->writeln('');
         $output->writeln('<info>******************</info>');
-        $output->writeln('<info> Welcome to PHPCI</info>');
+        $output->writeln('<info> '.Lang::get('welcome_to_phpci').'</info>');
         $output->writeln('<info>******************</info>');
         $output->writeln('');
 
         $this->checkRequirements($output);
 
-        $output->writeln('Please answer the following questions:');
+        $output->writeln(Lang::get('please_answer'));
         $output->writeln('-------------------------------------');
         $output->writeln('');
 
@@ -95,7 +95,7 @@ class InstallCommand extends Command
 
         $this->writeConfigFile($conf);
         $this->setupDatabase($output);
-        $admin = $this->getAdminInforamtion($input, $output);
+        $admin = $this->getAdminInformation($input, $output);
         $this->createAdminUser($admin, $output);
     }
 
@@ -111,9 +111,9 @@ class InstallCommand extends Command
         $errors = false;
 
         // Check PHP version:
-        if (!(version_compare(PHP_VERSION, '5.3.3') >= 0)) {
+        if (!(version_compare(PHP_VERSION, '5.3.8') >= 0)) {
             $output->writeln('');
-            $output->writeln('<error>PHPCI requires at least PHP 5.3.3 to function.</error>');
+            $output->writeln('<error>'.Lang::get('phpci_php_req').'</error>');
             $errors = true;
         }
 
@@ -123,7 +123,7 @@ class InstallCommand extends Command
         foreach ($requiredExtensions as $extension) {
             if (!extension_loaded($extension)) {
                 $output->writeln('');
-                $output->writeln('<error>'.$extension.' extension must be installed.</error>');
+                $output->writeln('<error>'.Lang::get('extension_required', $extension).'</error>');
                 $errors = true;
             }
         }
@@ -134,22 +134,22 @@ class InstallCommand extends Command
         foreach ($requiredFunctions as $function) {
             if (!function_exists($function)) {
                 $output->writeln('');
-                $output->writeln('<error>PHPCI needs to be able to call the '.$function.'() function. Is it disabled in php.ini?</error>');
+                $output->writeln('<error>'.Lang::get('function_required', $function).'</error>');
                 $errors = true;
             }
         }
 
         if (!function_exists('password_hash')) {
             $output->writeln('');
-            $output->writeln('<error>PHPCI requires the password_hash() function available in PHP 5.4, or the password_compat library by ircmaxell.</error>');
+            $output->writeln('<error>'.Lang::get('function_required', $function).'</error>');
             $errors = true;
         }
 
         if ($errors) {
-            throw new Exception('PHPCI cannot be installed, as not all requirements are met. Please review the errors above before continuing.');
+            throw new Exception(Lang::get('requirements_not_met'));
         }
 
-        $output->writeln(' <info>OK</info>');
+        $output->writeln(' <info>'.Lang::get('ok').'</info>');
         $output->writeln('');
     }
 
@@ -160,7 +160,7 @@ class InstallCommand extends Command
      * @param OutputInterface $output
      * @return array
      */
-    protected function getAdminInforamtion(InputInterface $input, OutputInterface $output)
+    protected function getAdminInformation(InputInterface $input, OutputInterface $output)
     {
         $admin = array();
 
@@ -170,9 +170,9 @@ class InstallCommand extends Command
         $dialog = $this->getHelperSet()->get('dialog');
 
         // Function to validate mail address.
-        $mailValidator =function ($answer) {
+        $mailValidator = function ($answer) {
             if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception('Must be a valid email address.');
+                throw new \InvalidArgumentException(Lang::get('must_be_valid_email'));
             }
 
             return $answer;
@@ -181,13 +181,13 @@ class InstallCommand extends Command
         if ($adminEmail = $input->getOption('admin-mail')) {
             $adminEmail = $mailValidator($adminEmail);
         } else {
-            $adminEmail = $dialog->askAndValidate($output, 'Your email address: ', $mailValidator, false);
+            $adminEmail = $dialog->askAndValidate($output, Lang::get('enter_email'), $mailValidator, false);
         }
         if (!$adminName = $input->getOption('admin-name')) {
-            $adminName = $dialog->ask($output, 'Enter your name: ');
+            $adminName = $dialog->ask($output, Lang::get('enter_name'));
         }
         if (!$adminPass = $input->getOption('admin-pass')) {
-            $adminPass = $dialog->askHiddenResponse($output, 'Enter your desired admin password: ');
+            $adminPass = $dialog->askHiddenResponse($output, Lang::get('enter_password'));
         }
 
         $admin['mail'] = $adminEmail;
@@ -216,7 +216,7 @@ class InstallCommand extends Command
         // FUnction do validate URL.
         $urlValidator = function ($answer) {
             if (!filter_var($answer, FILTER_VALIDATE_URL)) {
-                throw new Exception('Must be a valid URL');
+                throw new Exception(Lang::get('must_be_valid_url'));
             }
 
             return rtrim($answer, '/');
@@ -225,7 +225,7 @@ class InstallCommand extends Command
         if ($url = $input->getOption('url')) {
             $url = $urlValidator($url);
         } else {
-            $url = $dialog->askAndValidate($output, 'Your PHPCI URL ("http://phpci.local" for example): ', $urlValidator, false);
+            $url = $dialog->askAndValidate($output, Lang::get('enter_phpci_url'), $urlValidator, false);
         }
 
         $phpci['url'] = $url;
@@ -250,19 +250,19 @@ class InstallCommand extends Command
         $dialog = $this->getHelperSet()->get('dialog');
 
         if (!$dbHost = $input->getOption('db-host')) {
-            $dbHost = $dialog->ask($output, 'Please enter your MySQL host [localhost]: ', 'localhost');
+            $dbHost = $dialog->ask($output, Lang::get('enter_db_host'), 'localhost');
         }
 
         if (!$dbName = $input->getOption('db-name')) {
-            $dbName = $dialog->ask($output, 'Please enter your database name [phpci]: ', 'phpci');
+            $dbName = $dialog->ask($output, Lang::get('enter_db_name'), 'phpci');
         }
 
         if (!$dbUser = $input->getOption('db-user')) {
-            $dbUser = $dialog->ask($output, 'Please enter your database username [phpci]: ', 'phpci');
+            $dbUser = $dialog->ask($output, Lang::get('enter_db_user'), 'phpci');
         }
 
         if (!$dbPass = $input->getOption('db-pass')) {
-            $dbPass = $dialog->askHiddenResponse($output, 'Please enter your database password: ');
+            $dbPass = $dialog->askHiddenResponse($output, Lang::get('enter_db_pass'));
         }
 
         $db['servers']['read'] = $dbHost;
@@ -295,10 +295,12 @@ class InstallCommand extends Command
                 )
             );
 
+            unset($pdo);
+
             return true;
 
         } catch (Exception $ex) {
-            $output->writeln('<error>PHPCI could not connect to MySQL with the details provided. Please try again.</error>');
+            $output->writeln('<error>'.Lang::get('could_not_connect').'</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
         }
 
@@ -319,11 +321,11 @@ class InstallCommand extends Command
 
     protected function setupDatabase(OutputInterface $output)
     {
-        $output->write('Setting up your database... ');
+        $output->write(Lang::get('setting_up_db'));
 
         shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
-        $output->writeln('<info>OK</info>');
+        $output->writeln('<info>'.Lang::get('ok').'</info>');
     }
 
     /**
@@ -341,11 +343,10 @@ class InstallCommand extends Command
             $userService = new UserService($userStore);
             $userService->createUser($admin['name'], $admin['mail'], $admin['pass'], 1);
 
-            $output->writeln('<info>User account created!</info>');
+            $output->writeln('<info>'.Lang::get('user_created').'</info>');
         } catch (\Exception $ex) {
-            $output->writeln('<error>PHPCI failed to create your admin account.</error>');
+            $output->writeln('<error>'.Lang::get('failed_to_create').'</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
-            die;
         }
     }
 
@@ -360,6 +361,7 @@ class InstallCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @return bool
      */
     protected function verifyNotInstalled(OutputInterface $output)
     {
@@ -367,10 +369,12 @@ class InstallCommand extends Command
             $content = file_get_contents($this->configFilePath);
 
             if (!empty($content)) {
-                $output->writeln('<error>The PHPCI config file exists and is not empty.</error>');
-                $output->writeln('<error>If you were trying to update PHPCI, please use phpci:update instead.</error>');
-                die;
+                $output->writeln('<error>'.Lang::get('config_exists').'</error>');
+                $output->writeln('<error>'.Lang::get('update_instead').'</error>');
+                return false;
             }
         }
+
+        return true;
     }
 }

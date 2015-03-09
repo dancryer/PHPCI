@@ -1,7 +1,7 @@
 var phpspecPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpspec-errors',
     css: 'col-lg-12 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHPSpec',
+    title: Lang.get('phpspec'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -28,9 +28,9 @@ var phpspecPlugin = ActiveBuild.UiPlugin.extend({
         return $('<table class="table table-striped" id="phpspec-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>Suite</th>' +
-            '   <th>Test</th>' +
-            '   <th>Result</th>' +
+            '   <th>'+Lang.get('suite')+'</th>' +
+            '   <th>'+Lang.get('test')+'</th>' +
+            '   <th>'+Lang.get('result')+'</th>' +
             '</tr>' +
             '</thead><tbody></tbody></table>');
     },
@@ -57,8 +57,8 @@ var phpspecPlugin = ActiveBuild.UiPlugin.extend({
 				var row = $(
 					'<tr>'+
 						'<td>'+test_suite.name+'</td>'+
-						'<td title="Took '+test_case['time']+'Seconds">'+test_case.name+'</td>'+
-						'<td>'+(test_case.message?test_case.message:'OK')+'</td>'+
+						'<td title="'+Lang.get('took_n_seconds', test_case['time'])+'">'+test_case.name+'</td>'+
+						'<td>'+(test_case.message ? test_case.message : Lang.get('ok'))+'</td>'+
 					'</tr>'
 				);
 

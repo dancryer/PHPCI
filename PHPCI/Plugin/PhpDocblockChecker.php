@@ -105,7 +105,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $checker = $this->phpci->findBinary('phpdoccheck');
 
         if (!$checker) {
-            $this->phpci->logFailure('Could not find phpdoccheck.');
+            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpdoccheck'));
             return false;
         }
 
@@ -143,17 +143,35 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         // Re-enable exec output logging:
         $this->phpci->logExecOutput(true);
 
-        $output = json_decode($this->phpci->getLastOutput());
+        $output = json_decode($this->phpci->getLastOutput(), true);
         $errors = count($output);
         $success = true;
 
         $this->build->storeMeta('phpdoccheck-warnings', $errors);
         $this->build->storeMeta('phpdoccheck-data', $output);
+        $this->reportErrors($output);
 
         if ($this->allowed_warnings != -1 && $errors > $this->allowed_warnings) {
             $success = false;
         }
 
         return $success;
+    }
+
+    /**
+     * Report all of the errors we've encountered line-by-line.
+     * @param $output
+     */
+    protected function reportErrors($output)
+    {
+        foreach ($output as $error) {
+            $message = 'Class ' . $error['class'] . ' does not have a Docblock comment.';
+
+            if ($error['type'] == 'method') {
+                $message = 'Method ' . $error['class'] . '::' . $error['method'] . ' does not have a Docblock comment.';
+            }
+
+            $this->build->reportError($this->phpci, $error['file'], $error['line'], $message);
+        }
     }
 }

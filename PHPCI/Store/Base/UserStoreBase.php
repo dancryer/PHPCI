@@ -21,10 +21,10 @@ class UserStoreBase extends Store
     protected $primaryKey  = 'id';
 
     /**
-     * Get a User by primary key.
-     * @param mixed $value Primary key.
-     * @param string $useConnection Connection to use (read / write)
-     * @return \PHPCI\Model\User|null
+     * Returns a User model by primary key.
+     * @param mixed $value
+     * @param string $useConnection
+     * @return \@appNamespace\Model\User|null
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -32,11 +32,11 @@ class UserStoreBase extends Store
     }
 
     /**
-     * Get a User by Id.
-     * @param mixed $value.
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\User|null;
+     * Returns a User model by Id.
+     * @param mixed $value
+     * @param string $useConnection
+     * @throws HttpException
+     * @return \@appNamespace\Model\User|null
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -58,11 +58,11 @@ class UserStoreBase extends Store
     }
 
     /**
-     * Get a User by Email.
-     * @param mixed $value.
-     * @param string $useConnection Connection to use (read / write)
-     * @throws \b8\Exception\HttpException
-     * @return \PHPCI\Model\User|null;
+     * Returns a User model by Email.
+     * @param mixed $value
+     * @param string $useConnection
+     * @throws HttpException
+     * @return \@appNamespace\Model\User|null
      */
     public function getByEmail($value, $useConnection = 'read')
     {

@@ -9,12 +9,11 @@
 
 namespace PHPCI\Command;
 
+use b8\Config;
 use Monolog\Logger;
+use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -40,7 +39,7 @@ class UpdateCommand extends Command
     {
         $this
             ->setName('phpci:update')
-            ->setDescription('Update the database to reflect modified models.');
+            ->setDescription(Lang::get('update_phpci'));
     }
 
     /**
@@ -48,28 +47,22 @@ class UpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->verifyInstalled($output);
+        if (!$this->verifyInstalled($output)) {
+            return;
+        }
 
-        $output->write('Updating PHPCI database: ');
+        $output->write(Lang::get('updating_phpci'));
 
         shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
-        $output->writeln('<info>Done!</info>');
+        $output->writeln('<info>'.Lang::get('ok').'</info>');
     }
 
     protected function verifyInstalled(OutputInterface $output)
     {
-        if (!file_exists(PHPCI_DIR . 'PHPCI/config.yml')) {
-            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
-            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
-            die;
-        }
+        $config = Config::getInstance();
+        $phpciUrl = $config->get('phpci.url');
 
-        $content = file_get_contents(PHPCI_DIR . 'PHPCI/config.yml');
-        if (empty($content)) {
-            $output->writeln('<error>PHPCI does not appear to be installed.</error>');
-            $output->writeln('<error>Please install PHPCI via phpci:install instead.</error>');
-            die;
-        }
+        return !empty($phpciUrl);
     }
 }

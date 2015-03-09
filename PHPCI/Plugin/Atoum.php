@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -81,7 +82,7 @@ class Atoum implements \PHPCI\Plugin
         }
         if (count($output) == 0) {
             $status = false;
-            $this->phpci->log("No test have been performed!");
+            $this->phpci->log(Lang::get('no_tests_performed'));
         }
         
         return $status;

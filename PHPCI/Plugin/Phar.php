@@ -3,6 +3,7 @@ namespace PHPCI\Plugin;
 
 use Exception;
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use Phar as PHPPhar;
 
@@ -226,7 +227,6 @@ class Phar implements \PHPCI\Plugin
         $success = false;
 
         try {
-
             $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
             $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
 
@@ -238,7 +238,7 @@ class Phar implements \PHPCI\Plugin
             $success = true;
 
         } catch (Exception $e) {
-            $this->getPHPCI()->log('Phar Plugin Internal Error');
+            $this->getPHPCI()->log(Lang::get('phar_internal_error'));
             $this->getPHPCI()->log($e->getMessage());
         }
 

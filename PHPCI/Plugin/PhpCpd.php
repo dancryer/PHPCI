@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -90,7 +91,7 @@ class PhpCpd implements \PHPCI\Plugin
         $phpcpd = $this->phpci->findBinary('phpcpd');
 
         if (!$phpcpd) {
-            $this->phpci->logFailure('Could not find phpcpd.');
+            $this->phpci->logFailure(Lang::get('could_not_find', 'phpcpd'));
             return false;
         }
 
@@ -122,7 +123,7 @@ class PhpCpd implements \PHPCI\Plugin
 
         if ($xml === false) {
             $this->phpci->log($xmlString);
-            throw new \Exception('Could not process PHPCPD report XML.');
+            throw new \Exception(Lang::get('could_not_process_report'));
         }
 
         $warnings = 0;
@@ -139,6 +140,17 @@ class PhpCpd implements \PHPCI\Plugin
                     'line_end' => (int) $file['line'] + (int) $duplication['lines'],
                     'code' => (string) $duplication->codefragment
                 );
+
+                $message = <<<CPD
+Copy and paste detected:
+
+```
+{$duplication->codefragment}
+```
+CPD;
+
+                $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
+
             }
 
             $warnings++;

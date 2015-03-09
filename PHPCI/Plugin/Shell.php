@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
@@ -79,7 +80,7 @@ class Shell implements \PHPCI\Plugin
     public function execute()
     {
         if (!defined('ENABLE_SHELL_PLUGIN') || !ENABLE_SHELL_PLUGIN) {
-            throw new \Exception('The shell plugin is not enabled.');
+            throw new \Exception(Lang::get('shell_not_enabled'));
         }
 
         $success = true;

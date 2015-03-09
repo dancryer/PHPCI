@@ -1,7 +1,7 @@
 var phpdoccheckPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-phpdoccheck-warnings',
     css: 'col-lg-6 col-md-12 col-sm-12 col-xs-12',
-    title: 'PHP Docblock Checker',
+    title: Lang.get('phpdoccheck'),
     lastData: null,
     displayOnUpdate: false,
     box: true,
@@ -24,15 +24,15 @@ var phpdoccheckPlugin = ActiveBuild.UiPlugin.extend({
     },
 
     render: function() {
-        return $('<table class="table" id="phpdoccheck-data">' +
+        return $('<div class="table-responsive"><table class="table" id="phpdoccheck-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>File</th>' +
-            '   <th>Line</th>' +
-            '   <th>Class</th>' +
-            '   <th>Method</th>' +
+            '   <th>'+Lang.get('file')+'</th>' +
+            '   <th>'+Lang.get('line')+'</th>' +
+            '   <th>'+Lang.get('class')+'</th>' +
+            '   <th>'+Lang.get('method')+'</th>' +
             '</tr>' +
-            '</thead><tbody></tbody></table>');
+            '</thead><tbody></tbody></table></div>');
     },
 
     onUpdate: function(e) {

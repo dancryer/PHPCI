@@ -12,10 +12,9 @@ namespace PHPCI\Command;
 use b8\Store\Factory;
 use b8\HttpClient;
 use Monolog\Logger;
+use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 use PHPCI\Model\Build;
@@ -43,7 +42,7 @@ class PollCommand extends Command
     {
         $this
             ->setName('phpci:poll-github')
-            ->setDescription('Poll github to check if we need to start a build.');
+            ->setDescription(Lang::get('poll_github'));
     }
 
     /**
@@ -58,16 +57,16 @@ class PollCommand extends Command
         $token = $this->settings['phpci']['github']['token'];
 
         if (!$token) {
-            $this->logger->error("No github token found");
-            exit();
+            $this->logger->error(Lang::get('no_token'));
+            return;
         }
 
         $buildStore = Factory::getStore('Build');
 
-        $this->logger->addInfo("Finding projects to poll");
+        $this->logger->addInfo(Lang::get('finding_projects'));
         $projectStore = Factory::getStore('Project');
         $result = $projectStore->getWhere();
-        $this->logger->addInfo(sprintf("Found %d projects", count($result['items'])));
+        $this->logger->addInfo(Lang::get('found_n_projects', count($result['items'])));
 
         foreach ($result['items'] as $project) {
             $http = new HttpClient('https://api.github.com');
@@ -77,11 +76,11 @@ class PollCommand extends Command
             $last_committer = $commits['body'][0]['commit']['committer']['email'];
             $message = $commits['body'][0]['commit']['message'];
 
-            $this->logger->info("Last commit to github for " . $project->getTitle() . " is " . $last_commit);
+            $this->logger->info(Lang::get('last_commit_is', $project->getTitle(), $last_commit));
 
             if ($project->getLastCommit() != $last_commit && $last_commit != "") {
                 $this->logger->info(
-                    "Last commit is different from database, adding new build for " . $project->getTitle()
+                    Lang::get('adding_new_build')
                 );
 
                 $build = new Build();
@@ -101,6 +100,6 @@ class PollCommand extends Command
             }
         }
 
-        $this->logger->addInfo("Finished processing builds");
+        $this->logger->addInfo(Lang::get('finished_processing_builds'));
     }
 }

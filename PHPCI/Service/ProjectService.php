@@ -81,6 +81,10 @@ class ProjectService
             $project->setAllowPublicStatus((int)$options['allow_public_status']);
         }
 
+        if (array_key_exists('archived', $options)) {
+            $project->setArchived((bool)$options['archived']);
+        }
+
         if (array_key_exists('branch', $options)) {
             $project->setBranch($options['branch']);
         }
@@ -115,12 +119,12 @@ class ProjectService
         if ($project->getType() == 'gitlab') {
             $info = array();
 
-            if (preg_match('`^(.*)@(.*):([0-9]+)?/?(.*)/(.*)\.git`', $reference, $matches)) {
+            if (preg_match('`^(.+)@(.+):([0-9]*)\/?(.+)\.git`', $reference, $matches)) {
                 $info['user'] = $matches[1];
                 $info['domain'] = $matches[2];
                 $info['port'] = $matches[3];
 
-                $project->setReference($matches[4] . '/' . $matches[5]);
+                $project->setReference($matches[4]);
             }
 
             $project->setAccessInformation($info);

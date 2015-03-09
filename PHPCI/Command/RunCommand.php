@@ -11,14 +11,12 @@ namespace PHPCI\Command;
 
 use b8\Config;
 use Monolog\Logger;
+use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
 use PHPCI\Logging\OutputLogHandler;
-use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use b8\Store\Factory;
 use PHPCI\Builder;
@@ -46,7 +44,7 @@ class RunCommand extends Command
     /**
      * @var int
      */
-    protected $maxBuilds = null;
+    protected $maxBuilds = 100;
 
     /**
      * @var bool
@@ -67,7 +65,7 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription('Run all pending PHPCI builds.');
+            ->setDescription(Lang::get('run_all_pending'));
     }
 
     /**
@@ -88,10 +86,10 @@ class RunCommand extends Command
         $running = $this->validateRunningBuilds();
 
         $this->logger->pushProcessor(new LoggedBuildContextTidier());
-        $this->logger->addInfo("Finding builds to process");
+        $this->logger->addInfo(Lang::get('finding_builds'));
         $store = Factory::getStore('Build');
         $result = $store->getByStatus(0, $this->maxBuilds);
-        $this->logger->addInfo(sprintf("Found %d builds", count($result['items'])));
+        $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));
 
         $builds = 0;
 
@@ -101,7 +99,7 @@ class RunCommand extends Command
 
             // Skip build (for now) if there's already a build running in that project:
             if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
-                $this->logger->addInfo('Skipping Build #'.$build->getId() . ' - Project build already in progress.');
+                $this->logger->addInfo(Lang::get('skipping_build', $build->getId()));
                 $result['items'][] = $build;
 
                 // Re-run build validator:
@@ -132,7 +130,7 @@ class RunCommand extends Command
 
         }
 
-        $this->logger->addInfo("Finished processing builds");
+        $this->logger->addInfo(Lang::get('finished_processing_builds'));
 
         return $builds;
     }
@@ -142,7 +140,7 @@ class RunCommand extends Command
         $this->maxBuilds = (int)$numBuilds;
     }
 
-    public function setIsDaemon($fromDaemon)
+    public function setDaemon($fromDaemon)
     {
         $this->isFromDaemon = (bool)$fromDaemon;
     }
@@ -164,7 +162,7 @@ class RunCommand extends Command
             $start = $build->getStarted()->getTimestamp();
 
             if (($now - $start) > $timeout) {
-                $this->logger->addInfo('Build #'.$build->getId().' marked as failed due to timeout.');
+                $this->logger->addInfo(Lang::get('marked_as_failed', $build->getId()));
                 $build->setStatus(Build::STATUS_FAILED);
                 $build->setFinished(new \DateTime());
                 $store->save($build);

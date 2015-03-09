@@ -70,7 +70,6 @@ class Handler
     public function handleError($level, $message, $file, $line)
     {
         if (error_reporting() & $level) {
-
             $exception_level = isset($this->levels[$level]) ? $this->levels[$level] : $level;
 
             throw new \ErrorException(
@@ -140,7 +139,6 @@ class Handler
     protected function log(\Exception $exception)
     {
         if (null !== $this->logger) {
-
             $message = sprintf(
                 '%s: %s (uncaught exception) at %s line %s',
                 get_class($exception),

@@ -10,11 +10,10 @@
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Exception\HttpException\ForbiddenException;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
 use PHPCI\Controller;
-use PHPCI\Model\User;
+use PHPCI\Helper\Lang;
 use PHPCI\Service\UserService;
 
 /**
@@ -52,7 +51,7 @@ class UserController extends Controller
         $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
         $this->view->users    = $users;
 
-        $this->layout->title = 'Users';
+        $this->layout->title = Lang::get('manage_users');
 
         return $this->view->render();
     }
@@ -65,12 +64,18 @@ class UserController extends Controller
     {
         $user = $_SESSION['phpci_user'];
 
-        $this->layout->title = 'Edit Profile';
-
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
             $email = $this->getParam('email', null);
             $password = $this->getParam('password', null);
+
+            $currentLang = Lang::getLanguage();
+            $chosenLang = $this->getParam('language', $currentLang);
+
+            if ($chosenLang !== $currentLang) {
+                setcookie('phpcilang', $chosenLang, time() + (10 * 365 * 24 * 60 * 60), '/');
+                Lang::setLanguage($chosenLang);
+            }
 
             $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
             $user = $_SESSION['phpci_user'];
@@ -78,7 +83,14 @@ class UserController extends Controller
             $this->view->updated = 1;
         }
 
+        $this->layout->title = $user->getName();
+        $this->layout->subtitle = Lang::get('edit_profile');
+
         $values = $user->getDataArray();
+
+        if (array_key_exists('phpcilang', $_COOKIE)) {
+            $values['language'] = $_COOKIE['phpcilang'];
+        }
 
         $form = new Form();
         $form->setAction(PHPCI_URL.'user/profile');
@@ -87,27 +99,35 @@ class UserController extends Controller
         $name = new Form\Element\Text('name');
         $name->setClass('form-control');
         $name->setContainerClass('form-group');
-        $name->setLabel('Name');
+        $name->setLabel(Lang::get('name'));
         $name->setRequired(true);
         $form->addField($name);
 
         $email = new Form\Element\Email('email');
         $email->setClass('form-control');
         $email->setContainerClass('form-group');
-        $email->setLabel('Email Address');
+        $email->setLabel(Lang::get('email_address'));
         $email->setRequired(true);
         $form->addField($email);
 
         $password = new Form\Element\Password('password');
         $password->setClass('form-control');
         $password->setContainerClass('form-group');
-        $password->setLabel('Password (leave blank if you don\'t want to change it)');
+        $password->setLabel(Lang::get('password_change'));
         $password->setRequired(false);
         $form->addField($password);
 
+        $lang = new Form\Element\Select('language');
+        $lang->setClass('form-control');
+        $lang->setContainerClass('form-group');
+        $lang->setLabel(Lang::get('language'));
+        $lang->setRequired(true);
+        $lang->setOptions(Lang::getLanguageOptions());
+        $form->addField($lang);
+
         $submit = new Form\Element\Submit();
         $submit->setClass('btn btn-success');
-        $submit->setValue('Save &raquo;');
+        $submit->setValue(Lang::get('save'));
         $form->addField($submit);
 
         $form->setValues($values);
@@ -124,7 +144,7 @@ class UserController extends Controller
     {
         $this->requireAdmin();
 
-        $this->layout->title = 'Add User';
+        $this->layout->title = Lang::get('add_user');
 
         $method = $this->request->getMethod();
 
@@ -153,8 +173,9 @@ class UserController extends Controller
 
         $this->userService->createUser($name, $email, $password, $isAdmin);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 
     /**
@@ -168,11 +189,11 @@ class UserController extends Controller
         $user = $this->userStore->getById($userId);
 
         if (empty($user)) {
-            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
+            throw new NotFoundException(Lang::get('user_n_not_found', $userId));
         }
 
         $this->layout->title = $user->getName();
-        $this->layout->subtitle = 'Edit User';
+        $this->layout->subtitle = Lang::get('edit_user');
 
         $values = array_merge($user->getDataArray(), $this->getParams());
         $form = $this->userForm($values, 'edit/' . $userId);
@@ -193,8 +214,9 @@ class UserController extends Controller
 
         $this->userService->updateUser($user, $name, $email, $password, $isAdmin);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 
     /**
@@ -209,14 +231,14 @@ class UserController extends Controller
 
         $field = new Form\Element\Email('email');
         $field->setRequired(true);
-        $field->setLabel('Email Address');
+        $field->setLabel(Lang::get('email_address'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Text('name');
         $field->setRequired(true);
-        $field->setLabel('Name');
+        $field->setLabel(Lang::get('name'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $form->addField($field);
@@ -225,10 +247,10 @@ class UserController extends Controller
 
         if ($type == 'add') {
             $field->setRequired(true);
-            $field->setLabel('Password');
+            $field->setLabel(Lang::get('password'));
         } else {
             $field->setRequired(false);
-            $field->setLabel('Password (leave blank to keep current password)');
+            $field->setLabel(Lang::get('password_change'));
         }
 
         $field->setClass('form-control');
@@ -238,12 +260,12 @@ class UserController extends Controller
         $field = new Form\Element\Checkbox('is_admin');
         $field->setRequired(false);
         $field->setCheckedValue(1);
-        $field->setLabel('Is this user an administrator?');
+        $field->setLabel(Lang::get('is_user_admin'));
         $field->setContainerClass('form-group');
         $form->addField($field);
 
         $field = new Form\Element\Submit();
-        $field->setValue('Save User');
+        $field->setValue(Lang::get('save_user'));
         $field->setClass('btn-success');
         $form->addField($field);
 
@@ -261,12 +283,13 @@ class UserController extends Controller
         $user   = $this->userStore->getById($userId);
 
         if (empty($user)) {
-            throw new NotFoundException('User with ID: ' . $userId . ' does not exist.');
+            throw new NotFoundException(Lang::get('user_n_not_found', $userId));
         }
 
         $this->userService->deleteUser($user);
 
-        header('Location: '.PHPCI_URL.'user');
-        die;
+        $response = new b8\Http\Response\RedirectResponse();
+        $response->setHeader('Location', PHPCI_URL . 'user');
+        return $response;
     }
 }

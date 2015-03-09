@@ -105,7 +105,7 @@ class ExecutorTest extends ProphecyTestCase
 
         $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
 
-        $this->mockBuildLogger->logFailure('EXCEPTION: ' . $expectedException->getMessage(), $expectedException)
+        $this->mockBuildLogger->logFailure('Exception: ' . $expectedException->getMessage(), $expectedException)
                               ->shouldBeCalledTimes(1);
 
         $this->testedExecutor->executePlugin($pluginName, $options);

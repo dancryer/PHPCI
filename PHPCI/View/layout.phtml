@@ -1,3 +1,4 @@
+<?php use PHPCI\Helper\Lang; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,9 +16,23 @@
 
     <!-- Theme style -->
     <link href="<?php print PHPCI_URL; ?>assets/css/AdminLTE.css" rel="stylesheet" type="text/css" />
+    <link href="<?php print PHPCI_URL; ?>assets/css/AdminLTE-custom.css" rel="stylesheet" type="text/css" />
+
+    <script>
+        var PHPCI_URL = '<?php print PHPCI_URL; ?>';
+        var PHPCI_LANGUAGE = <?php print json_encode(Lang::getLanguage()); ?>;
+
+        <?php if (defined('JSON_UNESCAPED_UNICODE')): ?>
+        var PHPCI_STRINGS = <?php print json_encode(Lang::getStrings(), JSON_UNESCAPED_UNICODE); ?>;
+        <?php else: ?>
+        var PHPCI_STRINGS = <?php print json_encode(Lang::getStrings()); ?>;
+        <?php endif; ?>
+    </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
     <script src="<?php print PHPCI_URL; ?>assets/js/class.js"></script>
+    <script src="<?php print PHPCI_URL; ?>assets/js/sprintf.js"></script>
+    <script src="<?php print PHPCI_URL; ?>assets/js/moment.min.js"></script>
     <script src="<?php print PHPCI_URL; ?>assets/js/phpci.js" type="text/javascript"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
@@ -26,56 +41,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script>var PHPCI_URL = '<?php print PHPCI_URL; ?>';</script>
-
     <style>
-        .skin-blue .logo, .skin-blue .logo:hover  {
-            background-image: url('/assets/img/logo-large.png');
-            background-repeat: no-repeat;
-            background-size: 40%;
-            background-position: 65px;
-            text-indent: -5000px;
-        }
 
-        .build-info-panel {
-
-        }
-
-            .build-info-panel .box-header h1.box-title {
-                border: 0;
-                font-size: 1.5em;
-                font-weight: bold;
-                margin-left: 110px;
-            }
-
-            .build-info-panel h1.box-title span {
-                font-weight: normal;
-            }
-
-            .build-info-panel img {
-                border: 2px solid #fff;
-                border-radius: 50%;
-                margin-top: -40px;
-            }
-
-            .build-info-panel #build-info {
-                margin-left: 110px;
-                min-height: 50px;
-            }
-
-            .build-info-panel .commit-message {
-                margin-bottom: 20px;
-            }
-
-        .small-box h3 a, .small-box h4 a {
-            color: #fff;
-        }
-
-        .pagination>li>span {
-            font-weight: bold;
-            background: #337ab7;
-            color: #fff;
-        }
 
     </style>
 </head>
@@ -87,7 +54,7 @@
 <nav class="navbar navbar-static-top" role="navigation">
 <!-- Sidebar toggle button-->
 <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
-    <span class="sr-only">Toggle navigation</span>
+    <span class="sr-only"><?php Lang::out('toggle_navigation'); ?></span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
@@ -101,7 +68,7 @@
         <span class="label label-info phpci-pending-count"></span>
     </a>
     <ul class="dropdown-menu">
-        <li class="header"><span class="phpci-pending-count"></span> builds pending</li>
+        <li class="header"><?php Lang::out('n_builds_pending', 0); ?></li>
         <li>
             <ul class="menu phpci-pending-list">
             </ul>
@@ -115,7 +82,7 @@
         <span class="label label-warning phpci-running-count"></span>
     </a>
     <ul class="dropdown-menu">
-        <li class="header"><span class="phpci-running-count"></span> builds running</li>
+        <li class="header"><?php Lang::out('n_builds_running', 0); ?></li>
         <li>
             <ul class="menu phpci-running-list">
             </ul>
@@ -123,7 +90,7 @@
     </ul>
 </li>
 
-
+<?php if (!$this->LoginIsDisabled()->check()): ?>
 <!-- User Account: style can be found in dropdown.less -->
 <li class="dropdown user user-menu">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -142,14 +109,15 @@
         <!-- Menu Footer-->
         <li class="user-footer">
             <div class="pull-left">
-                <a href="<?php print PHPCI_URL ?>user/profile" class="btn btn-default btn-flat">Edit Profile</a>
+                <a href="<?php print PHPCI_URL ?>user/profile" class="btn btn-default btn-flat"><?php Lang::out('edit_profile'); ?></a>
             </div>
             <div class="pull-right">
-                <a href="<?php print PHPCI_URL ?>session/logout" class="btn btn-default btn-flat">Sign out</a>
+                <a href="<?php print PHPCI_URL ?>session/logout" class="btn btn-default btn-flat"><?php Lang::out('sign_out'); ?></a>
             </div>
         </li>
     </ul>
 </li>
+<?php endif; ?>
 </ul>
 </div>
 </nav>
@@ -159,56 +127,57 @@
     <aside class="left-side sidebar-offcanvas">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
+
+            <?php if (!$this->LoginIsDisabled()->check()): ?>
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
                     <img src="https://www.gravatar.com/avatar/<?php print md5($this->User()->getEmail()); ?>?d=mm" class="img-circle" alt="<?php print $this->User()->getName(); ?>" />
                 </div>
-                <div class="pull-left info">
-                    <p>Hello, <?php print $this->User()->getName(); ?></p>
-
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <div class="info">
+                    <p><?php Lang::out('hello_name', $this->User()->getName()); ?></p>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
                 <li class="active">
                     <a href="<?php print PHPCI_URL; ?>">
-                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        <i class="fa fa-dashboard"></i> <span><?php Lang::out('dashboard'); ?></span>
                     </a>
                 </li>
-
+                
                 <?php if ($this->User()->getIsAdmin()): ?>
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-edit"></i>
-                            <span>Admin Options</span>
+                            <span><?php Lang::out('admin_options'); ?></span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
 
                         <ul class="treeview-menu">
                             <li>
                                 <a href="<?php print PHPCI_URL; ?>project/add">
-                                    <i class="fa fa-angle-double-right"></i> Add Project
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('add_project'); ?>
                                 </a>
                             </li>
 
                             <li>
                                 <a href="<?php print PHPCI_URL; ?>settings">
-                                    <i class="fa fa-angle-double-right"></i> Settings
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('settings'); ?>
                                 </a>
                             </li>
 
                             <li>
                                 <a href="<?php print PHPCI_URL; ?>user">
-                                    <i class="fa fa-angle-double-right"></i> Manage Users
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('manage_users'); ?>
                                 </a>
                             </li>
 
                             <li>
                                 <a href="<?php print PHPCI_URL; ?>plugin">
-                                    <i class="fa fa-angle-double-right"></i> Plugins
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('plugins'); ?>
                                 </a>
                             </li>
                         </ul>
@@ -226,26 +195,26 @@
                     <ul class="treeview-menu">
                         <li>
                             <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> View
+                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('view'); ?>
                             </a>
                         </li>
 
                         <li>
                             <a href="<?php print PHPCI_URL; ?>project/build/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> Build Now
+                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('build_now'); ?>
                             </a>
                         </li>
 
                         <?php if ($this->User()->getIsAdmin()): ?>
                         <li>
                             <a href="<?php print PHPCI_URL; ?>project/edit/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> Edit Project
+                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('edit_project'); ?>
                             </a>
                         </li>
 
                         <li>
                             <a href="<?php print PHPCI_URL; ?>project/delete/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> Delete Project
+                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('delete_project'); ?>
                             </a>
                         </li>
                         <?php endif; ?>
@@ -272,6 +241,12 @@
                         </ul>
                     </li>
                 <?php endif; ?>
+
+                <li class="archive">
+                    <a href="<?php print PHPCI_URL; ?>?archived">
+                        <i class="fa fa-archive"></i> <span><?php Lang::out('archived'); ?></span>
+                    </a>
+                </li>
 
             </ul>
         </section>
@@ -306,6 +281,7 @@
 
 <script src="<?php print PHPCI_URL; ?>assets/js/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
 <script src="<?php print PHPCI_URL; ?>assets/js/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="<?php print PHPCI_URL; ?>assets/js/plugins/datepicker/locales/bootstrap-datepicker.<?php print Lang::getLanguage(); ?>.js" type="text/javascript"></script>
 <script src="<?php print PHPCI_URL; ?>assets/js/AdminLTE/app.js" type="text/javascript"></script>
 
 </body>

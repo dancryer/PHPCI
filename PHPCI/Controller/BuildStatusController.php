@@ -84,7 +84,6 @@ class BuildStatusController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
         $xml = new \SimpleXMLElement('<Projects/>');
 
-
         if (!$project instanceof Project || !$project->getAllowPublicStatus()) {
             return $this->renderXml($xml);
         }
@@ -119,7 +118,9 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected function renderXml(\SimpleXMLElement $xml = null)
     {
-        Header('Content-type: text/xml');
+        $this->response->setHeader('Content-Type', 'text/xml');
+        $this->response->setContent($xml->asXML());
+        $this->response->flush();
         echo $xml->asXML();
 
         return true;

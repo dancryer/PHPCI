@@ -43,7 +43,6 @@ class SessionController extends \PHPCI\Controller
         $isLoginFailure = false;
 
         if ($this->request->getMethod() == 'POST') {
-
             $token = $this->getParam('token');
             if ($token === null || $token !== $_SESSION['login_token']) {
                 $isLoginFailure = true;
@@ -202,7 +201,7 @@ class SessionController extends \PHPCI\Controller
      */
     protected function generateToken()
     {
-        if(function_exists('openssl_random_pseudo_bytes')) {
+        if (function_exists('openssl_random_pseudo_bytes')) {
             return bin2hex(openssl_random_pseudo_bytes(16));
         }
 

@@ -9,6 +9,7 @@
 
 namespace PHPCI\Model\Build;
 
+use b8\Config;
 use PHPCI\Model\Build;
 use PHPCI\Builder;
 
@@ -43,9 +44,8 @@ class RemoteGitBuild extends Build
         $success = true;
 
         // Create and/or update a mirror repository if phpci.git.mirrors if defined
-        $mirrorRootPath = $builder->getSystemConfig('phpci.git.mirrors');
-        if (null !== $mirrorRootPath) {
-            $mirrorPath = $mirrorRootPath.'/'.preg_replace('/[^a-zA-Z_-]/', '_', $this->getCloneUrl());
+        $mirrorPath = $this->getMirrorPath();
+        if (null !== $mirrorPath) {
             $success = $this->manageMirror($builder, $mirrorPath);
             $cloneArgs .= ' --reference="'.$mirrorPath.'"';
         }
@@ -59,6 +59,34 @@ class RemoteGitBuild extends Build
 
         $builder->logFailure('Failed to clone remote git repository.');
         return false;
+    }
+
+    /** Calculate the path to a repository mirror.
+     *
+     * @return string|null The path or null if mirrors aren't enabled.
+     */
+    public function getMirrorPath()
+    {
+        $mirrorRootPath = Config::getInstance()->get('phpci.git.mirrors');
+        if (!$mirrorRootPath) {
+            return null;
+        }
+        return $mirrorRootPath.'/'.$this->getProjectId();
+    }
+
+    /**
+     * Remove the repository mirror.
+     */
+    public function removeMirror()
+    {
+        $mirrorPath = $this->getMirrorPath();
+        if ($mirrorPath && is_dir($mirrorPath)) {
+            $cmd = sprintf(
+                IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -rfv "%s"',
+                $mirrorPath
+            );
+            var_dump([$cmd, shell_exec($cmd)]);
+        }
     }
 
     /** Create and/or update a persistent mirror of the remote repository.

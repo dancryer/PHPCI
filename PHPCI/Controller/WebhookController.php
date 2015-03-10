@@ -232,6 +232,11 @@ class WebhookController extends \PHPCI\Controller
             }
 
             foreach ($response['body'] as $commit) {
+                // Skip all but the current HEAD commit ID:
+                if ($commit['sha'] != $payload['head']['sha']) {
+                    continue;
+                }
+
                 $branch = str_replace('refs/heads/', '', $payload['pull_request']['base']['ref']);
                 $committer = $commit['commit']['author']['email'];
                 $message = $commit['commit']['message'];

@@ -82,10 +82,10 @@ class RemoteGitBuild extends Build
         $mirrorPath = $this->getMirrorPath();
         if ($mirrorPath && is_dir($mirrorPath)) {
             $cmd = sprintf(
-                IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -rfv "%s"',
+                IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -rf "%s"',
                 $mirrorPath
             );
-            var_dump([$cmd, shell_exec($cmd)]);
+            exec($cmd);
         }
     }
 

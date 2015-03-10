@@ -123,6 +123,7 @@ class UserController extends Controller
         $lang->setLabel(Lang::get('language'));
         $lang->setRequired(true);
         $lang->setOptions(Lang::getLanguageOptions());
+        $lang->setValue(Lang::getLanguage());
         $form->addField($lang);
 
         $submit = new Form\Element\Submit();

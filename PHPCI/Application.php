@@ -51,7 +51,7 @@ class Application extends b8\Application
             return false;
         };
 
-        $skipAuth = [$this, 'shouldSkipAuth'];
+        $skipAuth = array($this, 'shouldSkipAuth');
 
         // Handler for the route we're about to register, checks for a valid session where necessary:
         $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {

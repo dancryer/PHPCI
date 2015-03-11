@@ -233,7 +233,7 @@ class WebhookController extends \PHPCI\Controller
 
             foreach ($response['body'] as $commit) {
                 // Skip all but the current HEAD commit ID:
-                if ($commit['sha'] != $payload['head']['sha']) {
+                if ($commit['sha'] != $payload['pull_request']['head']['sha']) {
                     continue;
                 }
 

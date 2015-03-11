@@ -1,0 +1,11 @@
+TAP version 13
+not ok 1 - Failure: testFailure(FailureErrorTest)
+  ---
+  message: 'Failed asserting that <integer:2> matches expected value <integer:1>.'
+  severity: fail
+  data:
+    got: 2
+    expected: 1
+  ...
+not ok 2 - Error: testError(FailureErrorTest)
+1..2

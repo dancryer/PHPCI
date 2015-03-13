@@ -166,7 +166,7 @@ class RunCommand extends Command
                 $build->setStatus(Build::STATUS_FAILED);
                 $build->setFinished(new \DateTime());
                 $store->save($build);
-                $this->removeBuildDirectory($build);
+                $build->removeBuildDirectory();
                 continue;
             }
 
@@ -174,20 +174,5 @@ class RunCommand extends Command
         }
 
         return $rtn;
-    }
-
-    protected function removeBuildDirectory($build)
-    {
-        $buildPath = PHPCI_BUILD_ROOT_DIR . $build->getId() . '/';
-
-        if (is_dir($buildPath)) {
-            $cmd = 'rm -Rf "%s"';
-
-            if (IS_WIN) {
-                $cmd = 'rmdir /S /Q "%s"';
-            }
-
-            shell_exec($cmd);
-        }
     }
 }

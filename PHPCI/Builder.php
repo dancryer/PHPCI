@@ -215,15 +215,6 @@ class Builder implements LoggerAwareInterface
                 $this->pluginExecutor->executePlugins($this->config, 'failure');
                 $this->buildLogger->logFailure(Lang::get('build_failed'));
             }
-
-            // Clean up:
-            $this->buildLogger->log(Lang::get('removing_build'));
-
-            $cmd = 'rm -Rf "%s"';
-            if (IS_WIN) {
-                $cmd = 'rmdir /S /Q "%s"';
-            }
-            $this->executeCommand($cmd, rtrim($this->buildPath, '/'));
         } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
             $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
@@ -233,6 +224,11 @@ class Builder implements LoggerAwareInterface
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
         $this->build->setFinished(new \DateTime());
+
+        // Clean up:
+        $this->buildLogger->log(Lang::get('removing_build'));
+        $this->build->removeBuildDirectory();
+
         $this->store->save($this->build);
     }
 
@@ -287,7 +283,7 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $this->buildPath = PHPCI_BUILD_ROOT_DIR . $this->build->getId() . '/';
+        $this->buildPath = $this->build->getBuildPath() . '/';
         $this->build->currentBuildPath = $this->buildPath;
 
         $this->interpolator->setupInterpolationVars(

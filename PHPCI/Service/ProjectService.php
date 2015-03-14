@@ -99,7 +99,7 @@ class ProjectService
         $rtn = $this->projectStore->save($project);
 
         // Cleanup if archived or the reference changed
-        if(isset($modified['archived']) || isset($modified['reference'])) {
+        if (isset($modified['archived']) || isset($modified['reference'])) {
             $project->cleanup();
         }
 

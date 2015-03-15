@@ -139,7 +139,7 @@ class Project extends ProjectBase
     public function cleanup()
     {
         $build = $this->getLatestBuild();
-        if (!$build) {
+        if ($build instanceof Build) {
             $build = BuildFactory::getBuild($build);
             if ($build instanceof Build\RemoteGitBuild) {
                 $build->removeMirror();

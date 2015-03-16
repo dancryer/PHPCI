@@ -101,34 +101,45 @@ class TapParser
      */
     protected function processTestLine($matches)
     {
-        $test = array();
-        $test['pass'] = ($matches[1] === 'ok');
+        $test = array(
+            'pass'     => $matches[1] === 'ok',
+            'message'  => $matches[3] ?: '',
+            'severity' => $matches[1] === 'ok' ? 'success' : 'fail',
+        );
         if (!$test['pass']) {
             $this->failures++;
+            if (preg_match('/^(Error|Failure):/', $matches[3], $moreMatches)) {
+                $test['severity'] = $moreMatches[1] === 'Error' ? 'error' : 'fail';
+            }
         }
 
-        if (preg_match('/(?:(Error|Failure):\s*)?(\S+)::(\S+)/', $matches[3], $moreMatches)) {
-            if ($moreMatches[1] === 'Error') {
-                $test['severity'] = 'error';
-            } elseif ($moreMatches[1] === 'Failure') {
-                $test['severity'] = 'fail';
-            }
-            $test['suite'] = $moreMatches[2];
-            $test['test'] = $moreMatches[3];
-        } elseif (!empty($matches[3])) {
-            $test['message'] = $matches[3];
+        if (preg_match('/([\w\\\\]+)::(\w+)/', $matches[3], $moreMatches)) {
+            $test['suite'] = $moreMatches[1];
+            $test['test'] = $moreMatches[2];
         }
 
         if (isset($matches[4])) {
-            switch (strtolower($matches[4])) {
-                case 'skip':
-                    $test['skipped'] = true;
-                    $test['message'] = $matches[5] ?: "skipped";
-                    break;
-                case 'todo':
-                    $test['todo'] = $matches[5] ?: "todo";
-                    break;
+            $test = $this->processDirective($test, $matches[4], $matches[5]);
+        }
+
+        return $test;
+    }
+
+    /**
+     *
+     * @param array $test
+     * @param array $matches
+     * @return array
+     */
+    protected function processDirective($test, $directe, $comment)
+    {
+        $test['severity'] = strtolower($directe) === 'skip' ? 'skipped' : 'todo';
+
+        if (!empty($comment)) {
+            if (!empty($test['message'])) {
+                $test['message'] .= ', '.$test['severity'].': ';
             }
+            $test['message'] .= $comment;
         }
 
         return $test;

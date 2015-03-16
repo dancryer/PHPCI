@@ -18,29 +18,52 @@ TAP;
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'suite' => 'SomeTest', 'test' => 'testAnother'),
-            array('pass' => false),
+            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => false, 'severity' => 'fail', 'message' => ''),
         ), $result);
 
         $this->assertEquals(1, $parser->getTotalFailures());
     }
 
-    public function testSkipped()
+    public function testSuiteAndTest()
     {
         $content = <<<TAP
 TAP version 13
 ok 1 - SomeTest::testAnother
-ok 2 - # SKIP
-ok 3 - # SKIP foobar
+not ok - Failure: SomeTest::testAnother
+not ok 3 - Error: SomeTest::testAnother
+1..3
+Trailing garbage !
+TAP;
+        $parser = new TapParser($content);
+        $result = $parser->parse();
+
+        $this->assertEquals(array(
+            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => false, 'severity' => 'fail', 'message' => 'Failure: SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => false, 'severity' => 'error', 'message' => 'Error: SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+        ), $result);
+
+        $this->assertEquals(2, $parser->getTotalFailures());
+    }
+
+
+    public function testSkipped()
+    {
+        $content = <<<TAP
+TAP version 13
+ok 1 - # SKIP
+ok 2 - # SKIP foobar
+ok 3 - foo # SKIP bar
 1..3
 TAP;
         $parser = new TapParser($content);
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'suite' => 'SomeTest', 'test' => 'testAnother'),
-            array('pass' => true, 'skipped' => true, 'message' => 'skipped'),
-            array('pass' => true, 'skipped' => true, 'message' => 'foobar'),
+            array('pass' => true, 'severity' => 'skipped', 'message' => ''),
+            array('pass' => true, 'severity' => 'skipped', 'message' => 'foobar'),
+            array('pass' => true, 'severity' => 'skipped', 'message' => 'foo, skipped: bar'),
         ), $result);
 
         $this->assertEquals(0, $parser->getTotalFailures());
@@ -51,13 +74,19 @@ TAP;
         $content = <<<TAP
 TAP version 13
 ok 1 - SomeTest::testAnother # TODO really implement this test
-1..1
+ok 2 - # TODO really implement this test
+ok 3 - this is a message # TODO really implement this test
+ok 4 - # TODO
+1..4
 TAP;
         $parser = new TapParser($content);
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'suite' => 'SomeTest', 'test' => 'testAnother', 'todo' => 'really implement this test'),
+            array('pass' => true, 'severity' => 'todo', 'message' => 'SomeTest::testAnother, todo: really implement this test', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => true, 'severity' => 'todo', 'message' => 'really implement this test'),
+            array('pass' => true, 'severity' => 'todo', 'message' => 'this is a message, todo: really implement this test'),
+            array('pass' => true, 'severity' => 'todo', 'message' => ''),
         ), $result);
 
         $this->assertEquals(0, $parser->getTotalFailures());
@@ -85,18 +114,19 @@ TAP;
         $this->assertEquals(array(
             array(
                 'pass'     => false,
-                'suite'    => 'testFailure',
-                'test'     => 'FailureErrorTest',
                 'severity' => 'fail',
                 'message'  => 'Failed asserting that <integer:2> matches expected value <integer:1>.',
+                'suite'    => 'testFailure',
+                'test'     => 'FailureErrorTest',
                 'data'     => array(
                     'got' => 2,
                     'expected' => 1
-                )
+                ),
             ),
             array(
                 'pass'     => false,
                 'severity' => 'error',
+                'message'  => 'Error: testError::FailureErrorTest',
                 'suite'    => 'testError',
                 'test'     => 'FailureErrorTest'
             )
@@ -166,12 +196,12 @@ TAP;
 
         $this->assertEquals(
             array(
-                array('pass' => true, 'message' => 'try to access the dashboard as a guest (Auth/GuestAccessDashboardAndRedirectCept)'),
-                array('pass' => true, 'message' => 'see the login page (Auth/SeeLoginCept)'),
-                array('pass' => true, 'message' => 'click forgot password and see the email form (Auth/SeeLoginForgotPasswordCept)'),
-                array('pass' => true, 'message' => 'see powered by runmybusiness branding (Auth/ShouldSeePoweredByBrandingCept)'),
-                array('pass' => true, 'message' => 'submit invalid credentials (Auth/SubmitLoginAndFailCept)'),
-                array('pass' => true, 'message' => 'submit valid credentials and see the dashboard (Auth/SubmitLoginAndSucceedCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'try to access the dashboard as a guest (Auth/GuestAccessDashboardAndRedirectCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'see the login page (Auth/SeeLoginCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'click forgot password and see the email form (Auth/SeeLoginForgotPasswordCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'see powered by runmybusiness branding (Auth/ShouldSeePoweredByBrandingCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'submit invalid credentials (Auth/SubmitLoginAndFailCept)'),
+                array('pass' => true, 'severity' => 'success', 'message' => 'submit valid credentials and see the dashboard (Auth/SubmitLoginAndSucceedCept)'),
             ),
             $result
         );

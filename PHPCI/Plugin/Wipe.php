@@ -43,7 +43,7 @@ class Wipe implements \PHPCI\Plugin
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->build = $build;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->directory    = isset($options['directory']) ? $this->phpci->interpolate($options['directory']) : $path;
     }
 
     /**

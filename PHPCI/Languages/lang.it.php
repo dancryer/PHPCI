@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Ripristino della password di PHPCI per %s',
     'reset_invalid' => 'Richeista di ripristino password non valida.',
     'email_address' => 'Indirizzo Email',
+    'login' => 'Login / Email Address',
     'password' => 'Password',
     'log_in' => 'Accedi',
 

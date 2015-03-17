@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI wachtwoord reset voor %s',
     'reset_invalid' => 'Ongeldig wachtwoord reset verzoek',
     'email_address' => 'E-mailadres',
+    'login' => 'Login / Email Address',
     'password' => 'Wachtwoord',
     'log_in' => 'Log in',
 

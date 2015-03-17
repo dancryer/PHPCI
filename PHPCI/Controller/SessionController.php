@@ -43,7 +43,7 @@ class SessionController extends \PHPCI\Controller
         $isLoginFailure = false;
 
         if ($this->request->getMethod() == 'POST') {
-            $user = $this->userStore->getByEmail($this->getParam('email'));
+            $user = $this->userStore->getByLoginOrEmail($this->getParam('email'));
 
             if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                 $_SESSION['phpci_user_id']    = $user->getId();
@@ -107,7 +107,7 @@ class SessionController extends \PHPCI\Controller
     {
         if ($this->request->getMethod() == 'POST') {
             $email = $this->getParam('email', null);
-            $user = $this->userStore->getByLoginOrEmail($email);
+            $user = $this->userStore->getByEmail($email);
 
             if (empty($user)) {
                 $this->view->error = Lang::get('reset_no_user_exists');

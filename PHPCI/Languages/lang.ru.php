@@ -38,6 +38,7 @@ PHPCI',
     'reset_email_title' => 'Сброс пароля PHPCI для %s',
     'reset_invalid' => 'Некорректный запрос на сброс пароля.',
     'email_address' => 'Email',
+    'login' => 'Логин / Email',
     'password' => 'Пароль',
     'log_in' => 'Войти',
 

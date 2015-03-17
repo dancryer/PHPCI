@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Επαναφορά Κωδικού για %s',
     'reset_invalid' => 'Μη έγκυρο αίτημα επαναφοράς κωδικού πρόσβασης.',
     'email_address' => 'Διεύθυνση email',
+    'login' => 'Login / Email Address',
     'password' => 'Κωδικός πρόσβασης',
     'log_in' => 'Είσοδος',
 

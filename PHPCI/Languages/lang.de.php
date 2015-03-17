@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Passwort zurücksetzen für %s',
     'reset_invalid' => 'Fehlerhafte Anfrage für das Zurücksetzen eines Passwortes',
     'email_address' => 'Emailadresse',
+    'login' => 'Login / Email Address',
     'password' => 'Passwort',
     'log_in' => 'Einloggen',
 

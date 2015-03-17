@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Скидання пароль PHPCI для %s',
     'reset_invalid' => 'Невірний запит скидання паролю.',
     'email_address' => 'Email адреса',
+    'login' => 'Логин / Email адреса',
     'password' => 'Пароль',
     'log_in' => 'Увійти',
 

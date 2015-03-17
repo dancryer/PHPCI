@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Adgangskode-nulstilling for %s',
     'reset_invalid' => 'Ugyldig anmodning om adgangskode-nulstilling.',
     'email_address' => 'Email-addresse',
+    'login' => 'Login / Email Address',
     'password' => 'Adgangskode',
     'log_in' => 'Log ind',
 

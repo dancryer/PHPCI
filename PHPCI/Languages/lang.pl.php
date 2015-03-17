@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Reset Hasła PHPCI dla %s',
     'reset_invalid' => 'Prośba o zmianę hasła jest nieważna.',
     'email_address' => 'Adres email',
+    'login' => 'Login / Email Address',
     'password' => 'Hasło',
     'log_in' => 'Zaloguj się',
 

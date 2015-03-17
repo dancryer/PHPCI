@@ -60,7 +60,7 @@ class SessionController extends \PHPCI\Controller
         $form->setAction(PHPCI_URL.'session/login');
 
         $email = new b8\Form\Element\Email('email');
-        $email->setLabel(Lang::get('email_address'));
+        $email->setLabel(Lang::get('login'));
         $email->setRequired(true);
         $email->setContainerClass('form-group');
         $email->setClass('form-control');
@@ -107,7 +107,7 @@ class SessionController extends \PHPCI\Controller
     {
         if ($this->request->getMethod() == 'POST') {
             $email = $this->getParam('email', null);
-            $user = $this->userStore->getByEmail($email);
+            $user = $this->userStore->getByLoginOrEmail($email);
 
             if (empty($user)) {
                 $this->view->error = Lang::get('reset_no_user_exists');

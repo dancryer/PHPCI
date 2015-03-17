@@ -264,7 +264,7 @@ PHPCI',
     // Plugins
     'cannot_update_composer' => 'PHPCI ne peut pas mettre à jour le fichier composer.json pour vous, il n\'est pas modifiable.',
     'x_has_been_removed' => '%s a été supprimé.',
-    'x_has_been_added' => '%s a été ajouté au fichier composer.json poru vous et il sera installé la prochaine fois
+    'x_has_been_added' => '%s a été ajouté au fichier composer.json pour vous et il sera installé la prochaine fois
                             que vous lancerez "composer update".',
     'enabled_plugins' => 'Plugins activés',
     'provided_by_package' => 'Fournis par le paquet',

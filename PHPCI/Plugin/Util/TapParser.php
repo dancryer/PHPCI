@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 class TapParser
 {
     const TEST_COUNTS_PATTERN = '/^\d+\.\.(\d+)/';
-    const TEST_LINE_PATTERN = '/^(ok|not ok)(?:\s+(\d+))?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
+    const TEST_LINE_PATTERN = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
     const TEST_YAML_START = '/^(\s*)---/';
     const TEST_DIAGNOSTIC = '/^#/';
 
@@ -21,7 +21,31 @@ class TapParser
      * @var string
      */
     protected $tapString;
+
+    /**
+     * @var int
+     */
     protected $failures = 0;
+
+    /**
+     * @var array
+     */
+    protected $lines;
+
+    /**
+     * @var integer
+     */
+    protected $lineNumber;
+
+    /**
+     * @var integer
+     */
+    protected $testCount;
+
+    /**
+     * @var array
+     */
+    protected $results;
 
     /**
      * Create a new TAP parser for a given string.
@@ -40,106 +64,153 @@ class TapParser
         // Split up the TAP string into an array of lines, then
         // trim all of the lines so there's no leading or trailing whitespace.
         $lines = explode("\n", $this->tapString);
-        $lines = array_map('rtrim', $lines);
+        $this->lines = array_map('rtrim', $lines);
+        $this->lineNumber = 0;
 
         // Check TAP version:
-        $versionLine = array_shift($lines);
+        $versionLine = $this->nextLine();
 
         if ($versionLine != 'TAP version 13') {
             throw new Exception(Lang::get('tap_version'));
         }
 
-        $matches;
-        $results = array();
-        $totalTests = false;
-        $totalLines = count($lines);
-        $numTests = 0;
+        $this->testCount = false;
+        $this->results = array();
 
-        for ($lineNumber = 0;
-            $lineNumber < $totalLines && ($totalTests === false || $numTests < $totalTests);
-            $lineNumber++) {
-            $line = $lines[$lineNumber];
-
-            if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
-                $totalTests = intval($matches[1]);
-            } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
-                continue;
-            } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
-                $results[] = $this->processTestLine($matches);
-                $numTests++;
-            } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
-                $indent = $matches[1];
-                $endLine = $indent.'...';
-                $yamlLines = array();
-                for ($yamlEnd = $lineNumber + 1; $yamlEnd < $totalLines && $endLine !== $lines[$yamlEnd]; $yamlEnd++) {
-                    $yamlLines[] = substr($lines[$yamlEnd], strlen($indent));
-                }
-                if ($yamlEnd >= $totalLines) {
-                    throw new Exception(Lang::get('tap_error_endless_yaml', $lineNumber));
-                }
-                $data = Yaml::parse(join("\n", $yamlLines));
-                $results[$numTests-1] = array_merge($results[$numTests-1], $data);
-                $lineNumber = $yamlEnd;
-            } else {
-                throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $lineNumber, $line));
-            }
+        while (($this->testCount === false || count($this->results) < $this->testCount)
+            && false !== ($line = $this->nextLine())) {
+            $this->parseLine($line);
         }
 
-        if ($numTests != $totalTests) {
+        if (count($this->results) !== $this->testCount) {
             throw new Exception(Lang::get('tap_error'));
         }
 
-        return $results;
+        return $this->results;
+    }
+
+    /** Fetch the next line.
+     *
+     * @return string|false The next line or false if the end has been reached.
+     */
+    protected function nextLine()
+    {
+        if ($this->lineNumber < count($this->lines)) {
+            return $this->lines[$this->lineNumber++];
+        }
+        return false;
+    }
+
+    /** Parse a single line.
+     *
+     * @param string $line
+     */
+    protected function parseLine($line)
+    {
+        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
+            $this->testCount = intval($matches[1]);
+
+        } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
+            return;
+
+        } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
+            $this->results[] = $this->processTestLine(
+                $matches[1],
+                isset($matches[2]) ? $matches[2] : '',
+                isset($matches[3]) ? $matches[3] : null,
+                isset($matches[4]) ? $matches[4] : null
+            );
+
+        } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
+            $data = $this->processYamlBlock($matches[1]);
+            $lastTest = count($this->results)-1;
+            $this->results[$lastTest] = array_merge($this->results[$lastTest], $data);
+
+        } else {
+            throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
+        }
     }
 
     /**
      * Process an individual test line.
      *
-     * @param array $matches The regex matches.
+     * @param string $result
+     * @param string $message
+     * @param string $directive
+     * @param string $reason
      *
      * @return array
      */
-    protected function processTestLine($matches)
+    protected function processTestLine($result, $message, $directive, $reason)
     {
         $test = array(
-            'pass'     => $matches[1] === 'ok',
-            'message'  => $matches[3] ?: '',
-            'severity' => $matches[1] === 'ok' ? 'success' : 'fail',
+            'pass'     => true,
+            'message'  => $message,
+            'severity' => 'success',
         );
-        if (!$test['pass']) {
+
+        if ($result !== 'ok') {
+            $test['pass'] = false;
+            $test['severity'] = 'fail';
             $this->failures++;
-            if (preg_match('/^(Error|Failure):/', $matches[3], $moreMatches)) {
-                $test['severity'] = $moreMatches[1] === 'Error' ? 'error' : 'fail';
+            if (preg_match('/^(Error|Failure):/', $message, $matches)) {
+                $test['severity'] = $matches[1] === 'Error' ? 'error' : 'fail';
             }
         }
 
-        if (preg_match('/([\w\\\\]+)::(\w+)/', $matches[3], $moreMatches)) {
-            $test['suite'] = $moreMatches[1];
-            $test['test'] = $moreMatches[2];
+        if (preg_match('/(\\\\?\w+(?:\\\\\w+)*)::(\w+)/', $message, $matches)) {
+            $test['suite'] = $matches[1];
+            $test['test'] = $matches[2];
         }
 
-        if (isset($matches[4])) {
-            $test = $this->processDirective($test, $matches[4], $matches[5]);
+        if ($directive) {
+            $test = $this->processDirective($test, $directive, $reason);
         }
 
         return $test;
     }
 
-    /**
+    /** Process an indented Yaml block.
+     *
+     * @param string $indent The block indentation to ignore.
+     *
+     * @return array The processed Yaml content.
+     */
+    protected function processYamlBlock($indent)
+    {
+        $startLine = $this->lineNumber+1;
+        $endLine = $indent.'...';
+        $yamlLines = array();
+        do {
+            $line = $this->nextLine();
+            if ($line === false) {
+                throw new Exception(Lang::get('tap_error_endless_yaml', $startLine));
+            } elseif ($line === $endLine) {
+                break;
+            }
+            $yamlLines[] = substr($line, strlen($indent));
+
+        } while (true);
+
+        return Yaml::parse(join("\n", $yamlLines));
+    }
+
+    /** Process a TAP directive
      *
      * @param array $test
-     * @param array $matches
+     * @param string $directive
+     * @param string $reason
      * @return array
      */
-    protected function processDirective($test, $directe, $comment)
+    protected function processDirective($test, $directive, $reason)
     {
-        $test['severity'] = strtolower($directe) === 'skip' ? 'skipped' : 'todo';
+        $test['severity'] = strtolower($directive) === 'skip' ? 'skipped' : 'todo';
 
-        if (!empty($comment)) {
+        if (!empty($reason)) {
             if (!empty($test['message'])) {
                 $test['message'] .= ', '.$test['severity'].': ';
             }
-            $test['message'] .= $comment;
+            $test['message'] .= $reason;
         }
 
         return $test;

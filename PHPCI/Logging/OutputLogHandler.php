@@ -44,6 +44,6 @@ class OutputLogHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $this->output->writeln((string)$record['formatted']);
+        $this->output->writeln(rtrim((string)$record['formatted']));
     }
 }

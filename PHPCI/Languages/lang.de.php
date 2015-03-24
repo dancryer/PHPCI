@@ -295,9 +295,9 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
                                 Bitte überprüfen Sie die Fehler, bevor Sie fortfahren,',
     'must_be_valid_email' => 'Muss eine gültige Emailadresse sein.',
     'must_be_valid_url' => 'Muss eine valide URL sein.',
-    'enter_name' => 'Name des Administrators:',
-    'enter_email' => 'Emailadresse des Administrators:',
-    'enter_password' => 'Passwort des Administrators:',
+    'enter_name' => 'Name des Administrators: ',
+    'enter_email' => 'Emailadresse des Administrators: ',
+    'enter_password' => 'Passwort des Administrators: ',
     'enter_phpci_url' => 'Ihre PHPCI-URL (z.B. "http://phpci.local"): ',
 
     'enter_db_host' => 'Bitte geben Sie Ihren MySQL-Host ein [localhost]: ',

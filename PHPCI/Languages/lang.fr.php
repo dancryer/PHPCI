@@ -265,7 +265,7 @@ PHPCI',
     // Plugins
     'cannot_update_composer' => 'PHPCI ne peut pas mettre à jour le fichier composer.json pour vous, il n\'est pas modifiable.',
     'x_has_been_removed' => '%s a été supprimé.',
-    'x_has_been_added' => '%s a été ajouté au fichier composer.json poru vous et il sera installé la prochaine fois
+    'x_has_been_added' => '%s a été ajouté au fichier composer.json pour vous et il sera installé la prochaine fois
                             que vous lancerez "composer update".',
     'enabled_plugins' => 'Plugins activés',
     'provided_by_package' => 'Fournis par le paquet',
@@ -299,9 +299,9 @@ PHPCI',
                                 Merci de corriger les erreurs ci-dessus avant de continuer.',
     'must_be_valid_email' => 'Doit être une adresse email valide.',
     'must_be_valid_url' => 'Doit être une URL valide.',
-    'enter_name' => 'Nom de l\'admin :',
-    'enter_email' => 'Email de l\'admin :',
-    'enter_password' => 'Mot de passe de l\'admin :',
+    'enter_name' => 'Nom de l\'admin: ',
+    'enter_email' => 'Email de l\'admin: ',
+    'enter_password' => 'Mot de passe de l\'admin: ',
     'enter_phpci_url' => 'Votre URL vers PHPCI (par exemple "http://phpci.local"): ',
 
     'enter_db_host' => 'Merci d\'entrer le nom d\'hôte MySQL [localhost]: ',

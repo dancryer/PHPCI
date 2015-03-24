@@ -8,7 +8,7 @@
  */
 
 $strings = array(
-    'language_name' => 'Український',
+    'language_name' => 'Українська',
     'language' => 'Мова',
 
     // Log in:
@@ -20,10 +20,10 @@ $strings = array(
 і вам буде надіслано листа із посиланням на скидання паролю.',
     'reset_email_address' => 'Введіть свою email адресу:',
     'reset_send_email' => 'Скидання пароля',
-    'reset_enter_password' => 'Введіть будь-ласка новий пароль',
+    'reset_enter_password' => 'Введіть, будь ласка, новий пароль',
     'reset_new_password' => 'Новий пароль:',
     'reset_change_password' => 'Змінити пароль',
-    'reset_no_user_exists' => 'Не існує користувача з такою email адресою, будь-ласка повторіть знову.',
+    'reset_no_user_exists' => 'Не існує користувача з такою email адресою, будь ласка, повторіть знову.',
     'reset_email_body' => 'Привіт, %s,
 
 Ви отримали цей лист, тому що ви або хтось інший запросили скидання пароля в PHPCI.
@@ -63,7 +63,7 @@ PHPCI',
     'manage_users' => 'Управління користувачами',
     'plugins' => 'Плагіни',
     'view' => 'Переглянути',
-    'build_now' => 'Збірати',
+    'build_now' => 'Зібрати',
     'edit_project' => 'Редагувати проект',
     'delete_project' => 'Видалити проект',
 
@@ -187,7 +187,7 @@ PHPCI',
     'phpunit' => 'PHP Unit',
 
     'file' => 'Файл',
-    'line' => 'Строка',
+    'line' => 'Рядок',
     'class' => 'Клас',
     'method' => 'Метод',
     'message' => 'Повідомлення',
@@ -299,15 +299,15 @@ PHPCI',
 Будь ласка, продивіться наявні помилки перед тим, як продовжити.',
     'must_be_valid_email' => 'Повинно бути коректною email адресою.',
     'must_be_valid_url' => 'Повинно бути коректним URL.',
-    'enter_name' => 'Ім’я адміністратора:',
-    'enter_email' => 'Email адміністратора:',
-    'enter_password' => 'Пароль адміністратора:',
-    'enter_phpci_url' => 'URL адреса вашого PHPCI (наприклад, "http://phpci.local"):',
+    'enter_name' => 'Ім’я адміністратора: ',
+    'enter_email' => 'Email адміністратора: ',
+    'enter_password' => 'Пароль адміністратора: ',
+    'enter_phpci_url' => 'URL адреса вашого PHPCI (наприклад, "http://phpci.local"): ',
 
-    'enter_db_host' => 'Будь ласка, введіть хост MySQL [localhost]:',
-    'enter_db_name' => 'Будь ласка, введить ім’я бази даних MySQL [phpci]:',
-    'enter_db_user' => 'Будь ласка, введить ім’я користувача MySQL [phpci]:',
-    'enter_db_pass' => 'Будь ласка, введить ваш пароль MySQL:',
+    'enter_db_host' => 'Будь ласка, введіть хост MySQL [localhost]: ',
+    'enter_db_name' => 'Будь ласка, введить ім’я бази даних MySQL [phpci]: ',
+    'enter_db_user' => 'Будь ласка, введить ім’я користувача MySQL [phpci]: ',
+    'enter_db_pass' => 'Будь ласка, введить ваш пароль MySQL: ',
     'could_not_connect' => 'PHPCI не може підключитися до MySQL із наданими параметрами. Будь ласка, спробуйте ще раз.',
     'setting_up_db' => 'Налаштування вашої бази даних...',
     'user_created' => 'Аккаунт користувача створено!',

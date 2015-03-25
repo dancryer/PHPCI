@@ -2,7 +2,7 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2014, Block 8 Limited.
+ * @copyright    Copyright 2014-2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
  * @link         https://www.phptesting.org/
  */
@@ -16,9 +16,11 @@ use PHPCI\Service\BuildService;
 
 /**
  * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
  * @author       Sami Tikka <stikka@iki.fi>
  * @author       Alex Russell <alex@clevercherry.com>
+ * @author       Guillaume Perréal <adirelle@gmail.com>
  * @package      PHPCI
  * @subpackage   Web
  */
@@ -157,9 +159,11 @@ class WebhookController extends \PHPCI\Controller
 
     /**
      * Handle the payload when Github sends a commit webhook.
+     *
      * @param $project
      * @param array $payload
      * @param b8\Http\Response\JsonResponse $response
+     *
      * @return b8\Http\Response\JsonResponse
      */
     protected function githubCommitRequest($project, array $payload, b8\Http\Response\JsonResponse $response)
@@ -208,6 +212,7 @@ class WebhookController extends \PHPCI\Controller
 
     /**
      * Handle the payload when Github sends a Pull Request webhook.
+     *
      * @param $projectId
      * @param array $payload
      */
@@ -320,12 +325,14 @@ class WebhookController extends \PHPCI\Controller
 
     /**
      * Wrapper for creating a new build.
+     *
      * @param $projectId
      * @param $commitId
      * @param $branch
      * @param $committer
      * @param $commitMessage
      * @param null $extra
+     *
      * @return bool
      * @throws \Exception
      */

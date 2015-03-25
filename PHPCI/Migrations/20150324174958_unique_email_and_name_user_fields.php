@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class FixEmailAndNameUserFields extends AbstractMigration
+class UniqueEmailAndNameUserFields extends AbstractMigration
 {
     /**
      * Migrate Up.
@@ -11,8 +11,8 @@ class FixEmailAndNameUserFields extends AbstractMigration
     {
         $user_table = $this->table('user');
         $user_table
-            ->addIndex('email', ['unique' => true])
-            ->addIndex('name', ['unique' => true])
+            ->addIndex('email', array('unique' => true))
+            ->addIndex('name', array('unique' => true))
             ->save();
     }
 
@@ -23,8 +23,8 @@ class FixEmailAndNameUserFields extends AbstractMigration
     {
         $user_table = $this->table('user');
         $user_table
-            ->removeIndex('email', ['unique' => true])
-            ->removeIndex('name', ['unique' => true])
+            ->removeIndex('email', array('unique' => true))
+            ->removeIndex('name', array('unique' => true))
             ->save();
     }
 }

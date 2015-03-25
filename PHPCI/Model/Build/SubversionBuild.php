@@ -22,6 +22,10 @@ class SubversionBuild extends Build
 {
     protected $svnCommand = 'svn export -q --non-interactive ';
 
+    protected $trunkPath = 'trunk';
+    protected $tagsPath = 'tags';
+    protected $branchesPath = 'branches';
+
     /**
      * Get the URL to be used to clone this remote repository.
      */
@@ -36,9 +40,9 @@ class SubversionBuild extends Build
         $branch = $this->getBranch();
 
         if (empty($branch) || $branch == 'trunk') {
-            $url .= 'trunk';
+            $url .= $this->trunkPath;
         } else {
-            $url .= 'branches/' . $branch;
+            $url .= $this->branchesPath . '/' . $branch;
         }
 
         return $url;
@@ -55,8 +59,22 @@ class SubversionBuild extends Build
 
         $svn = $builder->getConfig('svn');
         if ($svn) {
+            if (isset($svn['trunk-path'])) {
+                $this->trunkPath = $svn['trunk-path'];
+            }
+
+            if (isset($svn['tags-path'])) {
+                $this->tagsPath = $svn['tags-path'];
+            }
+
+            if (isset($svn['branches-path'])) {
+                $this->branchesPath = $svn['branches-path'];
+            }
+
             foreach ($svn as $key => $value) {
-                $cmd .= " --$key $value ";
+                if (!in_array($key, array('branches-path', 'tags-path', 'trunk-path'))) {
+                    $cmd .= " --$key $value ";
+                }
             }
         }
 

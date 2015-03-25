@@ -55,7 +55,6 @@ class WebhookController extends \PHPCI\Controller
     public function bitbucket($project)
     {
         $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
 
         $payload = json_decode($this->getParam('payload'), true);
 
@@ -65,7 +64,9 @@ class WebhookController extends \PHPCI\Controller
                 $email = substr($email, 0, strpos($email, '>'));
                 $email = substr($email, strpos($email, '<') + 1);
 
-                $this->createBuild($project, $commit['raw_node'], $commit['branch'], $email, $commit['message']);
+                $this->response->setContent(
+                    $this->createBuild($project, $commit['raw_node'], $commit['branch'], $email, $commit['message'])
+                );
             } catch (\Exception $ex) {
                 $response->setResponseCode(500);
                 $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
@@ -84,7 +85,6 @@ class WebhookController extends \PHPCI\Controller
     public function git($project)
     {
         $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
 
         $branch = $this->getParam('branch');
         $commit = $this->getParam('commit');
@@ -108,7 +108,9 @@ class WebhookController extends \PHPCI\Controller
                 $committer = null;
             }
 
-            $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
+            $response->setContent(
+                $this->createBuild($project, $commit, $branch, $committer, $commitMessage)
+            );
         } catch (\Exception $ex) {
             $response->setResponseCode(500);
             $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
@@ -123,7 +125,6 @@ class WebhookController extends \PHPCI\Controller
     public function github($project)
     {
         $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
 
         switch ($_SERVER['CONTENT_TYPE']) {
             case 'application/json':
@@ -150,6 +151,7 @@ class WebhookController extends \PHPCI\Controller
             return $this->githubCommitRequest($project, $payload, $response);
         }
 
+        $response->setContent(array('status' => 'failed', 'error' => 'Unsupported hook'));
         return $response;
     }
 
@@ -172,21 +174,27 @@ class WebhookController extends \PHPCI\Controller
             if (isset($payload['commits']) && is_array($payload['commits'])) {
                 // If we have a list of commits, then add them all as builds to be tested:
 
+                $results = array();
                 foreach ($payload['commits'] as $commit) {
                     if (!$commit['distinct']) {
+                        $results[$commit['id']] = array('status' => 'ignored');
                         continue;
                     }
 
                     $branch = str_replace('refs/heads/', '', $payload['ref']);
                     $committer = $commit['committer']['email'];
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                    $results[$commit['id']] =
+                        $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
                 }
+                $response->setContent(array('status' => 'ok', 'commits' => $results));
+
+
             } elseif (substr($payload['ref'], 0, 10) == 'refs/tags/') {
                 // If we don't, but we're dealing with a tag, add that instead:
                 $branch = str_replace('refs/tags/', 'Tag: ', $payload['ref']);
                 $committer = $payload['pusher']['email'];
                 $message = $payload['head_commit']['message'];
-                $this->createBuild($project, $payload['after'], $branch, $committer, $message);
+                $response->setContent($this->createBuild($project, $payload['after'], $branch, $committer, $message));
             }
 
         } catch (\Exception $ex) {
@@ -231,9 +239,11 @@ class WebhookController extends \PHPCI\Controller
                 return $response;
             }
 
+            $results = array();
             foreach ($response['body'] as $commit) {
                 // Skip all but the current HEAD commit ID:
                 if ($commit['sha'] != $payload['pull_request']['head']['sha']) {
+                    $results[$commit['id']] = array('status' => 'ignored');
                     continue;
                 }
 
@@ -249,8 +259,10 @@ class WebhookController extends \PHPCI\Controller
                     'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
                 );
 
-                $this->createBuild($projectId, $commit['sha'], $branch, $committer, $message, $extra);
+                $results[$commit['sha']] =
+                    $this->createBuild($projectId, $commit['sha'], $branch, $committer, $message, $extra);
             }
+            $response->setContent(array('status' => 'ok', 'commits' => $results));
         } catch (\Exception $ex) {
             $response->setResponseCode(500);
             $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
@@ -265,7 +277,6 @@ class WebhookController extends \PHPCI\Controller
     public function gitlab($project)
     {
         $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
 
         $payloadString = file_get_contents("php://input");
         $payload = json_decode($payloadString, true);
@@ -279,7 +290,9 @@ class WebhookController extends \PHPCI\Controller
                     $commit = $attributes['last_commit'];
                     $committer = $commit['author']['email'];
 
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                    $response->setContent(
+                        $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message'])
+                    );
                 }
             }
 
@@ -287,11 +300,14 @@ class WebhookController extends \PHPCI\Controller
             if (isset($payload['commits']) && is_array($payload['commits'])) {
                 // If we have a list of commits, then add them all as builds to be tested:
 
+                $results = array();
                 foreach ($payload['commits'] as $commit) {
                     $branch = str_replace('refs/heads/', '', $payload['ref']);
                     $committer = $commit['author']['email'];
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                    $results[$commit['id']] =
+                        $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
                 }
+                $response->setContent(array('status' => 'ok', 'commits' => $results));
             }
 
         } catch (\Exception $ex) {
@@ -319,7 +335,10 @@ class WebhookController extends \PHPCI\Controller
         $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
 
         if ($builds['count']) {
-            return true;
+            return array(
+                'status' => 'ignored',
+                'reason' => sprintf('Duplicate of build #%d', $builds['items'][0]->getId())
+            );
         }
 
         $project = $this->projectStore->getById($projectId);
@@ -335,6 +354,9 @@ class WebhookController extends \PHPCI\Controller
         // Send a status postback if the build type provides one:
         $build->sendStatusPostback();
 
-        return true;
+        return array(
+            'status'  => 'ok',
+            'buildID' => $build->getID(),
+        );
     }
 }

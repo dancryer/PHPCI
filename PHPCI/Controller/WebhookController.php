@@ -2,7 +2,7 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2014, Block 8 Limited.
+ * @copyright    Copyright 2014-2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
  * @link         https://www.phptesting.org/
  */
@@ -11,31 +11,37 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Store;
+use Exception;
 use PHPCI\BuildFactory;
+use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
  * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
  * @author       Sami Tikka <stikka@iki.fi>
  * @author       Alex Russell <alex@clevercherry.com>
+ * @author       Guillaume Perréal <adirelle@gmail.com>
  * @package      PHPCI
  * @subpackage   Web
  */
-class WebhookController extends \PHPCI\Controller
+class WebhookController extends \b8\Controller
 {
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @var ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @var BuildService
      */
     protected $buildService;
 
@@ -49,194 +55,207 @@ class WebhookController extends \PHPCI\Controller
         $this->buildService = new BuildService($this->buildStore);
     }
 
+    /** Handle the action, Ensuring to return a JsonResponse.
+     *
+     * @param string $action
+     * @param mixed $actionParams
+     *
+     * @return \b8\Http\Response
+     */
+    public function handleAction($action, $actionParams)
+    {
+        $response = new b8\Http\Response\JsonResponse();
+        try {
+            $data = parent::handleAction($action, $actionParams);
+            if (isset($data['responseCode'])) {
+                $response->setResponseCode($data['responseCode']);
+                unset($data['responseCode']);
+            }
+            $response->setContent($data);
+        } catch (Exception $ex) {
+            $response->setResponseCode(500);
+            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
+        }
+        return $response;
+    }
+
     /**
      * Called by Bitbucket POST service.
      */
-    public function bitbucket($project)
+    public function bitbucket($projectId)
     {
-        $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
-
+        $project = $this->fetchProject($projectId, 'bitbucket');
         $payload = json_decode($this->getParam('payload'), true);
 
+        $results = array();
+        $status = 'failed';
         foreach ($payload['commits'] as $commit) {
             try {
                 $email = $commit['raw_author'];
                 $email = substr($email, 0, strpos($email, '>'));
                 $email = substr($email, strpos($email, '<') + 1);
 
-                $this->createBuild($project, $commit['raw_node'], $commit['branch'], $email, $commit['message']);
-            } catch (\Exception $ex) {
-                $response->setResponseCode(500);
-                $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
-                break;
+                $results[$commit['raw_node']] = $this->createBuild(
+                    $project,
+                    $commit['raw_node'],
+                    $commit['branch'],
+                    $email,
+                    $commit['message']
+                );
+                $status = 'ok';
+            } catch (Exception $ex) {
+                $results[$commit['raw_node']] = array('status' => 'failed', 'error' => $ex->getMessage());
             }
         }
 
-        return $response;
+        return array('status' => $status, 'commits' => $results);
     }
 
     /**
      * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
      *
-     * @param string $project
+     * @param string $projectId
      */
-    public function git($project)
+    public function git($projectId)
     {
-        $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
-
-        $branch = $this->getParam('branch');
+        $project = $this->fetchProject($projectId, array('local', 'remote'));
+        $branch = $this->getParam('branch', $project->getBranch());
         $commit = $this->getParam('commit');
         $commitMessage = $this->getParam('message');
         $committer = $this->getParam('committer');
 
-        try {
-            if (empty($branch)) {
-                $branch = 'master';
-            }
-
-            if (empty($commit)) {
-                $commit = null;
-            }
-
-            if (empty($commitMessage)) {
-                $commitMessage = null;
-            }
-
-            if (empty($committer)) {
-                $committer = null;
-            }
-
-            $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
-        } catch (\Exception $ex) {
-            $response->setResponseCode(500);
-            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
-        }
-
-        return $response;
+        return $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
     }
 
     /**
      * Called by Github Webhooks:
      */
-    public function github($project)
+    public function github($projectId)
     {
-        $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
+        $project = $this->fetchProject($projectId, 'github');
 
         switch ($_SERVER['CONTENT_TYPE']) {
             case 'application/json':
                 $payload = json_decode(file_get_contents('php://input'), true);
                 break;
-
             case 'application/x-www-form-urlencoded':
                 $payload = json_decode($this->getParam('payload'), true);
                 break;
-
             default:
-                $response->setResponseCode(401);
-                $response->setContent(array('status' => 'failed', 'error' => 'Content type not supported.'));
-                return $response;
+                return array('status' => 'failed', 'error' => 'Content type not supported.', 'responseCode' => 401);
         }
 
         // Handle Pull Request web hooks:
         if (array_key_exists('pull_request', $payload)) {
-            return $this->githubPullRequest($project, $payload, $response);
+            return $this->githubPullRequest($project, $payload);
         }
 
         // Handle Push web hooks:
         if (array_key_exists('commits', $payload)) {
-            return $this->githubCommitRequest($project, $payload, $response);
+            return $this->githubCommitRequest($project, $payload);
         }
 
-        return $response;
+        return array('status' => 'ignored', 'message' => 'Unusable payload.');
     }
 
     /**
      * Handle the payload when Github sends a commit webhook.
-     * @param $project
+     *
+     * @param Project $project
      * @param array $payload
      * @param b8\Http\Response\JsonResponse $response
+     *
      * @return b8\Http\Response\JsonResponse
      */
-    protected function githubCommitRequest($project, array $payload, b8\Http\Response\JsonResponse $response)
+    protected function githubCommitRequest(Project $project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
         // non-existant commit. We don't want this.
         if (array_key_exists('after', $payload) && $payload['after'] === '0000000000000000000000000000000000000000') {
-            return $response;
+            return array('status' => 'ignored');
         }
 
-        try {
-            if (isset($payload['commits']) && is_array($payload['commits'])) {
-                // If we have a list of commits, then add them all as builds to be tested:
+        if (isset($payload['commits']) && is_array($payload['commits'])) {
+            // If we have a list of commits, then add them all as builds to be tested:
 
-                foreach ($payload['commits'] as $commit) {
-                    if (!$commit['distinct']) {
-                        continue;
-                    }
+            $results = array();
+            $status = 'failed';
+            foreach ($payload['commits'] as $commit) {
+                if (!$commit['distinct']) {
+                    $results[$commit['id']] = array('status' => 'ignored');
+                    continue;
+                }
 
+                try {
                     $branch = str_replace('refs/heads/', '', $payload['ref']);
                     $committer = $commit['committer']['email'];
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                    $results[$commit['id']] = $this->createBuild(
+                        $project,
+                        $commit['id'],
+                        $branch,
+                        $committer,
+                        $commit['message']
+                    );
+                    $status = 'ok';
+                } catch (Exception $ex) {
+                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
-            } elseif (substr($payload['ref'], 0, 10) == 'refs/tags/') {
-                // If we don't, but we're dealing with a tag, add that instead:
-                $branch = str_replace('refs/tags/', 'Tag: ', $payload['ref']);
-                $committer = $payload['pusher']['email'];
-                $message = $payload['head_commit']['message'];
-                $this->createBuild($project, $payload['after'], $branch, $committer, $message);
             }
-
-        } catch (\Exception $ex) {
-            $response->setResponseCode(500);
-            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
-
+            return array('status' => $status, 'commits' => $results);
         }
 
-        return $response;
+        if (substr($payload['ref'], 0, 10) == 'refs/tags/') {
+            // If we don't, but we're dealing with a tag, add that instead:
+            $branch = str_replace('refs/tags/', 'Tag: ', $payload['ref']);
+            $committer = $payload['pusher']['email'];
+            $message = $payload['head_commit']['message'];
+            return $this->createBuild($project, $payload['after'], $branch, $committer, $message);
+        }
+
+        return array('status' => 'ignored', 'message' => 'Unusable payload.');
     }
 
     /**
      * Handle the payload when Github sends a Pull Request webhook.
-     * @param $projectId
+     *
+     * @param Project $project
      * @param array $payload
      */
-    protected function githubPullRequest($projectId, array $payload, b8\Http\Response\JsonResponse $response)
+    protected function githubPullRequest(Project $project, array $payload)
     {
         // We only want to know about open pull requests:
         if (!in_array($payload['action'], array('opened', 'synchronize', 'reopened'))) {
-            return $response;
+            return array('status' => 'ok');
         }
 
-        try {
-            $headers = array();
-            $token = \b8\Config::getInstance()->get('phpci.github.token');
+        $headers = array();
+        $token = \b8\Config::getInstance()->get('phpci.github.token');
 
-            if (!empty($token)) {
-                $headers[] = 'Authorization: token ' . $token;
+        if (!empty($token)) {
+            $headers[] = 'Authorization: token ' . $token;
+        }
+
+        $url    = $payload['pull_request']['commits_url'];
+        $http   = new \b8\HttpClient();
+        $http->setHeaders($headers);
+        $response = $http->get($url);
+
+        // Check we got a success response:
+        if (!$response['success']) {
+            throw new Exception('Could not get commits, failed API request.');
+        }
+
+        $results = array();
+        $status = 'failed';
+        foreach ($response['body'] as $commit) {
+            // Skip all but the current HEAD commit ID:
+            $id = $commit['sha'];
+            if ($id != $payload['pull_request']['head']['sha']) {
+                $results[$id] = array('status' => 'ignored', 'message' => 'not branch head');
+                continue;
             }
 
-            $url    = $payload['pull_request']['commits_url'];
-            $http   = new \b8\HttpClient();
-            $http->setHeaders($headers);
-            $response = $http->get($url);
-
-            // Check we got a success response:
-            if (!$response['success']) {
-                $message = 'Could not get commits, failed API request.';
-                $response->setResponseCode(500);
-                $response->setContent(array('status' => 'failed', 'error' => $message));
-                return $response;
-            }
-
-            foreach ($response['body'] as $commit) {
-                // Skip all but the current HEAD commit ID:
-                if ($commit['sha'] != $payload['pull_request']['head']['sha']) {
-                    continue;
-                }
-
+            try {
                 $branch = str_replace('refs/heads/', '', $payload['pull_request']['base']['ref']);
                 $committer = $commit['commit']['author']['email'];
                 $message = $commit['commit']['message'];
@@ -249,83 +268,96 @@ class WebhookController extends \PHPCI\Controller
                     'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
                 );
 
-                $this->createBuild($projectId, $commit['sha'], $branch, $committer, $message, $extra);
+                $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);
+                $status = 'ok';
+            } catch (Exception $ex) {
+                $results[$id] = array('status' => 'failed', 'error' => $ex->getMessage());
             }
-        } catch (\Exception $ex) {
-            $response->setResponseCode(500);
-            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
 
-        return $response;
+        return array('status' => $status, 'commits' => $results);
     }
 
     /**
      * Called by Gitlab Webhooks:
      */
-    public function gitlab($project)
+    public function gitlab($projectId)
     {
-        $response = new b8\Http\Response\JsonResponse();
-        $response->setContent(array('status' => 'ok'));
+        $project = $this->fetchProject($projectId, 'gitlab');
 
         $payloadString = file_get_contents("php://input");
         $payload = json_decode($payloadString, true);
 
-        try {
-            // build on merge request events
-            if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
-                $attributes = $payload['object_attributes'];
-                if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
-                    $branch = $attributes['source_branch'];
-                    $commit = $attributes['last_commit'];
-                    $committer = $commit['author']['email'];
+        // build on merge request events
+        if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
+            $attributes = $payload['object_attributes'];
+            if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
+                $branch = $attributes['source_branch'];
+                $commit = $attributes['last_commit'];
+                $committer = $commit['author']['email'];
 
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
-                }
+                return $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
             }
-
-            // build on push events
-            if (isset($payload['commits']) && is_array($payload['commits'])) {
-                // If we have a list of commits, then add them all as builds to be tested:
-
-                foreach ($payload['commits'] as $commit) {
-                    $branch = str_replace('refs/heads/', '', $payload['ref']);
-                    $committer = $commit['author']['email'];
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
-                }
-            }
-
-        } catch (\Exception $ex) {
-            $response->setResponseCode(500);
-            $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
 
-        return $response;
+        // build on push events
+        if (isset($payload['commits']) && is_array($payload['commits'])) {
+            // If we have a list of commits, then add them all as builds to be tested:
+
+            $results = array();
+            $status = 'failed';
+            foreach ($payload['commits'] as $commit) {
+                try {
+                    $branch = str_replace('refs/heads/', '', $payload['ref']);
+                    $committer = $commit['author']['email'];
+                    $results[$commit['id']] = $this->createBuild(
+                        $project,
+                        $commit['id'],
+                        $branch,
+                        $committer,
+                        $commit['message']
+                    );
+                    $status = 'ok';
+                } catch (Exception $ex) {
+                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
+                }
+            }
+            return array('status' => $status, 'commits' => $results);
+        }
+
+        return array('status' => 'ignored', 'message' => 'Unusable payload.');
     }
 
     /**
      * Wrapper for creating a new build.
-     * @param $projectId
-     * @param $commitId
-     * @param $branch
-     * @param $committer
-     * @param $commitMessage
-     * @param null $extra
-     * @return bool
-     * @throws \Exception
+     *
+     * @param Project $project
+     * @param string $commitId
+     * @param string $branch
+     * @param string $committer
+     * @param string $commitMessage
+     * @param array $extra
+     *
+     * @return array
+     *
+     * @throws Exception
      */
-    protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, $extra = null)
-    {
+    protected function createBuild(
+        Project $project,
+        $commitId,
+        $branch,
+        $committer,
+        $commitMessage,
+        array $extra = null
+    ) {
         // Check if a build already exists for this commit ID:
-        $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
+        $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
         if ($builds['count']) {
-            return true;
-        }
-
-        $project = $this->projectStore->getById($projectId);
-
-        if (empty($project)) {
-            throw new \Exception('Project does not exist:' . $projectId);
+            return array(
+                'status' => 'ignored',
+                'message' => sprintf('Duplicate of build #%d', $builds['items'][0]->getId())
+            );
         }
 
         // If not, create a new build job for it:
@@ -335,6 +367,34 @@ class WebhookController extends \PHPCI\Controller
         // Send a status postback if the build type provides one:
         $build->sendStatusPostback();
 
-        return true;
+        return array('status' => 'ok', 'buildID' => $build->getID());
+    }
+
+    /**
+     * Fetch a project and check its type.
+     *
+     * @param int $projectId
+     * @param array|string $expectedType
+     *
+     * @return Project
+     *
+     * @throws Exception If the project does not exist or is not of the expected type.
+     */
+    protected function fetchProject($projectId, $expectedType)
+    {
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($projectId)) {
+            throw new Exception('Project does not exist: ' . $projectId);
+        }
+
+        if (is_array($expectedType)
+            ? !in_array($project->getType(), $expectedType)
+            : $project->getType() !== $expectedType
+        ) {
+            throw new Exception('Wrong project type: ' . $project->getType());
+        }
+
+        return $project;
     }
 }

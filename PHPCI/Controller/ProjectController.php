@@ -86,7 +86,7 @@ class ProjectController extends PHPCI\Controller
         $this->view->builds   = $builds[0];
         $this->view->total    = $builds[1];
         $this->view->project  = $project;
-        $this->view->branch = urldecode($branch);
+        $this->view->branch   = urldecode($branch);
         $this->view->branches = $this->projectStore->getKnownBranches($projectId);
         $this->view->page     = $page;
         $this->view->pages    = $pages;

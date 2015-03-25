@@ -127,6 +127,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'all_branches' => 'Alle Branches',
     'builds' => 'Builds',
     'id' => 'ID',
+    'date' => 'Date',
     'project' => 'Projekt',
     'commit' => 'Commit',
     'branch' => 'Branch',

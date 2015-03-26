@@ -12,14 +12,24 @@ class BuildInterpolatorTest extends ProphecyTestCase
      */
     protected $testedInterpolator;
 
+    /**
+     *
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
+    protected $mockEnv;
+
     protected function setUp()
     {
         parent::setup();
-        $this->testedInterpolator = new BuildInterpolator();
+
+        $this->mockEnv = $this->prophesize('\PHPCI\Helper\Environment');
+        $this->testedInterpolator = new BuildInterpolator($this->mockEnv->reveal());
     }
 
     public function testInterpolate_LeavesStringsUnchangedByDefault()
     {
+        $this->mockEnv->getArrayCopy()->willReturn(array('FOO' => 'BAR'));
+
         $string = "Hello World";
         $expectedOutput = "Hello World";
 
@@ -28,22 +38,25 @@ class BuildInterpolatorTest extends ProphecyTestCase
         $this->assertEquals($expectedOutput, $actualOutput);
     }
 
-    public function testInterpolate_LeavesStringsUnchangedWhenBuildIsSet()
+    public function testInterpolate_ReplaceStrings()
     {
-        $build = $this->prophesize('PHPCI\\Model\\Build')->reveal();
+        $this->mockEnv->getArrayCopy()->willReturn(array('FOO' => 'BAR'));
 
-        $string = "Hello World";
-        $expectedOutput = "Hello World";
-
-        $this->testedInterpolator->setupInterpolationVars(
-            $build,
-            "/buildpath/",
-            "phpci.com"
-        );
-
-        $actualOutput = $this->testedInterpolator->interpolate($string);
-
-        $this->assertEquals($expectedOutput, $actualOutput);
+        $this->assertEquals("AABARBB", $this->testedInterpolator->interpolate('AA%FOO%BB'));
     }
+
+    public function testInterpolate_NotRecursive()
+    {
+        $this->mockEnv->getArrayCopy()->willReturn(array('FOO' => 'C%BAR%D', 'BAR' => 'EE'));
+
+        $this->assertEquals("AAC%BAR%DBB", $this->testedInterpolator->interpolate('AA%FOO%BB'));
+    }
+
+    public function testInterpolate_OrderDoesNotMatter()
+    {
+        $this->mockEnv->getArrayCopy()->willReturn(array('BAR' => 'EE', 'FOO' => 'C%BAR%D'));
+
+        $this->assertEquals("AAC%BAR%DBB", $this->testedInterpolator->interpolate('AA%FOO%BB'));
+    }
+
 }
- 

@@ -134,7 +134,7 @@ class Builder implements LoggerAwareInterface
             $this->verbose
         );
 
-        $this->interpolator = new BuildInterpolator();
+        $this->interpolator = new BuildInterpolator($this->environment);
     }
 
     /**
@@ -299,11 +299,6 @@ class Builder implements LoggerAwareInterface
         $this->buildPath = PHPCI_DIR . 'PHPCI/build/' . $this->build->getId() . '/';
         $this->build->currentBuildPath = $this->buildPath;
 
-        $this->interpolator->setupInterpolationVars(
-            $this->build,
-            $this->buildPath,
-            PHPCI_URL
-        );
         $this->environment->addBuildVariables($this->build, $this->buildPath);
 
         $this->commandExecutor->setBuildPath($this->buildPath);
@@ -418,6 +413,14 @@ class Builder implements LoggerAwareInterface
             },
             null,
             'PHPCI\Helper\Environment'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                return $self->interpolator;
+            },
+            null,
+            'PHPCI\Helper\BuildInterpolator'
         );
 
         return $pluginFactory;

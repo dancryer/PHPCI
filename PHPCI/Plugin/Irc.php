@@ -77,19 +77,56 @@ class Irc implements \PHPCI\Plugin
         }
 
         $sock = fsockopen($this->server, $this->port);
-        fputs($sock, 'USER ' . $this->nick . ' phptesting.org ' . $this->nick . ' :' . $this->nick . "\r\n");
-        fputs($sock, 'NICK ' . $this->nick . "\r\n");
-        fputs($sock, 'JOIN ' . $this->room . "\r\n");
-        fputs($sock, 'PRIVMSG ' . $this->room . ' :' . $msg . "\r\n");
+        stream_set_timeout($sock, 1);
 
-        while (fgets($sock)) {
-            // We don't need to do anything,
-            // but the IRC server doesn't appear to post the message
-            // unless we wait for responses.
-        }
+        $connectCommands = array(
+            'USER ' . $this->nick . ' 0 * :' . $this->nick,
+            'NICK ' . $this->nick,
+        );
+        $this->executeIrcCommands($sock, $connectCommands);
+        $this->executeIrcCommand($sock, 'JOIN ' . $this->room);
+        $this->executeIrcCommand($sock, 'PRIVMSG ' . $this->room . ' :' . $msg);
 
         fclose($sock);
 
         return true;
+    }
+
+    /**
+     * @param resource $socket
+     * @param array $commands
+     * @return bool
+     */
+    private function executeIrcCommands($socket, array $commands)
+    {
+        foreach ($commands as $command) {
+            fputs($socket, $command . "\n");
+        }
+
+        $pingBack = false;
+
+        // almost all servers expect pingback!
+        while ($response = fgets($socket)) {
+            $matches = array();
+            if (preg_match('/^PING \\:([A-Z0-9]+)/', $response, $matches)) {
+                $pingBack = $matches[1];
+            }
+        }
+
+        if ($pingBack) {
+            $command = 'PONG :' . $pingBack . "\n";
+            fputs($socket, $command);
+        }
+    }
+
+    /**
+     *
+     * @param resource $socket
+     * @param string $command
+     * @return bool
+     */
+    private function executeIrcCommand($socket, $command)
+    {
+        return $this->executeIrcCommands($socket, array($command));
     }
 }

@@ -9,6 +9,7 @@
 
 namespace PHPCI\Model\Build;
 
+use b8\Config;
 use PHPCI\Model\Build;
 use PHPCI\Builder;
 
@@ -33,76 +34,104 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $key = trim($this->getProject()->getSshPrivateKey());
-
-        if (!empty($key)) {
-            $success = $this->cloneBySsh($builder, $buildPath);
-        } else {
-            $success = $this->cloneByHttp($builder, $buildPath);
-        }
-
-        if (!$success) {
-            $builder->logFailure('Failed to clone remote git repository.');
-            return false;
-        }
-
-        return $this->handleConfig($builder, $buildPath);
-    }
-
-    /**
-    * Use an HTTP-based git clone.
-    */
-    protected function cloneByHttp(Builder $builder, $cloneTo)
-    {
-        $cmd = 'git clone ';
+        $cloneArgs = '--branch "'.$this->getBranch().'"';
 
         $depth = $builder->getConfig('clone_depth');
-
         if (!is_null($depth)) {
-            $cmd .= ' --depth ' . intval($depth) . ' ';
+            $cloneArgs .= ' --depth ' . intval($depth);
         }
 
-        $cmd .= ' -b %s %s "%s"';
-        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $success = true;
 
-        if ($success) {
-            $success = $this->postCloneSetup($builder, $cloneTo);
+        // Create and/or update a mirror repository if phpci.git.mirrors if defined
+        $mirrorPath = $this->getMirrorPath();
+        if (null !== $mirrorPath) {
+            $success = $this->manageMirror($builder, $mirrorPath);
+            $cloneArgs .= ' --reference="'.$mirrorPath.'"';
         }
 
-        return $success;
+        if ($success
+            && $this->cloneTo($builder, $buildPath, $cloneArgs)
+            && $this->postCloneSetup($builder, $buildPath)
+        ) {
+            return $this->handleConfig($builder, $buildPath);
+        }
+
+        $builder->logFailure('Failed to clone remote git repository.');
+        return false;
+    }
+
+    /** Calculate the path to a repository mirror.
+     *
+     * @return string|null The path or null if mirrors aren't enabled.
+     */
+    public function getMirrorPath()
+    {
+        $mirrorRootPath = Config::getInstance()->get('phpci.git.mirrors');
+        if (!$mirrorRootPath) {
+            return null;
+        }
+        return $mirrorRootPath.'/'.$this->getProjectId();
     }
 
     /**
-    * Use an SSH-based git clone.
-    */
-    protected function cloneBySsh(Builder $builder, $cloneTo)
+     * Remove the repository mirror.
+     */
+    public function removeMirror()
     {
-        $keyFile = $this->writeSshKey($cloneTo);
+        $mirrorPath = $this->getMirrorPath();
+        if ($mirrorPath && is_dir($mirrorPath)) {
+            $cmd = sprintf(
+                IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -rf "%s"',
+                $mirrorPath
+            );
+            exec($cmd);
+        }
+    }
 
+    /** Create and/or update a persistent mirror of the remote repository.
+     *
+     * @param Builder $builder
+     * @param string $mirrorPath
+     *
+     * @return bool
+     */
+    protected function manageMirror(Builder $builder, $mirrorPath)
+    {
+        if (!is_dir($mirrorPath)) {
+            // First run: create the mirror
+            return $this->cloneTo($builder, $mirrorPath, '--mirror');
+        }
+
+        // Update the mirror
+        return $builder->executeCommand('git --git-dir="%s" --bare remote update --prune', $mirrorPath);
+    }
+
+    /** Clone a remote repository into a local directory.
+     *
+     * @param Builder $builder
+     * @param string $cloneTo
+     * @param string $args Additional arguments.
+     *
+     * @return bool
+     */
+    protected function cloneTo(Builder $builder, $cloneTo, $args)
+    {
+        if (preg_match('/^((f|ht)tps?|git|file):/', $this->getCloneUrl())) {
+            // Not SSH URL
+            return $builder->executeCommand('git clone %s "%s" "%s"', $args, $this->getCloneUrl(), $cloneTo);
+        }
+
+        $cmd = 'git clone %s "%s" "%s"';
+
+        // Create the keyfile and a SSH wrapper
+        $keyFile = $this->writeSshKey($cloneTo);
         if (!IS_WIN) {
             $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
-        }
-
-        // Do the git clone:
-        $cmd = 'git clone ';
-
-        $depth = $builder->getConfig('clone_depth');
-
-        if (!is_null($depth)) {
-            $cmd .= ' --depth ' . intval($depth) . ' ';
-        }
-
-        $cmd .= ' -b %s %s "%s"';
-
-        if (!IS_WIN) {
             $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
         }
 
-        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
-
-        if ($success) {
-            $success = $this->postCloneSetup($builder, $cloneTo);
-        }
+        $success = $builder->executeCommand($cmd, $args, $this->getCloneUrl(), $cloneTo);
 
         // Remove the key file and git wrapper:
         unlink($keyFile);

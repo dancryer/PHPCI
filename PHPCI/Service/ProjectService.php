@@ -92,8 +92,18 @@ class ProjectService
         // Allow certain project types to set access information:
         $this->processAccessInformation($project);
 
+        // Get modified attributes
+        $modified = $project->getModified();
+
         // Save and return the project:
-        return $this->projectStore->save($project);
+        $rtn = $this->projectStore->save($project);
+
+        // Cleanup if archived or the reference changed
+        if (isset($modified['archived']) || isset($modified['reference'])) {
+            $project->cleanup();
+        }
+
+        return $rtn;
     }
 
     /**
@@ -103,7 +113,9 @@ class ProjectService
      */
     public function deleteProject(Project $project)
     {
-        return $this->projectStore->delete($project);
+        $rtn = $this->projectStore->delete($project);
+        $project->cleanup();
+        return $rtn;
     }
 
     /**

@@ -9,6 +9,7 @@
 
 namespace PHPCI\Model;
 
+use PHPCI\BuildFactory;
 use PHPCI\Model\Base\ProjectBase;
 use PHPCI\Model\Build;
 use b8\Store;
@@ -130,5 +131,19 @@ class Project extends ProjectBase
         }
 
         return $icon;
+    }
+
+    /**
+     * Clean up build leftovers when the project is destroyed or archived.
+     */
+    public function cleanup()
+    {
+        $build = $this->getLatestBuild();
+        if ($build instanceof Build) {
+            $build = BuildFactory::getBuild($build);
+            if ($build instanceof Build\RemoteGitBuild) {
+                $build->removeMirror();
+            }
+        }
     }
 }

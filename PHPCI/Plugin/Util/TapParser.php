@@ -43,6 +43,9 @@ class TapParser
             return trim($line);
         }, $lines);
 
+        // Ignore Duplicated Output
+        $lines = array_unique($lines);
+
         // Check TAP version:
         $versionLine = array_shift($lines);
 

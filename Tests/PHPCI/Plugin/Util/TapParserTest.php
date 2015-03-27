@@ -23,4 +23,24 @@ TAP;
 
         $this->assertEquals(0, $parser->getTotalFailures());
     }
+
+    public function testDuplicated()
+    {
+        $content = <<<TAP
+TAP version 13
+TAP version 13
+ok 1 - SomeTest::testAnother
+ok 1 - SomeTest::testAnother
+1..1
+1..1
+TAP;
+        $parser = new TapParser($content);
+        $result = $parser->parse();
+
+        $this->assertEquals(array(
+            array('pass' => true, 'suite' => 'SomeTest', 'test' => 'testAnother'),
+        ), $result);
+
+        $this->assertEquals(0, $parser->getTotalFailures());
+    }
 }

@@ -21,6 +21,20 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
                 query();
             }
         });
+
+        $(document).on('click', '#phpunit-filter-all', function() {
+            $('#phpunit-data tbody tr').show();
+        });
+
+        $(document).on('click', '#phpunit-filter-pass', function() {
+            $('#phpunit-data tbody tr').hide();
+            $('#phpunit-data tbody tr.success').show();
+        });
+
+        $(document).on('click', '#phpunit-filter-fail', function() {
+            $('#phpunit-data tbody tr').hide();
+            $('#phpunit-data tbody tr.danger').show();
+        });
     },
 
     render: function() {
@@ -28,7 +42,22 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         return $('<div class="table-responsive"><table class="table" id="phpunit-data">' +
             '<thead>' +
             '<tr>' +
-            '   <th>'+Lang.get('test')+'</th>' +
+            '   <th>' +
+            '     '+Lang.get('test')+' <span id="phpunit-counter"></span>' +
+            '   </th>' +
+            '   <th>' +
+            '      <div class="btn-group pull-right" data-toggle="buttons">' +
+            '         <label class="btn btn-xs btn-default" id="phpunit-filter-all">' +
+            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off"> All' +
+            '         </label>' +
+            '         <label class="btn btn-xs btn-success" id="phpunit-filter-pass">' +
+            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off"> '+Lang.get('success') +
+            '         </label>' +
+            '         <label class="btn btn-xs btn-danger active" id="phpunit-filter-fail">' +
+            '            <input type="radio" class="simple" name="phpunit-filter" autocomplete="off" checked> '+Lang.get('failed') +
+            '         </label>' +
+            '      </div>' +
+            '   </th>' +
             '</tr>' +
             '</thead><tbody></tbody></table></div>');
     },
@@ -43,6 +72,7 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         this.lastData = e.queryData;
 
         var tests = this.lastData[0].meta_value;
+        var failed = 0;
         var tbody = $('#phpunit-data tbody');
         tbody.empty();
 
@@ -54,19 +84,23 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         for (var i in tests) {
 
             var row = $('<tr>' +
-                '<td><strong>'+tests[i].suite+'' +
+                '<td colspan="2"><strong>'+tests[i].suite+'' +
                 '::'+tests[i].test+'</strong><br>' +
                 ''+(tests[i].message || '')+'</td>' +
                 '</tr>');
 
             if (!tests[i].pass) {
                 row.addClass('danger');
+                failed++;
             } else {
                 row.addClass('success');
+                row.css('display', 'none');
             }
 
             tbody.append(row);
         }
+      
+        $("#phpunit-counter").text('(' + Lang.get('x_of_x_failed_short', failed, tests.length) + ')');
 
         $('#build-phpunit-errors').show();
     }

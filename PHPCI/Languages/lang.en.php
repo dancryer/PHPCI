@@ -343,6 +343,12 @@ PHPCI',
     'create_admin_user' => 'Create an admin user',
     'incorrect_format' => 'Incorrect format',
 
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
+
     // Run Command
     'run_all_pending' => 'Run all pending PHPCI builds.',
     'finding_builds' => 'Finding builds to process',

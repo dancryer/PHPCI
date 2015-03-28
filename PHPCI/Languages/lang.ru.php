@@ -336,6 +336,12 @@ PHPCI',
     'create_admin_user' => 'Добавить аккаунт администратора',
     'incorrect_format' => 'Неверный формат',
 
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
+
     // Run Command
     'run_all_pending' => 'Запустить все ожидающие PHPCI сборки.',
     'finding_builds' => 'Поиск сборок для запуска',

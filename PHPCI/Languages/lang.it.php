@@ -342,6 +342,12 @@ PHPCI',
     'create_admin_user' => 'Crea un nuovo utente amministrarore',
     'incorrect_format' => 'Formato errato',
 
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
+
     // Run Command
     'run_all_pending' => 'Esegui tutte le build in attesa su PHPCI.',
     'finding_builds' => 'Ricerca delel build da processare',

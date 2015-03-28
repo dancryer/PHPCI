@@ -10,6 +10,7 @@
 namespace PHPCI;
 
 use PHPCI\Helper\BuildInterpolator;
+use PHPCI\Helper\Environment;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
@@ -73,6 +74,11 @@ class Builder implements LoggerAwareInterface
     protected $interpolator;
 
     /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
      * @var \PHPCI\Store\BuildStore
      */
     protected $store;
@@ -117,6 +123,8 @@ class Builder implements LoggerAwareInterface
         if (IS_WIN) {
             $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
         }
+
+        $this->environment = new Environment();
 
         $this->commandExecutor = new $executorClass(
             $this->buildLogger,
@@ -295,6 +303,7 @@ class Builder implements LoggerAwareInterface
             $this->buildPath,
             PHPCI_URL
         );
+        $this->environment->addBuildVariables($this->build, $this->buildPath);
 
         $this->commandExecutor->setBuildPath($this->buildPath);
 
@@ -400,6 +409,14 @@ class Builder implements LoggerAwareInterface
             },
             null,
             'Swift_Mailer'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                return $self->environment;
+            },
+            null,
+            'PHPCI\Helper\Environment'
         );
 
         return $pluginFactory;

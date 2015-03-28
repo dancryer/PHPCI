@@ -1,0 +1,66 @@
+<?php
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2014, Block 8 Limited.
+ * @license        https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link            http://www.phptesting.org/
+ */
+
+namespace Tests\PHPCI\Command;
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
+
+class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var \PHPCI\Command\CreateAdminCommand|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $command;
+
+    /**
+     * @var \Symfony\Component\Console\Application|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $application;
+
+    public function setup()
+    {
+        parent::setup();
+
+        $projectStoreMock = $this->getMockBuilder('PHPCI\\Store\\ProjectStore')
+            ->getMock();
+        $projectStoreMock->expects($this->once())
+            ->method('getById')
+            ->with($this->equalTo(1))
+            ->willReturn($this->getMock('PHPCI\\Model\\Project'));
+
+        $buildServiceMock = $this->getMockBuilder('PHPCI\\Service\\BuildService')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateBuildCommand')
+            ->setConstructorArgs([$projectStoreMock, $buildServiceMock])
+            ->setMethods(['reloadConfig'])
+            ->getMock()
+        ;
+
+        $this->application = new Application();
+    }
+
+    protected function getCommandTester()
+    {
+        $this->application->add($this->command);
+
+        $command = $this->application->find('phpci:create-build');
+        $commandTester = new CommandTester($command);
+
+        return $commandTester;
+    }
+
+    public function testExecute()
+    {
+        $commandTester = $this->getCommandTester();
+        $commandTester->execute(['projectId' => 1]);
+    }
+}

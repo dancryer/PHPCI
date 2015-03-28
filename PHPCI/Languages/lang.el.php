@@ -333,6 +333,12 @@ Services</a> του Bitbucket αποθετηρίου σας.',
     'create_admin_user' => 'Δημιουργήστε ένα χρήστη διαχειριστή',
     'incorrect_format' => 'Λανθασμένη μορφοποίηση',
 
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
+
     // Run Command
     'run_all_pending' => 'Εκτελέστε όλες τις εκκρεμείς PHPCI κατασκευές.',
     'finding_builds' => 'Αναζήτηση κατασκευών για επεξεργασία',

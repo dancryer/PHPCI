@@ -15,6 +15,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
+use PHPCI\Plugin\Env;
 use b8\Config;
 use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
@@ -300,6 +301,13 @@ class Builder implements LoggerAwareInterface
         $this->build->currentBuildPath = $this->buildPath;
 
         $this->environment->addBuildVariables($this->build, $this->buildPath);
+
+        $configEnv = $this->getSystemConfig('phpci.build.environment');
+        if ($configEnv) {
+            // Use the Env plugin to interpolate the configured variables
+            $env = new Env($this->interpolator, $this->environment, $configEnv);
+            $env->execute();
+        }
 
         $this->commandExecutor->setBuildPath($this->buildPath);
 

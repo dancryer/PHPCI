@@ -28,22 +28,30 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     {
         parent::setup();
 
+        $projectMock = $this->getMock('PHPCI\\Model\\Project');
+
         $projectStoreMock = $this->getMockBuilder('PHPCI\\Store\\ProjectStore')
             ->getMock();
-        $projectStoreMock->expects($this->once())
-            ->method('getById')
-            ->with($this->equalTo(1))
-            ->willReturn($this->getMock('PHPCI\\Model\\Project'));
+        $projectStoreMock->method('getById')
+            ->will($this->returnValueMap(array(
+                array(1, 'read', $projectMock),
+                array(2, 'read', null),
+            )));
 
         $buildServiceMock = $this->getMockBuilder('PHPCI\\Service\\BuildService')
             ->disableOriginalConstructor()
             ->getMock();
+        $buildServiceMock->method('createBuild')
+            ->withConsecutive(
+                array($projectMock, null, null, null, null, null),
+                array($projectMock, '92c8c6e', null, null, null, null),
+                array($projectMock, null, 'master', null, null, null)
+            );
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateBuildCommand')
             ->setConstructorArgs(array($projectStoreMock, $buildServiceMock))
             ->setMethods(array('reloadConfig'))
-            ->getMock()
-        ;
+            ->getMock();
 
         $this->application = new Application();
     }
@@ -61,6 +69,18 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecute()
     {
         $commandTester = $this->getCommandTester();
+
         $commandTester->execute(array('projectId' => 1));
+        $commandTester->execute(array('projectId' => 1, '--commit' => '92c8c6e'));
+        $commandTester->execute(array('projectId' => 1, '--branch' => 'master'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testExecuteWithUnknowProjectId()
+    {
+        $commandTester = $this->getCommandTester();
+        $commandTester->execute(array('projectId' => 2));
     }
 }

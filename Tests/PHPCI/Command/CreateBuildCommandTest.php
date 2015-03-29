@@ -40,8 +40,8 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateBuildCommand')
-            ->setConstructorArgs([$projectStoreMock, $buildServiceMock])
-            ->setMethods(['reloadConfig'])
+            ->setConstructorArgs(array($projectStoreMock, $buildServiceMock))
+            ->setMethods(array('reloadConfig'))
             ->getMock()
         ;
 
@@ -61,6 +61,6 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecute()
     {
         $commandTester = $this->getCommandTester();
-        $commandTester->execute(['projectId' => 1]);
+        $commandTester->execute(array('projectId' => 1));
     }
 }

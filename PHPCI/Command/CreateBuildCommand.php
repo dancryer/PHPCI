@@ -71,7 +71,7 @@ class CreateBuildCommand extends Command
 
         $project = $this->projectStore->getById($projectId);
         if (empty($project)) {
-            throw new \Exception('Project does not exist:' . $projectId);
+            throw new \InvalidArgumentException('Project does not exist: ' . $projectId);
         }
 
         try {

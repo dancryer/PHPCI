@@ -64,7 +64,7 @@ class Irc implements \PHPCI\Plugin
      * Run IRC plugin.
      * @return bool
      */
-     public function execute()
+    public function execute()
     {
         $msg = $this->phpci->interpolate($this->message);
 
@@ -79,10 +79,10 @@ class Irc implements \PHPCI\Plugin
         $sock = fsockopen($this->server, $this->port);
         stream_set_timeout($sock, 1);
         
-        $connectCommands = [
+        $connectCommands = array(
             'USER ' . $this->nick . ' 0 * :' . $this->nick,
             'NICK ' . $this->nick,
-        ];
+        );
         $this->executeIrcCommands($sock, $connectCommands);
         $this->executeIrcCommand($sock, 'JOIN ' . $this->room);
         $this->executeIrcCommand($sock, 'PRIVMSG ' . $this->room . ' :' . $msg);
@@ -127,7 +127,7 @@ class Irc implements \PHPCI\Plugin
      */
     private function executeIrcCommand($socket, $command)
     {
-        return $this->executeIrcCommands($socket, [$command]);
+        return $this->executeIrcCommands($socket, array($command));
     }
 
 }

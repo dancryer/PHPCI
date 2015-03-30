@@ -331,6 +331,7 @@ PHPCI',
     'last_commit_is' => 'Ultimo commit su GitHub per %s è %s',
     'adding_new_build' => 'L\'ultimo commit è diverso da quello registrato, new build aggiunta.',
     'finished_processing_builds' => 'Terminato di processare le build.',
+    'build_cancelled' => 'Build cancelled', // TODO: Translate me
 
     // Create Admin
     'create_admin_user' => 'Crea un nuovo utente amministrarore',

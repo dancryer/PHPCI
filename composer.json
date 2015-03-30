@@ -40,7 +40,8 @@
         "psr/log": "~1.0",
         "monolog/monolog": "~1.6",
         "pimple/pimple": "~1.1",
-        "robmorgan/phinx": "~0.4"
+        "robmorgan/phinx": "~0.4",
+        "che/console-signals": "dev-master#6ffc5db7cbab1cc31957b6c3ee7e2c01f54503eb"
     },
 
     "require-dev": {

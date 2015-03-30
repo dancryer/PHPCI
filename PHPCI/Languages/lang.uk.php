@@ -329,6 +329,7 @@ PHPCI',
     'last_commit_is' => 'Останній коміт на GitHub для %s - %s',
     'adding_new_build' => 'Останній коміт має відмінності із базою даних, створена нова збірка.',
     'finished_processing_builds' => 'Завершено обробку збірок.',
+    'build_cancelled' => 'Build cancelled', // TODO: Translate me
 
     // Create Admin
     'create_admin_user' => 'Створити аккаунт адміністратора',

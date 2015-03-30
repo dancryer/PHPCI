@@ -329,6 +329,7 @@ Gelieve de fouten na te kijken vooraleer verder te gaan.',
     'last_commit_is' => 'Laatste commit naar GitHub voor %s is %s',
     'adding_new_build' => 'Laatste commit verschilt van database, nieuwe build wordt toegevoegd',
     'finished_processing_builds' => 'Verwerking builds voltooid.',
+    'build_cancelled' => 'Build cancelled', // TODO: Translate me
 
     // Create Admin
     'create_admin_user' => 'Administrator-gebruiker aanmaken',

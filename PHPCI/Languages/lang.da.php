@@ -327,6 +327,7 @@ Kontrollér venligst nedenstående fejl før du fortsætter.',
     'last_commit_is' => 'Sidste commit til GitHub for %s er %s',
     'adding_new_build' => 'Sidste commit er forskellig fra databasen, tilføjer nyt build.',
     'finished_processing_builds' => 'Kørsel af builds afsluttet.',
+    'build_cancelled' => 'Build cancelled', // TODO: Translate me
 
     // Create Admin
     'create_admin_user' => 'Tilføj en administrator',

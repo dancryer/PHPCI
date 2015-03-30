@@ -330,6 +330,7 @@ Przejrzyj powyższą listę błędów przed kontynuowaniem.',
     'last_commit_is' => 'Ostatni commit do GitHuba dla %s to %s',
     'adding_new_build' => 'Ostatni commit jest inny w bazie danych, dodaję nową budowę.',
     'finished_processing_builds' => 'Ukończono przetwarzanie budów.',
+    'build_cancelled' => 'Build cancelled', // TODO: Translate me
 
     // Create Admin
     'create_admin_user' => 'Utwórz admina',

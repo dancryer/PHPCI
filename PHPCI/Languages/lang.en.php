@@ -332,6 +332,7 @@ PHPCI',
     'last_commit_is' => 'Last commit to GitHub for %s is %s',
     'adding_new_build' => 'Last commit is different to database, adding new build.',
     'finished_processing_builds' => 'Finished processing builds.',
+    'build_cancelled' => 'Build cancelled',
 
     // Create Admin
     'create_admin_user' => 'Create an admin user',

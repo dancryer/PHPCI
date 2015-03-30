@@ -29,7 +29,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Console
 */
-class RunCommand extends Command
+class RunCommand extends SignaledCommand
 {
     /**
      * @var OutputInterface
@@ -52,6 +52,11 @@ class RunCommand extends Command
     protected $isFromDaemon = false;
 
     /**
+     * @var Build
+     */
+    private $currentBuild;
+
+    /**
      * @param \Monolog\Logger $logger
      * @param string $name
      */
@@ -63,15 +68,31 @@ class RunCommand extends Command
 
     protected function configure()
     {
+        parent::configure();
+
         $this
             ->setName('phpci:run-builds')
             ->setDescription(Lang::get('run_all_pending'));
     }
 
+    protected function stop()
+    {
+        parent::stop();
+
+        if ($this->currentBuild) {
+            $build = $this->currentBuild;
+
+            $build->setStatus(Build::STATUS_FAILED);
+            $build->setFinished(new \DateTime());
+            $build->setLog($build->getLog() . PHP_EOL . PHP_EOL . Lang::get('build_cancelled'));
+            Factory::getStore('Build')->save($build);
+        }
+    }
+
     /**
      * Pulls all pending builds from the database and runs them.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
 
@@ -95,7 +116,7 @@ class RunCommand extends Command
 
         while (count($result['items'])) {
             $build = array_shift($result['items']);
-            $build = BuildFactory::getBuild($build);
+            $this->currentBuild = $build = BuildFactory::getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
             if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
@@ -118,6 +139,7 @@ class RunCommand extends Command
                 $builder = new Builder($build, $this->logger);
                 $builder->execute();
 
+                $this->currentBuild = null;
                 // After execution we no longer want to record the information
                 // back to this specific build so the handler should be removed.
                 $this->logger->popHandler($buildDbLog);

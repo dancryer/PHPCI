@@ -120,7 +120,7 @@ class Irc implements \PHPCI\Plugin
     }
 
     /**
-     * 
+     *
      * @param resource $socket
      * @param string $command
      * @return bool

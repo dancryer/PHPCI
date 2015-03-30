@@ -36,6 +36,7 @@ class PhpCpd implements \PHPCI\Plugin
      * @var array - paths to ignore
      */
     protected $ignore;
+    protected $executable;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -63,6 +64,12 @@ class PhpCpd implements \PHPCI\Plugin
         if (!empty($options['ignore'])) {
             $this->ignore = $options['ignore'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phpcpd');
+        }
     }
 
     /**
@@ -88,7 +95,7 @@ class PhpCpd implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        $phpcpd = $this->phpci->findBinary('phpcpd');
+        $phpcpd = $this->executable;
 
         if (!$phpcpd) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'phpcpd'));

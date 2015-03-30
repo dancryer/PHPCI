@@ -25,7 +25,7 @@ class Gulp implements \PHPCI\Plugin
     protected $preferDist;
     protected $phpci;
     protected $build;
-    protected $gulp;
+    protected $executable;
     protected $gulpfile;
 
     /**
@@ -47,7 +47,6 @@ class Gulp implements \PHPCI\Plugin
         $this->phpci = $phpci;
         $this->directory = $path;
         $this->task = null;
-        $this->gulp = $this->phpci->findBinary('gulp');
         $this->gulpfile = 'gulpfile.js';
 
         // Handle options:
@@ -66,6 +65,12 @@ class Gulp implements \PHPCI\Plugin
         if (isset($options['gulpfile'])) {
             $this->gulpfile = $options['gulpfile'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('gulp');
+        }
     }
 
     /**
@@ -83,9 +88,9 @@ class Gulp implements \PHPCI\Plugin
         }
 
         // build the gulp command
-        $cmd = 'cd %s && ' . $this->gulp;
+        $cmd = 'cd %s && ' . $this->executable;
         if (IS_WIN) {
-            $cmd = 'cd /d %s && ' . $this->gulp;
+            $cmd = 'cd /d %s && ' . $this->executable;
         }
         $cmd .= ' --no-color';
         $cmd .= ' --gulpfile %s';

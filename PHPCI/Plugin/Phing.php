@@ -29,6 +29,9 @@ class Phing implements \PHPCI\Plugin
     private $properties = array();
     private $propertyFile;
 
+    /**
+     * @var \PHPCI\Builder
+     */
     protected $phpci;
     protected $build;
 
@@ -72,6 +75,12 @@ class Phing implements \PHPCI\Plugin
         if (isset($options['property_file'])) {
             $this->setPropertyFile($options['property_file']);
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phing');
+        }
     }
 
     /**
@@ -79,7 +88,7 @@ class Phing implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $phingExecutable = $this->phpci->findBinary('phing');
+        $phingExecutable = $this->executable;
 
         if (!$phingExecutable) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'phing'));

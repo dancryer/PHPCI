@@ -27,6 +27,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $preferDist;
     protected $phpci;
     protected $build;
+    protected $executable;
 
     /**
      * Check if this plugin can be executed.
@@ -72,6 +73,12 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (array_key_exists('prefer_dist', $options)) {
             $this->preferDist = (bool)$options['prefer_dist'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary(array('composer', 'composer.phar'));
+        }
     }
 
     /**
@@ -79,7 +86,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
-        $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
+        $composerLocation = $this->executable;
 
         if (!$composerLocation) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'composer'));

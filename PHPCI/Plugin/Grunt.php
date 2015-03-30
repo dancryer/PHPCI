@@ -25,7 +25,7 @@ class Grunt implements \PHPCI\Plugin
     protected $preferDist;
     protected $phpci;
     protected $build;
-    protected $grunt;
+    protected $executable;
     protected $gruntfile;
 
     /**
@@ -47,7 +47,6 @@ class Grunt implements \PHPCI\Plugin
         $this->phpci = $phpci;
         $this->directory = $path;
         $this->task = null;
-        $this->grunt = $this->phpci->findBinary('grunt');
         $this->gruntfile = 'Gruntfile.js';
 
         // Handle options:
@@ -66,6 +65,12 @@ class Grunt implements \PHPCI\Plugin
         if (isset($options['gruntfile'])) {
             $this->gruntfile = $options['gruntfile'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('grunt');
+        }
     }
 
     /**
@@ -83,9 +88,9 @@ class Grunt implements \PHPCI\Plugin
         }
 
         // build the grunt command
-        $cmd = 'cd %s && ' . $this->grunt;
+        $cmd = 'cd %s && ' . $this->executable;
         if (IS_WIN) {
-            $cmd = 'cd /d %s && ' . $this->grunt;
+            $cmd = 'cd /d %s && ' . $this->executable;
         }
         $cmd .= ' --no-color';
         $cmd .= ' --gruntfile %s';

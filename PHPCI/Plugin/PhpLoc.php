@@ -29,6 +29,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @var \PHPCI\Builder
      */
     protected $phpci;
+    protected $executable;
 
     /**
      * Check if this plugin can be executed.
@@ -61,6 +62,12 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (isset($options['directory'])) {
             $this->directory .= $options['directory'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phploc');
+        }
     }
 
     /**
@@ -78,7 +85,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $ignore = implode('', $ignore);
         }
 
-        $phploc = $this->phpci->findBinary('phploc');
+        $phploc = $this->executable;
 
         if (!$phploc) {
             $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phploc'));

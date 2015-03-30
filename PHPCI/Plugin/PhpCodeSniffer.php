@@ -124,6 +124,12 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->encoding = ' --encoding=' . $options['encoding'];
         }
 
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phpcs');
+        }
+
         $this->setOptions($options);
     }
 
@@ -147,7 +153,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         list($ignore, $standard, $suffixes) = $this->getFlags();
 
-        $phpcs = $this->phpci->findBinary('phpcs');
+        $phpcs = $this->executable;
 
         if (!$phpcs) {
             $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpcs'));

@@ -47,6 +47,7 @@ class Pdepend implements \PHPCI\Plugin
      *             in the readme.md of the repository
      */
     protected $location;
+    protected $executable;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -66,6 +67,12 @@ class Pdepend implements \PHPCI\Plugin
         $this->pyramid  = $title . '-pyramid.svg';
         $this->chart    = $title . '-chart.svg';
         $this->location = $this->phpci->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('pdepend');
+        }
     }
 
     /**
@@ -77,7 +84,7 @@ class Pdepend implements \PHPCI\Plugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $pdepend = $this->phpci->findBinary('pdepend');
+        $pdepend = $this->executable;
 
         if (!$pdepend) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'pdepend'));

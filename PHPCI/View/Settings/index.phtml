@@ -59,20 +59,20 @@
                 $returnTo = PHPCI_URL . 'settings/github-callback';
                 $githubUri = 'https://github.com/login/oauth/authorize?client_id='.$id.'&scope=repo&redirect_uri=' . $returnTo;
                 ?>
-                <?php if (!empty($id) && empty($settings['phpci']['github']['token'])): ?>
-                    <p class="alert alert-warning clearfix">
-                        <?php Lang::out('github_sign_in', $githubUri); ?>
-                    </p>
-                <?php endif; ?>
+                <?php if (!empty($id)): ?>
+                    <?php if (empty($githubUser['name']) || empty($settings['phpci']['github']['token'])): ?>
+                        <p class="alert alert-warning clearfix">
+                            <?php Lang::out('github_sign_in', $githubUri); ?>
+                        </p>
+                    <?php else: ?>
+                        <p class="alert alert-success">
+                            <?php Lang::out('github_phpci_linked'); ?>
 
-                <?php if (!empty($id) && !empty($settings['phpci']['github']['token'])): ?>
-                    <p class="alert alert-success">
-                        <?php Lang::out('github_phpci_linked'); ?>
-
-                        <strong>
-                            <a href="<?php echo $githubUser['html_url']; ?>"><?php echo $githubUser['name']; ?></a>
-                        </strong>
-                    </p>
+                            <strong>
+                                <a href="<?php echo $githubUser['html_url']; ?>"><?php echo $githubUser['name']; ?></a>
+                            </strong>
+                        </p>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
 

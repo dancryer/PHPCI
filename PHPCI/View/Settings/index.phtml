@@ -57,7 +57,7 @@
                 }
 
                 $returnTo = PHPCI_URL . 'settings/github-callback';
-                $githubUri = 'https://github.com/login/oauth/authorize?client_id='.$id.'&scope=repo,write:public_key&redirect_uri=' . $returnTo;
+                $githubUri = 'https://github.com/login/oauth/authorize?client_id='.$id.'&scope=repo&redirect_uri=' . $returnTo;
                 ?>
                 <?php if (!empty($id)): ?>
                     <?php if (empty($githubUser['name']) || empty($settings['phpci']['github']['token'])): ?>

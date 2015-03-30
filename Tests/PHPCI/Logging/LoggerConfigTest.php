@@ -81,5 +81,14 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedHandler, $actualHandler);
         $this->assertNotSame($alternativeHandler, $actualHandler);
     }
-}
 
+    public function testGetFor_SameInstance()
+    {
+        $config = new LoggerConfig(array());
+
+        $logger1 = $config->getFor("something");
+        $logger2 = $config->getFor("something");
+
+        $this->assertSame($logger1, $logger2);
+    }
+}

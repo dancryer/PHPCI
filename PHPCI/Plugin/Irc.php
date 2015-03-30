@@ -78,7 +78,7 @@ class Irc implements \PHPCI\Plugin
 
         $sock = fsockopen($this->server, $this->port);
         stream_set_timeout($sock, 1);
-        
+
         $connectCommands = array(
             'USER ' . $this->nick . ' 0 * :' . $this->nick,
             'NICK ' . $this->nick,
@@ -91,7 +91,7 @@ class Irc implements \PHPCI\Plugin
 
         return true;
     }
-    
+
     /**
      * @param resource $socket
      * @param array $commands
@@ -104,7 +104,7 @@ class Irc implements \PHPCI\Plugin
         }
 
         $pingBack = false;
-        
+
         // almost all servers expect pingback!
         while ($response = fgets($socket)) {
             $matches = array();
@@ -118,7 +118,7 @@ class Irc implements \PHPCI\Plugin
             fputs($socket, $command);
         }
     }
-    
+
     /**
      * 
      * @param resource $socket
@@ -129,5 +129,4 @@ class Irc implements \PHPCI\Plugin
     {
         return $this->executeIrcCommands($socket, array($command));
     }
-
 }

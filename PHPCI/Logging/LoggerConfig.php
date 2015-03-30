@@ -9,6 +9,7 @@
 
 namespace PHPCI\Logging;
 
+use Monolog\ErrorHandler;
 use Monolog\Logger;
 
 /**
@@ -19,6 +20,7 @@ class LoggerConfig
 {
     const KEY_ALWAYS_LOADED = "_";
     private $config;
+    private $cache = array();
 
     /**
      * The filepath is expected to return an array which will be
@@ -56,9 +58,20 @@ class LoggerConfig
      */
     public function getFor($name)
     {
+        if (isset($this->cache[$name])) {
+            return $this->cache[$name];
+        }
+
         $handlers = $this->getHandlers(self::KEY_ALWAYS_LOADED);
-        $handlers = array_merge($handlers, $this->getHandlers($name));
-        return new Logger($name, $handlers);
+        if ($name !== self::KEY_ALWAYS_LOADED) {
+            $handlers = array_merge($handlers, $this->getHandlers($name));
+        }
+
+        $logger = new Logger($name, $handlers);
+        ErrorHandler::register($logger);
+        $this->cache[$name] = $logger;
+
+        return $logger;
     }
 
     /**

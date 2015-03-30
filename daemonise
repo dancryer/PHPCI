@@ -15,8 +15,6 @@ require('bootstrap.php');
 use PHPCI\Command\DaemoniseCommand;
 use Symfony\Component\Console\Application;
 
-$loggerConfig = \PHPCI\Logging\LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-
 $application = new Application();
 $application->add(new DaemoniseCommand($loggerConfig->getFor('DaemoniseCommand')));
 $application->run();

@@ -84,21 +84,27 @@ class WebhookController extends \b8\Controller
         $payload = json_decode($this->getParam('payload'), true);
 
         $results = array();
+        $status = 'failed';
         foreach ($payload['commits'] as $commit) {
-            $email = $commit['raw_author'];
-            $email = substr($email, 0, strpos($email, '>'));
-            $email = substr($email, strpos($email, '<') + 1);
+            try {
+                $email = $commit['raw_author'];
+                $email = substr($email, 0, strpos($email, '>'));
+                $email = substr($email, strpos($email, '<') + 1);
 
-            $results[$commit['raw_node']] = $this->createBuild(
-                $project,
-                $commit['raw_node'],
-                $commit['branch'],
-                $email,
-                $commit['message']
-            );
+                $results[$commit['raw_node']] = $this->createBuild(
+                    $project,
+                    $commit['raw_node'],
+                    $commit['branch'],
+                    $email,
+                    $commit['message']
+                );
+                $status = 'ok';
+            } catch (\Exception $ex) {
+                $results[$commit['raw_node']] = array('status' => 'failed', 'error' => $ex->getMessage());
+            }
         }
 
-        return array('status' => 'ok', 'commits' => $results);
+        return array('status' => $status, 'commits' => $results);
     }
 
     /**
@@ -169,23 +175,29 @@ class WebhookController extends \b8\Controller
             // If we have a list of commits, then add them all as builds to be tested:
 
             $results = array();
+            $status = 'failed';
             foreach ($payload['commits'] as $commit) {
                 if (!$commit['distinct']) {
                     $results[$commit['id']] = array('status' => 'ignored');
                     continue;
                 }
 
-                $branch = str_replace('refs/heads/', '', $payload['ref']);
-                $committer = $commit['committer']['email'];
-                $results[$commit['id']] = $this->createBuild(
-                    $project,
-                    $commit['id'],
-                    $branch,
-                    $committer,
-                    $commit['message']
-                );
+                try {
+                    $branch = str_replace('refs/heads/', '', $payload['ref']);
+                    $committer = $commit['committer']['email'];
+                    $results[$commit['id']] = $this->createBuild(
+                        $project,
+                        $commit['id'],
+                        $branch,
+                        $committer,
+                        $commit['message']
+                    );
+                    $status = 'ok';
+                } catch (\Exception $ex) {
+                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
+                }
             }
-            return array('status' => 'ok', 'commits' => $results);
+            return array('status' => $status, 'commits' => $results);
         }
 
         if (substr($payload['ref'], 0, 10) == 'refs/tags/') {
@@ -230,6 +242,7 @@ class WebhookController extends \b8\Controller
         }
 
         $results = array();
+        $status = 'failed';
         foreach ($response['body'] as $commit) {
             // Skip all but the current HEAD commit ID:
             $id = $commit['sha'];
@@ -238,22 +251,27 @@ class WebhookController extends \b8\Controller
                 continue;
             }
 
-            $branch = str_replace('refs/heads/', '', $payload['pull_request']['base']['ref']);
-            $committer = $commit['commit']['author']['email'];
-            $message = $commit['commit']['message'];
+            try {
+                $branch = str_replace('refs/heads/', '', $payload['pull_request']['base']['ref']);
+                $committer = $commit['commit']['author']['email'];
+                $message = $commit['commit']['message'];
 
-            $extra = array(
-                'build_type' => 'pull_request',
-                'pull_request_id' => $payload['pull_request']['id'],
-                'pull_request_number' => $payload['number'],
-                'remote_branch' => $payload['pull_request']['head']['ref'],
-                'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
-            );
+                $extra = array(
+                    'build_type' => 'pull_request',
+                    'pull_request_id' => $payload['pull_request']['id'],
+                    'pull_request_number' => $payload['number'],
+                    'remote_branch' => $payload['pull_request']['head']['ref'],
+                    'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
+                );
 
-            $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);
+                $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);
+                $status = 'ok';
+            } catch (\Exception $ex) {
+                $results[$id] = array('status' => 'failed', 'error' => $ex->getMessage());
+            }
         }
 
-        return array('status' => 'ok', 'commits' => $results);
+        return array('status' => $status, 'commits' => $results);
     }
 
     /**
@@ -283,13 +301,24 @@ class WebhookController extends \b8\Controller
             // If we have a list of commits, then add them all as builds to be tested:
 
             $results = array();
+            $status = 'failed';
             foreach ($payload['commits'] as $commit) {
-                $branch = str_replace('refs/heads/', '', $payload['ref']);
-                $committer = $commit['author']['email'];
-                $results[$commit['id']] =
-                    $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                try {
+                    $branch = str_replace('refs/heads/', '', $payload['ref']);
+                    $committer = $commit['author']['email'];
+                    $results[$commit['id']] = $this->createBuild(
+                        $project,
+                        $commit['id'],
+                        $branch,
+                        $committer,
+                        $commit['message']
+                    );
+                    $status = 'ok';
+                } catch (\Exception $ex) {
+                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
+                }
             }
-            return array('status' => 'ok', 'commits' => $results);
+            return array('status' => $status, 'commits' => $results);
         }
 
         return array('status' => 'ignored', 'message' => 'Unusable payload.');

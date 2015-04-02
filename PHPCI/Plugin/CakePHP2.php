@@ -54,6 +54,12 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @var boolean Allows to fail the execution but gives error when fails 
      */
     protected $allowFailure = true;
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $options = null;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -66,6 +72,7 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
+        $this->options = $options;
 
         // Options avaliables
         // app = path to the app directory
@@ -98,9 +105,7 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * {@inheritDoc}
      */
     public function execute()
-    {
-        $success = true;
-
+    {       
         $console_command = $this->phpci->buildPath;
         $console_command .= $this->appPath;
         $console_command .= '/Console/cake';
@@ -145,22 +150,22 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->phpci->logSuccess("The test where finished correcty");
         }*/
 
-        $tapString = file_get_contents($tap_file_location);
+        if (file_exists($tap_file_location)) {
+            $tapString = file_get_contents($tap_file_location);
 
-        try {
-            $tapParser = new TapParser($tapString);
-            $output = $tapParser->parse();
-        } catch (\Exception $ex) {
-            $this->phpci->logFailure($tapString);
-            throw $ex;
+            try {
+                $tapParser = new TapParser($tapString);
+                $output = $tapParser->parse();
+            } catch (\Exception $ex) {
+                $this->phpci->logFailure($tapString);
+                throw $ex;
+            }
+
+            $failures = $tapParser->getTotalFailures();
+
+            $this->build->storeMeta('cakephp-errors', $failures);
+            $this->build->storeMeta('cakephp-data', $output);
         }
-
-        $failures = $tapParser->getTotalFailures();
-        $tapParser->
-
-        $this->build->storeMeta('cakephp-errors', $failures);
-        $this->build->storeMeta('cakephp-data', $output);
-
         return $success;
     }
 
@@ -169,7 +174,7 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
-        return $stage === 'test';
+        return ($stage == 'test');
     }
     
 }

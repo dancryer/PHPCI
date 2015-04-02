@@ -78,8 +78,9 @@ class WebhookController extends \b8\Controller
     /**
      * Called by Bitbucket POST service.
      */
-    public function bitbucket($project)
+    public function bitbucket($projectId)
     {
+        $project = $this->fetchProject($projectId, 'bitbucket');
         $payload = json_decode($this->getParam('payload'), true);
 
         $results = array();
@@ -103,11 +104,12 @@ class WebhookController extends \b8\Controller
     /**
      * Called by POSTing to /webhook/git/<project_id>?branch=<branch>&commit=<commit>
      *
-     * @param string $project
+     * @param string $projectId
      */
-    public function git($project)
+    public function git($projectId)
     {
-        $branch = $this->getParam('branch', 'master');
+        $project = $this->fetchProject($projectId, 'git');
+        $branch = $this->getParam('branch', $project->getBranch());
         $commit = $this->getParam('commit');
         $commitMessage = $this->getParam('message');
         $committer = $this->getParam('committer');
@@ -118,8 +120,10 @@ class WebhookController extends \b8\Controller
     /**
      * Called by Github Webhooks:
      */
-    public function github($project)
+    public function github($projectId)
     {
+        $project = $this->fetchProject($projectId, 'github');
+
         switch ($_SERVER['CONTENT_TYPE']) {
             case 'application/json':
                 $payload = json_decode(file_get_contents('php://input'), true);
@@ -147,13 +151,13 @@ class WebhookController extends \b8\Controller
     /**
      * Handle the payload when Github sends a commit webhook.
      *
-     * @param $project
+     * @param Project $project
      * @param array $payload
      * @param b8\Http\Response\JsonResponse $response
      *
      * @return b8\Http\Response\JsonResponse
      */
-    protected function githubCommitRequest($project, array $payload)
+    protected function githubCommitRequest(Project $project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
         // non-existant commit. We don't want this.
@@ -198,10 +202,10 @@ class WebhookController extends \b8\Controller
     /**
      * Handle the payload when Github sends a Pull Request webhook.
      *
-     * @param $projectId
+     * @param Project $project
      * @param array $payload
      */
-    protected function githubPullRequest($projectId, array $payload)
+    protected function githubPullRequest(Project $project, array $payload)
     {
         // We only want to know about open pull requests:
         if (!in_array($payload['action'], array('opened', 'synchronize', 'reopened'))) {
@@ -222,7 +226,7 @@ class WebhookController extends \b8\Controller
 
         // Check we got a success response:
         if (!$response['success']) {
-            throw new Exception('Could not get commits, failed API request.');
+            throw new \Exception('Could not get commits, failed API request.');
         }
 
         $results = array();
@@ -246,7 +250,7 @@ class WebhookController extends \b8\Controller
                 'remote_url' => $payload['pull_request']['head']['repo']['clone_url'],
             );
 
-            $results[$id] = $this->createBuild($projectId, $id, $branch, $committer, $message, $extra);
+            $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);
         }
 
         return array('status' => 'ok', 'commits' => $results);
@@ -255,8 +259,10 @@ class WebhookController extends \b8\Controller
     /**
      * Called by Gitlab Webhooks:
      */
-    public function gitlab($project)
+    public function gitlab($projectId)
     {
+        $project = $this->fetchProject($projectId, 'gitlab');
+
         $payloadString = file_get_contents("php://input");
         $payload = json_decode($payloadString, true);
 
@@ -292,7 +298,7 @@ class WebhookController extends \b8\Controller
     /**
      * Wrapper for creating a new build.
      *
-     * @param int $projectId
+     * @param Project $project
      * @param string $commitId
      * @param string $branch
      * @param string $committer
@@ -303,22 +309,16 @@ class WebhookController extends \b8\Controller
      *
      * @throws \Exception
      */
-    protected function createBuild($projectId, $commitId, $branch, $committer, $commitMessage, array $extra = null)
+    protected function createBuild(Project $project, $commitId, $branch, $committer, $commitMessage, array $extra = null)
     {
         // Check if a build already exists for this commit ID:
-        $builds = $this->buildStore->getByProjectAndCommit($projectId, $commitId);
+        $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
         if ($builds['count']) {
             return array(
                 'status' => 'ignored',
                 'message' => sprintf('Duplicate of build #%d', $builds['items'][0]->getId())
             );
-        }
-
-        $project = $this->projectStore->getById($projectId);
-
-        if (empty($project)) {
-            throw new \Exception('Project does not exist:' . $projectId);
         }
 
         // If not, create a new build job for it:
@@ -329,5 +329,30 @@ class WebhookController extends \b8\Controller
         $build->sendStatusPostback();
 
         return array('status' => 'ok', 'buildID' => $build->getID());
+    }
+
+    /**
+     * Fetch a project and check its type.
+     *
+     * @param int $projectId
+     * @param string $expectedType
+     *
+     * @return Project
+     *
+     * @throws \Exception If the project does not exist or is not of the expected type.
+     */
+    protected function fetchProject($projectId, $expectedType)
+    {
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($projectId)) {
+            throw new \Exception('Project does not exist:' . $projectId);
+        }
+
+        if ($project->getType() !== $expectedType) {
+            throw new \Exception('Wrong project type:' . $project->getType());
+        }
+
+        return $project;
     }
 }

@@ -338,8 +338,14 @@ class WebhookController extends \b8\Controller
      *
      * @throws \Exception
      */
-    protected function createBuild(Project $project, $commitId, $branch, $committer, $commitMessage, array $extra = null)
-    {
+    protected function createBuild(
+        Project $project,
+        $commitId,
+        $branch,
+        $committer,
+        $commitMessage,
+        array $extra = null
+    ) {
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 

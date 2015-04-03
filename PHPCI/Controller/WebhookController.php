@@ -118,7 +118,7 @@ class WebhookController extends \b8\Controller
      */
     public function git($projectId)
     {
-        $project = $this->fetchProject($projectId, 'git');
+        $project = $this->fetchProject($projectId, array('local', 'remote'));
         $branch = $this->getParam('branch', $project->getBranch());
         $commit = $this->getParam('commit');
         $commitMessage = $this->getParam('message');
@@ -374,7 +374,7 @@ class WebhookController extends \b8\Controller
      * Fetch a project and check its type.
      *
      * @param int $projectId
-     * @param string $expectedType
+     * @param array|string $expectedType
      *
      * @return Project
      *
@@ -388,7 +388,10 @@ class WebhookController extends \b8\Controller
             throw new Exception('Project does not exist: ' . $projectId);
         }
 
-        if ($project->getType() !== $expectedType) {
+        if (is_array($expectedType)
+            ? !in_array($project->getType(), $expectedType)
+            : $project->getType() !== $expectedType
+        ) {
             throw new Exception('Wrong project type: ' . $project->getType());
         }
 

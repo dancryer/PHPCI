@@ -11,8 +11,12 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Store;
+use Exception;
 use PHPCI\BuildFactory;
+use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
  * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
@@ -27,17 +31,17 @@ use PHPCI\Service\BuildService;
 class WebhookController extends \b8\Controller
 {
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @var ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @var BuildService
      */
     protected $buildService;
 
@@ -68,7 +72,7 @@ class WebhookController extends \b8\Controller
                 unset($data['responseCode']);
             }
             $response->setContent($data);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $response->setResponseCode(500);
             $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
@@ -99,7 +103,7 @@ class WebhookController extends \b8\Controller
                     $commit['message']
                 );
                 $status = 'ok';
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 $results[$commit['raw_node']] = array('status' => 'failed', 'error' => $ex->getMessage());
             }
         }
@@ -193,7 +197,7 @@ class WebhookController extends \b8\Controller
                         $commit['message']
                     );
                     $status = 'ok';
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
             }
@@ -238,7 +242,7 @@ class WebhookController extends \b8\Controller
 
         // Check we got a success response:
         if (!$response['success']) {
-            throw new \Exception('Could not get commits, failed API request.');
+            throw new Exception('Could not get commits, failed API request.');
         }
 
         $results = array();
@@ -266,7 +270,7 @@ class WebhookController extends \b8\Controller
 
                 $results[$id] = $this->createBuild($project, $id, $branch, $committer, $message, $extra);
                 $status = 'ok';
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 $results[$id] = array('status' => 'failed', 'error' => $ex->getMessage());
             }
         }
@@ -314,7 +318,7 @@ class WebhookController extends \b8\Controller
                         $commit['message']
                     );
                     $status = 'ok';
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
             }
@@ -336,7 +340,7 @@ class WebhookController extends \b8\Controller
      *
      * @return array
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createBuild(
         Project $project,
@@ -374,18 +378,18 @@ class WebhookController extends \b8\Controller
      *
      * @return Project
      *
-     * @throws \Exception If the project does not exist or is not of the expected type.
+     * @throws Exception If the project does not exist or is not of the expected type.
      */
     protected function fetchProject($projectId, $expectedType)
     {
         $project = $this->projectStore->getById($projectId);
 
         if (empty($projectId)) {
-            throw new \Exception('Project does not exist:' . $projectId);
+            throw new Exception('Project does not exist: ' . $projectId);
         }
 
         if ($project->getType() !== $expectedType) {
-            throw new \Exception('Wrong project type:' . $project->getType());
+            throw new Exception('Wrong project type: ' . $project->getType());
         }
 
         return $project;

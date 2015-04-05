@@ -67,10 +67,14 @@ class TapParser
         $this->lines = array_map('rtrim', $lines);
         $this->lineNumber = 0;
 
-        // Check TAP version:
-        $versionLine = $this->nextLine();
+        // Look for the beggning of the TAP output
+        do {
+            $versionLine = $this->nextLine();
+        } while ($versionLine !== false && substr($versionLine, 0, 12) !== 'TAP version ');
 
-        if ($versionLine != 'TAP version 13') {
+        if ($versionLine === false) {
+            throw new Exception('No TAP log found, please check the configuration.');
+        } elseif ($versionLine !== 'TAP version 13') {
             throw new Exception(Lang::get('tap_version'));
         }
 

@@ -8,6 +8,7 @@ class TapParserTest extends \PHPUnit_Framework_TestCase
     public function testSimple()
     {
         $content = <<<TAP
+Leading garbage !
 TAP version 13
 ok 1 - SomeTest::testAnother
 not ok
@@ -23,6 +24,18 @@ TAP;
         ), $result);
 
         $this->assertEquals(1, $parser->getTotalFailures());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testNoTapData()
+    {
+        $content = <<<TAP
+Only garbage !
+TAP;
+        $parser = new TapParser($content);
+        $parser->parse();
     }
 
     public function testSuiteAndTest()

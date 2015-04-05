@@ -22,9 +22,8 @@ class WindowsCommandExecutor extends BaseCommandExecutor
      */
     protected function findGlobalBinary($binary)
     {
-        $command = sprintf('where %s', $binary);
-        $result = shell_exec($command);
-
-        return trim($result);
+        if ($this->executeCommand(array('where "%s"', $binary))) {
+            return trim($this->getLastOutput());
+        }
     }
 }

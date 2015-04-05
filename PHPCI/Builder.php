@@ -129,6 +129,7 @@ class Builder implements LoggerAwareInterface
         $this->commandExecutor = new $executorClass(
             $this->buildLogger,
             PHPCI_DIR,
+            $this->environment,
             $this->quiet,
             $this->verbose
         );

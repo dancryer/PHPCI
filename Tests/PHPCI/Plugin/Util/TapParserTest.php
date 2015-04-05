@@ -19,7 +19,7 @@ TAP;
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother'),
             array('pass' => false, 'severity' => 'fail', 'message' => ''),
         ), $result);
 
@@ -75,9 +75,9 @@ TAP;
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
-            array('pass' => false, 'severity' => 'fail', 'message' => 'Failure: SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
-            array('pass' => false, 'severity' => 'error', 'message' => 'Error: SomeTest::testAnother', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => true, 'severity' => 'success', 'message' => 'SomeTest::testAnother',),
+            array('pass' => false, 'severity' => 'fail', 'message' => 'Failure: SomeTest::testAnother'),
+            array('pass' => false, 'severity' => 'error', 'message' => 'Error: SomeTest::testAnother'),
         ), $result);
 
         $this->assertEquals(2, $parser->getTotalFailures());
@@ -119,7 +119,7 @@ TAP;
         $result = $parser->parse();
 
         $this->assertEquals(array(
-            array('pass' => true, 'severity' => 'todo', 'message' => 'SomeTest::testAnother, todo: really implement this test', 'suite' => 'SomeTest', 'test' => 'testAnother'),
+            array('pass' => true, 'severity' => 'todo', 'message' => 'SomeTest::testAnother, todo: really implement this test'),
             array('pass' => true, 'severity' => 'todo', 'message' => 'really implement this test'),
             array('pass' => true, 'severity' => 'todo', 'message' => 'this is a message, todo: really implement this test'),
             array('pass' => true, 'severity' => 'todo', 'message' => ''),
@@ -152,8 +152,6 @@ TAP;
                 'pass'     => false,
                 'severity' => 'fail',
                 'message'  => 'Failed asserting that <integer:2> matches expected value <integer:1>.',
-                'suite'    => 'testFailure',
-                'test'     => 'FailureErrorTest',
                 'data'     => array(
                     'got' => 2,
                     'expected' => 1
@@ -163,8 +161,6 @@ TAP;
                 'pass'     => false,
                 'severity' => 'error',
                 'message'  => 'Error: testError::FailureErrorTest',
-                'suite'    => 'testError',
-                'test'     => 'FailureErrorTest'
             )
         ), $result);
 

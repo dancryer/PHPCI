@@ -180,11 +180,6 @@ class TapParser
             }
         }
 
-        if (preg_match('/(\\\\?\w+(?:\\\\\w+)*)::(\w+)/', $message, $matches)) {
-            $test['suite'] = $matches[1];
-            $test['test'] = $matches[2];
-        }
-
         if ($directive) {
             $test = $this->processDirective($test, $directive, $reason);
         }

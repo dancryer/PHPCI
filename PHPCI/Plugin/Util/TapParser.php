@@ -144,9 +144,13 @@ class TapParser
             );
 
         } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
-            $data = $this->processYamlBlock($matches[1]);
-            $lastTest = count($this->results)-1;
-            $this->results[$lastTest] = array_merge($this->results[$lastTest], $data);
+            $diagnostic = $this->processYamlBlock($matches[1]);
+            $test = array_pop($this->results);
+            if (isset($test['message'], $diagnostic['message'])) {
+                $test['message'] .= PHP_EOL . $diagnostic['message'];
+                unset($diagnostic['message']);
+            }
+            $this->results[] = array_replace($test, $diagnostic);
 
         } else {
             throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
@@ -173,11 +177,8 @@ class TapParser
 
         if ($result !== 'ok') {
             $test['pass'] = false;
-            $test['severity'] = 'fail';
+            $test['severity'] = substr($message, 0, 6) === 'Error:' ? 'error' : 'fail';
             $this->failures++;
-            if (preg_match('/^(Error|Failure):/', $message, $matches)) {
-                $test['severity'] = $matches[1] === 'Error' ? 'error' : 'fail';
-            }
         }
 
         if ($directive) {

@@ -128,19 +128,37 @@ TAP;
         $this->assertEquals(0, $parser->getTotalFailures());
     }
 
-    public function testFailureAnderror()
+    public function testYamlDiagnostic()
+    {
+        // From https://phpunit.de/manual/current/en/logging.html#logging.tap
+        $content = <<<TAP
+    TAP version 13
+not ok 1 - FOO
+  ---
+  message: BAR
+  ...
+1..1
+TAP;
+        $parser = new TapParser($content);
+        $result = $parser->parse();
+
+        $this->assertEquals(array(
+            array(
+                'pass'     => false,
+                'severity' => 'fail',
+                'message'  => 'FOO' . PHP_EOL . 'BAR',
+            ),
+        ), $result);
+
+        $this->assertEquals(1, $parser->getTotalFailures());
+    }
+
+    public function testFailureAndError()
     {
         // From https://phpunit.de/manual/current/en/logging.html#logging.tap
         $content = <<<TAP
     TAP version 13
 not ok 1 - Failure: testFailure::FailureErrorTest
-  ---
-  message: 'Failed asserting that <integer:2> matches expected value <integer:1>.'
-  severity: fail
-  data:
-    got: 2
-    expected: 1
-  ...
 not ok 2 - Error: testError::FailureErrorTest
 1..2
 TAP;
@@ -151,11 +169,7 @@ TAP;
             array(
                 'pass'     => false,
                 'severity' => 'fail',
-                'message'  => 'Failed asserting that <integer:2> matches expected value <integer:1>.',
-                'data'     => array(
-                    'got' => 2,
-                    'expected' => 1
-                ),
+                'message'  => 'Failure: testFailure::FailureErrorTest',
             ),
             array(
                 'pass'     => false,

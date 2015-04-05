@@ -63,27 +63,22 @@ class TapParser
     {
         // Split up the TAP string into an array of lines, then
         // trim all of the lines so there's no leading or trailing whitespace.
-        $lines = explode("\n", $this->tapString);
-        $this->lines = array_map('rtrim', $lines);
+        $this->lines = array_map('rtrim', explode("\n", $this->tapString));
         $this->lineNumber = 0;
-
-        // Look for the beggning of the TAP output
-        do {
-            $versionLine = $this->nextLine();
-        } while ($versionLine !== false && substr($versionLine, 0, 12) !== 'TAP version ');
-
-        if ($versionLine === false) {
-            throw new Exception('No TAP log found, please check the configuration.');
-        } elseif ($versionLine !== 'TAP version 13') {
-            throw new Exception(Lang::get('tap_version'));
-        }
 
         $this->testCount = false;
         $this->results = array();
 
-        while (($this->testCount === false || count($this->results) < $this->testCount)
-            && false !== ($line = $this->nextLine())) {
+        $header = $this->findTapLog();
+
+        $line = $this->nextLine();
+        if ($line === $header) {
+            throw new Exception("Duplicated TAP log, please check the configration.");
+        }
+
+        while ($line !== false && ($this->testCount === false || count($this->results) < $this->testCount)) {
             $this->parseLine($line);
+            $line = $this->nextLine();
         }
 
         if (count($this->results) !== $this->testCount) {
@@ -91,6 +86,29 @@ class TapParser
         }
 
         return $this->results;
+    }
+
+    /** Looks for the start of the TAP log in the string.
+     *
+     * @return string The TAP header line.
+     *
+     * @throws Exception if no TAP log is found or versions mismatch.
+     */
+    protected function findTapLog()
+    {
+        // Look for the beggning of the TAP output
+        do {
+            $header = $this->nextLine();
+        } while ($header !== false && substr($header, 0, 12) !== 'TAP version ');
+
+        //
+        if ($header === false) {
+            throw new Exception('No TAP log found, please check the configuration.');
+        } elseif ($header !== 'TAP version 13') {
+            throw new Exception(Lang::get('tap_version'));
+        }
+
+        return $header;
     }
 
     /** Fetch the next line.

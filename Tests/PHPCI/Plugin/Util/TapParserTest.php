@@ -28,11 +28,34 @@ TAP;
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessageRegExp /No TAP/
      */
     public function testNoTapData()
     {
         $content = <<<TAP
 Only garbage !
+TAP;
+        $parser = new TapParser($content);
+        $parser->parse();
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessageRegExp /Duplicated TAP/
+     */
+    public function testDuplicateOutput()
+    {
+        $content = <<<TAP
+TAP version 13
+TAP version 13
+ok 1 - SomeTest::testAnother
+ok 1 - SomeTest::testAnother
+not ok - Failure: SomeTest::testAnother
+not ok - Failure: SomeTest::testAnother
+not ok 3 - Error: SomeTest::testAnother
+not ok 3 - Error: SomeTest::testAnother
+1..3
+1..3
 TAP;
         $parser = new TapParser($content);
         $parser->parse();

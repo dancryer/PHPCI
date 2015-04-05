@@ -189,28 +189,19 @@ abstract class BaseCommandExecutor implements CommandExecutor
     /**
      * Find a binary required by a plugin.
      *
-     * @param string $binary
-     * @param null $buildPath
+     * @param array|string $binary
      *
-     * @return null|string
+     * @return string|null
      */
-    public function findBinary($binary, $buildPath = null)
+    public function findBinary($binary)
     {
         $binaryPath = null;
-        $composerBin = $this->getComposerBinDir(realpath($buildPath));
-
         if (is_string($binary)) {
             $binary = array($binary);
         }
 
         foreach ($binary as $bin) {
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
-
-            if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-                $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
-                $binaryPath = $composerBin . '/' . $bin;
-                break;
-            }
 
             if (is_file($this->rootDir . $bin)) {
                 $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
@@ -242,30 +233,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @return null|string
      */
     abstract protected function findGlobalBinary($binary);
-
-    /**
-     * Try to load the composer.json file in the building project
-     * If the bin-dir is configured, return the full path to it
-     *
-     * @param string $path Current build path
-     *
-     * @return string|null
-     */
-    public function getComposerBinDir($path)
-    {
-        if (is_dir($path)) {
-            $composer = $path.'/composer.json';
-            if (is_file($composer)) {
-                $json = json_decode(file_get_contents($composer));
-
-                if (isset($json->config->{"bin-dir"})) {
-                    return $path . '/' . $json->config->{"bin-dir"};
-                } elseif (is_dir($path . '/vendor/bin')) {
-                    return $path  . '/vendor/bin';
-                }
-            }
-        }
-    }
 
     /**
      * Set the buildPath property.

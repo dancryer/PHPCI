@@ -73,9 +73,12 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
             counts[severity]++;
             total++;
             tbody.append(
-                '<tr class="' + severity +
-                '"><td colspan="3"><i class="glyphicon glyphicon-' + this.statusMap[severity] +
-                '"></i>&nbsp;' + message + '</td></tr>'
+                '<tr class="'+  severity + '">' +
+                    '<td colspan="3">' +
+                        '<div>' + message + '</div>' +
+                        (tests[i].data ? '<div>' + this.repr(tests[i].data) + '</div>' : '') +
+                    '</td>' +
+                '</tr>'
             );
         }
 
@@ -96,6 +99,40 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         tbody.find('.success').hide();
 
         $('#build-phpunit-errors').show();
+    },
+
+    repr: function(data)
+    {
+        switch(typeof(data)) {
+            case 'boolean':
+                return '<span class="boolean">' + (data ? 'true' : 'false') + '</span>';
+            case 'string':
+                return '<span class="string">"' + data + '"</span>';
+            case 'undefined': case null:
+                return '<span class="null">null</span>';
+            case 'object':
+                var rows = [];
+                if(data instanceof Array) {
+                    for(var i in data) {
+                        rows.push('<tr><td colspan="3">' + this.repr(data[i]) + ',</td></tr>');
+                    }
+                } else {
+                    for(var key in data) {
+                        rows.push(
+                            '<tr>' +
+                                '<td>' + this.repr(key) + '</td>' +
+                                '<td>=&gt;</td>' +
+                                '<td>' + this.repr(data[key]) + ',</td>' +
+                            '</tr>');
+                    }
+                }
+                return '<table>' +
+                        '<tr><th colspan="3">array(</th></tr>' +
+                        rows.join('') +
+                        '<tr><th colspan="3">)</th></tr>' +
+                    '</table>';
+        }
+        return '???';
     }
 });
 

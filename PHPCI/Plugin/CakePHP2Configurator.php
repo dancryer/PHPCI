@@ -75,6 +75,10 @@ class CakePHP2Configurator implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (!array_key_exists('app', $this->options)) {
+        	if (!file_exists('app')) {
+			$this->phpci->logError("Could not found the app directory to create the configuration. Plase specifie it on the project configuration.");
+			return false;
+		}
             $this->phpci->log("Using app/ as app dir");
             $this->options['app'] = 'app';
         }

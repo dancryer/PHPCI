@@ -138,17 +138,19 @@ class CakePHP2 implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $console_command .= " --tap --log-tap ".$tap_file_location." --stderr";
         
         if ($this->debug) {
-            $console_command .= " --debug";
+            $console_command .= " --debug ";
         }
+		
+		$this->phpci->log('Running command: '.$console_command);
         
         $success = $this->phpci->executeCommand($console_command);
         
-        /*if (!$success && !$this->allowFailure) {
+        if (!$success && !$this->allowFailure) {
             $this->phpci->logFailure("There was an error on the execution of the command: ".$console_command);
             return false;
         } else {
             $this->phpci->logSuccess("The test where finished correcty");
-        }*/
+        }
 
         if (file_exists($tap_file_location)) {
             $tapString = file_get_contents($tap_file_location);

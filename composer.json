@@ -28,6 +28,12 @@
         }
     },
 
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\PHPCI\\": "Tests/PHPCI/"
+        }
+    },
+
     "require": {
         "php": ">=5.3.8",
         "ext-pdo": "*",

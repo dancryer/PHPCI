@@ -206,26 +206,4 @@ class RunCommand extends Command
 
         return $rtn;
     }
-
-    /**
-     * Remove the build directory of a finished build.
-     *
-     * @param Build $build
-     *
-     * @todo Move this to the Build class.
-     */
-    protected function removeBuildDirectory(Build $build)
-    {
-        $buildPath = PHPCI_DIR . 'PHPCI/build/' . $build->getId() . '/';
-
-        if (is_dir($buildPath)) {
-            $cmd = 'rm -Rf "%s"';
-
-            if (IS_WIN) {
-                $cmd = 'rmdir /S /Q "%s"';
-            }
-
-            shell_exec($cmd);
-        }
-    }
 }

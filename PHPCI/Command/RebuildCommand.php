@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPCI - Continuous Integration for PHP
  *
@@ -9,11 +10,11 @@
 
 namespace PHPCI\Command;
 
-use b8\Store\Factory;
 use Monolog\Logger;
+use PHPCI\BuildFactory;
+use PHPCI\Command\RunCommand;
 use PHPCI\Service\BuildService;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,36 +24,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 * @package      PHPCI
 * @subpackage   Console
 */
-class RebuildCommand extends Command
+class RebuildCommand extends RunCommand
 {
     /**
-     * @var Logger
+     * @var BuildService
      */
-    protected $logger;
+    protected $service;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
 
-    /**
-     * @var boolean
-     */
-    protected $run;
+    public function __construct(
+        Logger $logger,
+        BuildStore $store = null,
+        BuildFactory $factory = null,
+        $timeout = null,
+        BuildService $service = null,
+        $name = null
+    ) {
+        parent::__construct($logger, $store, $factory, $timeout, $name);
 
-    /**
-     * @var int
-     */
-    protected $sleep;
-
-    /**
-     * @param \Monolog\Logger $logger
-     * @param string $name
-     */
-    public function __construct(Logger $logger, $name = null)
-    {
-        parent::__construct($name);
-        $this->logger = $logger;
+        $this->service = $service ? $service : new BuildService($this->store);
     }
 
     protected function configure()
@@ -63,30 +53,13 @@ class RebuildCommand extends Command
     }
 
     /**
-    * Loops through running.
+    * Duplicates the last build and runs it.
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runner = new RunCommand($this->logger);
-        $runner->setMaxBuilds(1);
-        $runner->setDaemon(false);
+        $lastBuild = array_shift($this->store->getLatestBuilds(null, 1));
+        $build = $this->service->createDuplicateBuild($lastBuild);
 
-        /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
-        $service = new BuildService($store);
-
-        $lastBuild = array_shift($store->getLatestBuilds(null, 1));
-        $service->createDuplicateBuild($lastBuild);
-
-        $runner->run(new ArgvInput(array()), $output);
-    }
-
-    /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
-    public function logCallback($log)
-    {
-        $this->output->writeln($log);
+        $this->runBuild($build);
     }
 }

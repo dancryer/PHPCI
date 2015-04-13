@@ -21,15 +21,11 @@ use PHPCI\Helper\Lang;
  */
 class Phing extends AbstractExecutingPlugin
 {
-
     private $directory;
     private $buildFile = 'build.xml';
     private $targets = array('build');
     private $properties = array();
     private $propertyFile;
-
-    protected $phpci;
-    protected $build;
 
     /**
      * Configure the plugin.
@@ -89,14 +85,6 @@ class Phing extends AbstractExecutingPlugin
         $cmd[] = '2>&1';
 
         return $this->executor->executeCommand(implode(' ', $cmd), $this->directory, $this->targets);
-    }
-
-    /**
-     * @return Builder
-     */
-    public function getPhpci()
-    {
-        return $this->phpci;
     }
 
     /**

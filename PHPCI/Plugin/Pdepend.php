@@ -92,7 +92,7 @@ class Pdepend extends AbstractPlugin
         $config = $this->phpci->getSystemConfig('phpci');
 
         if ($success) {
-            $this->phpci->logSuccess(
+            $this->logger->logSuccess(
                 sprintf(
                     "Pdepend successful. You can use %s\n, ![Chart](%s \"Pdepend Chart\")\n
                     and ![Pyramid](%s \"Pdepend Pyramid\")\n

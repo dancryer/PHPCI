@@ -59,7 +59,7 @@ class Sqlite extends AbstractPlugin
                 $pdo->query($this->phpci->interpolate($query));
             }
         } catch (\Exception $ex) {
-            $this->phpci->logFailure($ex->getMessage());
+            $this->logger->logFailure($ex->getMessage());
             return false;
         }
         return true;

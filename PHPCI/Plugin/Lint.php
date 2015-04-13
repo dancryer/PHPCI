@@ -128,7 +128,7 @@ class Lint extends AbstractPlugin
         $success = true;
 
         if (!$this->phpci->executeCommand($php . ' -l "%s"', $this->phpci->buildPath . $path)) {
-            $this->phpci->logFailure($path);
+            $this->logger->logFailure($path);
             $success = false;
         }
 

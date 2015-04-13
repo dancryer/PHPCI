@@ -117,7 +117,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 
         list($errorCount, $data) = $this->getErrorList();
 
-        $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
+        $this->logger->log("Found $errorCount instances of " . implode(', ', $this->searches));
 
         $this->build->storeMeta('technical_debt-warnings', $errorCount);
         $this->build->storeMeta('technical_debt-data', $data);
@@ -179,7 +179,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
                     $content = trim($allLines[$lineNumber - 1]);
 
                     $errorCount++;
-                    $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");
+                    $this->logger->log("Found $search on line $lineNumber of $file:\n$content");
 
                     $fileName = str_replace($this->directory, '', $file);
                     $data[] = array(

@@ -109,7 +109,7 @@ class PhpCpd extends AbstractPlugin
         $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
-            $this->phpci->log($xmlString);
+            $this->logger->log($xmlString);
             throw new \Exception(Lang::get('could_not_process_report'));
         }
 

@@ -97,7 +97,7 @@ class Mysql extends AbstractPlugin
                 }
             }
         } catch (\Exception $ex) {
-            $this->phpci->logFailure($ex->getMessage());
+            $this->logger->logFailure($ex->getMessage());
             return false;
         }
         return true;

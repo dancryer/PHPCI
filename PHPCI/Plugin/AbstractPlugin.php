@@ -11,6 +11,7 @@
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
+use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
 use PHPCI\Plugin;
 
@@ -32,17 +33,24 @@ abstract class AbstractPlugin implements Plugin
     protected $phpci;
 
     /**
+     * @var BuildLogger
+     */
+    protected $logger;
+
+    /**
      * Setup and configure the plugin.
      *
      * @param Builder $builder
      * @param Build   $build
+     * @param BuildLogger $logger
      * @param array   $options
      */
-    public function __construct(Builder $builder, Build $build, array $options = array())
+    public function __construct(Builder $builder, Build $build, BuildLogger $logger, array $options = array())
     {
         $this->phpci = $builder;
         $this->build = $build;
         $this->buildPath = $builder->buildPath;
+        $this->logger = $logger;
 
         $this->setOptions($options);
     }

@@ -116,7 +116,7 @@ class Codeception extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, 'runConfigFile'));
         } else {
-            $this->phpci->logExecOutput(false);
+            $this->logger->logExecOutput(false);
 
             $codecept = $this->phpci->findBinary('codecept');
 
@@ -129,7 +129,7 @@ class Codeception extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $configPath = $this->buildPath . $configPath;
             $success = $this->phpci->executeCommand($cmd, $this->buildPath, $configPath);
 
-            $this->phpci->log(
+            $this->logger->log(
                 'Codeception XML path: '. $this->buildPath . $this->path . '_output/report.xml',
                 Loglevel::DEBUG
             );
@@ -148,7 +148,7 @@ class Codeception extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $this->build->storeMeta('codeception-data', $output);
             $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
 
-            $this->phpci->logExecOutput(true);
+            $this->logger->logExecOutput(true);
 
             return $success;
         }

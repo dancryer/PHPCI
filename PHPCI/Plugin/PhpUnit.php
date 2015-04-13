@@ -156,7 +156,7 @@ class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $tapParser = new TapParser($tapString);
             $output = $tapParser->parse();
         } catch (\Exception $ex) {
-            $this->phpci->logFailure($tapString);
+            $this->logger->logFailure($tapString);
             throw $ex;
         }
 

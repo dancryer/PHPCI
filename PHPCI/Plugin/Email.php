@@ -65,8 +65,8 @@ class Email extends AbstractPlugin
         );
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
-        $this->phpci->log(sprintf("%d emails failed to send", $sendFailures));
+        $this->logger->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
+        $this->logger->log(sprintf("%d emails failed to send", $sendFailures));
 
         return ($sendFailures === 0);
     }

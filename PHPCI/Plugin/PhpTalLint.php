@@ -66,15 +66,6 @@ class PhpTalLint extends AbstractPlugin
             $this->suffixes = (array)$options['suffixes'];
         }
 
-        $this->setOptions($options);
-    }
-
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directories', 'tales', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];

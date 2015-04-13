@@ -172,8 +172,7 @@ class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfi
     protected function tryAndProcessRules()
     {
         if (!empty($this->rules) && !is_array($this->rules)) {
-            $this->phpci->logFailure('The "rules" option must be an array.');
-            return false;
+            throw new \Exception('The "rules" option must be an array.');
         }
 
         foreach ($this->rules as &$rule) {

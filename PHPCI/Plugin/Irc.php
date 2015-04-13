@@ -56,7 +56,7 @@ class Irc extends AbstractInterpolatingPlugin
         $msg = $this->interpolator->interpolate($this->message);
 
         if (empty($this->server) || empty($this->room) || empty($this->nick)) {
-            $this->phpci->logFailure(Lang::get('irc_settings'));
+            throw new \Exception(Lang::get('irc_settings'));
         }
 
         if (empty($this->port)) {

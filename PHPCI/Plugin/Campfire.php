@@ -54,7 +54,6 @@ class Campfire implements \PHPCI\Plugin
         } else {
             throw new \Exception(Lang::get('no_campfire_settings'));
         }
-
     }
 
     /**
@@ -70,7 +69,6 @@ class Campfire implements \PHPCI\Plugin
         $this->leaveRoom($this->roomId);
 
         return $status;
-
     }
 
     /**
@@ -108,7 +106,6 @@ class Campfire implements \PHPCI\Plugin
         }
 
         return $this->getPageByPost($page, array('message' => array('type' => $type, 'body' => $message)));
-
     }
 
     /**

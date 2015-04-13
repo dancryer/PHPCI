@@ -203,7 +203,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     );
 
                     $this->build->reportError($this->phpci, $fileName, $lineNumber, $content);
-
                 }
             }
         }

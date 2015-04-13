@@ -64,7 +64,6 @@ class HipchatNotify implements \PHPCI\Plugin
         } else {
             throw new \Exception(Lang::get('hipchat_settings'));
         }
-
     }
 
     /**

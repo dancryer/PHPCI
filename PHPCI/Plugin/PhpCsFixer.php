@@ -98,6 +98,5 @@ class PhpCsFixer implements \PHPCI\Plugin
         if (isset($options['workingdir']) && $options['workingdir']) {
             $this->workingdir = $this->phpci->buildPath . $options['workingdir'];
         }
-
     }
 }

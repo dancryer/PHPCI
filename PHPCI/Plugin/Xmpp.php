@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class XMPP implements \PHPCI\Plugin
+class Xmpp implements \PHPCI\Plugin
 {
     protected $directory;
     protected $phpci;

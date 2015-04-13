@@ -131,10 +131,8 @@ class TapParser
     {
         if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
             $this->testCount = intval($matches[1]);
-
         } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
             return;
-
         } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
             $this->results[] = $this->processTestLine(
                 $matches[1],
@@ -142,7 +140,6 @@ class TapParser
                 isset($matches[3]) ? $matches[3] : null,
                 isset($matches[4]) ? $matches[4] : null
             );
-
         } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
             $diagnostic = $this->processYamlBlock($matches[1]);
             $test = array_pop($this->results);
@@ -151,7 +148,6 @@ class TapParser
                 unset($diagnostic['message']);
             }
             $this->results[] = array_replace($test, $diagnostic);
-
         } else {
             throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
         }
@@ -207,7 +203,6 @@ class TapParser
                 break;
             }
             $yamlLines[] = substr($line, strlen($indent));
-
         } while (true);
 
         return Yaml::parse(join("\n", $yamlLines));

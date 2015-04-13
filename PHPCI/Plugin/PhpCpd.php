@@ -145,7 +145,6 @@ Copy and paste detected:
 CPD;
 
                 $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
-
             }
 
             $warnings++;

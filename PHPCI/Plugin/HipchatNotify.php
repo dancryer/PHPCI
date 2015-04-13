@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Hipchat Plugin
@@ -26,16 +24,12 @@ class HipchatNotify extends AbstractPlugin
     protected $notify;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
-     * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
         $this->cookie = "phpcicookie";
 

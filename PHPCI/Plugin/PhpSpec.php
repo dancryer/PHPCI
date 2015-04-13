@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
 * PHP Spec Plugin - Allows PHP Spec testing.
@@ -27,15 +25,12 @@ class PhpSpec extends AbstractPlugin
     protected $options;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->options = $options;
     }
 

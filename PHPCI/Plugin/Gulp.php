@@ -9,9 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Gulp Plugin - Provides access to gulp functionality.
 * @author       Dirk Heilig <dirk@heilig-online.com>
@@ -27,30 +24,20 @@ class Gulp extends AbstractPlugin
     protected $gulpfile;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $path = $phpci->buildPath;
-        $this->directory = $path;
+        $this->directory = $this->phpci->buildPath;
         $this->task = null;
         $this->gulp = $this->phpci->findBinary('gulp');
         $this->gulpfile = 'gulpfile.js';
 
         // Handle options:
         if (isset($options['directory'])) {
-            $this->directory = $path . '/' . $options['directory'];
+            $this->directory = $this->phpci->buildPath . '/' . $options['directory'];
         }
 
         if (isset($options['task'])) {

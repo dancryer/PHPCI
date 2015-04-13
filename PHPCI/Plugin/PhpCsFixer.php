@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * PHP CS Fixer - Works with the PHP CS Fixer for testing coding standards.
@@ -28,23 +26,29 @@ class PhpCsFixer extends AbstractPlugin
     protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->workingdir = $this->phpci->buildPath;
-        $this->buildArgs($options);
+
+        if (isset($options['verbose']) && $options['verbose']) {
+            $this->verbose = ' --verbose';
+        }
+
+        if (isset($options['diff']) && $options['diff']) {
+            $this->diff = ' --diff';
+        }
+
+        if (isset($options['level']) && in_array($options['level'], $this->levels)) {
+            $this->level = ' --level='.$options['level'];
+        }
+
+        if (isset($options['workingdir']) && $options['workingdir']) {
+            $this->workingdir .= $options['workingdir'];
+        }
     }
 
     /**
@@ -64,28 +68,5 @@ class PhpCsFixer extends AbstractPlugin
         chdir($curdir);
 
         return $success;
-    }
-
-    /**
-     * Build an args string for PHPCS Fixer.
-     * @param $options
-     */
-    public function buildArgs($options)
-    {
-        if (isset($options['verbose']) && $options['verbose']) {
-            $this->verbose = ' --verbose';
-        }
-
-        if (isset($options['diff']) && $options['diff']) {
-            $this->diff = ' --diff';
-        }
-
-        if (isset($options['level']) && in_array($options['level'], $this->levels)) {
-            $this->level = ' --level='.$options['level'];
-        }
-
-        if (isset($options['workingdir']) && $options['workingdir']) {
-            $this->workingdir = $this->phpci->buildPath . $options['workingdir'];
-        }
     }
 }

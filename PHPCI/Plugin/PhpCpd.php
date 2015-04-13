@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
@@ -36,15 +34,12 @@ class PhpCpd extends AbstractPlugin
     protected $ignore;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->path = $phpci->buildPath;
         $this->standard = 'PSR1';
         $this->ignore = $phpci->ignore;

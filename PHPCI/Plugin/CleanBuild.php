@@ -9,9 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Clean build removes Composer related files and allows PHPCI users to clean up their build directory.
 * Useful as a precursor to copy_build.
@@ -30,16 +27,13 @@ class CleanBuild extends AbstractPlugin
      * $options['filename']  Phar Filename. Default: build.phar
      * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
      * $options['stub']      Stub Content. No Default Value
+     * Configure the plugin.
      *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $this->remove       = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
+        $this->remove = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
     }
 
     /**

@@ -11,7 +11,6 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Phing Plugin - Provides access to Phing functionality.
@@ -33,15 +32,12 @@ class Phing extends AbstractPlugin
     protected $build;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         /*
          * Set working directory
          */
@@ -96,7 +92,7 @@ class Phing extends AbstractPlugin
     }
 
     /**
-     * @return \PHPCI\Builder
+     * @return Builder
      */
     public function getPhpci()
     {

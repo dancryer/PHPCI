@@ -45,16 +45,13 @@ class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $path = $phpci->buildPath;
+        $path = $this->phpci->buildPath;
         $this->directory = $path;
         $this->action = 'install';
         $this->preferDist = false;

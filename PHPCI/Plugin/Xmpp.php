@@ -9,9 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * XMPP Notification - Send notification for successful or failure build
 * @author       Alexandre Russo <dev.github@ange7.com>
@@ -58,15 +55,12 @@ class Xmpp extends AbstractPlugin
     protected $date_format;
 
     /**
+     * Configure the plugin.
      *
-     * @param Builder $phpci
-     * @param Build $build
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->username    = '';
         $this->password    = '';
         $this->server      = '';
@@ -86,16 +80,6 @@ class Xmpp extends AbstractPlugin
             }
         }
 
-        $this->setOptions($options);
-    }
-
-    /**
-     * Set options configuration for plugin
-     *
-     * @param array $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('username', 'password', 'alias', 'tls', 'server', 'date_format') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];

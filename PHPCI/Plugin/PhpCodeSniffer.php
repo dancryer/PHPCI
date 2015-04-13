@@ -84,16 +84,14 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * @param \PHPCI\Builder $phpci
-     * @param \PHPCI\Model\Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->suffixes = array('php');
-        $this->directory = $phpci->buildPath;
+        $this->directory = $this->phpci->buildPath;
         $this->standard = 'PSR2';
         $this->tab_width = '';
         $this->encoding = '';
@@ -119,15 +117,6 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $this->encoding = ' --encoding=' . $options['encoding'];
         }
 
-        $this->setOptions($options);
-    }
-
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directory', 'standard', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];

@@ -9,9 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Create a ZIP or TAR.GZ archive of the entire build.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -25,17 +22,13 @@ class PackageBuild extends AbstractPlugin
     protected $format;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $path               = $phpci->buildPath;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->directory    = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
         $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
         $this->format       = isset($options['format']) ?  $options['format'] : 'zip';
     }

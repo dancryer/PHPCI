@@ -77,16 +77,14 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * @param \PHPCI\Builder     $phpci
-     * @param \PHPCI\Model\Build $build
-     * @param array              $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->suffixes = array('php');
-        $this->directory = $phpci->buildPath;
+        $this->directory = $this->phpci->buildPath;
         $this->path = '';
         $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;
@@ -101,14 +99,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $this->allowed_warnings = -1;
             $this->allowed_errors = -1;
         }
-    }
 
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directory', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];

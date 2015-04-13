@@ -52,16 +52,13 @@ class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugi
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $this->ignore = $phpci->ignore;
+        $this->ignore = $this->phpci->ignore;
         $this->path = '';
         $this->allowed_warnings = 0;
 

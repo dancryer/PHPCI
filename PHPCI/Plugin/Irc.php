@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * IRC Plugin - Sends a notification to an IRC channel
@@ -28,24 +26,15 @@ class Irc extends AbstractPlugin
     protected $nick;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->message = $options['message'];
 
-        $buildSettings = $phpci->getConfig('build_settings');
+        $buildSettings = $this->phpci->getConfig('build_settings');
 
 
         if (isset($buildSettings['irc'])) {

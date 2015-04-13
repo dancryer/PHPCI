@@ -32,12 +32,24 @@ abstract class AbstractPlugin implements Plugin
     protected $phpci;
 
     /**
-     * @param Builder $phpci
+     * Setup and configure the plugin.
+     *
+     * @param Builder $builder
      * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build)
+    public function __construct(Builder $builder, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
+        $this->phpci = $builder;
         $this->build = $build;
+
+        $this->setOptions($options);
     }
+
+    /**
+     * Configure the plugin.
+     *
+     * @param array $options
+     */
+    abstract protected function setOptions(array $options);
 }

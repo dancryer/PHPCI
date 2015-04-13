@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Shell Plugin - Allows execute shell commands.
@@ -29,21 +27,12 @@ class Shell extends AbstractPlugin
     protected $commands = array();
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         if (isset($options['command'])) {
             // Keeping this for backwards compatibility, new projects should use interpolation vars.
             $options['command'] = str_replace("%buildpath%", $this->phpci->buildPath, $options['command']);

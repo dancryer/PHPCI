@@ -10,9 +10,7 @@
 namespace PHPCI\Plugin;
 
 use b8\View;
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use PHPCI\Helper\Email as EmailHelper;
 
 /**
@@ -29,20 +27,13 @@ class Email extends AbstractPlugin
     protected $options;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
-     * @param \Swift_Mailer $mailer
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(
-        Builder $phpci,
-        Build $build,
-        array $options = array()
-    ) {
-        parent::__construct($phpci, $build);
-
-        $this->options      = $options;
+    protected function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 
     /**

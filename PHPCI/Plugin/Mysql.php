@@ -10,9 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PDO;
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * MySQL Plugin - Provides access to a MySQL database.
@@ -44,14 +42,12 @@ class Mysql extends AbstractPlugin
     protected $pass;
 
     /**
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->queries = $options;
 
         $config = \b8\Database::getConnection('write')->getDetails();
@@ -60,7 +56,7 @@ class Mysql extends AbstractPlugin
         $this->user = $config['user'];
         $this->pass = $config['pass'];
 
-        $buildSettings = $phpci->getConfig('build_settings');
+        $buildSettings = $this->phpci->getConfig('build_settings');
 
         if (!isset($buildSettings['mysql'])) {
             return;

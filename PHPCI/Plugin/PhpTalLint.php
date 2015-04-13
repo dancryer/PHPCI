@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
  * PHPTAL Lint Plugin - Provides access to PHPTAL lint functionality.
@@ -47,16 +45,12 @@ class PhpTalLint extends AbstractPlugin
     protected $failedPaths = array();
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->directories = array('');
         $this->suffixes = array('zpt');
         $this->ignore = $phpci->ignore;

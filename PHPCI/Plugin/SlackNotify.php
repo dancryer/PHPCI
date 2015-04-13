@@ -8,8 +8,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
  * Slack Plugin
@@ -26,16 +24,12 @@ class SlackNotify extends AbstractPlugin
     private $icon;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
-     * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         if (is_array($options) && isset($options['webhook_url'])) {
             $this->webHook = trim($options['webhook_url']);
 

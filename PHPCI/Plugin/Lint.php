@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
  * PHP Lint Plugin - Provides access to PHP lint functionality.
@@ -26,23 +24,14 @@ class Lint extends AbstractPlugin
     protected $ignore;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->directories    = array('');
-        $this->ignore = $phpci->ignore;
+        $this->ignore = $this->phpci->ignore;
 
         if (!empty($options['directory'])) {
             $this->directories[] = $options['directory'];

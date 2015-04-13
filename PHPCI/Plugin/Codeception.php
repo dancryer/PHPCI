@@ -73,21 +73,16 @@ class Codeception extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
         $this->path = 'tests/';
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
-        }
-        if (isset($options['config'])) {
-            $this->ymlConfigFile = $options['config'];
         }
         if (isset($options['args'])) {
             $this->args = (string) $options['args'];

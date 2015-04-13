@@ -62,23 +62,14 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->suffixes = array('php');
-        $this->ignore = $phpci->ignore;
+        $this->ignore = $this->phpci->ignore;
         $this->path = '';
         $this->rules = array('codesize', 'unusedcode', 'naming');
         $this->allowed_warnings = 0;

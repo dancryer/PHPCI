@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PDO;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
 * PgSQL Plugin - Provides access to a PgSQL database.
@@ -42,17 +40,15 @@ class Pgsql extends AbstractPlugin
     protected $pass;
 
     /**
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
         $this->queries = $options;
 
-        $buildSettings = $phpci->getConfig('build_settings');
+        $buildSettings = $this->phpci->getConfig('build_settings');
 
         if (isset($buildSettings['pgsql'])) {
             $sql = $buildSettings['pgsql'];

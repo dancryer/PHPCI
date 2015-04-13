@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Pdepend Plugin - Allows Pdepend report
@@ -45,18 +43,15 @@ class Pdepend extends AbstractPlugin
     protected $location;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
 
-        $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-
-        $title = $phpci->getBuildProjectTitle();
+        $title = $this->phpci->getBuildProjectTitle();
         $this->summary  = $title . '-summary.xml';
         $this->pyramid  = $title . '-pyramid.svg';
         $this->chart    = $title . '-chart.svg';

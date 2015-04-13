@@ -9,8 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 use PHPCI\Helper\Lang;
 
 /**
@@ -26,19 +24,15 @@ class CopyBuild extends AbstractPlugin
     protected $wipe;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        parent::__construct($phpci, $build);
-
-        $path               = $phpci->buildPath;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
-        $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
+        $this->wipe      = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
+        $this->ignore    = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
 
     /**

@@ -17,7 +17,7 @@ use PDO;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Pgsql extends AbstractPlugin
+class Pgsql extends AbstractInterpolatingPlugin
 {
     /**
      * @var array
@@ -69,7 +69,7 @@ class Pgsql extends AbstractPlugin
             $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
 
             foreach ($this->queries as $query) {
-                $pdo->query($this->phpci->interpolate($query));
+                $pdo->query($this->interpolator->interpolate($query));
             }
         } catch (\Exception $ex) {
             $this->logger->logFailure($ex->getMessage());

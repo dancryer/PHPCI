@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Irc extends AbstractPlugin
+class Irc extends AbstractInterpolatingPlugin
 {
     protected $message;
     protected $server;
@@ -53,7 +53,7 @@ class Irc extends AbstractPlugin
      */
     public function execute()
     {
-        $msg = $this->phpci->interpolate($this->message);
+        $msg = $this->interpolator->interpolate($this->message);
 
         if (empty($this->server) || empty($this->room) || empty($this->nick)) {
             $this->phpci->logFailure(Lang::get('irc_settings'));

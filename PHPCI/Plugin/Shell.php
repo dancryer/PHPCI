@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Shell extends AbstractPlugin
+class Shell extends AbstractInterpolatingPlugin
 {
     protected $args;
 
@@ -64,7 +64,7 @@ class Shell extends AbstractPlugin
         $success = true;
 
         foreach ($this->commands as $command) {
-            $command = $this->phpci->interpolate($command);
+            $command = $this->interpolator->interpolate($command);
 
             if (!$this->phpci->executeCommand($command)) {
                 $success = false;

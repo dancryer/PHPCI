@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Git extends AbstractPlugin
+class Git extends AbstractInterpolatingPlugin
 {
     protected $actions = array();
 
@@ -112,11 +112,11 @@ class Git extends AbstractPlugin
         $message = Lang::get('tag_created', date('Y-m-d H:i:s'));
 
         if (array_key_exists('name', $options)) {
-            $tagName = $this->phpci->interpolate($options['name']);
+            $tagName = $this->interpolator->interpolate($options['name']);
         }
 
         if (array_key_exists('message', $options)) {
-            $message = $this->phpci->interpolate($options['message']);
+            $message = $this->interpolator->interpolate($options['message']);
         }
 
         $cmd = 'git tag %s -m "%s"';
@@ -134,11 +134,11 @@ class Git extends AbstractPlugin
         $remote = 'origin';
 
         if (array_key_exists('branch', $options)) {
-            $branch = $this->phpci->interpolate($options['branch']);
+            $branch = $this->interpolator->interpolate($options['branch']);
         }
 
         if (array_key_exists('remote', $options)) {
-            $remote = $this->phpci->interpolate($options['remote']);
+            $remote = $this->interpolator->interpolate($options['remote']);
         }
 
         return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
@@ -155,11 +155,11 @@ class Git extends AbstractPlugin
         $remote = 'origin';
 
         if (array_key_exists('branch', $options)) {
-            $branch = $this->phpci->interpolate($options['branch']);
+            $branch = $this->interpolator->interpolate($options['branch']);
         }
 
         if (array_key_exists('remote', $options)) {
-            $remote = $this->phpci->interpolate($options['remote']);
+            $remote = $this->interpolator->interpolate($options['remote']);
         }
 
         return $this->phpci->executeCommand('git push %s %s', $remote, $branch);

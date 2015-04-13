@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TapParser;
+use PHPCI\Helper\BuildInterpolator;
 
 /**
 * PHP Unit Plugin - Allows PHP Unit testing.
@@ -20,7 +21,7 @@ use PHPCI\Plugin\Util\TapParser;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $args;
 
@@ -113,7 +114,7 @@ class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['args'])) {
-            $this->args = $this->phpci->interpolate($options['args']);
+            $this->args = $this->interpolator->interpolate($options['args']);
         }
 
         if (isset($options['path'])) {

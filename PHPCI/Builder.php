@@ -393,6 +393,14 @@ class Builder implements LoggerAwareInterface
 
         $pluginFactory->registerResource(
             function () use ($self) {
+                return $self->interpolator;
+            },
+            'interpolator',
+            'PHPCI\Helper\BuildInterpolator'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
                 $factory = new MailerFactory($self->getSystemConfig('phpci'));
                 return $factory->getSwiftMailerFromConfig();
             },

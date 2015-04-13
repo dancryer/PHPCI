@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class HipchatNotify extends AbstractPlugin
+class HipchatNotify extends AbstractInterpolatingPlugin
 {
     protected $authToken;
     protected $color;
@@ -66,7 +66,7 @@ class HipchatNotify extends AbstractPlugin
     public function execute()
     {
         $hipChat = new \HipChat\HipChat($this->authToken);
-        $message = $this->phpci->interpolate($this->message);
+        $message = $this->interpolator->interpolate($this->message);
 
         $result = true;
         if (is_array($this->room)) {

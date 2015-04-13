@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Env extends AbstractPlugin
+class Env extends AbstractInterpolatingPlugin
 {
     protected $env_vars;
 
@@ -46,9 +46,8 @@ class Env extends AbstractPlugin
                 $env_var = "$key=$value";
             }
 
-            if (!putenv($this->phpci->interpolate($env_var))) {
-                $success = false;
-                $this->phpci->logFailure(Lang::get('unable_to_set_env'));
+            if (!putenv($this->interpolator->interpolate($env_var))) {
+                throw new RuntimeException(Lang::get('unable_to_set_env'));
             }
         }
         return $success;

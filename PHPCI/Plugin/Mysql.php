@@ -19,7 +19,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Mysql extends AbstractPlugin
+class Mysql extends AbstractInterpolatingPlugin
 {
     /**
      * @var array
@@ -63,11 +63,11 @@ class Mysql extends AbstractPlugin
         }
 
         if (!empty($buildSettings['mysql']['host'])) {
-            $this->host = $this->phpci->interpolate($buildSettings['mysql']['host']);
+            $this->host = $this->interpolator->interpolate($buildSettings['mysql']['host']);
         }
 
         if (!empty($buildSettings['mysql']['user'])) {
-            $this->user = $this->phpci->interpolate($buildSettings['mysql']['user']);
+            $this->user = $this->interpolator->interpolate($buildSettings['mysql']['user']);
         }
 
         if (array_key_exists('pass', $buildSettings['mysql'])) {
@@ -88,7 +88,7 @@ class Mysql extends AbstractPlugin
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
                     // Simple query
-                    $pdo->query($this->phpci->interpolate($query));
+                    $pdo->query($this->interpolator->interpolate($query));
                 } elseif (isset($query['import'])) {
                     // SQL file execution
                     $this->executeFile($query['import']);
@@ -114,12 +114,12 @@ class Mysql extends AbstractPlugin
             throw new \Exception(Lang::get('import_file_key'));
         }
 
-        $import_file = $this->buildPath . $this->phpci->interpolate($query['file']);
+        $import_file = $this->buildPath . $this->interpolator->interpolate($query['file']);
         if (!is_readable($import_file)) {
             throw new \Exception(Lang::get('cannot_open_import', $import_file));
         }
 
-        $database = isset($query['database']) ? $this->phpci->interpolate($query['database']) : null;
+        $database = isset($query['database']) ? $this->interpolator->interpolate($query['database']) : null;
 
         $import_command = $this->getImportCommand($import_file, $database);
         if (!$this->phpci->executeCommand($import_command)) {

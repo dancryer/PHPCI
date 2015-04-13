@@ -8,14 +8,13 @@
 
 namespace PHPCI\Plugin;
 
-
 /**
  * Slack Plugin
  * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class SlackNotify extends AbstractPlugin
+class SlackNotify extends AbstractInterpolatingPlugin
 {
     private $webHook;
     private $room;
@@ -67,7 +66,7 @@ class SlackNotify extends AbstractPlugin
      */
     public function execute()
     {
-        $message = $this->phpci->interpolate($this->message);
+        $message = $this->interpolator->interpolate($this->message);
 
         $successfulBuild = $this->build->isSuccessful();
 

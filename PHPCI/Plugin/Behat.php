@@ -52,9 +52,7 @@ class Behat extends AbstractPlugin
         $behat = $this->executable;
 
         if (!$behat) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'behat'));
-
-            return false;
+            throw new \RuntimeException(Lang::get('could_not_find', 'behat'));
         }
 
         $success = $this->phpci->executeCommand($behat . ' %s', $this->features);

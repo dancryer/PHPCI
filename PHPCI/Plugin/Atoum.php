@@ -15,7 +15,7 @@ use PHPCI\Helper\Lang;
  * Atoum plugin, runs Atoum tests within a project.
  * @package PHPCI\Plugin
  */
-class Atoum extends AbstractPlugin
+class Atoum extends AbstractExecutingPlugin
 {
     private $args;
     private $config;
@@ -31,7 +31,7 @@ class Atoum extends AbstractPlugin
         if (isset($options['executable'])) {
             $this->executable = $this->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('atoum');
+            $this->executable = $this->executor->findBinary('atoum');
         }
 
         if (isset($options['args'])) {

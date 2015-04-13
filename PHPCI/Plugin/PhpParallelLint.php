@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint extends AbstractPlugin
+class PhpParallelLint extends AbstractExecutingPlugin
 {
     /**
      * @var string
@@ -55,16 +55,16 @@ class PhpParallelLint extends AbstractPlugin
     {
         list($ignore) = $this->getFlags();
 
-        $phplint = $this->phpci->findBinary('parallel-lint');
+        $phplint = $this->executor->findBinary('parallel-lint');
 
         $cmd = $phplint . ' %s "%s"';
-        $success = $this->phpci->executeCommand(
+        $success = $this->executor->executeCommand(
             $cmd,
             $ignore,
             $this->directory
         );
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         $matches = array();
         if (preg_match_all('/Parse error\:/', $output, $matches)) {

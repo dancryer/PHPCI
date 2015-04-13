@@ -14,6 +14,8 @@ interface CommandExecutor
     /**
      * Executes shell commands. Accepts multiple arguments the first
      * is the template and everything else is inserted in. c.f. sprintf
+     * @param string $arg1
+     * @param string ...
      * @return bool Indicates success
      */
     public function executeCommand();

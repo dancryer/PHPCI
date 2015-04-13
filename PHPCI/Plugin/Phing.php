@@ -19,7 +19,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Phing extends AbstractPlugin
+class Phing extends AbstractExecutingPlugin
 {
 
     private $directory;
@@ -74,7 +74,7 @@ class Phing extends AbstractPlugin
      */
     public function execute()
     {
-        $phingExecutable = $this->phpci->findBinary('phing');
+        $phingExecutable = $this->executor->findBinary('phing');
 
         $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFilePath();
 
@@ -88,7 +88,7 @@ class Phing extends AbstractPlugin
         $cmd[] = $this->targetsToString();
         $cmd[] = '2>&1';
 
-        return $this->phpci->executeCommand(implode(' ', $cmd), $this->directory, $this->targets);
+        return $this->executor->executeCommand(implode(' ', $cmd), $this->directory, $this->targets);
     }
 
     /**

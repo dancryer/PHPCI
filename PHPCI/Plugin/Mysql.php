@@ -122,7 +122,7 @@ class Mysql extends AbstractInterpolatingPlugin
         $database = isset($query['database']) ? $this->interpolator->interpolate($query['database']) : null;
 
         $import_command = $this->getImportCommand($import_file, $database);
-        if (!$this->phpci->executeCommand($import_command)) {
+        if (!$this->executor->executeCommand($import_command)) {
             throw new \Exception(Lang::get('unable_to_execute'));
         }
 

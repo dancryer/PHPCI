@@ -15,7 +15,7 @@ namespace PHPCI\Plugin;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Wipe extends AbstractPlugin
+class Wipe extends AbstractExecutingPlugin
 {
     protected $directory;
 

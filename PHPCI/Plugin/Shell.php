@@ -66,7 +66,7 @@ class Shell extends AbstractInterpolatingPlugin
         foreach ($this->commands as $command) {
             $command = $this->interpolator->interpolate($command);
 
-            if (!$this->phpci->executeCommand($command)) {
+            if (!$this->executor->executeCommand($command)) {
                 $success = false;
             }
         }

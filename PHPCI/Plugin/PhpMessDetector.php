@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     /**
      * @var array
@@ -100,11 +100,11 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $phpmdBinaryPath = $this->phpci->findBinary('phpmd');
+        $phpmdBinaryPath = $this->executor->findBinary('phpmd');
 
         $this->executePhpMd($phpmdBinaryPath);
 
-        list($errorCount, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
+        list($errorCount, $data) = $this->processReport(trim($this->executor->getLastOutput()));
         $this->build->storeMeta('phpmd-warnings', $errorCount);
         $this->build->storeMeta('phpmd-data', $data);
 
@@ -206,10 +206,10 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         }
 
         // Disable exec output logging, as we don't want the XML report in the log:
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run PHPMD:
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $path,
             implode(',', $this->rules),
@@ -218,7 +218,7 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         );
 
         // Re-enable exec output logging:
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
     }
 
     /**

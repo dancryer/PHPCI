@@ -17,7 +17,7 @@ use PHPCI;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint extends AbstractPlugin
+class Lint extends AbstractExecutingPlugin
 {
     protected $directories;
     protected $recursive = true;
@@ -51,10 +51,10 @@ class Lint extends AbstractPlugin
      */
     public function execute()
     {
-        $this->phpci->quiet = true;
+        $this->executor->setQuiet(true);
         $success = true;
 
-        $php = $this->phpci->findBinary('php');
+        $php = $this->executor->findBinary('php');
 
         foreach ($this->directories as $dir) {
             if (!$this->lintDirectory($php, $dir)) {
@@ -62,7 +62,7 @@ class Lint extends AbstractPlugin
             }
         }
 
-        $this->phpci->quiet = false;
+        $this->executor->setQuiet(false);
 
         return $success;
     }
@@ -127,7 +127,7 @@ class Lint extends AbstractPlugin
     {
         $success = true;
 
-        if (!$this->phpci->executeCommand($php . ' -l "%s"', $this->phpci->buildPath . $path)) {
+        if (!$this->executor->executeCommand($php . ' -l "%s"', $this->buildPath . $path)) {
             $this->logger->logFailure($path);
             $success = false;
         }

@@ -27,7 +27,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
     /**
      * @var bool
      */
-    protected $quiet;
+    protected $quiet = false;
 
     /**
      * @var bool
@@ -36,8 +36,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
     protected $lastOutput;
     protected $lastError;
-
-    public $logExecOutput = true;
 
     /**
      * The path which findBinary will look in.
@@ -57,10 +55,9 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param bool        $quiet
      * @param bool        $verbose
      */
-    public function __construct(BuildLogger $logger, $rootDir, &$quiet = false, &$verbose = false)
+    public function __construct(BuildLogger $logger, $rootDir, &$verbose = false)
     {
         $this->logger = $logger;
-        $this->quiet = $quiet;
         $this->verbose = $verbose;
         $this->lastOutput = array();
         $this->rootDir = $rootDir;
@@ -68,13 +65,15 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
     /**
      * Executes shell commands.
-     * @param array $args
+     * @param string $arg1
+     * @param string ...
      * @return bool Indicates success
      */
-    public function executeCommand($args = array())
+    public function executeCommand()
     {
         $this->lastOutput = array();
 
+        $args = func_get_args();
         $command = call_user_func_array('sprintf', $args);
 
         if ($this->quiet) {
@@ -106,7 +105,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));
 
-        $shouldOutput = ($this->logExecOutput && ($this->verbose || $status != 0));
+        $shouldOutput = !$this->quiet && ($this->verbose || $status != 0);
 
         if ($shouldOutput && !empty($this->lastOutput)) {
             $this->logger->log($this->lastOutput);

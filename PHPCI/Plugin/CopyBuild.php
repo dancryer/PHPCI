@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CopyBuild extends AbstractPlugin
+class CopyBuild extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $ignore;
@@ -53,7 +53,7 @@ class CopyBuild extends AbstractPlugin
             $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
         }
 
-        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
+        $success = $this->executor->executeCommand($cmd, $this->directory, $build, $this->directory);
 
         $this->deleteIgnoredFiles();
 
@@ -68,7 +68,7 @@ class CopyBuild extends AbstractPlugin
     {
         if ($this->wipe === true && $this->directory != '/' && is_dir($this->directory)) {
             $cmd = 'rm -Rf "%s*"';
-            $success = $this->phpci->executeCommand($cmd, $this->directory);
+            $success = $this->executor->executeCommand($cmd, $this->directory);
 
             if (!$success) {
                 throw new \Exception(Lang::get('failed_to_wipe', $this->directory));
@@ -87,7 +87,7 @@ class CopyBuild extends AbstractPlugin
                 if (IS_WIN) {
                     $cmd = 'rmdir /S /Q "%s\%s"';
                 }
-                $this->phpci->executeCommand($cmd, $this->directory, $file);
+                $this->executor->executeCommand($cmd, $this->directory, $file);
             }
         }
     }

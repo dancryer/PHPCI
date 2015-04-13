@@ -20,7 +20,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class Composer extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $directory;
     protected $action;
@@ -74,7 +74,7 @@ class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
-        $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
+        $composerLocation = $this->executor->findBinary(array('composer', 'composer.phar'));
 
         $cmd = '';
 
@@ -94,6 +94,6 @@ class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 
         $cmd .= ' --working-dir="%s" %s';
 
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->action);
     }
 }

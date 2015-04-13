@@ -15,7 +15,7 @@ namespace PHPCI\Plugin;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Xmpp extends AbstractPlugin
+class Xmpp extends AbstractExecutingPlugin
 {
     protected $directory;
 
@@ -129,7 +129,7 @@ class Xmpp extends AbstractPlugin
     */
     public function execute()
     {
-        $sendxmpp = $this->phpci->findBinary('sendxmpp');
+        $sendxmpp = $this->executor->findBinary('sendxmpp');
 
         /*
          * Without recipients we can't send notification
@@ -166,14 +166,14 @@ class Xmpp extends AbstractPlugin
         $cmd = $sendxmpp . "%s -f %s -m %s %s";
         $recipients = implode(' ', $this->recipients);
 
-        $success = $this->phpci->executeCommand($cmd, $tls, $config_file, $message_file, $recipients);
+        $success = $this->executor->executeCommand($cmd, $tls, $config_file, $message_file, $recipients);
 
-        print $this->phpci->getLastOutput();
+        print $this->executor->getLastOutput();
 
         /*
          * Remove temp message file
          */
-        $this->phpci->executeCommand("rm -rf ".$message_file);
+        $this->executor->executeCommand("rm -rf ".$message_file);
 
         return $success;
     }

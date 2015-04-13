@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCpd extends AbstractPlugin
+class PhpCpd extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $args;
@@ -80,14 +80,14 @@ class PhpCpd extends AbstractPlugin
             $ignore = implode('', $ignore);
         }
 
-        $phpcpd = $this->phpci->findBinary('phpcpd');
+        $phpcpd = $this->executor->findBinary('phpcpd');
 
         $tmpfilename = tempnam('/tmp', 'phpcpd');
 
         $cmd = $phpcpd . ' --log-pmd "%s" %s "%s"';
-        $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
+        $success = $this->executor->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
-        print $this->phpci->getLastOutput();
+        print $this->executor->getLastOutput();
 
         list($errorCount, $data) = $this->processReport(file_get_contents($tmpfilename));
         $this->build->storeMeta('phpcpd-warnings', $errorCount);

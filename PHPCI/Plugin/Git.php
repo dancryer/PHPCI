@@ -97,7 +97,7 @@ class Git extends AbstractInterpolatingPlugin
         if (array_key_exists('branch', $options)) {
             $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
             $path = $this->buildPath;
-            return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
+            return $this->executor->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
         }
     }
 
@@ -120,7 +120,7 @@ class Git extends AbstractInterpolatingPlugin
         }
 
         $cmd = 'git tag %s -m "%s"';
-        return $this->phpci->executeCommand($cmd, $tagName, $message);
+        return $this->executor->executeCommand($cmd, $tagName, $message);
     }
 
     /**
@@ -141,7 +141,7 @@ class Git extends AbstractInterpolatingPlugin
             $remote = $this->interpolator->interpolate($options['remote']);
         }
 
-        return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
+        return $this->executor->executeCommand('git pull %s %s', $remote, $branch);
     }
 
     /**
@@ -162,6 +162,6 @@ class Git extends AbstractInterpolatingPlugin
             $remote = $this->interpolator->interpolate($options['remote']);
         }
 
-        return $this->phpci->executeCommand('git push %s %s', $remote, $branch);
+        return $this->executor->executeCommand('git push %s %s', $remote, $branch);
     }
 }

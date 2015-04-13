@@ -138,7 +138,7 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
 
         $success = true;
 
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
@@ -150,7 +150,7 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
             $success &= $this->runDir($this->directory);
         }
 
-        $tapString = $this->phpci->getLastOutput();
+        $tapString = $this->executor->getLastOutput();
         $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
 
         try {
@@ -166,7 +166,7 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
         $this->build->storeMeta('phpunit-errors', $failures);
         $this->build->storeMeta('phpunit-data', $output);
 
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         return $success;
     }
@@ -186,10 +186,10 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
                 chdir($this->buildPath.'/'.$this->runFrom);
             }
 
-            $phpunit = $this->phpci->findBinary('phpunit');
+            $phpunit = $this->executor->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->buildPath . $configPath);
+            $success = $this->executor->executeCommand($cmd, $this->args, $this->buildPath . $configPath);
 
             if ($this->runFrom) {
                 chdir($curdir);
@@ -212,10 +212,10 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
             $curdir = getcwd();
             chdir($this->buildPath);
 
-            $phpunit = $this->phpci->findBinary('phpunit');
+            $phpunit = $this->executor->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->buildPath . $directory);
+            $success = $this->executor->executeCommand($cmd, $this->args, $this->buildPath . $directory);
             chdir($curdir);
             return $success;
         }

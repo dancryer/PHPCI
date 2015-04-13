@@ -15,7 +15,7 @@ namespace PHPCI\Plugin;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Gulp extends AbstractPlugin
+class Gulp extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $task;
@@ -32,7 +32,7 @@ class Gulp extends AbstractPlugin
     {
         $this->directory = $this->buildPath;
         $this->task = null;
-        $this->gulp = $this->phpci->findBinary('gulp');
+        $this->gulp = $this->executor->findBinary('gulp');
         $this->gulpfile = 'gulpfile.js';
 
         // Handle options:
@@ -63,7 +63,7 @@ class Gulp extends AbstractPlugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (!$this->executor->executeCommand($cmd, $this->directory)) {
             return false;
         }
 
@@ -77,6 +77,6 @@ class Gulp extends AbstractPlugin
         $cmd .= ' %s'; // the task that will be executed
 
         // and execute it
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->gulpfile, $this->task);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->gulpfile, $this->task);
     }
 }

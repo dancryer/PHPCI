@@ -78,11 +78,6 @@ class Builder implements LoggerAwareInterface
     protected $store;
 
     /**
-     * @var bool
-     */
-    public $quiet = false;
-
-    /**
      * @var \PHPCI\Plugin\Util\Executor
      */
     protected $pluginExecutor;
@@ -121,7 +116,6 @@ class Builder implements LoggerAwareInterface
         $this->commandExecutor = new $executorClass(
             $this->buildLogger,
             PHPCI_DIR,
-            $this->quiet,
             $this->verbose
         );
 
@@ -237,7 +231,8 @@ class Builder implements LoggerAwareInterface
      */
     public function executeCommand()
     {
-        return $this->commandExecutor->executeCommand(func_get_args());
+        $args = func_get_args();
+        return call_user_func_array(array($this->commandExecutor, 'executeCommand'), $args);
     }
 
     /**
@@ -254,7 +249,7 @@ class Builder implements LoggerAwareInterface
      */
     public function logExecOutput($enableLog = true)
     {
-        $this->commandExecutor->logExecOutput = $enableLog;
+        $this->commandExecutor->setQuiet(!$enableLog);
     }
 
     /**
@@ -397,6 +392,14 @@ class Builder implements LoggerAwareInterface
             },
             'interpolator',
             'PHPCI\Helper\BuildInterpolator'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                return $self->commandExecutor;
+            },
+            'executor',
+            'PHPCI\Helper\CommandExecutor'
         );
 
         $pluginFactory->registerResource(

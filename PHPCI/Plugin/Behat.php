@@ -33,7 +33,7 @@ class Behat extends AbstractPlugin
         if (isset($options['executable'])) {
             $this->executable = $options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('behat');
+            $this->executable = $this->executor->findBinary('behat');
         }
 
         if (!empty($options['features'])) {
@@ -55,7 +55,7 @@ class Behat extends AbstractPlugin
             throw new \RuntimeException(Lang::get('could_not_find', 'behat'));
         }
 
-        $success = $this->phpci->executeCommand($behat . ' %s', $this->features);
+        $success = $this->executor->executeCommand($behat . ' %s', $this->features);
         chdir($curdir);
 
         list($errorCount, $data) = $this->parseBehatOutput();
@@ -73,7 +73,7 @@ class Behat extends AbstractPlugin
      */
     public function parseBehatOutput()
     {
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         $parts = explode('---', $output);
 

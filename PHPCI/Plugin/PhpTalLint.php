@@ -17,7 +17,7 @@ use PHPCI;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpTalLint extends AbstractPlugin
+class PhpTalLint extends AbstractExecutingPlugin
 {
     protected $directories;
     protected $recursive = true;
@@ -78,15 +78,13 @@ class PhpTalLint extends AbstractPlugin
      */
     public function execute()
     {
-        $this->phpci->quiet = true;
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         foreach ($this->directories as $dir) {
             $this->lintDirectory($dir);
         }
 
-        $this->phpci->quiet = false;
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         $errors = 0;
         $warnings = 0;
@@ -180,9 +178,9 @@ class PhpTalLint extends AbstractPlugin
         $lint = dirname(__FILE__) . '/../../vendor/phptal/phptal/tools/phptal_lint.php';
         $cmd = '/usr/bin/env php ' . $lint . ' %s %s "%s"';
 
-        $this->phpci->executeCommand($cmd, $suffixes, $tales, $this->buildPath . $path);
+        $this->executor->executeCommand($cmd, $suffixes, $tales, $this->buildPath . $path);
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         if (preg_match('/Found (.+?) (error|warning)/i', $output, $matches)) {
             $rows = explode(PHP_EOL, $output);

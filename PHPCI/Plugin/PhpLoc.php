@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class PhpLoc extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     /**
      * Check if this plugin can be executed.
@@ -66,10 +66,10 @@ class PhpLoc extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $ignore = implode('', $ignore);
         }
 
-        $phploc = $this->phpci->findBinary('phploc');
+        $phploc = $this->executor->findBinary('phploc');
 
-        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
-        $output = $this->phpci->getLastOutput();
+        $success = $this->executor->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
+        $output = $this->executor->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
             $data = array();

@@ -15,7 +15,7 @@ namespace PHPCI\Plugin;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Grunt extends AbstractPlugin
+class Grunt extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $task;
@@ -32,7 +32,7 @@ class Grunt extends AbstractPlugin
     {
         $this->directory = $this->buildPath;
         $this->task = null;
-        $this->grunt = $this->phpci->findBinary('grunt');
+        $this->grunt = $this->executor->findBinary('grunt');
         $this->gruntfile = 'Gruntfile.js';
 
         // Handle options:
@@ -63,7 +63,7 @@ class Grunt extends AbstractPlugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (!$this->executor->executeCommand($cmd, $this->directory)) {
             return false;
         }
 
@@ -77,6 +77,6 @@ class Grunt extends AbstractPlugin
         $cmd .= ' %s'; // the task that will be executed
 
         // and execute it
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->gruntfile, $this->task);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->gruntfile, $this->task);
     }
 }

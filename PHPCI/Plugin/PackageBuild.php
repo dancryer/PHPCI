@@ -15,7 +15,7 @@ namespace PHPCI\Plugin;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PackageBuild extends AbstractPlugin
+class PackageBuild extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $filename;
@@ -71,7 +71,7 @@ class PackageBuild extends AbstractPlugin
                     break;
             }
 
-            $success = $this->phpci->executeCommand($cmd, $this->directory, $filename);
+            $success = $this->executor->executeCommand($cmd, $this->directory, $filename);
         }
 
         chdir($curdir);

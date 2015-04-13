@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class PhpDocblockChecker extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     /**
      * @var string Based on the assumption the root may not hold the code to be
@@ -89,7 +89,7 @@ class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugi
     public function execute()
     {
         // Check that the binary exists:
-        $checker = $this->phpci->findBinary('phpdoccheck');
+        $checker = $this->executor->findBinary('phpdoccheck');
 
         // Build ignore string:
         $ignore = '';
@@ -112,10 +112,10 @@ class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugi
         $cmd = $checker . ' --json --directory="%s"%s%s';
 
         // Disable exec output logging, as we don't want the XML report in the log:
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run checker:
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $path,
             $ignore,
@@ -123,9 +123,9 @@ class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugi
         );
 
         // Re-enable exec output logging:
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
-        $output = json_decode($this->phpci->getLastOutput(), true);
+        $output = json_decode($this->executor->getLastOutput(), true);
         $errors = count($output);
         $success = true;
 

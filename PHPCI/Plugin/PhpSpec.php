@@ -17,7 +17,7 @@ use PHPCI;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec extends AbstractPlugin
+class PhpSpec extends AbstractExecutingPlugin
 {
     /**
      * @var array
@@ -42,10 +42,10 @@ class PhpSpec extends AbstractPlugin
         $curdir = getcwd();
         chdir($this->buildPath);
 
-        $phpspec = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
+        $phpspec = $this->executor->findBinary(array('phpspec', 'phpspec.php'));
 
-        $success = $this->phpci->executeCommand($phpspec . ' --format=junit --no-code-generation run');
-        $output = $this->phpci->getLastOutput();
+        $success = $this->executor->executeCommand($phpspec . ' --format=junit --no-code-generation run');
+        $output = $this->executor->getLastOutput();
 
         chdir($curdir);
 

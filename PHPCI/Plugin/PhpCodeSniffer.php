@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
+class PhpCodeSniffer extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     /**
      * @var array
@@ -131,12 +131,12 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     {
         list($ignore, $standard, $suffixes) = $this->getFlags();
 
-        $phpcs = $this->phpci->findBinary('phpcs');
+        $phpcs = $this->executor->findBinary('phpcs');
 
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         $cmd = $phpcs . ' --report=json %s %s %s %s %s "%s"';
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $standard,
             $suffixes,
@@ -146,10 +146,10 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $this->buildPath . $this->path
         );
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
         list($errors, $warnings, $data) = $this->processReport($output);
 
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         $success = true;
         $this->build->storeMeta('phpcs-warnings', $warnings);

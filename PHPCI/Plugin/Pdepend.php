@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Pdepend extends AbstractPlugin
+class Pdepend extends AbstractExecutingPlugin
 {
     protected $args;
     /**
@@ -67,7 +67,7 @@ class Pdepend extends AbstractPlugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $pdepend = $this->phpci->findBinary('pdepend');
+        $pdepend = $this->executor->findBinary('pdepend');
 
         $cmd = $pdepend . ' --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
 
@@ -80,7 +80,7 @@ class Pdepend extends AbstractPlugin
             $ignore = '';
         }
 
-        $success = $this->phpci->executeCommand(
+        $success = $this->executor->executeCommand(
             $cmd,
             $this->location . DIRECTORY_SEPARATOR . $this->summary,
             $this->location . DIRECTORY_SEPARATOR . $this->chart,

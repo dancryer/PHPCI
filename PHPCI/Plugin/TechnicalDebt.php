@@ -113,7 +113,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     public function execute()
     {
         $success = true;
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         list($errorCount, $data) = $this->getErrorList();
 
@@ -125,6 +125,8 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         if ($this->allowed_errors != -1 && $errorCount > $this->allowed_errors) {
             $success = false;
         }
+
+        $this->executor->setQuiet(false);
 
         return $success;
     }

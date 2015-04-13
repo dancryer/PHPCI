@@ -17,7 +17,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCsFixer extends AbstractPlugin
+class PhpCsFixer extends AbstractExecutingPlugin
 {
     protected $workingDir = '';
     protected $level      = ' --level=all';
@@ -60,10 +60,10 @@ class PhpCsFixer extends AbstractPlugin
         $curdir = getcwd();
         chdir($this->workingdir);
 
-        $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
+        $phpcsfixer = $this->executor->findBinary('php-cs-fixer');
 
         $cmd = $phpcsfixer . ' fix . %s %s %s';
-        $success = $this->phpci->executeCommand($cmd, $this->verbose, $this->diff, $this->level);
+        $success = $this->executor->executeCommand($cmd, $this->verbose, $this->diff, $this->level);
 
         chdir($curdir);
 

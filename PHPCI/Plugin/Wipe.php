@@ -26,7 +26,7 @@ class Wipe extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->buildPath;
     }
 
     /**
@@ -34,7 +34,7 @@ class Wipe extends AbstractPlugin
     */
     public function execute()
     {
-        $build = $this->phpci->buildPath;
+        $build = $this->buildPath;
 
         if ($this->directory == $build || empty($this->directory)) {
             return true;

@@ -97,7 +97,7 @@ class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     protected function setOptions(array $options)
     {
         if (empty($options['config']) && empty($options['directory'])) {
-            $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
+            $this->xmlConfigFile = self::findConfigFile($this->buildPath);
         }
 
         if (isset($options['directory'])) {
@@ -182,13 +182,13 @@ class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
-                chdir($this->phpci->buildPath.'/'.$this->runFrom);
+                chdir($this->buildPath.'/'.$this->runFrom);
             }
 
             $phpunit = $this->phpci->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->buildPath . $configPath);
 
             if ($this->runFrom) {
                 chdir($curdir);
@@ -209,12 +209,12 @@ class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             return $this->recurseArg($directory, array($this, "runDir"));
         } else {
             $curdir = getcwd();
-            chdir($this->phpci->buildPath);
+            chdir($this->buildPath);
 
             $phpunit = $this->phpci->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
+            $success = $this->phpci->executeCommand($cmd, $this->args, $this->buildPath . $directory);
             chdir($curdir);
             return $success;
         }

@@ -154,7 +154,7 @@ class PhpTalLint extends AbstractPlugin
     protected function lintDirectory($path)
     {
         $success = true;
-        $directory = new \DirectoryIterator($this->phpci->buildPath . $path);
+        $directory = new \DirectoryIterator($this->buildPath . $path);
 
         foreach ($directory as $item) {
             if ($item->isDot()) {
@@ -189,7 +189,7 @@ class PhpTalLint extends AbstractPlugin
         $lint = dirname(__FILE__) . '/../../vendor/phptal/phptal/tools/phptal_lint.php';
         $cmd = '/usr/bin/env php ' . $lint . ' %s %s "%s"';
 
-        $this->phpci->executeCommand($cmd, $suffixes, $tales, $this->phpci->buildPath . $path);
+        $this->phpci->executeCommand($cmd, $suffixes, $tales, $this->buildPath . $path);
 
         $output = $this->phpci->getLastOutput();
 
@@ -234,7 +234,7 @@ class PhpTalLint extends AbstractPlugin
     {
         $tales = '';
         if (!empty($this->tales)) {
-            $tales = ' -i ' . $this->phpci->buildPath . $this->tales;
+            $tales = ' -i ' . $this->buildPath . $this->tales;
         }
 
         $suffixes = '';

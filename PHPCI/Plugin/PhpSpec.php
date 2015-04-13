@@ -40,7 +40,7 @@ class PhpSpec extends AbstractPlugin
     public function execute()
     {
         $curdir = getcwd();
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
 
         $phpspec = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
 

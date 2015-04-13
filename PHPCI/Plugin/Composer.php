@@ -51,7 +51,7 @@ class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
      */
     protected function setOptions(array $options)
     {
-        $path = $this->phpci->buildPath;
+        $path = $this->buildPath;
         $this->directory = $path;
         $this->action = 'install';
         $this->preferDist = false;

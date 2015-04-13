@@ -143,7 +143,7 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 
         foreach ($xml->file as $file) {
             $fileName = (string)$file['name'];
-            $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+            $fileName = str_replace($this->buildPath, '', $fileName);
 
             foreach ($file->violation as $violation) {
                 $warnings++;
@@ -178,7 +178,7 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 
         foreach ($this->rules as &$rule) {
             if (strpos($rule, '/') !== false) {
-                $rule = $this->phpci->buildPath . $rule;
+                $rule = $this->buildPath . $rule;
             }
         }
 
@@ -227,7 +227,7 @@ class PhpMessDetector extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
      */
     protected function getTargetPath()
     {
-        $path = $this->phpci->buildPath . $this->path;
+        $path = $this->buildPath . $this->path;
         if (!empty($this->path) && $this->path{0} == '/') {
             $path = $this->path;
             return $path;

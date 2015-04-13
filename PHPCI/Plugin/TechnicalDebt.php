@@ -84,7 +84,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     protected function setOptions(array $options)
     {
         $this->suffixes = array('php');
-        $this->directory = $this->phpci->buildPath;
+        $this->directory = $this->buildPath;
         $this->path = '';
         $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;

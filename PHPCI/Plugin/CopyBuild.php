@@ -30,7 +30,7 @@ class CopyBuild extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->buildPath;
         $this->wipe      = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore    = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
@@ -40,7 +40,7 @@ class CopyBuild extends AbstractPlugin
     */
     public function execute()
     {
-        $build = $this->phpci->buildPath;
+        $build = $this->buildPath;
 
         if ($this->directory == $build) {
             return false;

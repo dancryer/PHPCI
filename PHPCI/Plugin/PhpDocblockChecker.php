@@ -108,7 +108,7 @@ class PhpDocblockChecker extends AbstractPlugin implements PHPCI\ZeroConfigPlugi
         }
 
         // Build command string:
-        $path = $this->phpci->buildPath . $this->path;
+        $path = $this->buildPath . $this->path;
         $cmd = $checker . ' --json --directory="%s"%s%s';
 
         // Disable exec output logging, as we don't want the XML report in the log:

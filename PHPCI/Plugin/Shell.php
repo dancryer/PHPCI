@@ -35,7 +35,7 @@ class Shell extends AbstractPlugin
     {
         if (isset($options['command'])) {
             // Keeping this for backwards compatibility, new projects should use interpolation vars.
-            $options['command'] = str_replace("%buildpath%", $this->phpci->buildPath, $options['command']);
+            $options['command'] = str_replace("%buildpath%", $this->buildPath, $options['command']);
             $this->commands = array($options['command']);
             return;
         }

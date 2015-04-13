@@ -91,7 +91,7 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     protected function setOptions(array $options)
     {
         $this->suffixes = array('php');
-        $this->directory = $this->phpci->buildPath;
+        $this->directory = $this->buildPath;
         $this->standard = 'PSR2';
         $this->tab_width = '';
         $this->encoding = '';
@@ -143,7 +143,7 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
             $ignore,
             $this->tab_width,
             $this->encoding,
-            $this->phpci->buildPath . $this->path
+            $this->buildPath . $this->path
         );
 
         $output = $this->phpci->getLastOutput();
@@ -213,7 +213,7 @@ class PhpCodeSniffer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         $rtn = array();
 
         foreach ($data['files'] as $fileName => $file) {
-            $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+            $fileName = str_replace($this->buildPath, '', $fileName);
 
             foreach ($file['messages'] as $message) {
                 $this->build->reportError($this->phpci, $fileName, $message['line'], 'PHPCS: ' . $message['message']);

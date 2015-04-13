@@ -32,7 +32,7 @@ class PhpCsFixer extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->workingdir = $this->phpci->buildPath;
+        $this->workingdir = $this->buildPath;
 
         if (isset($options['verbose']) && $options['verbose']) {
             $this->verbose = ' --verbose';

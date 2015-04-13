@@ -42,6 +42,7 @@ abstract class AbstractPlugin implements Plugin
     {
         $this->phpci = $builder;
         $this->build = $build;
+        $this->buildPath = $builder->buildPath;
 
         $this->setOptions($options);
     }

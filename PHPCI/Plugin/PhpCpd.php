@@ -40,12 +40,12 @@ class PhpCpd extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->path = $phpci->buildPath;
+        $this->path = $buildPath;
         $this->standard = 'PSR1';
         $this->ignore = $phpci->ignore;
 
         if (!empty($options['path'])) {
-            $this->path = $phpci->buildPath . $options['path'];
+            $this->path = $buildPath . $options['path'];
         }
 
         if (!empty($options['standard'])) {
@@ -119,7 +119,7 @@ class PhpCpd extends AbstractPlugin
         foreach ($xml->duplication as $duplication) {
             foreach ($duplication->file as $file) {
                 $fileName = (string)$file['path'];
-                $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+                $fileName = str_replace($this->buildPath, '', $fileName);
 
                 $data[] = array(
                     'file' => $fileName,

@@ -29,7 +29,7 @@ class Atoum extends AbstractPlugin
     protected function setOptions(array $options)
     {
         if (isset($options['executable'])) {
-            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
+            $this->executable = $this->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
         } else {
             $this->executable = $this->phpci->findBinary('atoum');
         }
@@ -62,10 +62,10 @@ class Atoum extends AbstractPlugin
             $cmd .= " -c '{$this->config}'";
         }
         if ($this->directory !== null) {
-            $dirPath = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->directory;
+            $dirPath = $this->buildPath . DIRECTORY_SEPARATOR . $this->directory;
             $cmd .= " -d '{$dirPath}'";
         }
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
         $output = '';
         $status = true;
         exec($cmd, $output);

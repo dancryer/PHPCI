@@ -37,7 +37,7 @@ class Git extends AbstractPlugin
      */
     public function execute()
     {
-        $buildPath = $this->phpci->buildPath;
+        $buildPath = $this->buildPath;
 
         // Check if there are any actions to be run for the branch we're running on:
         if (!array_key_exists($this->build->getBranch(), $this->actions)) {
@@ -96,7 +96,7 @@ class Git extends AbstractPlugin
     {
         if (array_key_exists('branch', $options)) {
             $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
-            $path = $this->phpci->buildPath;
+            $path = $this->buildPath;
             return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
         }
     }

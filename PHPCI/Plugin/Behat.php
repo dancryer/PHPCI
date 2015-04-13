@@ -47,7 +47,7 @@ class Behat extends AbstractPlugin
     public function execute()
     {
         $curdir = getcwd();
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
 
         $behat = $this->executable;
 

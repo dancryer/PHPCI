@@ -42,9 +42,9 @@ class Phing extends AbstractPlugin
          * Set working directory
          */
         if (isset($options['directory'])) {
-            $directory = $phpci->buildPath . '/' . $options['directory'];
+            $directory = $buildPath . '/' . $options['directory'];
         } else {
-            $directory = $phpci->buildPath;
+            $directory = $buildPath;
         }
 
         $this->setDirectory($directory);

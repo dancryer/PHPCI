@@ -44,7 +44,7 @@ class PhpLoc extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory = $this->phpci->buildPath;
+        $this->directory = $this->buildPath;
 
         if (isset($options['directory'])) {
             $this->directory .= $options['directory'];

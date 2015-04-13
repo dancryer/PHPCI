@@ -45,13 +45,13 @@ class CleanBuild extends AbstractPlugin
         if (IS_WIN) {
             $cmd = 'rmdir /S /Q "%s"';
         }
-        $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.phar');
-        $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.lock');
+        $this->phpci->executeCommand($cmd, $this->buildPath . 'composer.phar');
+        $this->phpci->executeCommand($cmd, $this->buildPath . 'composer.lock');
 
         $success = true;
 
         foreach ($this->remove as $file) {
-            $ok = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $file);
+            $ok = $this->phpci->executeCommand($cmd, $this->buildPath . $file);
 
             if (!$ok) {
                 $success = false;

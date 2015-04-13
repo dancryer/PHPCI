@@ -49,13 +49,13 @@ class Pdepend extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->buildPath;
 
         $title = $this->phpci->getBuildProjectTitle();
         $this->summary  = $title . '-summary.xml';
         $this->pyramid  = $title . '-pyramid.svg';
         $this->chart    = $title . '-chart.svg';
-        $this->location = $this->phpci->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
+        $this->location = $this->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
     }
 
     /**

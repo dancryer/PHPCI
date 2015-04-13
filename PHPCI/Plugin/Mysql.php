@@ -114,7 +114,7 @@ class Mysql extends AbstractPlugin
             throw new \Exception(Lang::get('import_file_key'));
         }
 
-        $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
+        $import_file = $this->buildPath . $this->phpci->interpolate($query['file']);
         if (!is_readable($import_file)) {
             throw new \Exception(Lang::get('cannot_open_import', $import_file));
         }

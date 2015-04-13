@@ -96,7 +96,7 @@ class Lint extends AbstractPlugin
     protected function lintDirectory($php, $path)
     {
         $success = true;
-        $directory = new \DirectoryIterator($this->phpci->buildPath . $path);
+        $directory = new \DirectoryIterator($this->buildPath . $path);
 
         foreach ($directory as $item) {
             if ($item->isDot()) {

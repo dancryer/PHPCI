@@ -30,14 +30,14 @@ class Grunt extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory = $this->phpci->buildPath;
+        $this->directory = $this->buildPath;
         $this->task = null;
         $this->grunt = $this->phpci->findBinary('grunt');
         $this->gruntfile = 'Gruntfile.js';
 
         // Handle options:
         if (isset($options['directory'])) {
-            $this->directory = $this->phpci->buildPath . '/' . $options['directory'];
+            $this->directory = $this->buildPath . '/' . $options['directory'];
         }
 
         if (isset($options['task'])) {

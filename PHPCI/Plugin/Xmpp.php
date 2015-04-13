@@ -113,8 +113,8 @@ class Xmpp extends AbstractPlugin
      */
     public function findConfigFile()
     {
-        if (file_exists($this->phpci->buildPath . '/.sendxmpprc')) {
-            if (md5(file_get_contents($this->phpci->buildPath . '/.sendxmpprc')) !== md5($this->getConfigFormat())) {
+        if (file_exists($this->buildPath . '/.sendxmpprc')) {
+            if (md5(file_get_contents($this->buildPath . '/.sendxmpprc')) !== md5($this->getConfigFormat())) {
                 return null;
             }
 
@@ -141,7 +141,7 @@ class Xmpp extends AbstractPlugin
         /*
          * Try to build conf file
          */
-        $config_file = $this->phpci->buildPath . '/.sendxmpprc';
+        $config_file = $this->buildPath . '/.sendxmpprc';
         if (is_null($this->findConfigFile())) {
             file_put_contents($config_file, $this->getConfigFormat());
             chmod($config_file, 0600);
@@ -155,7 +155,7 @@ class Xmpp extends AbstractPlugin
             $tls = ' -t';
         }
 
-        $message_file = $this->phpci->buildPath . '/' . uniqid('xmppmessage');
+        $message_file = $this->buildPath . '/' . uniqid('xmppmessage');
         if ($this->buildMessage($message_file) === false) {
             return false;
         }

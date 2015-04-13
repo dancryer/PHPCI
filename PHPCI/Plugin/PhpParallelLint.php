@@ -36,11 +36,11 @@ class PhpParallelLint extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory    = $phpci->buildPath;
+        $this->directory    = $buildPath;
         $this->ignore       = $this->phpci->ignore;
 
         if (isset($options['directory'])) {
-            $this->directory = $phpci->buildPath.$options['directory'];
+            $this->directory = $buildPath.$options['directory'];
         }
 
         if (isset($options['ignore'])) {
@@ -82,7 +82,7 @@ class PhpParallelLint extends AbstractPlugin
     {
         $ignoreFlags = array();
         foreach ($this->ignore as $ignoreDir) {
-            $ignoreFlags[] = '--exclude "' . $this->phpci->buildPath . $ignoreDir . '"';
+            $ignoreFlags[] = '--exclude "' . $this->buildPath . $ignoreDir . '"';
         }
         $ignore = implode(' ', $ignoreFlags);
 

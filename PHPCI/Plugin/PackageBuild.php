@@ -28,7 +28,7 @@ class PackageBuild extends AbstractPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $this->phpci->buildPath;
+        $this->directory    = isset($options['directory']) ? $options['directory'] : $this->buildPath;
         $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
         $this->format       = isset($options['format']) ?  $options['format'] : 'zip';
     }
@@ -38,7 +38,7 @@ class PackageBuild extends AbstractPlugin
     */
     public function execute()
     {
-        $path = $this->phpci->buildPath;
+        $path = $this->buildPath;
         $build = $this->build;
 
         if ($this->directory == $path) {
@@ -54,7 +54,7 @@ class PackageBuild extends AbstractPlugin
         $filename = preg_replace('/([^a-zA-Z0-9_-]+)/', '', $filename);
 
         $curdir = getcwd();
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
 
         if (!is_array($this->format)) {
             $this->format = array($this->format);

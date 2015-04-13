@@ -10,20 +10,8 @@ use Phar as PHPPhar;
 /**
  * Phar Plugin
  */
-class Phar implements \PHPCI\Plugin
+class Phar extends AbstractPlugin
 {
-    /**
-     * PHPCI
-     * @var Builder
-     */
-    protected $phpci;
-
-    /**
-     * Build
-     * @var Build
-     */
-    protected $build;
-
     /**
      * Output Directory
      * @var string
@@ -62,9 +50,7 @@ class Phar implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        // Basic
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         // Directory?
         if (isset($options['directory'])) {

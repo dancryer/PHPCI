@@ -19,10 +19,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Behat implements \PHPCI\Plugin
+class Behat extends AbstractPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $features;
 
     /**
@@ -39,8 +37,8 @@ class Behat implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci    = $phpci;
-        $this->build    = $build;
+        parent::__construct($phpci, $build);
+
         $this->features = '';
 
         if (isset($options['executable'])) {

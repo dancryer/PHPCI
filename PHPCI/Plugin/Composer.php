@@ -20,13 +20,11 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Composer extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $directory;
     protected $action;
     protected $preferDist;
-    protected $phpci;
-    protected $build;
 
     /**
      * Check if this plugin can be executed.
@@ -54,9 +52,9 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
+        parent::__construct($phpci, $build);
+
         $path = $phpci->buildPath;
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->directory = $path;
         $this->action = 'install';
         $this->preferDist = false;

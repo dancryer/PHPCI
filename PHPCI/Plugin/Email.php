@@ -21,18 +21,8 @@ use PHPCI\Helper\Email as EmailHelper;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Email implements \PHPCI\Plugin
+class Email extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -50,8 +40,8 @@ class Email implements \PHPCI\Plugin
         Build $build,
         array $options = array()
     ) {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
+        parent::__construct($phpci, $build);
+
         $this->options      = $options;
     }
 

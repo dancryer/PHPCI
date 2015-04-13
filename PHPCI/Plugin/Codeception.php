@@ -23,16 +23,11 @@ use Psr\Log\LogLevel;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
+
+class Codeception extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
     /** @var string */
     protected $args = '';
-
-    /** @var Builder */
-    protected $phpci;
-
-    /** @var Build */
-    protected $build;
 
     /**
      * @var string $ymlConfigFile The path of a yml config for Codeception
@@ -85,8 +80,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
         $this->path = 'tests/';
 
         if (empty($options['config'])) {

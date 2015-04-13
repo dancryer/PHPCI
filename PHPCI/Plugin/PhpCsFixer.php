@@ -19,18 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCsFixer implements \PHPCI\Plugin
+class PhpCsFixer extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     protected $workingDir = '';
     protected $level      = ' --level=all';
     protected $verbose    = '';
@@ -51,8 +41,7 @@ class PhpCsFixer implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         $this->workingdir = $this->phpci->buildPath;
         $this->buildArgs($options);

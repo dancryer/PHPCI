@@ -17,7 +17,7 @@ use PHPCI\Model\Build;
  * Atoum plugin, runs Atoum tests within a project.
  * @package PHPCI\Plugin
  */
-class Atoum implements \PHPCI\Plugin
+class Atoum extends AbstractPlugin
 {
     private $args;
     private $config;
@@ -31,8 +31,7 @@ class Atoum implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         if (isset($options['executable'])) {
             $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
@@ -84,7 +83,7 @@ class Atoum implements \PHPCI\Plugin
             $status = false;
             $this->phpci->log(Lang::get('no_tests_performed'));
         }
-        
+
         return $status;
     }
 }

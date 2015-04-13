@@ -19,10 +19,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Irc implements \PHPCI\Plugin
+class Irc extends AbstractPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $message;
     protected $server;
     protected $port;
@@ -43,8 +41,8 @@ class Irc implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
+
         $this->message = $options['message'];
 
         $buildSettings = $phpci->getConfig('build_settings');

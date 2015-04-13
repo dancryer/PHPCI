@@ -18,11 +18,9 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Xmpp implements \PHPCI\Plugin
+class Xmpp extends AbstractPlugin
 {
     protected $directory;
-    protected $phpci;
-    protected $build;
 
     /**
      * @var string, username of sender account xmpp
@@ -67,8 +65,7 @@ class Xmpp implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         $this->username    = '';
         $this->password    = '';

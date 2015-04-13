@@ -19,10 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Env implements \PHPCI\Plugin
+class Env extends AbstractPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $env_vars;
 
     /**
@@ -33,8 +31,8 @@ class Env implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
+
         $this->env_vars = $options;
     }
 
@@ -52,7 +50,7 @@ class Env implements \PHPCI\Plugin
                 // This allows the standard syntax: "FOO: bar"
                 $env_var = "$key=$value";
             }
-            
+
             if (!putenv($this->phpci->interpolate($env_var))) {
                 $success = false;
                 $this->phpci->logFailure(Lang::get('unable_to_set_env'));

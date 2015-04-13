@@ -20,7 +20,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Campfire implements \PHPCI\Plugin
+class Campfire extends AbstractPlugin
 {
     private $url;
     private $authToken;
@@ -38,8 +38,7 @@ class Campfire implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         $this->message = $options['message'];
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";

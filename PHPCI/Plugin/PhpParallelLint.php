@@ -19,18 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint implements \PHPCI\Plugin
+class PhpParallelLint extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var string
      */
@@ -55,8 +45,8 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
+        parent::__construct($phpci, $build);
+
         $this->directory    = $phpci->buildPath;
         $this->ignore       = $this->phpci->ignore;
 

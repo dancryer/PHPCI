@@ -19,13 +19,11 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CopyBuild implements \PHPCI\Plugin
+class CopyBuild extends AbstractPlugin
 {
     protected $directory;
     protected $ignore;
     protected $wipe;
-    protected $phpci;
-    protected $build;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -35,9 +33,9 @@ class CopyBuild implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
+        parent::__construct($phpci, $build);
+
         $path               = $phpci->buildPath;
-        $this->phpci        = $phpci;
-        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;

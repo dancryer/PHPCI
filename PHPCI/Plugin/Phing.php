@@ -20,7 +20,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Phing implements \PHPCI\Plugin
+class Phing extends AbstractPlugin
 {
 
     private $directory;
@@ -40,8 +40,7 @@ class Phing implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->setPhpci($phpci);
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         /*
          * Set working directory
@@ -102,16 +101,6 @@ class Phing implements \PHPCI\Plugin
     public function getPhpci()
     {
         return $this->phpci;
-    }
-
-    /**
-     * @param \PHPCI\Builder $phpci
-     *
-     * @return $this
-     */
-    public function setPhpci($phpci)
-    {
-        $this->phpci = $phpci;
     }
 
     /**

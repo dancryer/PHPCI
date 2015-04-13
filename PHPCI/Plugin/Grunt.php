@@ -18,13 +18,11 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Grunt implements \PHPCI\Plugin
+class Grunt extends AbstractPlugin
 {
     protected $directory;
     protected $task;
     protected $preferDist;
-    protected $phpci;
-    protected $build;
     protected $grunt;
     protected $gruntfile;
 
@@ -42,9 +40,9 @@ class Grunt implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
+        parent::__construct($phpci, $build);
+
         $path = $phpci->buildPath;
-        $this->build = $build;
-        $this->phpci = $phpci;
         $this->directory = $path;
         $this->task = null;
         $this->grunt = $this->phpci->findBinary('grunt');

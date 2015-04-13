@@ -19,17 +19,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpLoc extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var string
-     */
-    protected $directory;
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
     /**
      * Check if this plugin can be executed.
      * @param $stage
@@ -54,8 +45,8 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci     = $phpci;
-        $this->build     = $build;
+        parent::__construct($phpci, $build);
+
         $this->directory = $phpci->buildPath;
 
         if (isset($options['directory'])) {

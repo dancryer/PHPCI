@@ -19,13 +19,11 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint implements PHPCI\Plugin
+class Lint extends AbstractPlugin
 {
     protected $directories;
     protected $recursive = true;
     protected $ignore;
-    protected $phpci;
-    protected $build;
 
     /**
      * Standard Constructor
@@ -41,8 +39,8 @@ class Lint implements PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
+
         $this->directories    = array('');
         $this->ignore = $phpci->ignore;
 

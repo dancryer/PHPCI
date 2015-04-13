@@ -18,18 +18,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Wipe implements \PHPCI\Plugin
+class Wipe extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     protected $directory;
 
     /**
@@ -40,9 +30,9 @@ class Wipe implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
+        parent::__construct($phpci, $build);
+
         $path               = $phpci->buildPath;
-        $this->phpci        = $phpci;
-        $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
     }
 

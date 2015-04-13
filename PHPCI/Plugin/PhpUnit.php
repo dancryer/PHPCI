@@ -20,11 +20,9 @@ use PHPCI\Plugin\Util\TapParser;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpUnit extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $args;
-    protected $phpci;
-    protected $build;
 
     /**
      * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
@@ -105,8 +103,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         if (empty($options['config']) && empty($options['directory'])) {
             $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);

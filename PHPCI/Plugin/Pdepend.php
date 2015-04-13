@@ -19,13 +19,9 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Pdepend implements \PHPCI\Plugin
+class Pdepend extends AbstractPlugin
 {
     protected $args;
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
     /**
      * @var string Directory which needs to be scanned
      */
@@ -56,8 +52,7 @@ class Pdepend implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
 

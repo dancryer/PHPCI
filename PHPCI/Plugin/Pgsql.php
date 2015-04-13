@@ -19,18 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Pgsql implements \PHPCI\Plugin
+class Pgsql extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -58,8 +48,8 @@ class Pgsql implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci   = $phpci;
-        $this->build   = $build;
+        parent::__construct($phpci, $build);
+
         $this->queries = $options;
 
         $buildSettings = $phpci->getConfig('build_settings');

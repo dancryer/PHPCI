@@ -20,13 +20,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
     /**
      * @var array
      */
@@ -88,8 +83,8 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
+
         $this->suffixes = array('php');
         $this->directory = $phpci->buildPath;
         $this->path = '';

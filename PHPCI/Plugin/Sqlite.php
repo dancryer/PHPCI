@@ -19,18 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Sqlite implements \PHPCI\Plugin
+class Sqlite extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -48,8 +38,8 @@ class Sqlite implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci   = $phpci;
-        $this->build   = $build;
+        parent::__construct($phpci, $build);
+
         $this->queries = $options;
         $buildSettings = $phpci->getConfig('build_settings');
 

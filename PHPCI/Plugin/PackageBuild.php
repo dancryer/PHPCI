@@ -18,12 +18,11 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PackageBuild implements \PHPCI\Plugin
+class PackageBuild extends AbstractPlugin
 {
     protected $directory;
     protected $filename;
     protected $format;
-    protected $phpci;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -33,9 +32,9 @@ class PackageBuild implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
+        parent::__construct($phpci, $build);
+
         $path               = $phpci->buildPath;
-        $this->build        = $build;
-        $this->phpci        = $phpci;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
         $this->format       = isset($options['format']) ?  $options['format'] : 'zip';

@@ -17,7 +17,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class SlackNotify implements \PHPCI\Plugin
+class SlackNotify extends AbstractPlugin
 {
     private $webHook;
     private $room;
@@ -34,8 +34,7 @@ class SlackNotify implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         if (is_array($options) && isset($options['webhook_url'])) {
             $this->webHook = trim($options['webhook_url']);

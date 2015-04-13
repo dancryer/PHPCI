@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class HipchatNotify implements \PHPCI\Plugin
+class HipchatNotify extends AbstractPlugin
 {
     protected $authToken;
     protected $color;
@@ -34,8 +34,7 @@ class HipchatNotify implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
 
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
         $this->cookie = "phpcicookie";

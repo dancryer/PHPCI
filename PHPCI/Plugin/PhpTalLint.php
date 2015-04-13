@@ -19,22 +19,12 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpTalLint implements PHPCI\Plugin
+class PhpTalLint extends AbstractPlugin
 {
     protected $directories;
     protected $recursive = true;
     protected $suffixes;
     protected $ignore;
-
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
 
     /**
      * @var string The path to a file contain custom phptal_tales_ functions
@@ -65,8 +55,8 @@ class PhpTalLint implements PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        parent::__construct($phpci, $build);
+
         $this->directories = array('');
         $this->suffixes = array('zpt');
         $this->ignore = $phpci->ignore;
@@ -222,7 +212,7 @@ class PhpTalLint implements PHPCI\Plugin
 
                 $row = str_replace('(use -i to include your custom modifier functions)', '', $row);
                 $message = str_replace($name . ': ', '', $row);
-                
+
                 $parts = explode(' (line ', $message);
 
                 $message = trim($parts[0]);

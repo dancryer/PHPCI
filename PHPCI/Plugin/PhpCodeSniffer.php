@@ -149,11 +149,6 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $phpcs = $this->phpci->findBinary('phpcs');
 
-        if (!$phpcs) {
-            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpcs'));
-            return false;
-        }
-
         $this->phpci->logExecOutput(false);
 
         $cmd = $phpcs . ' --report=json %s %s %s %s %s "%s"';

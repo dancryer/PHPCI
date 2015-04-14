@@ -35,11 +35,13 @@ class LocalBuild extends Build
             return $this->handleConfig($builder, $buildPath) !== false;
         }
 
-        $buildSettings = $this->handleConfig($builder, $reference);
+        $configHandled = $this->handleConfig($builder, $reference);
 
-        if ($buildSettings === false) {
+        if ($configHandled === false) {
             return false;
         }
+
+        $buildSettings = $builder->getConfig('build_settings');
 
         if (isset($buildSettings['prefer_symlink']) && $buildSettings['prefer_symlink'] === true) {
             return $this->handleSymlink($builder, $reference, $buildPath);

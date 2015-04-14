@@ -86,7 +86,7 @@ class ProjectController extends PHPCI\Controller
         $this->view->builds   = $builds[0];
         $this->view->total    = $builds[1];
         $this->view->project  = $project;
-        $this->view->branch = urldecode($branch);
+        $this->view->branch   = urldecode($branch);
         $this->view->branches = $this->projectStore->getKnownBranches($projectId);
         $this->view->page     = $page;
         $this->view->pages    = $pages;
@@ -268,7 +268,7 @@ class ProjectController extends PHPCI\Controller
             $view->type     = 'edit';
             $view->project  = $project;
             $view->form     = $form;
-            $view->key      = null;
+            $view->key      = $values['pubkey'];
 
             return $view->render();
         }
@@ -282,6 +282,7 @@ class ProjectController extends PHPCI\Controller
             'ssh_public_key' => $this->getParam('pubkey', null),
             'build_config' => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
+            'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
         );
 
@@ -311,10 +312,11 @@ class ProjectController extends PHPCI\Controller
             'remote' => Lang::get('remote'),
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
+            'svn'    => Lang::get('svn'),
             );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
-        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg)');
+        $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|svn)');
         $field->setOptions($options);
         $field->setClass('form-control')->setContainerClass('form-group');
         $form->addField($field);
@@ -351,6 +353,12 @@ class ProjectController extends PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Checkbox::create('allow_public_status', Lang::get('allow_public_status'), false);
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(0);
+        $form->addField($field);
+
+        $field = Form\Element\Checkbox::create('archived', Lang::get('archived'), false);
         $field->setContainerClass('form-group');
         $field->setCheckedValue(1);
         $field->setValue(0);

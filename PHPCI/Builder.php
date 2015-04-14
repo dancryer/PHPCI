@@ -223,7 +223,7 @@ class Builder implements LoggerAwareInterface
             if (IS_WIN) {
                 $cmd = 'rmdir /S /Q "%s"';
             }
-            $this->executeCommand($cmd, $this->buildPath);
+            $this->executeCommand($cmd, rtrim($this->buildPath, '/'));
         } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
             $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
@@ -295,6 +295,8 @@ class Builder implements LoggerAwareInterface
             $this->buildPath,
             PHPCI_URL
         );
+
+        $this->commandExecutor->setBuildPath($this->buildPath);
 
         // Create a working copy of the project:
         if (!$this->build->createWorkingCopy($this, $this->buildPath)) {

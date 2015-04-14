@@ -95,7 +95,7 @@ class InstallCommand extends Command
 
         $this->writeConfigFile($conf);
         $this->setupDatabase($output);
-        $admin = $this->getAdminInforamtion($input, $output);
+        $admin = $this->getAdminInformation($input, $output);
         $this->createAdminUser($admin, $output);
     }
 
@@ -160,7 +160,7 @@ class InstallCommand extends Command
      * @param OutputInterface $output
      * @return array
      */
-    protected function getAdminInforamtion(InputInterface $input, OutputInterface $output)
+    protected function getAdminInformation(InputInterface $input, OutputInterface $output)
     {
         $admin = array();
 
@@ -172,7 +172,7 @@ class InstallCommand extends Command
         // Function to validate mail address.
         $mailValidator = function ($answer) {
             if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception(Lang::get('must_be_valid_email'));
+                throw new \InvalidArgumentException(Lang::get('must_be_valid_email'));
             }
 
             return $answer;
@@ -323,7 +323,9 @@ class InstallCommand extends Command
     {
         $output->write(Lang::get('setting_up_db'));
 
-        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
+        $phinxBinary = escapeshellarg(PHPCI_DIR . 'vendor/bin/phinx');
+        $phinxScript = escapeshellarg(PHPCI_DIR . 'phinx.php');
+        shell_exec($phinxBinary . ' migrate -c ' . $phinxScript);
 
         $output->writeln('<info>'.Lang::get('ok').'</info>');
     }

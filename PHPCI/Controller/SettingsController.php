@@ -40,7 +40,7 @@ class SettingsController extends Controller
         parent::init();
 
         $parser         = new Parser();
-        $yaml           = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+        $yaml           = file_get_contents(PHPCI_CONFIG_FILE);
         $this->settings = $parser->parse($yaml);
     }
 
@@ -76,6 +76,7 @@ class SettingsController extends Controller
             $authSettings = $this->settings['phpci']['authentication_settings'];
         }
 
+        $this->view->configFile = PHPCI_CONFIG_FILE;
         $this->view->basicSettings = $this->getBasicForm($basicSettings);
         $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->github = $this->getGithubForm();
@@ -241,7 +242,7 @@ class SettingsController extends Controller
     {
         $dumper = new Dumper();
         $yaml   = $dumper->dump($this->settings, 4);
-        file_put_contents(APPLICATION_PATH . 'PHPCI/config.yml', $yaml);
+        file_put_contents(PHPCI_CONFIG_FILE, $yaml);
 
         if (error_get_last()) {
             $error_get_last = error_get_last();
@@ -350,7 +351,7 @@ class SettingsController extends Controller
         $form->addField($field);
 
         $field = new Form\Element\Select('smtp_encryption');
-        $field->setOptions(['' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')]);
+        $field->setOptions(array('' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')));
         $field->setRequired(false);
         $field->setLabel(Lang::get('use_smtp_encryption'));
         $field->setContainerClass('form-group');
@@ -386,7 +387,7 @@ class SettingsController extends Controller
      */
     protected function canWriteConfig()
     {
-        return is_writeable(APPLICATION_PATH . 'PHPCI/config.yml');
+        return is_writeable(PHPCI_CONFIG_FILE);
     }
 
     /**
@@ -405,13 +406,13 @@ class SettingsController extends Controller
         $field->setLabel(Lang::get('failed_after'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setOptions([
+        $field->setOptions(array(
             300 => Lang::get('5_mins'),
             900 => Lang::get('15_mins'),
             1800 => Lang::get('30_mins'),
             3600 => Lang::get('1_hour'),
             10800 => Lang::get('3_hours'),
-        ]);
+        ));
         $field->setValue(1800);
         $form->addField($field);
 

@@ -15,4 +15,7 @@ RUN git config --global user.email "hello@php.ci"
 
 ADD ./ /phpci
 
+RUN php -r "readfile('https://getcomposer.org/installer');" | php
+RUN mv composer.phar /phpci/composer
+
 CMD /phpci/daemonise phpci:daemonise

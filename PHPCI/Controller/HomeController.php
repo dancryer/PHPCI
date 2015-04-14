@@ -48,7 +48,13 @@ class HomeController extends \PHPCI\Controller
     {
         $this->layout->title = Lang::get('dashboard');
 
-        $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        $projects = $this->projectStore->getWhere(
+            array('archived' => (int)isset($_GET['archived'])),
+            50,
+            0,
+            array(),
+            array('title' => 'ASC')
+        );
 
         $builds = $this->buildStore->getLatestBuilds(null, 10);
 
@@ -92,11 +98,21 @@ class HomeController extends \PHPCI\Controller
     protected function getSummaryHtml($projects)
     {
         $summaryBuilds = array();
-        $successes = array();
-        $failures = array();
+        $successes     = array();
+        $failures      = array();
+        $counts        = array();
 
         foreach ($projects['items'] as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
+
+            $count = $this->buildStore->getWhere(
+                array('project_id' => $project->getId()),
+                1,
+                0,
+                array(),
+                array('id' => 'DESC')
+            );
+            $counts[$project->getId()] = $count['count'];
 
             $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
             $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
@@ -106,10 +122,11 @@ class HomeController extends \PHPCI\Controller
         }
 
         $summaryView = new b8\View('SummaryTable');
-        $summaryView->projects = $projects['items'];
-        $summaryView->builds = $summaryBuilds;
+        $summaryView->projects   = $projects['items'];
+        $summaryView->builds     = $summaryBuilds;
         $summaryView->successful = $successes;
-        $summaryView->failed = $failures;
+        $summaryView->failed     = $failures;
+        $summaryView->counts     = $counts;
 
         return $summaryView->render();
     }

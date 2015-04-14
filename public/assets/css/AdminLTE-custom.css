@@ -75,3 +75,20 @@
     margin-top: 19px;
     font-size: 11px;
 }
+
+.user-panel > .image {
+    padding-right: 15px;
+}
+
+.user-panel > .info {
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+#phpunit-data th div { margin: 0 0.5em; }
+#phpunit-data .success td { background: none; color: #00a65a; }
+#phpunit-data .fail td { background: none; color: #f56954; }
+#phpunit-data .error td { background: none; color: #f56954; }
+#phpunit-data .skipped td { background: none; color: #e08e0b; }
+#phpunit-data .todo td { background: none; color: #00c0ef; }

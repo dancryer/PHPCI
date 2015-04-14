@@ -20,7 +20,7 @@ use b8\Config;
 class LoginIsDisabled
 {
     /**
-     * Checks if 
+     * Checks if
      * @param $method
      * @param array $params
      * @return mixed|null

@@ -181,6 +181,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     'message' => (string)$violation,
                 );
 
+                $this->build->reportError($this->phpci, $fileName, (int)$violation['beginline'], (string)$violation);
                 $data[] = $warning;
             }
         }

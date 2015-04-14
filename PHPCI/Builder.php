@@ -259,12 +259,14 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Find a binary required by a plugin.
-     * @param $binary
+     * @param string $binary
+     * @param bool $quiet
+     *
      * @return null|string
      */
-    public function findBinary($binary)
+    public function findBinary($binary, $quiet = false)
     {
-        return $this->commandExecutor->findBinary($binary, $this->buildPath);
+        return $this->commandExecutor->findBinary($binary, $quiet = false);
     }
 
     /**

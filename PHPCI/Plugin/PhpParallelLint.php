@@ -78,11 +78,6 @@ class PhpParallelLint implements \PHPCI\Plugin
 
         $phplint = $this->phpci->findBinary('parallel-lint');
 
-        if (!$phplint) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'parallel-lint'));
-            return false;
-        }
-
         $cmd = $phplint . ' %s "%s"';
         $success = $this->phpci->executeCommand(
             $cmd,

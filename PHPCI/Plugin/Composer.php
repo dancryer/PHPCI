@@ -81,11 +81,6 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
 
-        if (!$composerLocation) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'composer'));
-            return false;
-        }
-
         $cmd = '';
 
         if (IS_WIN) {

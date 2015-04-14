@@ -27,7 +27,8 @@ class CommandExecutorTest extends \PHPUnit_Framework_TestCase
         }
         parent::setUp();
         $mockBuildLogger = $this->prophesize('PHPCI\Logging\BuildLogger');
-        $this->testedExecutor = new UnixCommandExecutor($mockBuildLogger->reveal(), __DIR__ . "/");
+        $class = IS_WIN ? 'PHPCI\Helper\WindowsCommandExecutor' : 'PHPCI\Helper\UnixCommandExecutor';
+        $this->testedExecutor = new $class($mockBuildLogger->reveal(), __DIR__ . "/");
     }
 
     public function testGetLastOutput_ReturnsOutputOfCommand()
@@ -62,5 +63,21 @@ class CommandExecutorTest extends \PHPUnit_Framework_TestCase
         $thisFileName = "CommandExecutorTest.php";
         $returnValue = $this->testedExecutor->findBinary($thisFileName);
         $this->assertEquals(__DIR__ . "/" . $thisFileName, $returnValue);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedMessageRegex WorldWidePeace
+     */
+    public function testFindBinary_ThrowsWhenNotFound()
+    {
+        $thisFileName = "WorldWidePeace";
+        $this->testedExecutor->findBinary($thisFileName);
+    }
+
+    public function testFindBinary_ReturnsNullWihQuietArgument()
+    {
+        $thisFileName = "WorldWidePeace";
+        $this->assertNull($this->testedExecutor->findBinary($thisFileName, true));
     }
 }

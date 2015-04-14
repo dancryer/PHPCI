@@ -133,12 +133,6 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         } else {
             $codecept = $this->phpci->findBinary('codecept');
 
-            if (!$codecept) {
-                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
-
-                return false;
-            }
-
             $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --tap ' . $this->args;
 
             if (IS_WIN) {

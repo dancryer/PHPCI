@@ -80,11 +80,6 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $phploc = $this->phpci->findBinary('phploc');
 
-        if (!$phploc) {
-            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phploc'));
-            return false;
-        }
-
         $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
         $output = $this->phpci->getLastOutput();
 

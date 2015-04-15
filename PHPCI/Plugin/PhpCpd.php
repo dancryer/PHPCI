@@ -40,12 +40,12 @@ class PhpCpd extends AbstractExecutingPlugin
      */
     protected function setOptions(array $options)
     {
-        $this->path = $buildPath;
+        $this->path = $this->buildPath;
         $this->standard = 'PSR1';
-        $this->ignore = $phpci->ignore;
+        $this->ignore = $this->phpci->ignore;
 
         if (!empty($options['path'])) {
-            $this->path = $buildPath . $options['path'];
+            $this->path = $this->buildPath . $options['path'];
         }
 
         if (!empty($options['standard'])) {

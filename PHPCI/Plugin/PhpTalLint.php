@@ -53,7 +53,7 @@ class PhpTalLint extends AbstractExecutingPlugin
     {
         $this->directories = array('');
         $this->suffixes = array('zpt');
-        $this->ignore = $phpci->ignore;
+        $this->ignore = $this->phpci->ignore;
 
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;

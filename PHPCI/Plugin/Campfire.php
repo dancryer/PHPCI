@@ -38,7 +38,7 @@ class Campfire extends AbstractPlugin
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
         $this->cookie = "phpcicookie";
 
-        $buildSettings = $phpci->getConfig('build_settings');
+        $buildSettings = $this->phpci->getConfig('build_settings');
         if (isset($buildSettings['campfire'])) {
             $campfire = $buildSettings['campfire'];
             $this->url = $campfire['url'];

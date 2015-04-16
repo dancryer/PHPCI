@@ -47,8 +47,7 @@ class GitlabBuild extends RemoteGitBuild
             'http://%s/%s/blob/%s/{FILE}#L{LINE}',
             $this->getProject()->getAccessInformation("domain"),
             $this->getProject()->getReference(),
-            $this->getgetCommitId()
-            //$this->getBranch()
+            $this->getCommitId()
         );
     }
 

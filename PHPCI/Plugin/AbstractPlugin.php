@@ -49,7 +49,6 @@ abstract class AbstractPlugin implements Plugin
     {
         $this->phpci = $builder;
         $this->build = $build;
-        $this->buildPath = $builder->buildPath;
         $this->logger = $logger;
 
         $this->setup($options);
@@ -71,6 +70,15 @@ abstract class AbstractPlugin implements Plugin
     }
 
     /**
+     * Set the build path.
+     *
+     * @param string $buildPath
+     */
+    protected function setBuildPath($buildPath)
+    {
+        $this->buildPath = $buildPath;
+    }
+
      * Configure the plugin with the common settings.
      *
      * @param array $settings
@@ -96,6 +104,8 @@ abstract class AbstractPlugin implements Plugin
      */
     private function setup(array $options)
     {
+        $this->setBuildPath($this->phpci->buildPath);
+
         $settings = $this->phpci->getConfig('build_settings');
         $key = $this->getPluginKey();
         if ($settings && isset($settings[$key])) {

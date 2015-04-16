@@ -42,7 +42,7 @@ class Irc extends AbstractInterpolatingPlugin
     {
         parent::setCommonSettings($settings);
 
-        if(!isset($settings['server'], $settings['room'], $settings['nick'])) {
+        if (!isset($settings['server'], $settings['room'], $settings['nick'])) {
             throw new \Exception(Lang::get('irc_settings'));
         }
 

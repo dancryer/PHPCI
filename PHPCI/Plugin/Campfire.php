@@ -44,7 +44,7 @@ class Campfire extends AbstractPlugin
     {
         parent::setCommonSettings($settings);
 
-        if(!isset($settings['url'], $settings['authToken'], $settings['roomId'])) {
+        if (!isset($settings['url'], $settings['authToken'], $settings['roomId'])) {
             throw new \Exception(Lang::get('no_campfire_settings'));
         }
 

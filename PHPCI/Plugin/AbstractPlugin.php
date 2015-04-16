@@ -93,6 +93,8 @@ abstract class AbstractPlugin implements Plugin
      * Configure the plugin with the common settings.
      *
      * @param array $settings
+     *
+     * @SuppressWarnings(unused)
      */
     protected function setCommonSettings(array $settings)
     {

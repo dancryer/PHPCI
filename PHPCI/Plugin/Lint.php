@@ -21,7 +21,6 @@ class Lint extends AbstractExecutingPlugin
 {
     protected $directories;
     protected $recursive = true;
-    protected $ignore;
 
     /**
      * Configure the plugin.
@@ -31,7 +30,6 @@ class Lint extends AbstractExecutingPlugin
     protected function setOptions(array $options)
     {
         $this->directories    = array('');
-        $this->ignore = $this->phpci->ignore;
 
         if (!empty($options['directory'])) {
             $this->directories[] = $options['directory'];

@@ -79,6 +79,17 @@ abstract class AbstractPlugin implements Plugin
         $this->buildPath = $buildPath;
     }
 
+    /**
+     * Set the paths to ignore.
+     *
+     * @param string[] $paths
+     */
+    protected function setIgnorePaths(array $paths)
+    {
+        $this->ignore = $paths;
+    }
+
+    /**
      * Configure the plugin with the common settings.
      *
      * @param array $settings
@@ -105,6 +116,7 @@ abstract class AbstractPlugin implements Plugin
     private function setup(array $options)
     {
         $this->setBuildPath($this->phpci->buildPath);
+        $this->setIgnorePath((array) $this->phpci->ignore);
 
         $settings = $this->phpci->getConfig('build_settings');
         $key = $this->getPluginKey();

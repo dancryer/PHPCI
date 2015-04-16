@@ -34,11 +34,6 @@ class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfi
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * Array of PHPMD rules. Can be one of the builtins (codesize, unusedcode, naming, design, controversial)
      * or a filenname (detected by checking for a / in it), either absolute or relative to the project root.
      * @var array
@@ -69,7 +64,6 @@ class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfi
     protected function setOptions(array $options)
     {
         $this->suffixes = array('php');
-        $this->ignore = $this->phpci->ignore;
         $this->path = '';
         $this->rules = array('codesize', 'unusedcode', 'naming');
         $this->allowed_warnings = 0;

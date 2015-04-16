@@ -27,11 +27,6 @@ class PhpDocblockChecker extends AbstractExecutingPlugin implements PHPCI\ZeroCo
      */
     protected $path;
 
-    /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
     protected $skipClasses = false;
     protected $skipMethods = false;
 
@@ -58,7 +53,6 @@ class PhpDocblockChecker extends AbstractExecutingPlugin implements PHPCI\ZeroCo
      */
     protected function setOptions(array $options)
     {
-        $this->ignore = $this->phpci->ignore;
         $this->path = '';
         $this->allowed_warnings = 0;
 

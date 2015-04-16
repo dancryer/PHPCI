@@ -63,11 +63,6 @@ class PhpCodeSniffer extends AbstractExecutingPlugin implements PHPCI\ZeroConfig
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * Check if this plugin can be executed.
      * @param $stage
      * @param Builder $builder
@@ -96,7 +91,6 @@ class PhpCodeSniffer extends AbstractExecutingPlugin implements PHPCI\ZeroConfig
         $this->tab_width = '';
         $this->encoding = '';
         $this->path = '';
-        $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
 

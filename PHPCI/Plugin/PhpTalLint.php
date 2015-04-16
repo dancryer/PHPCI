@@ -22,7 +22,6 @@ class PhpTalLint extends AbstractExecutingPlugin
     protected $directories;
     protected $recursive = true;
     protected $suffixes;
-    protected $ignore;
 
     /**
      * @var string The path to a file contain custom phptal_tales_ functions
@@ -53,7 +52,6 @@ class PhpTalLint extends AbstractExecutingPlugin
     {
         $this->directories = array('');
         $this->suffixes = array('zpt');
-        $this->ignore = $this->phpci->ignore;
 
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;

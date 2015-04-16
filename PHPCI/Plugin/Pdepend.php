@@ -74,8 +74,8 @@ class Pdepend extends AbstractExecutingPlugin
         $this->removeBuildArtifacts();
 
         // If we need to ignore directories
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --ignore=' . implode(',', $this->ignore);
         } else {
             $ignore = '';
         }

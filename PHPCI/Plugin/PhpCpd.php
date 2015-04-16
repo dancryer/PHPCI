@@ -29,11 +29,6 @@ class PhpCpd extends AbstractExecutingPlugin
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * Configure the plugin.
      *
      * @param array $options
@@ -42,7 +37,6 @@ class PhpCpd extends AbstractExecutingPlugin
     {
         $this->path = $this->buildPath;
         $this->standard = 'PSR1';
-        $this->ignore = $this->phpci->ignore;
 
         if (!empty($options['path'])) {
             $this->path = $this->buildPath . $options['path'];

@@ -25,11 +25,6 @@ class PhpParallelLint extends AbstractExecutingPlugin
     protected $directory;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * Configure the plugin.
      *
      * @param array $options
@@ -37,7 +32,6 @@ class PhpParallelLint extends AbstractExecutingPlugin
     protected function setOptions(array $options)
     {
         $this->directory    = $buildPath;
-        $this->ignore       = $this->phpci->ignore;
 
         if (isset($options['directory'])) {
             $this->directory = $buildPath.$options['directory'];

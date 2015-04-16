@@ -20,7 +20,7 @@ use PHPCI\Helper\Lang;
 class CopyBuild extends AbstractExecutingPlugin
 {
     protected $directory;
-    protected $ignore;
+    protected $respect_ignore;
     protected $wipe;
 
     /**
@@ -81,8 +81,8 @@ class CopyBuild extends AbstractExecutingPlugin
      */
     protected function deleteIgnoredFiles()
     {
-        if ($this->ignore) {
-            foreach ($this->phpci->ignore as $file) {
+        if ($this->respect_ignore) {
+            foreach ($this->ignore as $file) {
                 $cmd = 'rm -Rf "%s/%s"';
                 if (IS_WIN) {
                     $cmd = 'rmdir /S /Q "%s\%s"';

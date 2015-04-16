@@ -57,11 +57,11 @@ class PhpLoc extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
+        if (count($this->ignore)) {
             $map    = function ($item) {
                 return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
             };
-            $ignore = array_map($map, $this->phpci->ignore);
+            $ignore = array_map($map, $this->ignore);
 
             $ignore = implode('', $ignore);
         }

@@ -49,11 +49,6 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * @var array - terms to search for
      */
     protected $searches;
@@ -86,7 +81,6 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
         $this->suffixes = array('php');
         $this->directory = $this->buildPath;
         $this->path = '';
-        $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
         $this->searches = array('TODO', 'FIXME', 'TO DO', 'FIX ME');

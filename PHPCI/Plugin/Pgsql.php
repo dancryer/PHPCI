@@ -47,15 +47,16 @@ class Pgsql extends AbstractInterpolatingPlugin
     protected function setOptions(array $options)
     {
         $this->queries = $options;
+    }
 
-        $buildSettings = $this->phpci->getConfig('build_settings');
-
-        if (isset($buildSettings['pgsql'])) {
-            $sql = $buildSettings['pgsql'];
-            $this->host = $sql['host'];
-            $this->user = $sql['user'];
-            $this->pass = $sql['pass'];
-        }
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        $this->host = $settings['host'];
+        $this->user = $settings['user'];
+        $this->pass = $settings['pass'];
     }
 
     /**

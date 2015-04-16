@@ -52,13 +52,58 @@ abstract class AbstractPlugin implements Plugin
         $this->buildPath = $builder->buildPath;
         $this->logger = $logger;
 
-        $this->setOptions($options);
+        $this->setup($options);
     }
 
     /**
-     * Configure the plugin.
+     * Return the key used for options in phpci.yml for this plugin.
+     *
+     * @return string
+     */
+    public function getPluginKey()
+    {
+        $matches = null;
+        $className = get_class($this);
+        if (!preg_match('/^PHPCI\\Plguin\\(\w+)$/', $className, $matches)) {
+            return $className;
+        }
+        return strtolower(preg_replace('/[[:lower:]][[:upper:]]/g', '$1_$2', $matches[1]));
+    }
+
+    /**
+     * Configure the plugin with the common settings.
+     *
+     * @param array $settings
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        // NOOP
+    }
+
+    /**
+     * Configure the plugin for a given stage.
      *
      * @param array $options
      */
     abstract protected function setOptions(array $options);
+
+    /**
+     * Post-constructor setup.
+     *
+     * TODO: expose setOptions and setCommonSettings in Plugin and get rid of this method.
+     *
+     * @param array $options
+     */
+    private function setup(array $options)
+    {
+        $settings = $this->phpci->getConfig('build_settings');
+        $key = $this->getPluginKey();
+        if ($settings && isset($settings[$key])) {
+            $this->setCommonSettings((array) $settings[$key]);
+        } else {
+            $this->setCommonSettings(array());
+        }
+
+        $this->setOptions($options);
+    }
 }

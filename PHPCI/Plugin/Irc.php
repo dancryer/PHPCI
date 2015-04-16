@@ -33,18 +33,23 @@ class Irc extends AbstractInterpolatingPlugin
     protected function setOptions(array $options)
     {
         $this->message = $options['message'];
+    }
 
-        $buildSettings = $this->phpci->getConfig('build_settings');
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        parent::setCommonSettings($settings);
 
-
-        if (isset($buildSettings['irc'])) {
-            $irc = $buildSettings['irc'];
-
-            $this->server = $irc['server'];
-            $this->port = $irc['port'];
-            $this->room = $irc['room'];
-            $this->nick = $irc['nick'];
+        if(!isset($settings['server'], $settings['room'], $settings['nick'])) {
+            throw new \Exception(Lang::get('irc_settings'));
         }
+
+        $this->server = $settings['server'];
+        $this->port = isset($settings['port']) ? $settings['port'] : 6667;
+        $this->room = $settings['room'];
+        $this->nick = $settings['nick'];
     }
 
     /**
@@ -54,14 +59,6 @@ class Irc extends AbstractInterpolatingPlugin
     public function execute()
     {
         $msg = $this->interpolator->interpolate($this->message);
-
-        if (empty($this->server) || empty($this->room) || empty($this->nick)) {
-            throw new \Exception(Lang::get('irc_settings'));
-        }
-
-        if (empty($this->port)) {
-            $this->port = 6667;
-        }
 
         $sock = fsockopen($this->server, $this->port);
         stream_set_timeout($sock, 1);

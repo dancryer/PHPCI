@@ -22,8 +22,8 @@ class Campfire extends AbstractPlugin
 {
     private $url;
     private $authToken;
-    private $userAgent;
-    private $cookie;
+    private $userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
+    private $cookie = "phpcicookie";
     private $verbose;
     private $roomId;
 
@@ -35,18 +35,22 @@ class Campfire extends AbstractPlugin
     protected function setOptions(array $options)
     {
         $this->message = $options['message'];
-        $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
-        $this->cookie = "phpcicookie";
+    }
 
-        $buildSettings = $this->phpci->getConfig('build_settings');
-        if (isset($buildSettings['campfire'])) {
-            $campfire = $buildSettings['campfire'];
-            $this->url = $campfire['url'];
-            $this->authToken = $campfire['authToken'];
-            $this->roomId = $campfire['roomId'];
-        } else {
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        parent::setCommonSettings($settings);
+
+        if(!isset($settings['url'], $settings['authToken'], $settings['roomId'])) {
             throw new \Exception(Lang::get('no_campfire_settings'));
         }
+
+        $this->url = $settings['url'];
+        $this->authToken = $settings['authToken'];
+        $this->roomId = $settings['roomId'];
     }
 
     /**

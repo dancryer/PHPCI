@@ -49,29 +49,23 @@ class Mysql extends AbstractInterpolatingPlugin
     protected function setOptions(array $options)
     {
         $this->queries = $options;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        parent::setCommonSettings($settings);
 
         $config = \b8\Database::getConnection('write')->getDetails();
 
-        $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
-        $this->user = $config['user'];
-        $this->pass = $config['pass'];
-
-        $buildSettings = $this->phpci->getConfig('build_settings');
-
-        if (!isset($buildSettings['mysql'])) {
-            return;
-        }
-
-        if (!empty($buildSettings['mysql']['host'])) {
-            $this->host = $this->interpolator->interpolate($buildSettings['mysql']['host']);
-        }
-
-        if (!empty($buildSettings['mysql']['user'])) {
-            $this->user = $this->interpolator->interpolate($buildSettings['mysql']['user']);
-        }
-
-        if (array_key_exists('pass', $buildSettings['mysql'])) {
-            $this->pass = $buildSettings['mysql']['pass'];
+        foreach (array('host', 'user', 'pass') as $param) {
+            if (isset($settings[$param])) {
+                $this->{$param} = $this->interpolator->interpolate($settings[$param]);
+            } else {
+                $this->{$param} = $config[$param];
+            }
         }
     }
 

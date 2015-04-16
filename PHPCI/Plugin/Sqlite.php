@@ -37,12 +37,14 @@ class Sqlite extends AbstractPlugin
     protected function setOptions(array $options)
     {
         $this->queries = $options;
-        $buildSettings = $this->phpci->getConfig('build_settings');
+    }
 
-        if (isset($buildSettings['sqlite'])) {
-            $sql = $buildSettings['sqlite'];
-            $this->path = $sql['path'];
-        }
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        $this->path = $settings['path'];
     }
 
     /**

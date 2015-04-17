@@ -178,7 +178,7 @@ class RunCommand extends Command
 
     protected function removeBuildDirectory($build)
     {
-        $buildPath = PHPCI_DIR . 'PHPCI/build/' . $build->getId() . '/';
+        $buildPath = PHPCI_BUILD_DIR . 'PHPCI/build/' . $build->getId() . '/';
 
         if (is_dir($buildPath)) {
             $cmd = 'rm -Rf "%s"';

@@ -6,6 +6,10 @@ if (!defined('APPLICATION_PATH')) {
     define('PHPCI_DIR', APPLICATION_PATH);
 }
 
+if (!defined('PHPCI_BUILD_DIR')) {
+    define('PHPCI_BUILD_DIR', PHPCI_DIR);
+}
+
 // Define our PHPCI_URL, if not already defined:
 if (!defined('PHPCI_URL') && isset($config)) {
     define('PHPCI_URL', $config->get('phpci.url', '') . '/');

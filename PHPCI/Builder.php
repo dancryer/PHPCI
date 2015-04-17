@@ -287,7 +287,7 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $this->buildPath = PHPCI_DIR . 'PHPCI/build/' . $this->build->getId() . '/';
+        $this->buildPath = PHPCI_BUILD_DIR . 'PHPCI/build/' . $this->build->getId() . '/';
         $this->build->currentBuildPath = $this->buildPath;
 
         $this->interpolator->setupInterpolationVars(

@@ -49,6 +49,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @var string The path where the reports and logs are stored
      */
     protected $logPath = 'tests/_output';
+    protected $executable;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -72,6 +73,12 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if (isset($options['log_path'])) {
             $this->logPath = $options['log_path'];
+        }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('codecept');
         }
     }
 
@@ -131,7 +138,7 @@ class Codeception implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, 'runConfigFile'));
         } else {
-            $codecept = $this->phpci->findBinary('codecept');
+            $codecept = $this->executable;
 
             if (!$codecept) {
                 $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));

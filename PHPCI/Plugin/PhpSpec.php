@@ -47,6 +47,12 @@ class PhpSpec implements PHPCI\Plugin
         $this->phpci = $phpci;
         $this->build = $build;
         $this->options = $options;
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
+        }
     }
 
     /**
@@ -57,7 +63,7 @@ class PhpSpec implements PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->phpci->buildPath);
 
-        $phpspec = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
+        $phpspec = $this->executable;
 
         if (!$phpspec) {
             $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpspec'));

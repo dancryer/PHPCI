@@ -35,7 +35,7 @@ class Atoum implements \PHPCI\Plugin
         $this->build = $build;
 
         if (isset($options['executable'])) {
-            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
+            $this->executable = $options['executable'];
         } else {
             $this->executable = $this->phpci->findBinary('atoum');
         }

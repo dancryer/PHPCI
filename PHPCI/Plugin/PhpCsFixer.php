@@ -36,6 +36,8 @@ class PhpCsFixer implements \PHPCI\Plugin
     protected $verbose    = '';
     protected $diff       = '';
     protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
+    protected $workingdir;
+    protected $executable;
 
     /**
      * Standard Constructor
@@ -67,7 +69,7 @@ class PhpCsFixer implements \PHPCI\Plugin
         $curdir = getcwd();
         chdir($this->workingdir);
 
-        $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
+        $phpcsfixer = $this->executable;
 
         if (!$phpcsfixer) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'php-cs-fixer'));
@@ -88,6 +90,12 @@ class PhpCsFixer implements \PHPCI\Plugin
      */
     public function buildArgs($options)
     {
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('php-cs-fixer');
+        }
+
         if (isset($options['verbose']) && $options['verbose']) {
             $this->verbose = ' --verbose';
         }

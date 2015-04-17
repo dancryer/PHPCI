@@ -44,6 +44,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     protected $skipClasses = false;
     protected $skipMethods = false;
+    protected $executable;
 
     /**
      * Check if this plugin can be executed.
@@ -94,6 +95,12 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (array_key_exists('allowed_warnings', $options)) {
             $this->allowed_warnings = (int)$options['allowed_warnings'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phpdoccheck');
+        }
     }
 
     /**
@@ -102,7 +109,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         // Check that the binary exists:
-        $checker = $this->phpci->findBinary('phpdoccheck');
+        $checker = $this->executable;
 
         if (!$checker) {
             $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpdoccheck'));

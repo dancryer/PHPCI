@@ -89,6 +89,12 @@ class XMPP implements \PHPCI\Plugin
             }
         }
 
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('/usr/bin/sendxmpp');
+        }
+
         $this->setOptions($options);
     }
 
@@ -148,7 +154,7 @@ class XMPP implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $sendxmpp = $this->phpci->findBinary('/usr/bin/sendxmpp');
+        $sendxmpp = $this->executable;
 
         if (!$sendxmpp) {
             $this->phpci->logFailure('Could not find sendxmpp.');

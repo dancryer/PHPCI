@@ -54,6 +54,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @var array
      */
     protected $rules;
+    protected $executable;
 
     /**
      * Check if this plugin can be executed.
@@ -108,6 +109,12 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         foreach (array('rules', 'ignore', 'suffixes') as $key) {
             $this->overrideSetting($options, $key);
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('phpmd');
+        }
     }
 
     /**
@@ -119,7 +126,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $phpmdBinaryPath = $this->phpci->findBinary('phpmd');
+        $phpmdBinaryPath = $this->executable;
 
         if (!$phpmdBinaryPath) {
             $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpmd'));

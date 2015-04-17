@@ -135,6 +135,12 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (isset($options['coverage'])) {
             $this->coverage = " --coverage-html {$options['coverage']} ";
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary(array('phpunit'));
+        }
     }
 
     /**
@@ -197,8 +203,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 chdir($this->phpci->buildPath.'/'.$this->runFrom);
             }
 
-
-            $phpunit = $this->phpci->findBinary('phpunit');
+            $phpunit = $this->executable;
 
             if (!$phpunit) {
                 $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));

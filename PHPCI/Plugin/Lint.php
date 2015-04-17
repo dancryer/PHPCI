@@ -26,6 +26,7 @@ class Lint implements PHPCI\Plugin
     protected $ignore;
     protected $phpci;
     protected $build;
+    protected $executable;
 
     /**
      * Standard Constructor
@@ -57,6 +58,12 @@ class Lint implements PHPCI\Plugin
         if (array_key_exists('recursive', $options)) {
             $this->recursive = $options['recursive'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('php');
+        }
     }
 
     /**
@@ -67,7 +74,7 @@ class Lint implements PHPCI\Plugin
         $this->phpci->quiet = true;
         $success = true;
 
-        $php = $this->phpci->findBinary('php');
+        $php = $this->executable;
 
         foreach ($this->directories as $dir) {
             if (!$this->lintDirectory($php, $dir)) {

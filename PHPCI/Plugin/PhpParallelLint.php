@@ -40,6 +40,7 @@ class PhpParallelLint implements \PHPCI\Plugin
      * @var array - paths to ignore
      */
     protected $ignore;
+    protected $executable;
 
     /**
      * Standard Constructor
@@ -67,6 +68,12 @@ class PhpParallelLint implements \PHPCI\Plugin
         if (isset($options['ignore'])) {
             $this->ignore = $options['ignore'];
         }
+
+        if (isset($options['executable'])) {
+            $this->executable = $options['executable'];
+        } else {
+            $this->executable = $this->phpci->findBinary('parallel-lint');
+        }
     }
 
     /**
@@ -76,7 +83,7 @@ class PhpParallelLint implements \PHPCI\Plugin
     {
         list($ignore) = $this->getFlags();
 
-        $phplint = $this->phpci->findBinary('parallel-lint');
+        $phplint = $this->executable;
 
         if (!$phplint) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'parallel-lint'));

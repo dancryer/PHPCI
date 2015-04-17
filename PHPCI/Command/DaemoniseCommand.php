@@ -9,10 +9,8 @@
 
 namespace PHPCI\Command;
 
-use Monolog\Logger;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -21,43 +19,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 * @package      PHPCI
 * @subpackage   Console
 */
-class DaemoniseCommand extends Command
+class DaemoniseCommand extends RunCommand
 {
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
-
-    /**
-     * @var boolean
-     */
-    protected $run;
-
-    /**
-     * @var int
-     */
-    protected $sleep;
-
-    /**
-     * @param \Monolog\Logger $logger
-     * @param string $name
-     */
-    public function __construct(Logger $logger, $name = null)
-    {
-        parent::__construct($name);
-        $this->logger = $logger;
-    }
-
     protected function configure()
     {
         $this
             ->setName('phpci:daemonise')
-            ->setDescription('Starts the daemon to run commands.');
+            ->setDescription('Starts the daemon to run commands.')
+            ->addOption(
+                'interval',
+                'i',
+                InputOption::VALUE_REQUIRED,
+                'Maximum interval between scanning of pending builds.',
+                15
+            );
     }
 
     /**
@@ -65,46 +40,25 @@ class DaemoniseCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cmd = "echo %s > '%s/daemon/daemon.pid'";
-        $command = sprintf($cmd, getmypid(), PHPCI_DIR);
-        exec($command);
+        file_put_contents(PHPCI_DIR . DIRECTORY_SEPARATOR . "daemon" . DIRECTORY_SEPARATOR . "daemon.pid", getmypid());
 
-        $this->output = $output;
-        $this->run   = true;
-        $this->sleep = 0;
-        $runner      = new RunCommand($this->logger);
-        $runner->setMaxBuilds(1);
-        $runner->setDaemon(true);
+        $maxSleep = (int)$input->getOption('interval');
 
-        $emptyInput = new ArgvInput(array());
+        $run   = true;
+        $sleep = 0;
 
-        while ($this->run) {
+        while ($run) {
+            $build = $this->findNextBuild();
 
-            $buildCount = 0;
-
-            try {
-                $buildCount = $runner->run($emptyInput, $output);
-            } catch (\Exception $e) {
-                $output->writeln('<error>Exception: ' . $e->getMessage() . '</error>');
-                $output->writeln('<error>Line: ' . $e->getLine() . ' - File: ' . $e->getFile() . '</error>');
+            if ($build) {
+                $this->runBuild($build);
+                $sleep = 0;
+            } else {
+                if ($sleep < $maxSleep) {
+                    $sleep++;
+                }
+                sleep($sleep);
             }
-
-            if (0 == $buildCount && $this->sleep < 15) {
-                $this->sleep++;
-            } elseif (1 < $this->sleep) {
-                $this->sleep--;
-            }
-            echo '.'.(0 === $buildCount?'':'build');
-            sleep($this->sleep);
         }
-    }
-
-    /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
-    public function logCallback($log)
-    {
-        $this->output->writeln($log);
     }
 }

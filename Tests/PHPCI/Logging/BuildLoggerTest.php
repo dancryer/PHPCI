@@ -60,22 +60,6 @@ class BuildLoggerTest extends ProphecyTestCase
         $this->testedBuildLogger->log($message, $level, $contextIn);
     }
 
-    public function testLog_AddsBuildToContext()
-    {
-        $level = LogLevel::NOTICE;
-        $message = "Testing";
-        $contextIn = array();
-
-        $expectedContext = array(
-            'build' => $this->mockBuild->reveal()
-        );
-
-        $this->mockLogger->log($level, $message, $expectedContext)
-                         ->shouldBeCalledTimes(1);
-
-        $this->testedBuildLogger->log($message, $level, $contextIn);
-    }
-
     public function testLogFailure_LogsAsErrorLevel()
     {
         $message = "Testing";
@@ -104,4 +88,3 @@ class BuildLoggerTest extends ProphecyTestCase
         $this->testedBuildLogger->logFailure($message, $exception);
     }
 }
- 

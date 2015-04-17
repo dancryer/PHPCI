@@ -64,6 +64,8 @@ class BuildFactory
             case 'svn':
                 $type = 'SubversionBuild';
                 break;
+            default:
+                return $base;
         }
 
         $type = '\\PHPCI\\Model\\Build\\' . $type;

@@ -2,8 +2,6 @@
 
 namespace Tests\PHPCI\Plugin\Util;
 
-require_once __DIR__ . "/ExamplePlugins.php";
-
 use PHPCI\Plugin\Util\Executor;
 use Prophecy\Argument;
 
@@ -42,14 +40,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     public function testExecutePlugin_KeepsCalledNameSpace()
     {
         $options = array();
-        $pluginName = 'ExamplePluginFull';
-        $pluginNamespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
+        $pluginClass = $this->getFakePluginClassName('ExamplePluginFull');
 
-        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)
+        $this->mockFactory->buildPlugin($pluginClass, $options)
           ->shouldBeCalledTimes(1)
           ->willReturn($this->prophesize('PHPCI\Plugin')->reveal());
 
-        $this->testedExecutor->executePlugin($pluginNamespace . $pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginClass, $options);
     }
 
     public function testExecutePlugin_CallsExecuteOnFactoryBuildPlugin()
@@ -141,5 +138,11 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->testedExecutor->executePlugins($config, 'stageOne');
     }
 
+    protected function getFakePluginClassName($pluginName)
+    {
+        $pluginNamespace = '\\Tests\\PHPCI\\Plugin\\Util\\Fake\\';
+
+        return $pluginNamespace . $pluginName;
+    }
 }
 

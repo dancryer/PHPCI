@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Tests\Helper;
+namespace Tests\PHPCI\Helper;
 
 use DateTime;
 use PHPCI\Helper\Lang;

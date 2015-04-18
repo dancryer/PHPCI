@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Service\Tests;
+namespace Tests\PHPCI\Service;
 
 use PHPCI\Model\User;
 use PHPCI\Service\UserService;

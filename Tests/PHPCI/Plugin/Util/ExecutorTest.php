@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Util;
+namespace Tests\PHPCI\Plugin\Util;
 
 require_once __DIR__ . "/ExamplePlugins.php";
 
@@ -44,7 +44,7 @@ class ExecutorTest extends ProphecyTestCase
     {
         $options = array();
         $pluginName = 'ExamplePluginFull';
-        $pluginNamespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $pluginNamespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
 
         $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)
           ->shouldBeCalledTimes(1)
@@ -143,4 +143,4 @@ class ExecutorTest extends ProphecyTestCase
     }
 
 }
- 
+

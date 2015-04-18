@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Tests\Controller;
+namespace Tests\PHPCI\Controller;
 
 use PHPCI\Controller\WebhookController;
 use Prophecy\PhpUnit\ProphecyTestCase;

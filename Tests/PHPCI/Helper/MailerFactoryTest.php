@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Service\Tests;
+namespace tests\PHPCI\Service;
 
 use PHPCI\Helper\MailerFactory;
 

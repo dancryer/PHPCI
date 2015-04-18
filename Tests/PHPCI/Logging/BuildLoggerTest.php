@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Helper;
+namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Logging\BuildLogger;
 use Prophecy\Argument;
@@ -104,4 +104,4 @@ class BuildLoggerTest extends ProphecyTestCase
         $this->testedBuildLogger->logFailure($message, $exception);
     }
 }
- 
+

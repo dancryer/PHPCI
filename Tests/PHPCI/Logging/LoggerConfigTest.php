@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Helper;
+namespace Tests\PHPCI\Plugin\Helper;
 
 use \PHPCI\Logging\LoggerConfig;
 
@@ -74,4 +74,4 @@ class LoggerConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($alternativeHandler, $actualHandler);
     }
 }
- 
+

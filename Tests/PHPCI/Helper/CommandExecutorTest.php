@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Helper;
+namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Helper\UnixCommandExecutor;
 use \Prophecy\PhpUnit\ProphecyTestCase;

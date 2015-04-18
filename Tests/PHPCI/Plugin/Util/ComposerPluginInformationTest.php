@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Util;
+namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Plugin\Util\ComposerPluginInformation;
 
@@ -48,4 +48,4 @@ class ComposerPluginInformationTest extends \PHPUnit_Framework_TestCase
         $this->assertContainsOnly("string", $classes);
     }
 }
- 
+

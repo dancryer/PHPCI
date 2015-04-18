@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Util;
+namespace Tests\PHPCI\Plugin\Util;
 
 require_once __DIR__ . "/ExamplePlugins.php";
 
@@ -49,7 +49,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testBuildPluginWorksWithConstructorlessPlugins()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  .'ExamplePluginWithNoConstructorArgs';
         $plugin = $this->testedFactory->buildPlugin($expectedPluginClass);
         $this->assertInstanceOf($expectedPluginClass, $plugin);
@@ -63,7 +63,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testBuildPluginWorksWithSingleOptionalArgConstructor()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginWithSingleOptionalArg';
         $plugin = $this->testedFactory->buildPlugin($expectedPluginClass);
         $this->assertInstanceOf($expectedPluginClass, $plugin);
@@ -76,14 +76,14 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
             'Unsatisfied dependency: requiredArgument'
         );
 
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginWithSingleRequiredArg';
         $plugin = $this->testedFactory->buildPlugin($expectedPluginClass);
     }
 
     public function testBuildPluginLoadsArgumentsBasedOnName()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginWithSingleRequiredArg';
 
         $this->testedFactory->registerResource(
@@ -99,7 +99,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testBuildPluginLoadsArgumentsBasedOnType()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginWithSingleTypedRequiredArg';
 
         $this->testedFactory->registerResource(
@@ -116,7 +116,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testBuildPluginLoadsFullExample()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginFull';
 
         $this->registerBuildAndBuilder();
@@ -129,7 +129,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testBuildPluginLoadsFullExampleWithOptions()
     {
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $expectedPluginClass = $namespace  . 'ExamplePluginFull';
 
         $expectedArgs = array(
@@ -163,7 +163,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
             realpath(__DIR__ . "/ExamplePluginConfig.php")
         );
 
-        $namespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $namespace = '\\Tests\\PHPCI\\Plugin\\Util\\';
         $pluginName = $namespace  . 'ExamplePluginWithSingleRequiredArg';
 
         $plugin = $this->testedFactory->buildPlugin($pluginName);
@@ -206,8 +206,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
                 );
             },
             null,
-            'PHPCI\\Model\Build'
+            'PHPCI\\Model\\Build'
         );
     }
 }
- 
+

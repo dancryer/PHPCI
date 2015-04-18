@@ -1,5 +1,6 @@
 <?php
-namespace PHPCI\Plugin\Tests\Util;
+
+namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;

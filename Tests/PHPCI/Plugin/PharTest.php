@@ -1,5 +1,5 @@
 <?php
-namespace PHPCI\Plugin\Tests;
+namespace Tests\PHPCI\Plugin;
 
 use PHPCI\Plugin\Phar as PharPlugin;
 use Phar as PHPPhar;

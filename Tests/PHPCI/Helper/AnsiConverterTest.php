@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Helper\Tests;
+namespace Tests\PHPCI\Helper;
 
 use PHPCI\Helper\AnsiConverter;
 use PHPUnit_Framework_TestCase;

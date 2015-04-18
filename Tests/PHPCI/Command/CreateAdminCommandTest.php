@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Plugin\Tests\Command;
+namespace Tests\PHPCI\Plugin\Command;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Helper;
+namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Helper\BuildInterpolator;
 use Prophecy\PhpUnit\ProphecyTestCase;
@@ -46,4 +46,4 @@ class BuildInterpolatorTest extends ProphecyTestCase
         $this->assertEquals($expectedOutput, $actualOutput);
     }
 }
- 
+

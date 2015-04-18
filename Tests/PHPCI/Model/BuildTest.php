@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Model\Tests;
+namespace Tests\PHPCI\Model;
 
 use PHPCI\Model\Build;
 use PHPCI\Model;

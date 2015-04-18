@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Util;
+namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Plugin\Util\FilesPluginInformation;
 
@@ -23,4 +23,4 @@ class FilesPluginInformationTest extends \PHPUnit_Framework_TestCase
         $this->assertContainsOnly('string', $pluginInfos);
     }
 }
- 
+

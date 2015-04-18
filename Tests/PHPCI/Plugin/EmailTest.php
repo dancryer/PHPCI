@@ -7,7 +7,7 @@
  * @link            http://www.phptesting.org/
  */
 
-namespace PHPCI\Plugin\Tests;
+namespace Tests\PHPCI\Plugin;
 
 use PHPCI\Plugin\Email as EmailPlugin;
 use PHPCI\Model\Build;

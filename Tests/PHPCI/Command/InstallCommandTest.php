@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Command;
+namespace Tests\PHPCI\Plugin\Command;
 
 use Symfony\Component\Console\Application;
 use Prophecy\PhpUnit\ProphecyTestCase;

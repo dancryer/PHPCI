@@ -45,7 +45,7 @@
     },
 
     "autoload-dev": {
-        "psr-4": { "Tests\\PHPCI\\": "tests/PHPCI" }
+        "psr-4": { "Tests\\PHPCI\\": "Tests/PHPCI" }
     },
 
     "require-dev": {

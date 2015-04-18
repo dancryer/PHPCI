@@ -185,7 +185,7 @@ class Factory
             return $class->getName();
         } elseif ($param->isArray()) {
             return self::TYPE_ARRAY;
-        } elseif ($param->isCallable()) {
+        } elseif (is_callable($param)) {
             return self::TYPE_CALLABLE;
         } else {
             return null;

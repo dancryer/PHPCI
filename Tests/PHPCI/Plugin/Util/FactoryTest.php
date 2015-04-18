@@ -178,9 +178,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
      */
     private function registerBuildAndBuilder()
     {
+        $self = $this;
+
         $this->testedFactory->registerResource(
-            function () {
-                return $this->getMock(
+            function () use ($self) {
+                return $self->getMock(
                     'PHPCI\Builder',
                     array(),
                     array(),
@@ -193,8 +195,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase {
         );
 
         $this->testedFactory->registerResource(
-            function () {
-                return $this->getMock(
+            function () use ($self) {
+                return $self->getMock(
                     'PHPCI\Model\Build',
                     array(),
                     array(),

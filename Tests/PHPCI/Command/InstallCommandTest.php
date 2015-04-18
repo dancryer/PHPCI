@@ -16,8 +16,8 @@ use Symfony\Component\Console\Helper\HelperSet;
 
 class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
-    protected $config;
-    protected $admin;
+    public $config;
+    public $admin;
     protected $application;
 
     public function setup()
@@ -66,17 +66,19 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ))
             ->getMock();
 
+        $self = $this;
+
         $command->expects($this->once())->method('verifyNotInstalled')->willReturn(true);
         $command->expects($this->once())->method('verifyDatabaseDetails')->willReturn(true);
         $command->expects($this->once())->method('setupDatabase')->willReturn(true);
         $command->expects($this->once())->method('createAdminUser')->will(
-            $this->returnCallback(function ($adm) {// use (&$admin) {
-                $this->admin = $adm;
+            $this->returnCallback(function ($adm) use ($self) {
+                $self->admin = $adm;
             })
         );
         $command->expects($this->once())->method('writeConfigFile')->will(
-            $this->returnCallback(function ($cfg) { //use (&$config) {
-                $this->config = $cfg;
+            $this->returnCallback(function ($cfg) use ($self) {
+                $self->config = $cfg;
             })
         );
         $command->expects($this->once())->method('checkRequirements');

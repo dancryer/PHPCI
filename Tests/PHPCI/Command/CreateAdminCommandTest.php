@@ -35,17 +35,17 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
         parent::setup();
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateAdminCommand')
-            ->setConstructorArgs([$this->getMock('PHPCI\\Store\\UserStore')])
-            ->setMethods(['reloadConfig'])
+            ->setConstructorArgs(array($this->getMock('PHPCI\\Store\\UserStore')))
+            ->setMethods(array('reloadConfig'))
             ->getMock()
         ;
 
         $this->dialog = $this->getMockBuilder('Symfony\\Component\\Console\\Helper\\DialogHelper')
-            ->setMethods([
+            ->setMethods(array(
                 'ask',
                 'askAndValidate',
                 'askHiddenResponse',
-            ])
+            ))
             ->getMock()
         ;
 
@@ -72,7 +72,7 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
         $this->dialog->expects($this->at(2))->method('askHiddenResponse')->will($this->returnValue('foobar123'));
 
         $commandTester = $this->getCommandTester();
-        $commandTester->execute([]);
+        $commandTester->execute(array());
 
         $this->assertEquals('User account created!' . PHP_EOL, $commandTester->getDisplay());
     }

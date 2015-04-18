@@ -15,6 +15,13 @@ use PHPUnit_Framework_TestCase;
 
 class AnsiConverterTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        if (version_compare(PHP_VERSION, '5.4.0', '<')) {
+            $this->markTestSkipped('External library do not support PHP 5.3');
+        }
+    }
+
     public function testConvert_convertToHtml()
     {
         $input = "\e[31mThis is red !\e[0m";

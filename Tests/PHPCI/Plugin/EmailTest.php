@@ -43,22 +43,23 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @var int buildStatus
      */
-    protected $buildStatus;
+    public $buildStatus;
 
     /**
      * @var array $message;
      */
-    protected $message;
+    public $message;
 
     /**
      * @var bool $mailDelivered
      */
-    protected $mailDelivered;
+    public $mailDelivered;
 
     public function setUp()
     {
         $this->message = array();
         $this->mailDelivered = true;
+        $self = $this;
 
         $this->mockProject = $this->getMock(
             '\PHPCI\Model\Project',
@@ -86,8 +87,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 
         $this->mockBuild->expects($this->any())
             ->method('getStatus')
-            ->will($this->returnCallback(function () {
-                return $this->buildStatus;
+            ->will($this->returnCallback(function () use ($self) {
+                return $self->buildStatus;
             }));
 
         $this->mockBuild->expects($this->any())
@@ -139,6 +140,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         // Reset current message.
         $this->message = array();
 
+        $self = $this;
+
         $this->testedEmailPlugin = $this->getMock(
             '\PHPCI\Plugin\Email',
             array('sendEmail'),
@@ -151,13 +154,13 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 
         $this->testedEmailPlugin->expects($this->any())
             ->method('sendEmail')
-            ->will($this->returnCallback(function ($to, $cc, $subject, $body) {
-                $this->message['to'][] = $to;
-                $this->message['cc'] = $cc;
-                $this->message['subject'] = $subject;
-                $this->message['body'] = $body;
+            ->will($this->returnCallback(function ($to, $cc, $subject, $body) use ($self) {
+                $self->message['to'][] = $to;
+                $self->message['cc'] = $cc;
+                $self->message['subject'] = $subject;
+                $self->message['body'] = $body;
 
-                return $this->mailDelivered;
+                return $self->mailDelivered;
             }));
     }
 

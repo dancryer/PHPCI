@@ -3,9 +3,8 @@
 namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Helper\BuildInterpolator;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class BuildInterpolatorTest extends ProphecyTestCase
+class BuildInterpolatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var BuildInterpolator

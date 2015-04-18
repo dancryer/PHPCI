@@ -3,11 +3,10 @@
 namespace Tests\PHPCI\Plugin\Command;
 
 use Symfony\Component\Console\Application;
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Helper\HelperSet;
 
-class InstallCommandTest extends ProphecyTestCase
+class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
     protected $config;
     protected $admin;

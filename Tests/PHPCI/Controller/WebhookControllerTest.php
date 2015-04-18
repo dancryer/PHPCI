@@ -10,9 +10,8 @@
 namespace Tests\PHPCI\Controller;
 
 use PHPCI\Controller\WebhookController;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class WebhookControllerTest extends ProphecyTestCase
+class WebhookControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function test_wrong_action_name_return_json_with_error()
     {

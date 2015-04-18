@@ -4,9 +4,8 @@ namespace Tests\PHPCI\Helper;
 
 use DateTime;
 use PHPCI\Helper\Lang;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class LangTest extends ProphecyTestCase
+class LangTest extends \PHPUnit_Framework_TestCase
 {
     public function testLang_UsePassedParameters()
     {

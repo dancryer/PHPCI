@@ -6,9 +6,8 @@ require_once __DIR__ . "/ExamplePlugins.php";
 
 use PHPCI\Plugin\Util\Executor;
 use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class ExecutorTest extends ProphecyTestCase
+class ExecutorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Executor

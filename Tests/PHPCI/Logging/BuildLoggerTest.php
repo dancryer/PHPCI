@@ -4,10 +4,9 @@ namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Logging\BuildLogger;
 use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Psr\Log\LogLevel;
 
-class BuildLoggerTest extends ProphecyTestCase
+class BuildLoggerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var BuildLogger

@@ -156,7 +156,7 @@ class Lang
             return null;
         }
 
-        require_once($langFile);
+        require($langFile);
 
         if (is_null($strings) || !is_array($strings) || !count($strings)) {
             return null;

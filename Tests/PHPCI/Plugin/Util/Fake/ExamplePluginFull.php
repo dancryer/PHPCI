@@ -8,7 +8,7 @@
  * @link         https://www.phptesting.org/
  */
 
-namespace Tests\PHPCI\Plugin\Util\Fixtures;
+namespace Tests\PHPCI\Plugin\Util\Fake;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;

@@ -329,7 +329,7 @@ class SettingsController extends Controller
         $field->setContainerClass('form-group');
         $form->addField($field);
 
-        $field = new Form\Element\Text('smtp_password');
+        $field = new Form\Element\Password('smtp_password');
         $field->setRequired(false);
         $field->setLabel(Lang::get('smtp_password'));
         $field->setClass('form-control');

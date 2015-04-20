@@ -2,62 +2,67 @@
 /**
  * PHPCI - Continuous Integration for PHP
  *
- * @copyright    Copyright 2014, Block 8 Limited.
+ * @copyright    Copyright 2014-2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
  * @link         https://www.phptesting.org/
  */
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
+use PHPCI\Helper\BuildInterpolator;
+use PHPCI\Helper\Environment;
+use PHPCI\Plugin;
 
 /**
-* Environment variable plugin
-* @author       Steve Kamerman <stevekamerman@gmail.com>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
-class Env implements \PHPCI\Plugin
+ * Environment variable plugin
+ *
+ * @author       Steve Kamerman <stevekamerman@gmail.com>
+ * @author       Adirelle <adirelle@gmail.com>
+ * @package      PHPCI\Plugin
+ */
+class Env implements Plugin
 {
-    protected $phpci;
-    protected $build;
-    protected $env_vars;
+    /**
+     * @var BuildInterpolator
+     */
+    protected $interpolator;
+
+    /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
+     * @var array
+     */
+    protected $options;
 
     /**
      * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     *
+     * @param Environment $environment
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(BuildInterpolator $interpolator, Environment $environment, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-        $this->env_vars = $options;
+        $this->interpolator = $interpolator;
+        $this->environment = $environment;
+        $this->options = $options;
     }
 
     /**
-    * Adds the specified environment variables to the builder environment
-    */
+     * Adds the specified environment variables to the builder environment
+     */
     public function execute()
     {
-        $success = true;
-        foreach ($this->env_vars as $key => $value) {
-            if (is_numeric($key)) {
-                // This allows the developer to specify env vars like " - FOO=bar" or " - FOO: bar"
-                $env_var = is_array($value)? key($value).'='.current($value): $value;
-            } else {
-                // This allows the standard syntax: "FOO: bar"
-                $env_var = "$key=$value";
-            }
-            
-            if (!putenv($this->phpci->interpolate($env_var))) {
-                $success = false;
-                $this->phpci->logFailure(Lang::get('unable_to_set_env'));
-            }
+        $vars = $this->environment->normaliseConfig($this->options);
+
+        foreach ($vars as $name => $value) {
+            $interpolatedName = $this->interpolator->interpolate($name);
+            $interpolatedValue = $this->interpolator->interpolate($value);
+            $this->environment[$interpolatedName] = $interpolatedValue;
         }
-        return $success;
+
+        return true;
     }
 }

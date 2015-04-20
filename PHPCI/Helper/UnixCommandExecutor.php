@@ -22,6 +22,8 @@ class UnixCommandExecutor extends BaseCommandExecutor
      */
     protected function findGlobalBinary($binary)
     {
-        return trim(shell_exec('which ' . $binary));
+        if ($this->executeCommand(array('which "%s"', $binary))) {
+            return trim($this->getLastOutput());
+        }
     }
 }

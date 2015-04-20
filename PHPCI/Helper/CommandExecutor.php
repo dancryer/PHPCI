@@ -12,11 +12,16 @@ namespace PHPCI\Helper;
 interface CommandExecutor
 {
     /**
-     * Executes shell commands. Accepts multiple arguments the first
-     * is the template and everything else is inserted in. c.f. sprintf
+     * Executes shell commands.
+     *
+     * If $args contains more than one value, the first value is issued as a template and formatted using sprintf
+     * with the remaining arguments.
+     *
+     * @param array $args Command.
+     *
      * @return bool Indicates success
      */
-    public function executeCommand();
+    public function executeCommand(array $args = array());
 
     /**
      * Returns the output from the last command run.
@@ -26,10 +31,9 @@ interface CommandExecutor
     /**
      * Find a binary required by a plugin.
      * @param string $binary
-     * @param string $buildPath the current build path
      * @return null|string
      */
-    public function findBinary($binary, $buildPath = null);
+    public function findBinary($binary);
 
     /**
      * Set the buildPath property.

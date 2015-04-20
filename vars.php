@@ -2,18 +2,18 @@
 
 // Define our APPLICATION_PATH, if not already defined:
 if (!defined('APPLICATION_PATH')) {
-    define('APPLICATION_PATH', dirname(__FILE__) . '/');
+    define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR);
     define('PHPCI_DIR', APPLICATION_PATH);
 }
 
 // Define our PHPCI_URL, if not already defined:
 if (!defined('PHPCI_URL') && isset($config)) {
-    define('PHPCI_URL', $config->get('phpci.url', '') . '/');
+    define('PHPCI_URL', $config->get('phpci.url', '') . DIRECTORY_SEPARATOR);
 }
 
 // Define PHPCI_BIN_DIR
 if (!defined('PHPCI_BIN_DIR')) {
-    define('PHPCI_BIN_DIR', PHPCI_DIR . 'vendor/bin/');
+    define('PHPCI_BIN_DIR', PHPCI_DIR . 'vendor' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR);
 }
 
 // Should PHPCI run the Shell plugin?

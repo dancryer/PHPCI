@@ -10,10 +10,12 @@
 namespace PHPCI;
 
 use PHPCI\Helper\BuildInterpolator;
+use PHPCI\Helper\Environment;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
+use PHPCI\Plugin\Env;
 use b8\Config;
 use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
@@ -73,6 +75,11 @@ class Builder implements LoggerAwareInterface
     protected $interpolator;
 
     /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
      * @var \PHPCI\Store\BuildStore
      */
     protected $store;
@@ -118,14 +125,17 @@ class Builder implements LoggerAwareInterface
             $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
         }
 
+        $this->environment = new Environment();
+
         $this->commandExecutor = new $executorClass(
             $this->buildLogger,
             PHPCI_DIR,
+            $this->environment,
             $this->quiet,
             $this->verbose
         );
 
-        $this->interpolator = new BuildInterpolator();
+        $this->interpolator = new BuildInterpolator($this->environment);
     }
 
     /**
@@ -268,7 +278,7 @@ class Builder implements LoggerAwareInterface
      */
     public function findBinary($binary)
     {
-        return $this->commandExecutor->findBinary($binary, $this->buildPath);
+        return $this->commandExecutor->findBinary($binary);
     }
 
     /**
@@ -290,11 +300,14 @@ class Builder implements LoggerAwareInterface
         $this->buildPath = PHPCI_DIR . 'PHPCI/build/' . $this->build->getId() . '/';
         $this->build->currentBuildPath = $this->buildPath;
 
-        $this->interpolator->setupInterpolationVars(
-            $this->build,
-            $this->buildPath,
-            PHPCI_URL
-        );
+        $this->environment->addBuildVariables($this->build, $this->buildPath);
+
+        $configEnv = $this->getSystemConfig('phpci.build.environment');
+        if ($configEnv) {
+            // Use the Env plugin to interpolate the configured variables
+            $env = new Env($this->interpolator, $this->environment, $configEnv);
+            $env->execute();
+        }
 
         $this->commandExecutor->setBuildPath($this->buildPath);
 
@@ -400,6 +413,22 @@ class Builder implements LoggerAwareInterface
             },
             null,
             'Swift_Mailer'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                return $self->environment;
+            },
+            null,
+            'PHPCI\Helper\Environment'
+        );
+
+        $pluginFactory->registerResource(
+            function () use ($self) {
+                return $self->interpolator;
+            },
+            null,
+            'PHPCI\Helper\BuildInterpolator'
         );
 
         return $pluginFactory;

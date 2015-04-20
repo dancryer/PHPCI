@@ -4,6 +4,7 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
 
@@ -34,48 +35,74 @@ abstract class BaseCommandExecutor implements CommandExecutor
      */
     protected $verbose;
 
+    /**
+     * @var string[]
+     */
     protected $lastOutput;
+
+    /**
+     * @var string
+     */
     protected $lastError;
 
+    /**
+     * @var bool
+     */
     public $logExecOutput = true;
 
     /**
      * The path which findBinary will look in.
+     *
      * @var string
      */
     protected $rootDir;
 
     /**
      * Current build path
+     *
      * @var string
      */
     protected $buildPath;
 
     /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
      * @param BuildLogger $logger
      * @param string      $rootDir
+     * @param Environment $environment
      * @param bool        $quiet
      * @param bool        $verbose
      */
-    public function __construct(BuildLogger $logger, $rootDir, &$quiet = false, &$verbose = false)
-    {
+    public function __construct(
+        BuildLogger $logger,
+        $rootDir,
+        Environment $environment = null,
+        &$quiet = false,
+        &$verbose = false
+    ) {
         $this->logger = $logger;
         $this->quiet = $quiet;
         $this->verbose = $verbose;
         $this->lastOutput = array();
         $this->rootDir = $rootDir;
+        $this->environment = $environment ? $environment : new Environment();
     }
 
     /**
      * Executes shell commands.
+     *
      * @param array $args
+     *
      * @return bool Indicates success
      */
-    public function executeCommand($args = array())
+    public function executeCommand(array $args = array())
     {
         $this->lastOutput = array();
 
-        $command = call_user_func_array('sprintf', $args);
+        $command = $this->formatArguments($args);
 
         if ($this->quiet) {
             $this->logger->log('Executing: ' . $command);
@@ -90,7 +117,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
-        $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
+        $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, $this->environment->getArrayCopy());
 
         if (is_resource($process)) {
             fclose($pipes[0]);
@@ -125,6 +152,24 @@ abstract class BaseCommandExecutor implements CommandExecutor
         return $rtn;
     }
 
+    /** Format the arguments into a single command.
+     *
+     * @param array $arguments
+     * @return string
+     */
+    protected function formatArguments(array $arguments)
+    {
+        switch (count($arguments)) {
+            case 0:
+                // todo: throw an exception ?
+                return '';
+            case 1:
+                return $arguments[0];
+            default:
+                return call_user_func_array('sprintf', $arguments);
+        }
+    }
+
     /**
      * Returns the output from the last command run.
      */
@@ -143,27 +188,20 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
     /**
      * Find a binary required by a plugin.
-     * @param string $binary
-     * @param null $buildPath
-     * @return null|string
+     *
+     * @param array|string $binary
+     *
+     * @return string|null
      */
-    public function findBinary($binary, $buildPath = null)
+    public function findBinary($binary)
     {
         $binaryPath = null;
-        $composerBin = $this->getComposerBinDir(realpath($buildPath));
-
         if (is_string($binary)) {
             $binary = array($binary);
         }
 
         foreach ($binary as $bin) {
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
-
-            if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-                $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
-                $binaryPath = $composerBin . '/' . $bin;
-                break;
-            }
 
             if (is_file($this->rootDir . $bin)) {
                 $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
@@ -189,36 +227,16 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
     /**
      * Find a binary which is installed globally on the system
+     *
      * @param string $binary
+     *
      * @return null|string
      */
     abstract protected function findGlobalBinary($binary);
 
     /**
-     * Try to load the composer.json file in the building project
-     * If the bin-dir is configured, return the full path to it
-     * @param string $path Current build path
-     * @return string|null
-     */
-    public function getComposerBinDir($path)
-    {
-        if (is_dir($path)) {
-            $composer = $path.'/composer.json';
-            if (is_file($composer)) {
-                $json = json_decode(file_get_contents($composer));
-
-                if (isset($json->config->{"bin-dir"})) {
-                    return $path.'/'.$json->config->{"bin-dir"};
-                } elseif (is_dir($path . '/vendor/bin')) {
-                    return $path  . '/vendor/bin';
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Set the buildPath property.
+     *
      * @param string $path
      */
     public function setBuildPath($path)

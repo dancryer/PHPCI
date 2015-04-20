@@ -66,9 +66,11 @@ var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
                 '</tr>' +
                 '<tr id="collapse'+i+'" class="collapse" >' +
                 '<td></td><td colspan="2">' +
-                    '<small><strong>Name:</strong> '+tests[i].name+'</small><br />' +
-                    '<small><strong>File:</strong> '+tests[i].file+'</small><br />' +
-                    (tests[i].message ? '<small><strong>Message:</strong> '+tests[i].message+'</small>' : '') +
+                    '<small><strong>'+Lang.get('name')+':</strong> '+tests[i].name+'</small><br />' +
+                    '<small><strong>'+Lang.get('file')+':</strong> '+tests[i].file+'</small><br />' +
+                    (tests[i].message
+                        ? '<small><strong>'+Lang.get('message')+':</strong> '+tests[i].message+'</small>'
+                        : '') +
                 '</td>' +
                 '</tr>');
 
@@ -100,9 +102,7 @@ var codeceptionPlugin = ActiveBuild.UiPlugin.extend({
 
         var row = $('<tr>' +
             '<td colspan="3">' +
-            '<strong>'+data.tests+'</strong> tests carried out in ' +
-            '<strong>'+data.timetaken+'</strong> seconds. ' +
-            '<strong>'+data.failures+'</strong> failures.' +
+            Lang.get('codeception_synopsis', data.tests, data.timetaken, data.failures) +
             '</td>' +
             '</tr>');
 

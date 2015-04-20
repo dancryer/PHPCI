@@ -190,6 +190,12 @@ PHPCI',
     'technical_debt' => 'Technical Debt',
     'behat' => 'Behat',
 
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Time',
+    'codeception_synopsis' => '<strong>%1$d</strong> tests carried out in <strong>%2$f</strong> seconds.
+                               <strong>%3$d</strong> failures.',
+
     'file' => 'File',
     'line' => 'Line',
     'class' => 'Class',

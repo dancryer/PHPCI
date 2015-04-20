@@ -132,7 +132,6 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, 'runConfigFile'));
         } else {
-
             $this->phpci->logExecOutput(false);
 
             $codecept = $this->phpci->findBinary('codecept');

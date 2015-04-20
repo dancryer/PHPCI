@@ -38,31 +38,6 @@ class Stash implements \PHPCI\Plugin
     protected $options;
 
     /**
-     * @var string
-     */
-    protected $phpciHostname = null;
-
-    /**
-     * @var string
-     */
-    protected $stashHostname = null;
-
-    /**
-     * @var integer
-     */
-    protected $stashPort = 7990;
-
-    /**
-     * @var string
-     */
-    protected $username = null;
-
-    /**
-     * @var string
-     */
-    protected $password = null;
-
-    /**
      * Set up the plugin, configure options, etc.
      * @param Builder $phpci
      * @param Build $build
@@ -76,8 +51,6 @@ class Stash implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->build        = $build;
         $this->options      = $options;
-        
-        $this->setProperties();
     }
 
     /**
@@ -85,72 +58,53 @@ class Stash implements \PHPCI\Plugin
      */
     public function execute()
     {
+        $required_keys = array('phpci_hostname', 'stash_hostname', 'stash_username', 'stash_password');
+
+        if (count(array_diff($required_keys, array_keys(array_filter($this->options)))) != 0) {
+            $this->phpci->log("All of the values '" . implode("', '", $required_keys) . " must be specified.");
+            return false;
+        }
+
+        $phpciHostname = $this->options['phpci_hostname'];
+        $stashHostname = $this->options['stash_hostname'];
+        $stashPort = (isset($this->options['stash_port'])) ? $this->options['stash_port'] : 7990;
+        $stashUsername = $this->options['stash_username'];
+        $stashPassword = $this->options['stash_password'];
 
         $buildStatus  = $this->build->isSuccessful() ? "SUCCESSFUL" : "FAILED";
         $buildId  = $this->build->getId();
         $commitId  = $this->build->getCommitId();
         $projectName  = $this->build->getProject()->getTitle();
 
-        $buildUrl = "http://" . $this->phpciHostname . "/build/view/" . $buildId;
-        $url = 'http://' . $this->stashHostname . ':' . $this->stashPort;
+        $buildUrl = "http://" . $phpciHostname . "/build/view/" . $buildId;
+        $url = 'http://' . $stashHostname . ':' . $stashPort;
         $url .= '/rest/build-status/1.0/commits/' . $commitId;
 
         $data = array("state" => $buildStatus, "key" => $projectName, "url" => $buildUrl);
         $data_string = json_encode($data);
-         
-        try {
-            $handle = curl_init($url);
-            curl_setopt($handle, CURLOPT_USERPWD, $this->username . ":" . $this->password);
-            curl_setopt($handle, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data_string);
-            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt(
-                $handle,
-                CURLOPT_HTTPHEADER,
-                array(
-                    'Content-Type: application/json',
-                    'Content-Length: ' . strlen($data_string)
-                )
-            );
-          
-            $result = curl_exec($handle);
+     
+        $handle = curl_init($url);
+        curl_setopt($handle, CURLOPT_USERPWD, $stashUsername . ":" . $stashPassword);
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $handle,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string)
+            )
+        );
+      
+        $result = curl_exec($handle);
 
-            $this->phpci->log("Sent to Stash.");
+        $this->phpci->log("Sent to Stash.");
 
-            if ($result === false) {
-                $this->phpci->log("Unknown issue with curl request");
-                return false;
-            }
-            return true;
-        } catch (Exception $e) {
-            $this->phpci->log($e->getMessage);
+        if ($result === false) {
+            $this->phpci->log("Unknown issue with curl request");
             return false;
         }
-    }
-
-    /**
-     * Sets the class properties from the YAML config
-     */
-    protected function setProperties()
-    {
-        if (isset($this->options['phpci_hostname'])) {
-            $this->phpciHostname = $this->options['phpci_hostname'];
-        }
-
-        if (isset($this->options['stash_hostname'])) {
-            $this->stashHostname = $this->options['stash_hostname'];
-        }
-
-        if (isset($this->options['stash_port'])) {
-            $this->stashPort = $this->options['stash_port'];
-        }
-
-        if (isset($this->options['username'])) {
-            $this->username = $this->options['username'];
-        }
-
-        if (isset($this->options['password'])) {
-            $this->password = $this->options['password'];
-        }
+        return true;
     }
 }

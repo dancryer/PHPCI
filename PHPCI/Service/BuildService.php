@@ -9,6 +9,7 @@
 
 namespace PHPCI\Service;
 
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Store\BuildStore;

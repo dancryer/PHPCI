@@ -59,6 +59,7 @@ class BuildService
             $build->setCommitId($commitId);
         } else {
             $build->setCommitId('Manual');
+            $build->setCommitMessage(Lang::get('manual_build'));
         }
 
         if (!is_null($branch)) {

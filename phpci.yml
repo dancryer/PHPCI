@@ -36,3 +36,4 @@ failure:
   email:
     committer: true
     cc: ["php-ci@googlegroups.com"]
+    template: long

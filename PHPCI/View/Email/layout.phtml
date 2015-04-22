@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <style>
+            <?php include(__DIR__ . '/../../../public/assets/css/ansi-colors.css'); ?>
+            body { font-family: arial, verdana, sans-serif; font-size: 15px; }
+            header { font-size: 25px; margin-bottom: 15px; }
+        </style>
+    </head>
+    <body>
+        <div style="background: #<?php print $build->isSuccessful() ? '090' : '900'; ?>; padding: 25px;">
+            <div style="background: #fff; padding: 15px; border-radius: 5px">
+                <header><?php print $project->getTitle(); ?> - Build #<?php print $build->getId(); ?></header>
+                <div>
+                    <p>
+                        Your commit <strong><?php print $build->getCommitId(); ?></strong> generated a
+                        <?php print $build->isSuccessful() ? 'successful' : 'failed'; ?> build in project
+                        <strong><?php print $project->getTitle(); ?></strong>.
+                    </p>
+                    <?php print $content; ?>
+                </div>
+                <footer>
+                    You can review <a href="<?php print $build->getCommitLink(); ?>">your commit</a>
+                    and the <a href="<?php print PHPCI_URL . 'build/view/' . $build->getId(); ?>">build log</a>.
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

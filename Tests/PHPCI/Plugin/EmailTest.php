@@ -349,7 +349,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->testedEmailPlugin->execute();
 
         $this->assertContains('Passing', $this->message['subject']);
-        $this->assertContains('successfull', $this->message['body']);
+        $this->assertContains('successful', $this->message['body']);
     }
 
     /**

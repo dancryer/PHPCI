@@ -1,0 +1,2 @@
+<p style="margin: 10px; background: #fafafa"><?php print $build->getCommitMessage(); ?></p>
+<pre class="ansi_color_bg_black ansi_color_fg_white" style="padding: 4px"><?php print \PHPCI\Helper\AnsiConverter::convert($build->getLog()); ?></pre>

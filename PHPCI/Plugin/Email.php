@@ -70,12 +70,21 @@ class Email implements \PHPCI\Plugin
 
         $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
         $projectName  = $this->build->getProject()->getTitle();
-        $mailTemplate = $this->build->isSuccessful() ? 'Email/success' : 'Email/failed';
+        $mailTemplate = $this->build->isSuccessful() ? 'Email/long' : 'Email/short';
+
+        if (!empty($this->options['template'])) {
+            $mailTemplate = 'Email/' . $this->options['template'];
+        }
 
         $view = new View($mailTemplate);
         $view->build = $this->build;
         $view->project = $this->build->getProject();
-        $body = $view->render();
+
+        $layout = new View('Email/layout');
+        $layout->build = $this->build;
+        $layout->project = $this->build->getProject();
+        $layout->content = $view->render();
+        $body = $layout->render();
 
         $sendFailures = $this->sendSeparateEmails(
             $addresses,

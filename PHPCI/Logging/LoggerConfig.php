@@ -9,6 +9,7 @@
 
 namespace PHPCI\Logging;
 
+use Monolog\ErrorHandler;
 use Monolog\Logger;
 
 /**
@@ -67,7 +68,7 @@ class LoggerConfig
         }
 
         $logger = new Logger($name, $handlers);
-        Handler::getInstance()->register($logger);
+        ErrorHandler::register($logger);
         $this->cache[$name] = $logger;
 
         return $logger;

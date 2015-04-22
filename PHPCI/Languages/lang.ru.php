@@ -112,7 +112,7 @@ PHPCI',
                                 (если вы не добавили файл phpci.yml в репозиторий вашего проекта)',
     'default_branch' => 'Ветка по умолчанию',
     'allow_public_status' => 'Разрешить публичный статус и изображение (статуса) для проекта',
-    'archived' => 'Archived',
+    'archived' => 'Запакован',
     'save_project' => 'Сохранить проект',
 
     'error_mercurial' => 'URL репозитория Mercurial должен начинаться с http:// или https://',

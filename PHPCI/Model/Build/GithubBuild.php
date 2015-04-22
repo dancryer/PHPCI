@@ -221,6 +221,10 @@ class GithubBuild extends RemoteGitBuild
         $helper = new Diff();
         $lines = $helper->getLinePositions($diff);
 
-        return $lines[$line];
+        if ($lines !== null && array_key_exists($line, $lines)) {
+            return $lines[$line];
+        }
+
+        return null;
     }
 }

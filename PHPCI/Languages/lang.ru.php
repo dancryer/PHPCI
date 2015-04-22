@@ -337,10 +337,10 @@ PHPCI',
     'incorrect_format' => 'Неверный формат',
 
     // Create Build Command
-    'create_build_project' => 'Create a build for a project',
-    'project_id_argument' => 'A project ID',
-    'commit_id_option' => 'Commit ID to build',
-    'branch_name_option' => 'Branch to build',
+    'create_build_project' => 'Создать сборку проекта',
+    'project_id_argument' => 'ID проекта',
+    'commit_id_option' => 'ID коммита для сборки',
+    'branch_name_option' => 'Ветка для сборки',
 
     // Run Command
     'run_all_pending' => 'Запустить все ожидающие PHPCI сборки.',

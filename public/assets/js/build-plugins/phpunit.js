@@ -68,18 +68,26 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
         var counts = { success: 0, fail: 0, error: 0, skipped: 0, todo: 0 }, total = 0;
 
         for (var i in tests) {
-            var severity = tests[i].severity || 'success',
-                message = tests[i].message || ('<i>' + Lang.get('test_no_message') + '</i>');
+            var content = $('<td colspan="3"></td>'),
+                message = $('<div></div>').appendTo(content),
+                severity = tests[i].severity || (tests[i].pass ? 'success' : 'failed');
+
+            if (tests[i].message) {
+                message.text(tests[i].message);
+            } else if (tests[i].test && tests[i].suite) {
+                message.text(tests[i].suite + '::' + tests[i].test);
+            } else {
+                message.html('<i>' + Lang.get('test_no_message') + '</i>');
+            }
+
+            if (tests[i].data) {
+                content.append('<div>' + this.repr(tests[i].data) + '</div>');
+            }
+
+            $('<tr class="'+  severity + '"></tr>').append(content).appendTo(tbody);
+
             counts[severity]++;
             total++;
-            tbody.append(
-                '<tr class="'+  severity + '">' +
-                    '<td colspan="3">' +
-                        '<div>' + message + '</div>' +
-                        (tests[i].data ? '<div>' + this.repr(tests[i].data) + '</div>' : '') +
-                    '</td>' +
-                '</tr>'
-            );
         }
 
         var checkboxes = $('<th/>');

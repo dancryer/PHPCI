@@ -74,6 +74,8 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
 
             if (tests[i].message) {
                 message.text(tests[i].message);
+            } else if (tests[i].test && tests[i].suite) {
+                message.text(tests[i].suite + '::' + tests[i].test);
             } else {
                 message.html('<i>' + Lang.get('test_no_message') + '</i>');
             }

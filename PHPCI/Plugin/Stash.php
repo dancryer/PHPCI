@@ -58,10 +58,11 @@ class Stash implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $required_keys = array('phpci_hostname', 'stash_hostname', 'stash_username', 'stash_password');
+        $required_keys = array('phpci_hostname', 'stash_hostname', 'stash_username', 'stash_auth_token');
 
         if (count(array_diff($required_keys, array_keys(array_filter($this->options)))) != 0) {
             $this->phpci->log("All of the values '" . implode("', '", $required_keys) . " must be specified.");
+            error_log("All of the values '" . implode("', '", $required_keys) . " must be specified.");
             return false;
         }
 
@@ -69,7 +70,7 @@ class Stash implements \PHPCI\Plugin
         $stashHostname = $this->options['stash_hostname'];
         $stashPort = (isset($this->options['stash_port'])) ? $this->options['stash_port'] : 7990;
         $stashUsername = $this->options['stash_username'];
-        $stashPassword = $this->options['stash_password'];
+        $stashToken = $this->options['stash_auth_token'];
 
         $buildStatus  = $this->build->isSuccessful() ? "SUCCESSFUL" : "FAILED";
         $buildId  = $this->build->getId();
@@ -83,19 +84,17 @@ class Stash implements \PHPCI\Plugin
         $data = array("state" => $buildStatus, "key" => $projectName, "url" => $buildUrl);
         $data_string = json_encode($data);
      
+        $curlHeaders = array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string),
+            "X-Auth-User:$stashUsername",
+            "X-Auth-Token:$stashToken"
+        );
         $handle = curl_init($url);
-        curl_setopt($handle, CURLOPT_USERPWD, $stashUsername . ":" . $stashPassword);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, $curlHeaders);
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $handle,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string)
-            )
-        );
       
         $result = curl_exec($handle);
 
@@ -103,6 +102,9 @@ class Stash implements \PHPCI\Plugin
 
         if ($result === false) {
             $this->phpci->log("Unknown issue with curl request");
+            $this->phpci->log($result);
+            error_log("Unknown issue with curl request");
+            error_log($result);
             return false;
         }
         return true;

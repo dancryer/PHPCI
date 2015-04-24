@@ -150,11 +150,11 @@ class Factory
     }
 
     /**
-     * @param null $type
-     * @param null $name
-     * @return null
+     * @param string $type
+     * @param string $name
+     * @return mixed
      */
-    private function getResourceFor($type = null, $name = null)
+    public function getResourceFor($type = null, $name = null)
     {
         $fullId = $this->getInternalID($type, $name);
         if (isset($this->container[$fullId])) {

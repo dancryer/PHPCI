@@ -71,7 +71,7 @@ class Email implements \PHPCI\Plugin
 
         $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
         $projectName  = $this->build->getProject()->getTitle();
-        $mailTemplate = $this->build->isSuccessful() ? 'Email/long' : 'Email/short';
+        $mailTemplate = $this->build->isSuccessful() ? 'Email/short' : 'Email/long';
 
         if (!empty($this->options['template'])) {
             $customTemplate = 'Email/' . $this->options['template'];

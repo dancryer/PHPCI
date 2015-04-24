@@ -2,12 +2,12 @@
     <head>
         <style>
             <?php include(__DIR__ . '/../../../public/assets/css/ansi-colors.css'); ?>
-            body { font-family: arial, verdana, sans-serif; font-size: 15px; padding: 25px; }
+            body { font-family: arial, verdana, sans-serif; font-size: 15px; }
             header { font-size: 25px; margin-bottom: 15px; }
         </style>
     </head>
     <body>
-        <div style="background: #<?php print $build->isSuccessful() ? '090' : '900'; ?>;">
+        <div style="background: #<?php print $build->isSuccessful() ? '090' : '900'; ?>; padding: 25px;">
             <div style="background: #fff; padding: 15px; border-radius: 5px">
                 <header><?php print $project->getTitle(); ?> - Build #<?php print $build->getId(); ?></header>
                 <div>

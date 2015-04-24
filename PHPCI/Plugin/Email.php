@@ -14,6 +14,7 @@ use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Helper\Email as EmailHelper;
+use Psr\Log\LogLevel;
 
 /**
 * Email Plugin - Provides simple email capability to PHPCI.
@@ -73,7 +74,15 @@ class Email implements \PHPCI\Plugin
         $mailTemplate = $this->build->isSuccessful() ? 'Email/long' : 'Email/short';
 
         if (!empty($this->options['template'])) {
-            $mailTemplate = 'Email/' . $this->options['template'];
+            $customTemplate = 'Email/' . $this->options['template'];
+            if (View::exists($customTemplate)) {
+                $mailTemplate = $customTemplate;
+            } else {
+                $this->phpci->log(
+                    sprintf('Unknown mail template "%s", falling back to default.', $this->options['template']),
+                    LogLevel::WARNING
+                );
+            }
         }
 
         $view = new View($mailTemplate);

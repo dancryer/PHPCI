@@ -114,6 +114,7 @@ i din foretrukne hosting-platform.',
     'default_branch' => 'Default branch navn',
     'allow_public_status' => 'Tillad offentlig status-side og -billede for dette projekt?',
     'archived' => 'Archived',
+    'archived_menu' => 'Archived',
     'save_project' => 'Gem Projekt',
 
     'error_mercurial' => 'Mercurial repository-URL skal starte med http:// eller https://',

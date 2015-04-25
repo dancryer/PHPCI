@@ -115,6 +115,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'default_branch' => 'Name des Standardbranches',
     'allow_public_status' => 'Öffentliche Statusseite und -bild für dieses Projekt einschalten?',
     'archived' => 'Archived',
+    'archived_menu' => 'Archived',
     'save_project' => 'Projekt speichern',
 
     'error_mercurial' => 'Mercurial Repository-URL muss mit http://, oder https:// beginnen',

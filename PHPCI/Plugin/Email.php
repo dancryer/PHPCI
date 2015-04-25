@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use Exception;
 use b8\View;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
@@ -71,21 +72,17 @@ class Email implements \PHPCI\Plugin
 
         $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
         $projectName  = $this->build->getProject()->getTitle();
-        $mailTemplate = $this->build->isSuccessful() ? 'Email/short' : 'Email/long';
 
-        if (!empty($this->options['template'])) {
-            $customTemplate = 'Email/' . $this->options['template'];
-            if (View::exists($customTemplate)) {
-                $mailTemplate = $customTemplate;
-            } else {
-                $this->phpci->log(
-                    sprintf('Unknown mail template "%s", falling back to default.', $this->options['template']),
-                    LogLevel::WARNING
-                );
-            }
+        try {
+            $view = $this->getMailTemplate();
+        } catch (Exception $e) {
+            $this->phpci->log(
+                sprintf('Unknown mail template "%s", falling back to default.', $this->options['template']),
+                LogLevel::WARNING
+            );
+            $view = $this->getDefaultMailTemplate();
         }
 
-        $view = new View($mailTemplate);
         $view->build = $this->build;
         $view->project = $this->build->getProject();
 
@@ -115,7 +112,7 @@ class Email implements \PHPCI\Plugin
      * @param string $body Email body
      * @return array                      Array of failed addresses
      */
-    public function sendEmail($toAddress, $ccList, $subject, $body)
+    protected function sendEmail($toAddress, $ccList, $subject, $body)
     {
         $email = new EmailHelper();
 
@@ -186,6 +183,7 @@ class Email implements \PHPCI\Plugin
 
     /**
      * Get the list of email addresses to CC.
+     *
      * @return array
      */
     protected function getCcAddresses()
@@ -199,5 +197,31 @@ class Email implements \PHPCI\Plugin
         }
 
         return $ccAddresses;
+    }
+
+    /**
+     * Get the mail template used to sent the mail.
+     *
+     * @return View
+     */
+    protected function getMailTemplate()
+    {
+        if (isset($this->options['template'])) {
+            return new View('Email/' . $this->options['template']);
+        }
+
+        return $this->getDefaultMailTemplate();
+    }
+
+    /**
+     * Get the default mail template.
+     *
+     * @return View
+     */
+    protected function getDefaultMailTemplate()
+    {
+        $template = $this->build->isSuccessful() ? 'short' : 'long';
+
+        return new View('Email/' . $template);
     }
 }

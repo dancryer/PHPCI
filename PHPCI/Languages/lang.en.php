@@ -295,6 +295,17 @@ PHPCI',
     'search_packagist_for_more' => 'Search Packagist for more packages',
     'search' => 'Search &raquo;',
 
+    // Summary plugin
+    'build-summary' => 'Summary',
+    'stage' => 'Stage',
+    'duration' => 'Duration',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Setup',
+    'stage_test' => 'Test',
+    'stage_complete' => 'Complete',
+    'stage_success' => 'Success',
+    'stage_failure' => 'Failure',
+
     // Installer
     'installation_url' => 'PHPCI Installation URL',
     'db_host' => 'Database Host',

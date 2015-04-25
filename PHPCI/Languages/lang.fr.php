@@ -286,6 +286,17 @@ PHPCI',
     'search_packagist_for_more' => 'Rechercher sur Packagist pour trouver plus de paquets',
     'search' => 'Rechercher &raquo;',
 
+    // Summary plugin
+    'build-summary' => 'Résumé',
+    'stage' => 'Étape',
+    'duration' => 'Durée',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Préparation',
+    'stage_test' => 'Test',
+    'stage_complete' => 'Terminé',
+    'stage_success' => 'Succes',
+    'stage_failure' => 'Échec',
+
     // Installer
     'installation_url' => 'URL d\'installation de PHPCI',
     'db_host' => 'Hôte de la BDD',

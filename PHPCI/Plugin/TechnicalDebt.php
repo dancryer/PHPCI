@@ -190,7 +190,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 if (false !== $beforeString) {
                     $lines = explode(PHP_EOL, $beforeString);
                     $lineNumber = count($lines);
-                    $content = trim($allLines[$lineNumber - 1]);
+                    $content = htmlspecialchars(trim($allLines[$lineNumber - 1]));
 
                     $errorCount++;
                     $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");

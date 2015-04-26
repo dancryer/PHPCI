@@ -221,10 +221,13 @@ class Build extends BuildBase
     /**
      * Return the path to run this build into.
      *
-     * @return string
+     * @return string|null
      */
     public function getBuildPath()
     {
+        if (!$this->getId()) {
+            return null;
+        }
         return PHPCI_BUILD_ROOT_DIR . $this->getId();
     }
 
@@ -235,7 +238,7 @@ class Build extends BuildBase
     {
         $buildPath = $this->getBuildPath();
 
-        if (!is_dir($buildPath)) {
+        if (!$buildPath || !is_dir($buildPath)) {
             return;
         }
 

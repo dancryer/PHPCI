@@ -65,16 +65,11 @@ class Pgsql extends AbstractInterpolatingPlugin
     */
     public function execute()
     {
-        try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
+        $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
 
-            foreach ($this->queries as $query) {
-                $pdo->query($this->interpolator->interpolate($query));
-            }
-        } catch (\Exception $ex) {
-            $this->logger->logFailure($ex->getMessage());
-            return false;
+        foreach ($this->queries as $query) {
+            $pdo->query($this->interpolator->interpolate($query));
         }
         return true;
     }

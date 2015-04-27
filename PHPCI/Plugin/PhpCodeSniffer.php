@@ -197,7 +197,7 @@ class PhpCodeSniffer extends AbstractExecutingPlugin implements PHPCI\ZeroConfig
         $data = json_decode(trim($output), true);
 
         if (!is_array($data)) {
-            $this->logger->log($output);
+            $this->logger->error($output);
             throw new \Exception(PHPCI\Helper\Lang::get('could_not_process_report'));
         }
 

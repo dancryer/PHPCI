@@ -128,7 +128,7 @@ class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfi
         $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
-            $this->logger->log($xmlString);
+            $this->logger->error($xmlString);
             throw new \Exception('Could not process PHPMD report XML.');
         }
 

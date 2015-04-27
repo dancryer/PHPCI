@@ -200,23 +200,14 @@ class Phar extends AbstractPlugin
      */
     public function execute()
     {
-        $success = false;
+        $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
+        $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
 
-        try {
-            $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
-            $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
-
-            $stub = $this->getStubContent();
-            if ($stub) {
-                $phar->setStub($stub);
-            }
-
-            $success = true;
-        } catch (Exception $e) {
-            $this->getPHPCI()->log(Lang::get('phar_internal_error'));
-            $this->getPHPCI()->log($e->getMessage());
+        $stub = $this->getStubContent();
+        if ($stub) {
+            $phar->setStub($stub);
         }
 
-        return $success;
+        return true;
     }
 }

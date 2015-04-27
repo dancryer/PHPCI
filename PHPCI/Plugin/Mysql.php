@@ -75,24 +75,19 @@ class Mysql extends AbstractInterpolatingPlugin
     */
     public function execute()
     {
-        try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
+        $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
 
-            foreach ($this->queries as $query) {
-                if (!is_array($query)) {
-                    // Simple query
-                    $pdo->query($this->interpolator->interpolate($query));
-                } elseif (isset($query['import'])) {
-                    // SQL file execution
-                    $this->executeFile($query['import']);
-                } else {
-                    throw new \Exception(Lang::get('invalid_command'));
-                }
+        foreach ($this->queries as $query) {
+            if (!is_array($query)) {
+                // Simple query
+                $pdo->query($this->interpolator->interpolate($query));
+            } elseif (isset($query['import'])) {
+                // SQL file execution
+                $this->executeFile($query['import']);
+            } else {
+                throw new \Exception(Lang::get('invalid_command'));
             }
-        } catch (\Exception $ex) {
-            $this->logger->logFailure($ex->getMessage());
-            return false;
         }
         return true;
     }

@@ -129,10 +129,7 @@ class Codeception extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlu
             $configPath = $this->buildPath . $configPath;
             $success = $this->executor->executeCommand($cmd, $this->buildPath, $configPath);
 
-            $this->logger->log(
-                'Codeception XML path: '. $this->buildPath . $this->path . '_output/report.xml',
-                Loglevel::DEBUG
-            );
+            $this->logger->debug('Codeception XML path: '. $this->buildPath . $this->path . '_output/report.xml');
             $xml = file_get_contents($this->buildPath . $this->path . '_output/report.xml', false);
 
             $parser = new Parser($this->phpci, $xml);

@@ -72,11 +72,11 @@ class Atoum extends AbstractExecutingPlugin
 
         if (count(preg_grep("/Success \(/", $output)) == 0) {
             $status = false;
-            $this->logger->log($output);
+            $this->logger->notice($output);
         }
         if (count($output) == 0) {
             $status = false;
-            $this->logger->log(Lang::get('no_tests_performed'));
+            $this->logger->warning(Lang::get('no_tests_performed'));
         }
 
         return $status;

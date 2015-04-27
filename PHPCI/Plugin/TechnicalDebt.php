@@ -111,7 +111,7 @@ class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 
         list($errorCount, $data) = $this->getErrorList();
 
-        $this->logger->log("Found $errorCount instances of " . implode(', ', $this->searches));
+        $this->logger->notice("Found $errorCount instances of " . implode(', ', $this->searches));
 
         $this->build->storeMeta('technical_debt-warnings', $errorCount);
         $this->build->storeMeta('technical_debt-data', $data);

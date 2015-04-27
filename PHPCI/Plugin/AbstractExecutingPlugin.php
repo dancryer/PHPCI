@@ -33,18 +33,14 @@ abstract class AbstractExecutingPlugin extends AbstractPlugin
      *
      * @param Builder $builder
      * @param Build   $build
-     * @param BuildLogger $logger
      * @param CommandExecutor $executor
-     * @param array   $options
      */
     public function __construct(
         Builder $builder,
         Build $build,
-        BuildLogger $logger,
-        CommandExecutor $executor,
-        array $options = array()
+        CommandExecutor $executor
     ) {
         $this->executor = $executor;
-        parent:__construct($builder, $build, $logger, $options);
+        parent:__construct($builder, $build);
     }
 }

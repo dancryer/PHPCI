@@ -156,7 +156,6 @@ class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlu
             $tapParser = new TapParser($tapString);
             $output = $tapParser->parse();
         } catch (\Exception $ex) {
-            $this->logger->logFailure($tapString);
             throw $ex;
         }
 

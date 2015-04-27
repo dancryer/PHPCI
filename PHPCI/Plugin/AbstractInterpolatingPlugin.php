@@ -11,39 +11,25 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\BuildInterpolator;
-use PHPCI\Helper\CommandExecutor;
-use PHPCI\Model\Build;
+use PHPCI\Plugin\Util\InterpolatorAwareInterface;
 
 /**
  * Asbtract plugin which uses a BuildInterpolator.
  */
-abstract class AbstractInterpolatingPlugin extends AbstractExecutingPlugin
+abstract class AbstractInterpolatingPlugin extends AbstractExecutingPlugin implements InterpolatorAwareInterface
 {
     /**
      * @var BuildInterpolator
      */
     protected $interpolator;
 
-    /** Standard constructor.
+    /**
      *
-     * @param Builder $phpci
-     * @param Build $build
-     * @param BuildLogger $logger
-     * @param CommandExecutor $executor
      * @param BuildInterpolator $interpolator
-     * @param array $options
      */
-    public function __construct(
-        Builder $phpci,
-        Build $build,
-        BuildLogger $logger,
-        CommandExecutor $executor,
-        BuildInterpolator $interpolator,
-        array $options = array()
-    ) {
+    public function setInterpolator(BuildInterpolator $interpolator)
+    {
         $this->interpolator = $interpolator;
-        parent::__construct($phpci, $build, $logger, $executor, $options);
     }
 }

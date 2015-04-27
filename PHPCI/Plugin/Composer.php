@@ -85,10 +85,10 @@ class Composer extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';
 
         if ($this->preferDist) {
-            $this->logger->log('Using --prefer-dist flag');
+            $this->logger->notice('Using --prefer-dist flag');
             $cmd .= '--prefer-dist';
         } else {
-            $this->logger->log('Using --prefer-source flag');
+            $this->logger->notice('Using --prefer-source flag');
             $cmd .= '--prefer-source';
         }
 

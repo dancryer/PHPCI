@@ -53,16 +53,11 @@ class Sqlite extends AbstractPlugin
      */
     public function execute()
     {
-        try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo = new PDO('sqlite:' . $this->path, $opts);
+        $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO('sqlite:' . $this->path, $opts);
 
-            foreach ($this->queries as $query) {
-                $pdo->query($this->interpolator->interpolate($query));
-            }
-        } catch (\Exception $ex) {
-            $this->logger->logFailure($ex->getMessage());
-            return false;
+        foreach ($this->queries as $query) {
+            $pdo->query($this->interpolator->interpolate($query));
         }
         return true;
     }

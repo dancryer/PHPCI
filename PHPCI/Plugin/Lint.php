@@ -126,7 +126,7 @@ class Lint extends AbstractExecutingPlugin
         $success = true;
 
         if (!$this->executor->executeCommand($php . ' -l "%s"', $this->buildPath . $path)) {
-            $this->logger->logFailure($path);
+            $this->logger->error($path);
             $success = false;
         }
 

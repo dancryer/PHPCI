@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
  * PHP Lint Plugin - Provides access to PHP lint functionality.
@@ -19,32 +17,19 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint implements PHPCI\Plugin
+class Lint extends AbstractExecutingPlugin
 {
     protected $directories;
     protected $recursive = true;
-    protected $ignore;
-    protected $phpci;
-    protected $build;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci        = $phpci;
-        $this->build = $build;
         $this->directories    = array('');
-        $this->ignore = $phpci->ignore;
 
         if (!empty($options['directory'])) {
             $this->directories[] = $options['directory'];
@@ -64,10 +49,10 @@ class Lint implements PHPCI\Plugin
      */
     public function execute()
     {
-        $this->phpci->quiet = true;
+        $this->executor->setQuiet(true);
         $success = true;
 
-        $php = $this->phpci->findBinary('php');
+        $php = $this->executor->findBinary('php');
 
         foreach ($this->directories as $dir) {
             if (!$this->lintDirectory($php, $dir)) {
@@ -75,7 +60,7 @@ class Lint implements PHPCI\Plugin
             }
         }
 
-        $this->phpci->quiet = false;
+        $this->executor->setQuiet(false);
 
         return $success;
     }
@@ -109,7 +94,7 @@ class Lint implements PHPCI\Plugin
     protected function lintDirectory($php, $path)
     {
         $success = true;
-        $directory = new \DirectoryIterator($this->phpci->buildPath . $path);
+        $directory = new \DirectoryIterator($this->buildPath . $path);
 
         foreach ($directory as $item) {
             if ($item->isDot()) {
@@ -140,8 +125,8 @@ class Lint implements PHPCI\Plugin
     {
         $success = true;
 
-        if (!$this->phpci->executeCommand($php . ' -l "%s"', $this->phpci->buildPath . $path)) {
-            $this->phpci->logFailure($path);
+        if (!$this->executor->executeCommand($php . ' -l "%s"', $this->buildPath . $path)) {
+            $this->logger->error($path);
             $success = false;
         }
 

@@ -9,41 +9,24 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Wipe Plugin - Wipes a folder
 * @author       Claus Due <claus@namelesscoder.net>
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Wipe implements \PHPCI\Plugin
+class Wipe extends AbstractExecutingPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     protected $directory;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $path               = $phpci->buildPath;
-        $this->phpci        = $phpci;
-        $this->build = $build;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->buildPath;
     }
 
     /**
@@ -51,7 +34,7 @@ class Wipe implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $build = $this->phpci->buildPath;
+        $build = $this->buildPath;
 
         if ($this->directory == $build || empty($this->directory)) {
             return true;

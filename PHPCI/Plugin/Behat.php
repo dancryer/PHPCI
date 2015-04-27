@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Behat BDD Plugin
@@ -19,34 +17,23 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Behat implements \PHPCI\Plugin
+class Behat extends AbstractPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $features;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci    = $phpci;
-        $this->build    = $build;
         $this->features = '';
 
         if (isset($options['executable'])) {
             $this->executable = $options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('behat');
+            $this->executable = $this->executor->findBinary('behat');
         }
 
         if (!empty($options['features'])) {
@@ -60,17 +47,15 @@ class Behat implements \PHPCI\Plugin
     public function execute()
     {
         $curdir = getcwd();
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
 
         $behat = $this->executable;
 
         if (!$behat) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'behat'));
-
-            return false;
+            throw new \RuntimeException(Lang::get('could_not_find', 'behat'));
         }
 
-        $success = $this->phpci->executeCommand($behat . ' %s', $this->features);
+        $success = $this->executor->executeCommand($behat . ' %s', $this->features);
         chdir($curdir);
 
         list($errorCount, $data) = $this->parseBehatOutput();
@@ -88,7 +73,7 @@ class Behat implements \PHPCI\Plugin
      */
     public function parseBehatOutput()
     {
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         $parts = explode('---', $output);
 

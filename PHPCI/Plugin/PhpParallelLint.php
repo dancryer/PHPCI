@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * Php Parallel Lint Plugin - Provides access to PHP lint functionality.
@@ -19,49 +17,24 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint implements \PHPCI\Plugin
+class PhpParallelLint extends AbstractExecutingPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var string
      */
     protected $directory;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
-        $this->directory    = $phpci->buildPath;
-        $this->ignore       = $this->phpci->ignore;
+        $this->directory    = $buildPath;
 
         if (isset($options['directory'])) {
-            $this->directory = $phpci->buildPath.$options['directory'];
+            $this->directory = $buildPath.$options['directory'];
         }
 
         if (isset($options['ignore'])) {
@@ -76,16 +49,16 @@ class PhpParallelLint implements \PHPCI\Plugin
     {
         list($ignore) = $this->getFlags();
 
-        $phplint = $this->phpci->findBinary('parallel-lint');
+        $phplint = $this->executor->findBinary('parallel-lint');
 
         $cmd = $phplint . ' %s "%s"';
-        $success = $this->phpci->executeCommand(
+        $success = $this->executor->executeCommand(
             $cmd,
             $ignore,
             $this->directory
         );
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         $matches = array();
         if (preg_match_all('/Parse error\:/', $output, $matches)) {
@@ -103,7 +76,7 @@ class PhpParallelLint implements \PHPCI\Plugin
     {
         $ignoreFlags = array();
         foreach ($this->ignore as $ignoreDir) {
-            $ignoreFlags[] = '--exclude "' . $this->phpci->buildPath . $ignoreDir . '"';
+            $ignoreFlags[] = '--exclude "' . $this->buildPath . $ignoreDir . '"';
         }
         $ignore = implode(' ', $ignoreFlags);
 

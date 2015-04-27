@@ -9,9 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Clean build removes Composer related files and allows PHPCI users to clean up their build directory.
 * Useful as a precursor to copy_build.
@@ -19,11 +16,9 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CleanBuild implements \PHPCI\Plugin
+class CleanBuild extends AbstractExecutingPlugin
 {
     protected $remove;
-    protected $phpci;
-    protected $build;
 
     /**
      * Standard Constructor
@@ -32,16 +27,13 @@ class CleanBuild implements \PHPCI\Plugin
      * $options['filename']  Phar Filename. Default: build.phar
      * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
      * $options['stub']      Stub Content. No Default Value
+     * Configure the plugin.
      *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci        = $phpci;
-        $this->build = $build;
-        $this->remove       = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
+        $this->remove = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
     }
 
     /**
@@ -53,13 +45,13 @@ class CleanBuild implements \PHPCI\Plugin
         if (IS_WIN) {
             $cmd = 'rmdir /S /Q "%s"';
         }
-        $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.phar');
-        $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.lock');
+        $this->executor->executeCommand($cmd, $this->buildPath . 'composer.phar');
+        $this->executor->executeCommand($cmd, $this->buildPath . 'composer.lock');
 
         $success = true;
-        
+
         foreach ($this->remove as $file) {
-            $ok = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $file);
+            $ok = $this->executor->executeCommand($cmd, $this->buildPath . $file);
 
             if (!$ok) {
                 $success = false;

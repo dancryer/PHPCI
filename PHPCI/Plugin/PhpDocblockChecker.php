@@ -19,28 +19,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpDocblockChecker extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var string Based on the assumption the root may not hold the code to be
      * tested, extends the build path.
      */
     protected $path;
-
-    /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
 
     protected $skipClasses = false;
     protected $skipMethods = false;
@@ -62,16 +47,12 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-        $this->ignore = $phpci->ignore;
         $this->path = '';
         $this->allowed_warnings = 0;
 
@@ -102,7 +83,7 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         // Check that the binary exists:
-        $checker = $this->phpci->findBinary('phpdoccheck');
+        $checker = $this->executor->findBinary('phpdoccheck');
 
         // Build ignore string:
         $ignore = '';
@@ -121,14 +102,14 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         // Build command string:
-        $path = $this->phpci->buildPath . $this->path;
+        $path = $this->buildPath . $this->path;
         $cmd = $checker . ' --json --directory="%s"%s%s';
 
         // Disable exec output logging, as we don't want the XML report in the log:
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run checker:
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $path,
             $ignore,
@@ -136,9 +117,9 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         );
 
         // Re-enable exec output logging:
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
-        $output = json_decode($this->phpci->getLastOutput(), true);
+        $output = json_decode($this->executor->getLastOutput(), true);
         $errors = count($output);
         $success = true;
 

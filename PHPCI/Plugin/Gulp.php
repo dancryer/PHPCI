@@ -9,50 +9,35 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Gulp Plugin - Provides access to gulp functionality.
 * @author       Dirk Heilig <dirk@heilig-online.com>
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Gulp implements \PHPCI\Plugin
+class Gulp extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $task;
     protected $preferDist;
-    protected $phpci;
-    protected $build;
     protected $gulp;
     protected $gulpfile;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $path = $phpci->buildPath;
-        $this->build = $build;
-        $this->phpci = $phpci;
-        $this->directory = $path;
+        $this->directory = $this->buildPath;
         $this->task = null;
-        $this->gulp = $this->phpci->findBinary('gulp');
+        $this->gulp = $this->executor->findBinary('gulp');
         $this->gulpfile = 'gulpfile.js';
 
         // Handle options:
         if (isset($options['directory'])) {
-            $this->directory = $path . '/' . $options['directory'];
+            $this->directory = $this->buildPath . '/' . $options['directory'];
         }
 
         if (isset($options['task'])) {
@@ -78,7 +63,7 @@ class Gulp implements \PHPCI\Plugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (!$this->executor->executeCommand($cmd, $this->directory)) {
             return false;
         }
 
@@ -92,6 +77,6 @@ class Gulp implements \PHPCI\Plugin
         $cmd .= ' %s'; // the task that will be executed
 
         // and execute it
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->gulpfile, $this->task);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->gulpfile, $this->task);
     }
 }

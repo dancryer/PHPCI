@@ -23,16 +23,11 @@ use Psr\Log\LogLevel;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
+
+class Codeception extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     /** @var string */
     protected $args = '';
-
-    /** @var Builder */
-    protected $phpci;
-
-    /** @var Build */
-    protected $build;
 
     /**
      * @var string $ymlConfigFile The path of a yml config for Codeception
@@ -78,22 +73,16 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->path = 'tests/';
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
-        }
-        if (isset($options['config'])) {
-            $this->ymlConfigFile = $options['config'];
         }
         if (isset($options['args'])) {
             $this->args = (string) $options['args'];
@@ -109,16 +98,11 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     public function execute()
     {
         if (empty($this->ymlConfigFile)) {
-            $this->phpci->logFailure('No configuration file found');
-            return false;
+            throw new \Exception("No configuration file found");
         }
 
-        $success = true;
-
         // Run any config files first. This can be either a single value or an array.
-        $success &= $this->runConfigFile($this->ymlConfigFile);
-
-        return $success;
+        return $this->runConfigFile($this->ymlConfigFile);
     }
 
     /**
@@ -132,37 +116,24 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         if (is_array($configPath)) {
             return $this->recurseArg($configPath, array($this, 'runConfigFile'));
         } else {
-            $this->phpci->logExecOutput(false);
+            $this->executor->setQuiet(true);
 
-            $codecept = $this->phpci->findBinary('codecept');
+            $codecept = $this->executor->findBinary('codecept');
 
-            if (!$codecept) {
-                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
+            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --tap ' . $this->args;
 
-                return false;
-            }
-
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
             if (IS_WIN) {
                 $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
             }
 
-            $configPath = $this->phpci->buildPath . $configPath;
-            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
+            $configPath = $this->buildPath . $configPath;
+            $success = $this->executor->executeCommand($cmd, $this->buildPath, $configPath);
 
+            $this->logger->debug('Codeception XML path: '. $this->buildPath . $this->path . '_output/report.xml');
+            $xml = file_get_contents($this->buildPath . $this->path . '_output/report.xml', false);
 
-            $this->phpci->log(
-                'Codeception XML path: '. $this->phpci->buildPath . $this->path . '_output/report.xml',
-                Loglevel::DEBUG
-            );
-            $xml = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.xml', false);
-
-            try {
-                $parser = new Parser($this->phpci, $xml);
-                $output = $parser->parse();
-            } catch (\Exception $ex) {
-                throw $ex;
-            }
+            $parser = new Parser($this->phpci, $xml);
+            $output = $parser->parse();
 
             $meta = array(
                 'tests' => $parser->getTotalTests(),
@@ -174,7 +145,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
             $this->build->storeMeta('codeception-data', $output);
             $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
 
-            $this->phpci->logExecOutput(true);
+            $this->executor->setQuiet(false);
 
             return $success;
         }

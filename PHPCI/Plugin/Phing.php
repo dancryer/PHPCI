@@ -11,7 +11,6 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Phing Plugin - Provides access to Phing functionality.
@@ -20,36 +19,28 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Phing implements \PHPCI\Plugin
+class Phing extends AbstractExecutingPlugin
 {
-
     private $directory;
     private $buildFile = 'build.xml';
     private $targets = array('build');
     private $properties = array();
     private $propertyFile;
 
-    protected $phpci;
-    protected $build;
-
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->setPhpci($phpci);
-        $this->build = $build;
-
         /*
          * Set working directory
          */
         if (isset($options['directory'])) {
-            $directory = $phpci->buildPath . '/' . $options['directory'];
+            $directory = $buildPath . '/' . $options['directory'];
         } else {
-            $directory = $phpci->buildPath;
+            $directory = $buildPath;
         }
 
         $this->setDirectory($directory);
@@ -79,7 +70,7 @@ class Phing implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $phingExecutable = $this->phpci->findBinary('phing');
+        $phingExecutable = $this->executor->findBinary('phing');
 
         $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFilePath();
 
@@ -93,25 +84,7 @@ class Phing implements \PHPCI\Plugin
         $cmd[] = $this->targetsToString();
         $cmd[] = '2>&1';
 
-        return $this->phpci->executeCommand(implode(' ', $cmd), $this->directory, $this->targets);
-    }
-
-    /**
-     * @return \PHPCI\Builder
-     */
-    public function getPhpci()
-    {
-        return $this->phpci;
-    }
-
-    /**
-     * @param \PHPCI\Builder $phpci
-     *
-     * @return $this
-     */
-    public function setPhpci($phpci)
-    {
-        $this->phpci = $phpci;
+        return $this->executor->executeCommand(implode(' ', $cmd), $this->directory, $this->targets);
     }
 
     /**

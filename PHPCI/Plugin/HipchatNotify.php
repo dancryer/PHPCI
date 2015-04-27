@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Hipchat Plugin
@@ -19,24 +17,19 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class HipchatNotify implements \PHPCI\Plugin
+class HipchatNotify extends AbstractInterpolatingPlugin
 {
     protected $authToken;
     protected $color;
     protected $notify;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
-     * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
         $this->cookie = "phpcicookie";
 
@@ -64,7 +57,6 @@ class HipchatNotify implements \PHPCI\Plugin
         } else {
             throw new \Exception(Lang::get('hipchat_settings'));
         }
-
     }
 
     /**
@@ -74,7 +66,7 @@ class HipchatNotify implements \PHPCI\Plugin
     public function execute()
     {
         $hipChat = new \HipChat\HipChat($this->authToken);
-        $message = $this->phpci->interpolate($this->message);
+        $message = $this->interpolator->interpolate($this->message);
 
         $result = true;
         if (is_array($this->room)) {

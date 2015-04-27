@@ -2,7 +2,6 @@
 namespace PHPCI\Plugin;
 
 use Exception;
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use Phar as PHPPhar;
@@ -10,20 +9,8 @@ use Phar as PHPPhar;
 /**
  * Phar Plugin
  */
-class Phar implements \PHPCI\Plugin
+class Phar extends AbstractPlugin
 {
-    /**
-     * PHPCI
-     * @var Builder
-     */
-    protected $phpci;
-
-    /**
-     * Build
-     * @var Build
-     */
-    protected $build;
-
     /**
      * Output Directory
      * @var string
@@ -49,23 +36,12 @@ class Phar implements \PHPCI\Plugin
     protected $stub;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        // Basic
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         // Directory?
         if (isset($options['directory'])) {
             $this->setDirectory($options['directory']);
@@ -224,24 +200,14 @@ class Phar implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $success = false;
+        $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
+        $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
 
-        try {
-            $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
-            $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
-
-            $stub = $this->getStubContent();
-            if ($stub) {
-                $phar->setStub($stub);
-            }
-
-            $success = true;
-
-        } catch (Exception $e) {
-            $this->getPHPCI()->log(Lang::get('phar_internal_error'));
-            $this->getPHPCI()->log($e->getMessage());
+        $stub = $this->getStubContent();
+        if ($stub) {
+            $phar->setStub($stub);
         }
 
-        return $success;
+        return true;
     }
 }

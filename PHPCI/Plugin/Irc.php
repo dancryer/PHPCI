@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * IRC Plugin - Sends a notification to an IRC channel
@@ -19,10 +17,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Irc implements \PHPCI\Plugin
+class Irc extends AbstractInterpolatingPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $message;
     protected $server;
     protected $port;
@@ -30,34 +26,30 @@ class Irc implements \PHPCI\Plugin
     protected $nick;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->message = $options['message'];
+    }
 
-        $buildSettings = $phpci->getConfig('build_settings');
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        parent::setCommonSettings($settings);
 
-
-        if (isset($buildSettings['irc'])) {
-            $irc = $buildSettings['irc'];
-
-            $this->server = $irc['server'];
-            $this->port = $irc['port'];
-            $this->room = $irc['room'];
-            $this->nick = $irc['nick'];
+        if (!isset($settings['server'], $settings['room'], $settings['nick'])) {
+            throw new \Exception(Lang::get('irc_settings'));
         }
+
+        $this->server = $settings['server'];
+        $this->port = isset($settings['port']) ? $settings['port'] : 6667;
+        $this->room = $settings['room'];
+        $this->nick = $settings['nick'];
     }
 
     /**
@@ -66,15 +58,7 @@ class Irc implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $msg = $this->phpci->interpolate($this->message);
-
-        if (empty($this->server) || empty($this->room) || empty($this->nick)) {
-            $this->phpci->logFailure(Lang::get('irc_settings'));
-        }
-
-        if (empty($this->port)) {
-            $this->port = 6667;
-        }
+        $msg = $this->interpolator->interpolate($this->message);
 
         $sock = fsockopen($this->server, $this->port);
         stream_set_timeout($sock, 1);

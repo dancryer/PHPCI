@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TapParser;
+use PHPCI\Helper\BuildInterpolator;
 
 /**
 * PHP Unit Plugin - Allows PHP Unit testing.
@@ -20,11 +21,9 @@ use PHPCI\Plugin\Util\TapParser;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpUnit extends AbstractInterpolatingPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $args;
-    protected $phpci;
-    protected $build;
 
     /**
      * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
@@ -92,24 +91,14 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         if (empty($options['config']) && empty($options['directory'])) {
-            $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
+            $this->xmlConfigFile = self::findConfigFile($this->buildPath);
         }
 
         if (isset($options['directory'])) {
@@ -125,7 +114,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['args'])) {
-            $this->args = $this->phpci->interpolate($options['args']);
+            $this->args = $this->interpolator->interpolate($options['args']);
         }
 
         if (isset($options['path'])) {
@@ -143,13 +132,12 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         if (empty($this->xmlConfigFile) && empty($this->directory)) {
-            $this->phpci->logFailure('Neither configuration file nor test directory found.');
-            return false;
+            throw new \Exception('Neither configuration file nor test directory found.');
         }
 
         $success = true;
 
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run any config files first. This can be either a single value or an array.
         if ($this->xmlConfigFile !== null) {
@@ -161,14 +149,13 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $success &= $this->runDir($this->directory);
         }
 
-        $tapString = $this->phpci->getLastOutput();
+        $tapString = $this->executor->getLastOutput();
         $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
 
         try {
             $tapParser = new TapParser($tapString);
             $output = $tapParser->parse();
         } catch (\Exception $ex) {
-            $this->phpci->logFailure($tapString);
             throw $ex;
         }
 
@@ -177,7 +164,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->build->storeMeta('phpunit-errors', $failures);
         $this->build->storeMeta('phpunit-data', $output);
 
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         return $success;
     }
@@ -194,13 +181,13 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
-                chdir($this->phpci->buildPath.'/'.$this->runFrom);
+                chdir($this->buildPath.'/'.$this->runFrom);
             }
 
-            $phpunit = $this->phpci->findBinary('phpunit');
+            $phpunit = $this->executor->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
+            $success = $this->executor->executeCommand($cmd, $this->args, $this->buildPath . $configPath);
 
             if ($this->runFrom) {
                 chdir($curdir);
@@ -221,12 +208,12 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return $this->recurseArg($directory, array($this, "runDir"));
         } else {
             $curdir = getcwd();
-            chdir($this->phpci->buildPath);
+            chdir($this->buildPath);
 
-            $phpunit = $this->phpci->findBinary('phpunit');
+            $phpunit = $this->executor->findBinary('phpunit');
 
             $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
+            $success = $this->executor->executeCommand($cmd, $this->args, $this->buildPath . $directory);
             chdir($curdir);
             return $success;
         }

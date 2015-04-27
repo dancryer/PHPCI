@@ -9,50 +9,35 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
 * Grunt Plugin - Provides access to grunt functionality.
 * @author       Tobias Tom <t.tom@succont.de>
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Grunt implements \PHPCI\Plugin
+class Grunt extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $task;
     protected $preferDist;
-    protected $phpci;
-    protected $build;
     protected $grunt;
     protected $gruntfile;
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $path = $phpci->buildPath;
-        $this->build = $build;
-        $this->phpci = $phpci;
-        $this->directory = $path;
+        $this->directory = $this->buildPath;
         $this->task = null;
-        $this->grunt = $this->phpci->findBinary('grunt');
+        $this->grunt = $this->executor->findBinary('grunt');
         $this->gruntfile = 'Gruntfile.js';
 
         // Handle options:
         if (isset($options['directory'])) {
-            $this->directory = $path . '/' . $options['directory'];
+            $this->directory = $this->buildPath . '/' . $options['directory'];
         }
 
         if (isset($options['task'])) {
@@ -78,7 +63,7 @@ class Grunt implements \PHPCI\Plugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (!$this->executor->executeCommand($cmd, $this->directory)) {
             return false;
         }
 
@@ -92,6 +77,6 @@ class Grunt implements \PHPCI\Plugin
         $cmd .= ' %s'; // the task that will be executed
 
         // and execute it
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->gruntfile, $this->task);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->gruntfile, $this->task);
     }
 }

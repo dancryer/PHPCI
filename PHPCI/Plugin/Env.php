@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * Environment variable plugin
@@ -19,22 +17,17 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Env implements \PHPCI\Plugin
+class Env extends AbstractInterpolatingPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $env_vars;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->env_vars = $options;
     }
 
@@ -52,10 +45,9 @@ class Env implements \PHPCI\Plugin
                 // This allows the standard syntax: "FOO: bar"
                 $env_var = "$key=$value";
             }
-            
-            if (!putenv($this->phpci->interpolate($env_var))) {
-                $success = false;
-                $this->phpci->logFailure(Lang::get('unable_to_set_env'));
+
+            if (!putenv($this->interpolator->interpolate($env_var))) {
+                throw new RuntimeException(Lang::get('unable_to_set_env'));
             }
         }
         return $success;

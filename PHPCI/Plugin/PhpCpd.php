@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
 * PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
@@ -19,12 +17,10 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCpd implements \PHPCI\Plugin
+class PhpCpd extends AbstractExecutingPlugin
 {
     protected $directory;
     protected $args;
-    protected $phpci;
-    protected $build;
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
@@ -33,27 +29,17 @@ class PhpCpd implements \PHPCI\Plugin
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
-        $this->path = $phpci->buildPath;
+        $this->path = $this->buildPath;
         $this->standard = 'PSR1';
-        $this->ignore = $phpci->ignore;
 
         if (!empty($options['path'])) {
-            $this->path = $phpci->buildPath . $options['path'];
+            $this->path = $this->buildPath . $options['path'];
         }
 
         if (!empty($options['standard'])) {
@@ -88,14 +74,14 @@ class PhpCpd implements \PHPCI\Plugin
             $ignore = implode('', $ignore);
         }
 
-        $phpcpd = $this->phpci->findBinary('phpcpd');
+        $phpcpd = $this->executor->findBinary('phpcpd');
 
         $tmpfilename = tempnam('/tmp', 'phpcpd');
 
         $cmd = $phpcpd . ' --log-pmd "%s" %s "%s"';
-        $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
+        $success = $this->executor->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
-        print $this->phpci->getLastOutput();
+        print $this->executor->getLastOutput();
 
         list($errorCount, $data) = $this->processReport(file_get_contents($tmpfilename));
         $this->build->storeMeta('phpcpd-warnings', $errorCount);
@@ -117,7 +103,7 @@ class PhpCpd implements \PHPCI\Plugin
         $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
-            $this->phpci->log($xmlString);
+            $this->logger->error($xmlString);
             throw new \Exception(Lang::get('could_not_process_report'));
         }
 
@@ -127,7 +113,7 @@ class PhpCpd implements \PHPCI\Plugin
         foreach ($xml->duplication as $duplication) {
             foreach ($duplication->file as $file) {
                 $fileName = (string)$file['path'];
-                $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+                $fileName = str_replace($this->buildPath, '', $fileName);
 
                 $data[] = array(
                     'file' => $fileName,
@@ -145,7 +131,6 @@ Copy and paste detected:
 CPD;
 
                 $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
-
             }
 
             $warnings++;

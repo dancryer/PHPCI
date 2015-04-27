@@ -10,9 +10,7 @@
 namespace PHPCI\Plugin;
 
 use b8\View;
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use PHPCI\Helper\Email as EmailHelper;
 
 /**
@@ -21,38 +19,21 @@ use PHPCI\Helper\Email as EmailHelper;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Email implements \PHPCI\Plugin
+class Email extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
     protected $options;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
-     * @param \Swift_Mailer $mailer
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(
-        Builder $phpci,
-        Build $build,
-        array $options = array()
-    ) {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
-        $this->options      = $options;
+    protected function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 
     /**
@@ -84,8 +65,10 @@ class Email implements \PHPCI\Plugin
         );
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
-        $this->phpci->log(sprintf("%d emails failed to send", $sendFailures));
+        $this->logger->notice(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
+        if ($sendFailures > 0) {
+            $this->logger->error(sprintf("%d emails failed to send", $sendFailures));
+        }
 
         return ($sendFailures === 0);
     }

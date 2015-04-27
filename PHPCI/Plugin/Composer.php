@@ -20,13 +20,11 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Composer extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
     protected $directory;
     protected $action;
     protected $preferDist;
-    protected $phpci;
-    protected $build;
 
     /**
      * Check if this plugin can be executed.
@@ -47,16 +45,13 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $path = $phpci->buildPath;
-        $this->phpci = $phpci;
-        $this->build = $build;
+        $path = $this->buildPath;
         $this->directory = $path;
         $this->action = 'install';
         $this->preferDist = false;
@@ -79,7 +74,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     */
     public function execute()
     {
-        $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
+        $composerLocation = $this->executor->findBinary(array('composer', 'composer.phar'));
 
         $cmd = '';
 
@@ -90,15 +85,15 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $cmd .= $composerLocation . ' --no-ansi --no-interaction ';
 
         if ($this->preferDist) {
-            $this->phpci->log('Using --prefer-dist flag');
+            $this->logger->notice('Using --prefer-dist flag');
             $cmd .= '--prefer-dist';
         } else {
-            $this->phpci->log('Using --prefer-source flag');
+            $this->logger->notice('Using --prefer-source flag');
             $cmd .= '--prefer-source';
         }
 
         $cmd .= ' --working-dir="%s" %s';
 
-        return $this->phpci->executeCommand($cmd, $this->directory, $this->action);
+        return $this->executor->executeCommand($cmd, $this->directory, $this->action);
     }
 }

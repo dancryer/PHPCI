@@ -2,6 +2,7 @@
 
 namespace PHPCI\Plugin\Util;
 
+use Psr\Log\LoggerAwareInterface;
 /**
  * Plugin Factory - Loads Plugins and passes required dependencies.
  * @package PHPCI\Plugin\Util
@@ -102,6 +103,14 @@ class Factory
             $plugin = $reflectedPlugin->newInstanceArgs($argsToUse);
         } else {
             $plugin = $reflectedPlugin->newInstance();
+        }
+
+        if ($plugin instanceof InterpolatorAwareInterface) {
+            $plugin->setInterpolator($this->getResourceFor('PHPCI\Helper\BuildInterpolator'));
+        }
+
+        if ($plugin instanceof LoggerAwareInterface) {
+            $plugin->setLogger($this->getResourceFor('Psr\Log\LoggerInterface'));
         }
 
         return $plugin;

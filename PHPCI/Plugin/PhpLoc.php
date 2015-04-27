@@ -19,17 +19,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpLoc extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var string
-     */
-    protected $directory;
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
     /**
      * Check if this plugin can be executed.
      * @param $stage
@@ -47,16 +38,13 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci     = $phpci;
-        $this->build     = $build;
-        $this->directory = $phpci->buildPath;
+        $this->directory = $this->buildPath;
 
         if (isset($options['directory'])) {
             $this->directory .= $options['directory'];
@@ -69,19 +57,19 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
+        if (count($this->ignore)) {
             $map    = function ($item) {
                 return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
             };
-            $ignore = array_map($map, $this->phpci->ignore);
+            $ignore = array_map($map, $this->ignore);
 
             $ignore = implode('', $ignore);
         }
 
-        $phploc = $this->phpci->findBinary('phploc');
+        $phploc = $this->executor->findBinary('phploc');
 
-        $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
-        $output = $this->phpci->getLastOutput();
+        $success = $this->executor->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
+        $output = $this->executor->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
             $data = array();

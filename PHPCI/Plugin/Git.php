@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Git plugin.
@@ -19,22 +17,17 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Git implements \PHPCI\Plugin
+class Git extends AbstractInterpolatingPlugin
 {
-    protected $phpci;
-    protected $build;
     protected $actions = array();
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->actions = $options;
     }
 
@@ -44,7 +37,7 @@ class Git implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $buildPath = $this->phpci->buildPath;
+        $buildPath = $this->buildPath;
 
         // Check if there are any actions to be run for the branch we're running on:
         if (!array_key_exists($this->build->getBranch(), $this->actions)) {
@@ -103,8 +96,8 @@ class Git implements \PHPCI\Plugin
     {
         if (array_key_exists('branch', $options)) {
             $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
-            $path = $this->phpci->buildPath;
-            return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
+            $path = $this->buildPath;
+            return $this->executor->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
         }
     }
 
@@ -119,15 +112,15 @@ class Git implements \PHPCI\Plugin
         $message = Lang::get('tag_created', date('Y-m-d H:i:s'));
 
         if (array_key_exists('name', $options)) {
-            $tagName = $this->phpci->interpolate($options['name']);
+            $tagName = $this->interpolator->interpolate($options['name']);
         }
 
         if (array_key_exists('message', $options)) {
-            $message = $this->phpci->interpolate($options['message']);
+            $message = $this->interpolator->interpolate($options['message']);
         }
 
         $cmd = 'git tag %s -m "%s"';
-        return $this->phpci->executeCommand($cmd, $tagName, $message);
+        return $this->executor->executeCommand($cmd, $tagName, $message);
     }
 
     /**
@@ -141,14 +134,14 @@ class Git implements \PHPCI\Plugin
         $remote = 'origin';
 
         if (array_key_exists('branch', $options)) {
-            $branch = $this->phpci->interpolate($options['branch']);
+            $branch = $this->interpolator->interpolate($options['branch']);
         }
 
         if (array_key_exists('remote', $options)) {
-            $remote = $this->phpci->interpolate($options['remote']);
+            $remote = $this->interpolator->interpolate($options['remote']);
         }
 
-        return $this->phpci->executeCommand('git pull %s %s', $remote, $branch);
+        return $this->executor->executeCommand('git pull %s %s', $remote, $branch);
     }
 
     /**
@@ -162,13 +155,13 @@ class Git implements \PHPCI\Plugin
         $remote = 'origin';
 
         if (array_key_exists('branch', $options)) {
-            $branch = $this->phpci->interpolate($options['branch']);
+            $branch = $this->interpolator->interpolate($options['branch']);
         }
 
         if (array_key_exists('remote', $options)) {
-            $remote = $this->phpci->interpolate($options['remote']);
+            $remote = $this->interpolator->interpolate($options['remote']);
         }
 
-        return $this->phpci->executeCommand('git push %s %s', $remote, $branch);
+        return $this->executor->executeCommand('git push %s %s', $remote, $branch);
     }
 }

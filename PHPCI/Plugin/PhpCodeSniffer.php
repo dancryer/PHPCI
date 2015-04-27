@@ -19,13 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpCodeSniffer extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
     /**
      * @var array
      */
@@ -68,11 +63,6 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * Check if this plugin can be executed.
      * @param $stage
      * @param Builder $builder
@@ -89,21 +79,18 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * @param \PHPCI\Builder $phpci
-     * @param \PHPCI\Model\Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->suffixes = array('php');
-        $this->directory = $phpci->buildPath;
+        $this->directory = $this->buildPath;
         $this->standard = 'PSR2';
         $this->tab_width = '';
         $this->encoding = '';
         $this->path = '';
-        $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
 
@@ -124,15 +111,6 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->encoding = ' --encoding=' . $options['encoding'];
         }
 
-        $this->setOptions($options);
-    }
-
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directory', 'standard', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
@@ -147,25 +125,25 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     {
         list($ignore, $standard, $suffixes) = $this->getFlags();
 
-        $phpcs = $this->phpci->findBinary('phpcs');
+        $phpcs = $this->executor->findBinary('phpcs');
 
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         $cmd = $phpcs . ' --report=json %s %s %s %s %s "%s"';
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $standard,
             $suffixes,
             $ignore,
             $this->tab_width,
             $this->encoding,
-            $this->phpci->buildPath . $this->path
+            $this->buildPath . $this->path
         );
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
         list($errors, $warnings, $data) = $this->processReport($output);
 
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         $success = true;
         $this->build->storeMeta('phpcs-warnings', $warnings);
@@ -219,7 +197,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $data = json_decode(trim($output), true);
 
         if (!is_array($data)) {
-            $this->phpci->log($output);
+            $this->logger->error($output);
             throw new \Exception(PHPCI\Helper\Lang::get('could_not_process_report'));
         }
 
@@ -229,7 +207,7 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $rtn = array();
 
         foreach ($data['files'] as $fileName => $file) {
-            $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+            $fileName = str_replace($this->buildPath, '', $fileName);
 
             foreach ($file['messages'] as $message) {
                 $this->build->reportError($this->phpci, $fileName, $message['line'], 'PHPCS: ' . $message['message']);

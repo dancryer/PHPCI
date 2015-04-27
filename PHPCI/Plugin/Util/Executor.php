@@ -48,8 +48,10 @@ class Executor
         foreach ($config[$stage] as $plugin => $options) {
             $this->logger->log(Lang::get('running_plugin', $plugin));
 
+            $settings = isset($config['build_settings'][$plugin]) ? $config['build_settings'][$plugin] : array();
+
             // Try and execute it:
-            if ($this->executePlugin($plugin, $options)) {
+            if ($this->executePlugin($plugin, $options, $settings)) {
                 // Execution was successful:
                 $this->logger->logSuccess(Lang::get('plugin_success'));
             } elseif ($stage == 'setup') {
@@ -72,8 +74,34 @@ class Executor
 
     /**
      * Executes a given plugin, with options and returns the result.
+     *
+     * @param string $plugin Plugin name or class.
+     * @param array $options Stage options.
+     * @param array $settings Common options.
+     * @return boolean true if plugin ended successfully, false if something went wrong.
      */
-    public function executePlugin($plugin, $options)
+    public function executePlugin($plugin, array $options, array $settings)
+    {
+        try {
+            $obj = $this->buildPlugin($plugin);
+            $obj->setCommonSettings($settings);
+            $obj->setOptions($options);
+
+            return $obj->execute();
+        } catch (\Exception $ex) {
+            $this->logger->logFailure(Lang::get('exception') . $ex->getMessage(), $ex);
+            return false;
+        }
+    }
+
+    /**
+     * Create a plugin instance of the given name.
+     *
+     * @param string $plugin Plugin class or name
+     * @return \PHPCI\Plugin
+     * @throws \Exception If the plugin could not be created.
+     */
+    protected function buildPlugin($plugin)
     {
         // Any plugin name without a namespace separator is a PHPCI built in plugin
         // if not we assume it's a fully name-spaced class name that implements the plugin interface.
@@ -87,24 +115,9 @@ class Executor
         }
 
         if (!class_exists($class)) {
-            $this->logger->logFailure(Lang::get('plugin_missing', $plugin));
-            return false;
+            throw new \Exception(Lang::get('plugin_missing', $plugin));
         }
 
-        $rtn = true;
-
-        // Try running it:
-        try {
-            $obj = $this->pluginFactory->buildPlugin($class, $options);
-
-            if (!$obj->execute()) {
-                $rtn = false;
-            }
-        } catch (\Exception $ex) {
-            $this->logger->logFailure(Lang::get('exception') . $ex->getMessage(), $ex);
-            $rtn = false;
-        }
-
-        return $rtn;
+        return $this->pluginFactory->buildPlugin($class);
     }
 }

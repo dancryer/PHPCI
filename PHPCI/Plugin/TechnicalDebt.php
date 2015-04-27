@@ -20,13 +20,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class TechnicalDebt extends AbstractPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
     /**
      * @var array
      */
@@ -54,11 +49,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $path;
 
     /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
-
-    /**
      * @var array - terms to search for
      */
     protected $searches;
@@ -82,18 +72,15 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * @param \PHPCI\Builder     $phpci
-     * @param \PHPCI\Model\Build $build
-     * @param array              $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->suffixes = array('php');
-        $this->directory = $phpci->buildPath;
+        $this->directory = $this->buildPath;
         $this->path = '';
-        $this->ignore = $this->phpci->ignore;
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
         $this->searches = array('TODO', 'FIXME', 'TO DO', 'FIX ME');
@@ -106,14 +93,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->allowed_warnings = -1;
             $this->allowed_errors = -1;
         }
-    }
 
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directory', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
@@ -127,11 +107,11 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         $success = true;
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         list($errorCount, $data) = $this->getErrorList();
 
-        $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
+        $this->logger->notice("Found $errorCount instances of " . implode(', ', $this->searches));
 
         $this->build->storeMeta('technical_debt-warnings', $errorCount);
         $this->build->storeMeta('technical_debt-data', $data);
@@ -139,6 +119,8 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if ($this->allowed_errors != -1 && $errorCount > $this->allowed_errors) {
             $success = false;
         }
+
+        $this->executor->setQuiet(false);
 
         return $success;
     }
@@ -193,7 +175,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     $content = trim($allLines[$lineNumber - 1]);
 
                     $errorCount++;
-                    $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");
+                    $this->logger->log("Found $search on line $lineNumber of $file:\n$content");
 
                     $fileName = str_replace($this->directory, '', $file);
                     $data[] = array(
@@ -203,7 +185,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     );
 
                     $this->build->reportError($this->phpci, $fileName, $lineNumber, $content);
-
                 }
             }
         }

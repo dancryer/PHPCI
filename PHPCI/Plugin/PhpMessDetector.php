@@ -19,18 +19,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpMessDetector extends AbstractExecutingPlugin implements PHPCI\ZeroConfigPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -42,11 +32,6 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * paths are used verbatim
      */
     protected $path;
-
-    /**
-     * @var array - paths to ignore
-     */
-    protected $ignore;
 
     /**
      * Array of PHPMD rules. Can be one of the builtins (codesize, unusedcode, naming, design, controversial)
@@ -72,23 +57,13 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->suffixes = array('php');
-        $this->ignore = $phpci->ignore;
         $this->path = '';
         $this->rules = array('codesize', 'unusedcode', 'naming');
         $this->allowed_warnings = 0;
@@ -119,11 +94,11 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $phpmdBinaryPath = $this->phpci->findBinary('phpmd');
+        $phpmdBinaryPath = $this->executor->findBinary('phpmd');
 
         $this->executePhpMd($phpmdBinaryPath);
 
-        list($errorCount, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
+        list($errorCount, $data) = $this->processReport(trim($this->executor->getLastOutput()));
         $this->build->storeMeta('phpmd-warnings', $errorCount);
         $this->build->storeMeta('phpmd-data', $data);
 
@@ -153,7 +128,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $xml = simplexml_load_string($xmlString);
 
         if ($xml === false) {
-            $this->phpci->log($xmlString);
+            $this->logger->error($xmlString);
             throw new \Exception('Could not process PHPMD report XML.');
         }
 
@@ -162,7 +137,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         foreach ($xml->file as $file) {
             $fileName = (string)$file['name'];
-            $fileName = str_replace($this->phpci->buildPath, '', $fileName);
+            $fileName = str_replace($this->buildPath, '', $fileName);
 
             foreach ($file->violation as $violation) {
                 $warnings++;
@@ -191,13 +166,12 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected function tryAndProcessRules()
     {
         if (!empty($this->rules) && !is_array($this->rules)) {
-            $this->phpci->logFailure('The "rules" option must be an array.');
-            return false;
+            throw new \Exception('The "rules" option must be an array.');
         }
 
         foreach ($this->rules as &$rule) {
             if (strpos($rule, '/') !== false) {
-                $rule = $this->phpci->buildPath . $rule;
+                $rule = $this->buildPath . $rule;
             }
         }
 
@@ -225,10 +199,10 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         // Disable exec output logging, as we don't want the XML report in the log:
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         // Run PHPMD:
-        $this->phpci->executeCommand(
+        $this->executor->executeCommand(
             $cmd,
             $path,
             implode(',', $this->rules),
@@ -237,7 +211,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         );
 
         // Re-enable exec output logging:
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
     }
 
     /**
@@ -246,7 +220,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected function getTargetPath()
     {
-        $path = $this->phpci->buildPath . $this->path;
+        $path = $this->buildPath . $this->path;
         if (!empty($this->path) && $this->path{0} == '/') {
             $path = $this->path;
             return $path;

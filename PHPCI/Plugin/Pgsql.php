@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PDO;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
 * PgSQL Plugin - Provides access to a PgSQL database.
@@ -19,18 +17,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Pgsql implements \PHPCI\Plugin
+class Pgsql extends AbstractInterpolatingPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -52,24 +40,23 @@ class Pgsql implements \PHPCI\Plugin
     protected $pass;
 
     /**
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci   = $phpci;
-        $this->build   = $build;
         $this->queries = $options;
+    }
 
-        $buildSettings = $phpci->getConfig('build_settings');
-
-        if (isset($buildSettings['pgsql'])) {
-            $sql = $buildSettings['pgsql'];
-            $this->host = $sql['host'];
-            $this->user = $sql['user'];
-            $this->pass = $sql['pass'];
-        }
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        $this->host = $settings['host'];
+        $this->user = $settings['user'];
+        $this->pass = $settings['pass'];
     }
 
     /**
@@ -78,16 +65,11 @@ class Pgsql implements \PHPCI\Plugin
     */
     public function execute()
     {
-        try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
+        $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO('pgsql:host=' . $this->host, $this->user, $this->pass, $opts);
 
-            foreach ($this->queries as $query) {
-                $pdo->query($this->phpci->interpolate($query));
-            }
-        } catch (\Exception $ex) {
-            $this->phpci->logFailure($ex->getMessage());
-            return false;
+        foreach ($this->queries as $query) {
+            $pdo->query($this->interpolator->interpolate($query));
         }
         return true;
     }

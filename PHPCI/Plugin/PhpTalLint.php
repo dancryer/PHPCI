@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
  * PHPTAL Lint Plugin - Provides access to PHPTAL lint functionality.
@@ -19,22 +17,11 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpTalLint implements PHPCI\Plugin
+class PhpTalLint extends AbstractExecutingPlugin
 {
     protected $directories;
     protected $recursive = true;
     protected $suffixes;
-    protected $ignore;
-
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
 
     /**
      * @var string The path to a file contain custom phptal_tales_ functions
@@ -57,19 +44,14 @@ class PhpTalLint implements PHPCI\Plugin
     protected $failedPaths = array();
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->directories = array('');
         $this->suffixes = array('zpt');
-        $this->ignore = $phpci->ignore;
 
         $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
@@ -82,15 +64,6 @@ class PhpTalLint implements PHPCI\Plugin
             $this->suffixes = (array)$options['suffixes'];
         }
 
-        $this->setOptions($options);
-    }
-
-    /**
-     * Handle this plugin's options.
-     * @param $options
-     */
-    protected function setOptions($options)
-    {
         foreach (array('directories', 'tales', 'allowed_warnings', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
@@ -103,15 +76,13 @@ class PhpTalLint implements PHPCI\Plugin
      */
     public function execute()
     {
-        $this->phpci->quiet = true;
-        $this->phpci->logExecOutput(false);
+        $this->executor->setQuiet(true);
 
         foreach ($this->directories as $dir) {
             $this->lintDirectory($dir);
         }
 
-        $this->phpci->quiet = false;
-        $this->phpci->logExecOutput(true);
+        $this->executor->setQuiet(false);
 
         $errors = 0;
         $warnings = 0;
@@ -170,7 +141,7 @@ class PhpTalLint implements PHPCI\Plugin
     protected function lintDirectory($path)
     {
         $success = true;
-        $directory = new \DirectoryIterator($this->phpci->buildPath . $path);
+        $directory = new \DirectoryIterator($this->buildPath . $path);
 
         foreach ($directory as $item) {
             if ($item->isDot()) {
@@ -205,9 +176,9 @@ class PhpTalLint implements PHPCI\Plugin
         $lint = dirname(__FILE__) . '/../../vendor/phptal/phptal/tools/phptal_lint.php';
         $cmd = '/usr/bin/env php ' . $lint . ' %s %s "%s"';
 
-        $this->phpci->executeCommand($cmd, $suffixes, $tales, $this->phpci->buildPath . $path);
+        $this->executor->executeCommand($cmd, $suffixes, $tales, $this->buildPath . $path);
 
-        $output = $this->phpci->getLastOutput();
+        $output = $this->executor->getLastOutput();
 
         if (preg_match('/Found (.+?) (error|warning)/i', $output, $matches)) {
             $rows = explode(PHP_EOL, $output);
@@ -222,7 +193,7 @@ class PhpTalLint implements PHPCI\Plugin
 
                 $row = str_replace('(use -i to include your custom modifier functions)', '', $row);
                 $message = str_replace($name . ': ', '', $row);
-                
+
                 $parts = explode(' (line ', $message);
 
                 $message = trim($parts[0]);
@@ -250,7 +221,7 @@ class PhpTalLint implements PHPCI\Plugin
     {
         $tales = '';
         if (!empty($this->tales)) {
-            $tales = ' -i ' . $this->phpci->buildPath . $this->tales;
+            $tales = ' -i ' . $this->buildPath . $this->tales;
         }
 
         $suffixes = '';

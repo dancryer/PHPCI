@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PHPCI;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
 * PHP Spec Plugin - Allows PHP Spec testing.
@@ -19,33 +17,20 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec implements PHPCI\Plugin
+class PhpSpec extends AbstractExecutingPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
     protected $options;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
         $this->options = $options;
     }
 
@@ -55,12 +40,12 @@ class PhpSpec implements PHPCI\Plugin
     public function execute()
     {
         $curdir = getcwd();
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
 
-        $phpspec = $this->phpci->findBinary(array('phpspec', 'phpspec.php'));
+        $phpspec = $this->executor->findBinary(array('phpspec', 'phpspec.php'));
 
-        $success = $this->phpci->executeCommand($phpspec . ' --format=junit --no-code-generation run');
-        $output = $this->phpci->getLastOutput();
+        $success = $this->executor->executeCommand($phpspec . ' --format=junit --no-code-generation run');
+        $output = $this->executor->getLastOutput();
 
         chdir($curdir);
 

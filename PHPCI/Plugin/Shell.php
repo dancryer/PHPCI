@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Shell Plugin - Allows execute shell commands.
@@ -19,18 +17,8 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Shell implements \PHPCI\Plugin
+class Shell extends AbstractInterpolatingPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     protected $args;
 
     /**
@@ -39,25 +27,15 @@ class Shell implements \PHPCI\Plugin
     protected $commands = array();
 
     /**
-     * Standard Constructor
+     * Configure the plugin.
      *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         if (isset($options['command'])) {
             // Keeping this for backwards compatibility, new projects should use interpolation vars.
-            $options['command'] = str_replace("%buildpath%", $this->phpci->buildPath, $options['command']);
+            $options['command'] = str_replace("%buildpath%", $this->buildPath, $options['command']);
             $this->commands = array($options['command']);
             return;
         }
@@ -86,9 +64,9 @@ class Shell implements \PHPCI\Plugin
         $success = true;
 
         foreach ($this->commands as $command) {
-            $command = $this->phpci->interpolate($command);
+            $command = $this->interpolator->interpolate($command);
 
-            if (!$this->phpci->executeCommand($command)) {
+            if (!$this->executor->executeCommand($command)) {
                 $success = false;
             }
         }

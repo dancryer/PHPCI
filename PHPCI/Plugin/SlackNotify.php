@@ -8,16 +8,13 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
-use PHPCI\Model\Build;
-
 /**
  * Slack Plugin
  * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class SlackNotify implements \PHPCI\Plugin
+class SlackNotify extends AbstractInterpolatingPlugin
 {
     private $webHook;
     private $room;
@@ -26,17 +23,12 @@ class SlackNotify implements \PHPCI\Plugin
     private $icon;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
-     * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         if (is_array($options) && isset($options['webhook_url'])) {
             $this->webHook = trim($options['webhook_url']);
 
@@ -74,7 +66,7 @@ class SlackNotify implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $message = $this->phpci->interpolate($this->message);
+        $message = $this->interpolator->interpolate($this->message);
 
         $successfulBuild = $this->build->isSuccessful();
 

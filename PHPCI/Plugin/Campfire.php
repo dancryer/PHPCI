@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Campfire Plugin - Allows Campfire API actions.
@@ -20,41 +18,39 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Campfire implements \PHPCI\Plugin
+class Campfire extends AbstractPlugin
 {
     private $url;
     private $authToken;
-    private $userAgent;
-    private $cookie;
+    private $userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
+    private $cookie = "phpcicookie";
     private $verbose;
     private $roomId;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
-     * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         $this->message = $options['message'];
-        $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
-        $this->cookie = "phpcicookie";
+    }
 
-        $buildSettings = $phpci->getConfig('build_settings');
-        if (isset($buildSettings['campfire'])) {
-            $campfire = $buildSettings['campfire'];
-            $this->url = $campfire['url'];
-            $this->authToken = $campfire['authToken'];
-            $this->roomId = $campfire['roomId'];
-        } else {
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        parent::setCommonSettings($settings);
+
+        if (!isset($settings['url'], $settings['authToken'], $settings['roomId'])) {
             throw new \Exception(Lang::get('no_campfire_settings'));
         }
 
+        $this->url = $settings['url'];
+        $this->authToken = $settings['authToken'];
+        $this->roomId = $settings['roomId'];
     }
 
     /**
@@ -70,7 +66,6 @@ class Campfire implements \PHPCI\Plugin
         $this->leaveRoom($this->roomId);
 
         return $status;
-
     }
 
     /**
@@ -108,7 +103,6 @@ class Campfire implements \PHPCI\Plugin
         }
 
         return $this->getPageByPost($page, array('message' => array('type' => $type, 'body' => $message)));
-
     }
 
     /**

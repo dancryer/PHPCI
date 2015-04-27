@@ -9,9 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Pdepend Plugin - Allows Pdepend report
@@ -19,13 +17,9 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Pdepend implements \PHPCI\Plugin
+class Pdepend extends AbstractExecutingPlugin
 {
     protected $args;
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
     /**
      * @var string Directory which needs to be scanned
      */
@@ -49,23 +43,19 @@ class Pdepend implements \PHPCI\Plugin
     protected $location;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $this->buildPath;
 
-        $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
-
-        $title = $phpci->getBuildProjectTitle();
+        $title = $this->phpci->getBuildProjectTitle();
         $this->summary  = $title . '-summary.xml';
         $this->pyramid  = $title . '-pyramid.svg';
         $this->chart    = $title . '-chart.svg';
-        $this->location = $this->phpci->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
+        $this->location = $this->buildPath . '..' . DIRECTORY_SEPARATOR . 'pdepend';
     }
 
     /**
@@ -77,20 +67,20 @@ class Pdepend implements \PHPCI\Plugin
             throw new \Exception(sprintf('The location %s is not writable.', $this->location));
         }
 
-        $pdepend = $this->phpci->findBinary('pdepend');
+        $pdepend = $this->executor->findBinary('pdepend');
 
         $cmd = $pdepend . ' --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
 
         $this->removeBuildArtifacts();
 
         // If we need to ignore directories
-        if (count($this->phpci->ignore)) {
-            $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);
+        if (count($this->ignore)) {
+            $ignore = ' --ignore=' . implode(',', $this->ignore);
         } else {
             $ignore = '';
         }
 
-        $success = $this->phpci->executeCommand(
+        $success = $this->executor->executeCommand(
             $cmd,
             $this->location . DIRECTORY_SEPARATOR . $this->summary,
             $this->location . DIRECTORY_SEPARATOR . $this->chart,
@@ -102,7 +92,7 @@ class Pdepend implements \PHPCI\Plugin
         $config = $this->phpci->getSystemConfig('phpci');
 
         if ($success) {
-            $this->phpci->logSuccess(
+            $this->logger->notice(
                 sprintf(
                     "Pdepend successful. You can use %s\n, ![Chart](%s \"Pdepend Chart\")\n
                     and ![Pyramid](%s \"Pdepend Pyramid\")\n

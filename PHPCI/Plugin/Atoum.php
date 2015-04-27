@@ -9,35 +9,29 @@
 
 namespace PHPCI\Plugin;
 
-use PHPCI\Builder;
 use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 
 /**
  * Atoum plugin, runs Atoum tests within a project.
  * @package PHPCI\Plugin
  */
-class Atoum implements \PHPCI\Plugin
+class Atoum extends AbstractExecutingPlugin
 {
     private $args;
     private $config;
     private $directory;
 
     /**
-     * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     * Configure the plugin.
+     *
      * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
         if (isset($options['executable'])) {
-            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
+            $this->executable = $this->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
         } else {
-            $this->executable = $this->phpci->findBinary('atoum');
+            $this->executable = $this->executor->findBinary('atoum');
         }
 
         if (isset($options['args'])) {
@@ -68,23 +62,23 @@ class Atoum implements \PHPCI\Plugin
             $cmd .= " -c '{$this->config}'";
         }
         if ($this->directory !== null) {
-            $dirPath = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->directory;
+            $dirPath = $this->buildPath . DIRECTORY_SEPARATOR . $this->directory;
             $cmd .= " -d '{$dirPath}'";
         }
-        chdir($this->phpci->buildPath);
+        chdir($this->buildPath);
         $output = '';
         $status = true;
         exec($cmd, $output);
 
         if (count(preg_grep("/Success \(/", $output)) == 0) {
             $status = false;
-            $this->phpci->log($output);
+            $this->logger->notice($output);
         }
         if (count($output) == 0) {
             $status = false;
-            $this->phpci->log(Lang::get('no_tests_performed'));
+            $this->logger->warning(Lang::get('no_tests_performed'));
         }
-        
+
         return $status;
     }
 }

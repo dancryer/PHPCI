@@ -10,8 +10,6 @@
 namespace PHPCI\Plugin;
 
 use PDO;
-use PHPCI\Builder;
-use PHPCI\Model\Build;
 
 /**
 * SQLite Plugin — Provides access to a SQLite database.
@@ -19,18 +17,8 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Sqlite implements \PHPCI\Plugin
+class Sqlite extends AbstractPlugin
 {
-    /**
-     * @var \PHPCI\Builder
-     */
-    protected $phpci;
-
-    /**
-     * @var \PHPCI\Model\Build
-     */
-    protected $build;
-
     /**
      * @var array
      */
@@ -42,21 +30,21 @@ class Sqlite implements \PHPCI\Plugin
     protected $path;
 
     /**
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
+     * Configure the plugin.
+     *
+     * @param array $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    protected function setOptions(array $options)
     {
-        $this->phpci   = $phpci;
-        $this->build   = $build;
         $this->queries = $options;
-        $buildSettings = $phpci->getConfig('build_settings');
+    }
 
-        if (isset($buildSettings['sqlite'])) {
-            $sql = $buildSettings['sqlite'];
-            $this->path = $sql['path'];
-        }
+    /**
+     * {@inheritdoc}
+     */
+    protected function setCommonSettings(array $settings)
+    {
+        $this->path = $settings['path'];
     }
 
     /**
@@ -65,16 +53,11 @@ class Sqlite implements \PHPCI\Plugin
      */
     public function execute()
     {
-        try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo = new PDO('sqlite:' . $this->path, $opts);
+        $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO('sqlite:' . $this->path, $opts);
 
-            foreach ($this->queries as $query) {
-                $pdo->query($this->phpci->interpolate($query));
-            }
-        } catch (\Exception $ex) {
-            $this->phpci->logFailure($ex->getMessage());
-            return false;
+        foreach ($this->queries as $query) {
+            $pdo->query($this->interpolator->interpolate($query));
         }
         return true;
     }

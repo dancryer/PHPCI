@@ -60,5 +60,18 @@ class OutputLogHandler extends AbstractProcessingHandler
         }
 
         $output->write($record['formatted']);
+
+    /**
+     * Enable the enhancements of the default formatter.
+     *
+     * @return FormatterInterface
+     */
+    protected function getDefaultFormatter()
+    {
+        $formatter = parent::getDefaultFormatter();
+        $formatter->ignoreEmptyContextAndExtra(true);
+        $formatter->allowInlineLineBreaks(true);
+        $formatter->includeStacktraces(true);
+        return $formatter;
     }
 }

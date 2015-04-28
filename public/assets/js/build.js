@@ -70,9 +70,8 @@ var Build = Class.extend({
     },
 
     renderPlugins: function() {
-        var self = this;
-        var rendered = [];
-        var renderOrder = localStorage.getItem('phpci-plugin-order');
+        var rendered = [],
+            renderOrder = localStorage.getItem('phpci-plugin-order');
 
         if (renderOrder) {
             renderOrder = JSON.parse(renderOrder);
@@ -82,43 +81,48 @@ var Build = Class.extend({
 
         for (var idx in renderOrder) {
             var key = renderOrder[idx];
-            self.renderPlugin(self.plugins[key]);
+            this.renderPlugin(key);
             rendered.push(key);
         }
 
         for (var key in this.plugins) {
             if (rendered.indexOf(key) == -1) {
-                self.renderPlugin(self.plugins[key]);
+                self.renderPlugin(key);
             }
         }
 
         $('#plugins').sortable({
             handle: '.box-title',
             connectWith: '#plugins',
-            update: self.storePluginOrder
+            update: this.storePluginOrder
         });
 
-        $(window).trigger({type: 'build-updated', queryData: self.buildData});
+        $(window).trigger({type: 'build-updated', queryData: this.buildData});
     },
 
-    renderPlugin: function(plugin) {
-        var output = plugin.render();
+    renderPlugin: function(key) {
+        try {
+            var plugin = this.plugins[key],
+                output = plugin.render();
 
-        if (!plugin.box) {
-            output = $('<div class="box-body"></div>').append(output);
+            if (!plugin.box) {
+                output = $('<div class="box-body"></div>').append(output);
+            }
+
+            var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
+            var content = $('<div></div>').attr('id', plugin.id).append(output);
+            content.addClass('box box-default');
+
+            if (plugin.title) {
+                content.prepend('<div class="box-header"><h3 class="box-title">'+plugin.title+'</h3></div>');
+            }
+
+            container.append(content);
+
+            $('#plugins').append(container);
+        } catch(e) {
+            console.log("Cannot render plugin '"+key+"': ", e);
         }
-
-        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
-        var content = $('<div></div>').attr('id', plugin.id).append(output);
-        content.addClass('box box-default');
-
-        if (plugin.title) {
-            content.prepend('<div class="box-header"><h3 class="box-title">'+plugin.title+'</h3></div>');
-        }
-
-        container.append(content);
-
-        $('#plugins').append(container);
     },
 
     UiPlugin: Class.extend({

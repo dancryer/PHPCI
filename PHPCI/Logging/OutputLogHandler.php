@@ -12,6 +12,7 @@ namespace PHPCI\Logging;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -52,6 +53,12 @@ class OutputLogHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $this->output->writeln((string)$record['formatted']);
+        if ($record['level'] >= Logger::ERROR && $this->output instanceof ConsoleOutputInterface) {
+            $output = $this->output->getErrorOutput();
+        } else {
+            $output = $this->output;
+        }
+
+        $output->write($record['formatted']);
     }
 }

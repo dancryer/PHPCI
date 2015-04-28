@@ -9,6 +9,8 @@
 
 namespace PHPCI\Logging;
 
+use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
@@ -34,6 +36,19 @@ class OutputLogHandler extends AbstractProcessingHandler
         OutputInterface::VERBOSITY_DEBUG        => Logger::DEBUG,
     );
 
+    /**
+     * Map log levels to colors.
+     *
+     * @var string[]
+     */
+    static protected $colors = array(
+        Logger::ERROR =>   'red',
+        Logger::WARNING => 'yellow',
+        Logger::NOTICE =>  'green',
+        Logger::INFO =>    'white'
+    );
+
+    /**
      * @var OutputInterface
      */
     protected $output;
@@ -45,6 +60,7 @@ class OutputLogHandler extends AbstractProcessingHandler
     {
         parent::__construct(static::$levels[$output->getVerbosity()]);
         $this->output = $output;
+        $this->pushProcessor(array($this, 'addConsoleColor'));
     }
 
     /**
@@ -60,6 +76,7 @@ class OutputLogHandler extends AbstractProcessingHandler
         }
 
         $output->write($record['formatted']);
+    }
 
     /**
      * Enable the enhancements of the default formatter.
@@ -73,5 +90,23 @@ class OutputLogHandler extends AbstractProcessingHandler
         $formatter->allowInlineLineBreaks(true);
         $formatter->includeStacktraces(true);
         return $formatter;
+    }
+
+    /**
+     * Add console coloring to the message.
+     *
+     * @param array $record
+     * @return array
+     */
+    public function addConsoleColor($record)
+    {
+        foreach (static::$colors as $level => $color) {
+            if ($record['level'] >= $level) {
+                break;
+            }
+        }
+
+        $record['message'] = sprintf('<fg=%s>%s</fg=%s>', $color, rtrim($record['message']), $color);
+        return $record;
     }
 }

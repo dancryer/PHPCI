@@ -10,6 +10,7 @@
 namespace PHPCI\Logging;
 
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,21 +21,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 class OutputLogHandler extends AbstractProcessingHandler
 {
     /**
+     * Map verbosity levels to log levels.
+     *
+     * @var int[]
+     */
+    static protected $levels = array(
+        OutputInterface::VERBOSITY_QUIET        => Logger::ERROR,
+        OutputInterface::VERBOSITY_NORMAL       => Logger::WARNING,
+        OutputInterface::VERBOSITY_VERBOSE      => Logger::NOTICE,
+        OutputInterface::VERBOSITY_VERY_VERBOSE => Logger::INFO,
+        OutputInterface::VERBOSITY_DEBUG        => Logger::DEBUG,
+    );
+
      * @var OutputInterface
      */
     protected $output;
 
     /**
      * @param OutputInterface $output
-     * @param bool|string $level
-     * @param bool $bubble
      */
-    public function __construct(
-        OutputInterface $output,
-        $level = LogLevel::INFO,
-        $bubble = true
-    ) {
-        parent::__construct($level, $bubble);
+    public function __construct(OutputInterface $output)
+    {
+        parent::__construct(static::$levels[$output->getVerbosity()]);
         $this->output = $output;
     }
 

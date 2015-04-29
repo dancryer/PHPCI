@@ -27,8 +27,8 @@ class FlowdockNotify implements \PHPCI\Plugin
     /**
      * Set up the plugin, configure options, etc.
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      * @throws \Exception
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
@@ -59,8 +59,9 @@ class FlowdockNotify implements \PHPCI\Plugin
     }
 
     /**
-     * Run the Slack plugin.
+     * Run the Flowdock plugin.
      * @return bool
+     * @throws \Exception
      */
     public function execute()
     {
@@ -71,10 +72,8 @@ class FlowdockNotify implements \PHPCI\Plugin
 
         if ($successfulBuild) {
             $status = 'Success';
-            $color = 'good';
         } else {
             $status = 'Failed';
-            $color = 'danger';
         }
 
         $push = new Push($this->api_key);
@@ -90,10 +89,8 @@ class FlowdockNotify implements \PHPCI\Plugin
 
         if (!$push->sendTeamInboxMessage($flowMessage, array('connect_timeout' => 5000, 'timeout' => 5000))) {
             // handle errors...
-            $flowMessage->getResponseErrors();
-            return false;
+            throw new \Exception('Flowdock Failed :'.$flowMessage->getResponseErrors());
         }
-
 
         return true;
     }

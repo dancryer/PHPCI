@@ -87,7 +87,12 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         $color = ($status == 'passing') ? 'green' : 'red';
-        $image = file_get_contents('http://img.shields.io/badge/' . $label . '-' . $status . '-' . $color . '.svg?style=' . $style);
+        $image = file_get_contents(
+            'http://img.shields.io/badge/' .
+            $label . '-' .
+            $status . '-' .
+            $color . '.svg?style=' . $style
+        );
 
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');

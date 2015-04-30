@@ -131,6 +131,9 @@ class BuildStatusController extends \PHPCI\Controller
     */
     public function image($projectId)
     {
+        $style = $this->getParam('style', 'plastic');
+        $label = $this->getParam('label', 'build');
+
         $status = $this->getStatus($projectId);
 
         if (is_null($status)) {
@@ -140,7 +143,13 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         $color = ($status == 'passing') ? 'green' : 'red';
-        $image = file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg');
+        $image = file_get_contents(sprintf(
+            'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
+            $label,
+            $status,
+            $color,
+            $style
+        ));
 
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');

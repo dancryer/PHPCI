@@ -11,6 +11,8 @@
 namespace PHPCI\Command;
 
 use Monolog\Logger;
+use PHPCI\ProcessControl\Factory;
+use PHPCI\ProcessControl\ProcessControlInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,10 +43,16 @@ class DaemonCommand extends Command
      */
     protected $logFilePath;
 
-    public function __construct(Logger $logger, $name = null)
+    /**
+     * @var ProcessControlInterface
+     */
+    protected $processControl;
+
+    public function __construct(Logger $logger, ProcessControlInterface $processControl = null, $name = null)
     {
         parent::__construct($name);
         $this->logger = $logger;
+        $this->processControl = $processControl ?: Factory::getInstance();
     }
 
     protected function configure()
@@ -107,11 +115,11 @@ class DaemonCommand extends Command
 
         $cmd = "nohup %s/daemonise phpci:daemonise > %s 2>&1 &";
         $command = sprintf($cmd, PHPCI_DIR, $this->logFilePath);
+        $output = $exitCode = null;
         exec($command, $output, $exitCode);
 
         if ($exitCode !== 0) {
-            $this->logger->error(sprintf("daemonise exited with status %d",
-                    $exitCode));
+            $this->logger->error(sprintf("daemonise exited with status %d", $exitCode));
             return "notstarted";
         }
 
@@ -137,7 +145,7 @@ class DaemonCommand extends Command
         }
 
         $this->logger->info("Trying to terminate the daemon", array('pid' => $pid));
-        $this->kill($pid, 15);
+        $this->processControl->kill($pid);
 
         for ($i = 0; ($pid = $this->getRunningPid()) && $i < 5; $i++) {
             sleep(1);
@@ -145,7 +153,7 @@ class DaemonCommand extends Command
 
         if ($pid) {
             $this->logger->warning("The daemon is resiting, trying to kill it", array('pid' => $pid));
-            $this->kill($pid, 9);
+            $this->processControl->kill($pid, true);
 
             for ($i = 0; ($pid = $this->getRunningPid()) && $i < 5; $i++) {
                 sleep(1);
@@ -184,42 +192,11 @@ class DaemonCommand extends Command
 
         $pid = intval(trim(file_get_contents($this->pidFilePath)));
 
-        if (function_exists('posix_kill')) {
-            // Use posix_kill with signal 0
-            if (@posix_kill($pid, 0)) {
-                // Signal 0 isn't sent but posix_kill checks the process anyway
-                return $pid;
-            }
-        } elseif (is_dir('/proc')) {
-            // Use linux's /proc filesystem
-            if (is_dir('/proc/' . $pid)) {
-                return $pid;
-            }
-        } else {
-            // Last resort: the ps command
-            exec(sprintf('ps %d', $pid), $output, $exitCode);
-            if ($exitCode === 0) {
-                return $pid;
-            }
+        if($this->processControl->isRunning($pid, true)) {
+            return $pid;
         }
 
         // Not found, remove the stale PID file
         unlink($this->pidFilePath);
     }
-
-    /** Kill a process
-     *
-     * @param int $pid
-     * @param int $signal
-     */
-    protected function kill($pid, $signal = 15)
-    {
-        if (function_exists('posix_kill')) {
-            return posix_kill($pid, $signal);
-        }
-
-        exec(sprintf('kill -%d %d', $signal, $pid), null, $exitCode);
-        return $exitCode === 0;
-    }
-
 }

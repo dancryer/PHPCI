@@ -23,6 +23,8 @@ class FlowdockNotify implements \PHPCI\Plugin
 {
     private $api_key;
     private $email;
+    const MESSAGE_DEFAULT = 'Build %BUILD% has finished for commit <a href="%COMMIT_URI%">%SHORT_COMMIT%</a>
+                            (%COMMIT_EMAIL%)> on branch <a href="%BRANCH_URI%">%BRANCH%</a>';
 
     /**
      * Set up the plugin, configure options, etc.
@@ -35,27 +37,12 @@ class FlowdockNotify implements \PHPCI\Plugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
-
-        if (is_array($options) && isset($options['api_key'])) {
-            $this->api_key = trim($options['api_key']);
-
-            if (isset($options['message'])) {
-                $this->message = $options['message'];
-            } else {
-                $this->message = 'Build %BUILD% has finished ';
-                $this->message .= 'for commit <a href="%COMMIT_URI%">%SHORT_COMMIT%</a> (%COMMIT_EMAIL%)> ';
-                $this->message .= 'on branch <a href="%BRANCH_URI%">%BRANCH%</a>';
-            }
-
-            if (isset($options['email'])) {
-                $this->email = $options['email'];
-            } else {
-                $this->email = 'PHPCI';
-            }
-
-        } else {
-            throw new \Exception('Please define the api_key for flowdock_notify plugin!');
+        if (!is_array($options) || !isset($options['api_key'])) {
+            throw new \Exception('Please define the api_key for Flowdock Notify plugin!');
         }
+        $this->api_key = trim($options['api_key']);
+        $this->message = isset($options['message']) ? $options['message'] : self::MESSAGE_DEFAULT;
+        $this->email = isset($options['email']) ? $options['email'] : 'PHPCI';
     }
 
     /**
@@ -67,31 +54,20 @@ class FlowdockNotify implements \PHPCI\Plugin
     {
 
         $message = $this->phpci->interpolate($this->message);
-
-        $successfulBuild = $this->build->isSuccessful();
-
-        if ($successfulBuild) {
-            $status = 'Success';
-        } else {
-            $status = 'Failed';
-        }
-
+        $successfulBuild = $this->build->isSuccessful() ? 'Success' : 'Failed';
         $push = new Push($this->api_key);
-
         $flowMessage = TeamInboxMessage::create()
             ->setSource("PHPCI")
             ->setFromAddress($this->email)
             ->setFromName($this->build->getProject()->getTitle())
-            ->setSubject($status)
+            ->setSubject($successfulBuild)
             ->setTags(['#ci'])
             ->setLink($this->build->getBranchLink())
             ->setContent($message);
 
         if (!$push->sendTeamInboxMessage($flowMessage, array('connect_timeout' => 5000, 'timeout' => 5000))) {
-            // handle errors...
-            throw new \Exception('Flowdock Failed :'.$flowMessage->getResponseErrors());
+            throw new \Exception(sprintf('Flowdock Failed: %s', $flowMessage->getResponseErrors()));
         }
-
         return true;
     }
 }

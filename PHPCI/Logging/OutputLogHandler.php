@@ -39,13 +39,14 @@ class OutputLogHandler extends AbstractProcessingHandler
     /**
      * Map log levels to colors.
      *
-     * @var string[]
+     * @var array
      */
     static protected $colors = array(
         Logger::ERROR =>   'red',
         Logger::WARNING => 'yellow',
         Logger::NOTICE =>  'green',
-        Logger::INFO =>    'white'
+        // No color markup below NOTICE
+        Logger::INFO =>    false
     );
 
     /**
@@ -97,6 +98,8 @@ class OutputLogHandler extends AbstractProcessingHandler
      *
      * @param array $record
      * @return array
+     *
+     * @internal Used as a Processor.
      */
     public function addConsoleColor($record)
     {
@@ -106,7 +109,10 @@ class OutputLogHandler extends AbstractProcessingHandler
             }
         }
 
-        $record['message'] = sprintf('<fg=%s>%s</fg=%s>', $color, rtrim($record['message']), $color);
+        if ($color !== false) {
+            $record['message'] = sprintf('<fg=%s>%s</fg=%s>', $color, rtrim($record['message']), $color);
+        }
+
         return $record;
     }
 }

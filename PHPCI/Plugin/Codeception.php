@@ -108,12 +108,8 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
             return false;
         }
 
-        $success = true;
-
         // Run any config files first. This can be either a single value or an array.
-        $success &= $this->runConfigFile($this->ymlConfigFile);
-
-        return $success;
+        return $this->runConfigFile($this->ymlConfigFile);
     }
 
     /**

@@ -87,8 +87,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
-        }
-        if (isset($options['config'])) {
+        } else {
             $this->ymlConfigFile = $options['config'];
         }
         if (isset($options['args'])) {

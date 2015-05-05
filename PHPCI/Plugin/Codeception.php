@@ -52,11 +52,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
      */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
-        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
-            return true;
-        }
-
-        return false;
+        return $stage == 'test' && !is_null(self::findConfigFile($builder->buildPath));
     }
 
     /**

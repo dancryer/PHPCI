@@ -81,7 +81,7 @@ class Stash implements \PHPCI\Plugin
         $url = 'http://' . $stashHostname . ':' . $stashPort;
         $url .= '/rest/build-status/1.0/commits/' . $commitId;
 
-        $data = array("state" => $buildStatus, "key" => $projectName, "url" => $buildUrl);
+        $data = array("state" => $buildStatus, "key" => $projectName . " (build $buildId)", "url" => $buildUrl);
         $data_string = json_encode($data);
      
         $curlHeaders = array(
@@ -97,15 +97,21 @@ class Stash implements \PHPCI\Plugin
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
       
         $result = curl_exec($handle);
+        $error = curl_error($handle);
+        curl_close($handle);
 
         $this->phpci->log("Sent to Stash.");
 
         if ($result === false) {
-            $this->phpci->log("Unknown issue with curl request");
+            $this->phpci->log("Unknown issue with curl request $error");
             $this->phpci->log($result);
-            error_log("Unknown issue with curl request");
-            error_log($result);
             return false;
+        } else {
+            $decoded = json_decode($result);
+            if (array_key_exists('errors', $decoded)) {
+                $this->phpci->log($result);
+                return false;
+            }
         }
         return true;
     }

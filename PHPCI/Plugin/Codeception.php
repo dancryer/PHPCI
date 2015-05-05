@@ -120,54 +120,50 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
      */
     protected function runConfigFile($configPath)
     {
-        if (is_array($configPath)) {
-            return $this->recurseArg($configPath, array($this, 'runConfigFile'));
-        } else {
-            $this->phpci->logExecOutput(false);
+        $this->phpci->logExecOutput(false);
 
-            $codecept = $this->phpci->findBinary('codecept');
+        $codecept = $this->phpci->findBinary('codecept');
 
-            if (!$codecept) {
-                $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
+        if (!$codecept) {
+            $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));
 
-                return false;
-            }
-
-            $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
-            if (IS_WIN) {
-                $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
-            }
-
-            $configPath = $this->phpci->buildPath . $configPath;
-            $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
-
-
-            $this->phpci->log(
-                'Codeception XML path: '. $this->phpci->buildPath . $this->path . '_output/report.xml',
-                Loglevel::DEBUG
-            );
-            $xml = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.xml', false);
-
-            try {
-                $parser = new Parser($this->phpci, $xml);
-                $output = $parser->parse();
-            } catch (\Exception $ex) {
-                throw $ex;
-            }
-
-            $meta = array(
-                'tests' => $parser->getTotalTests(),
-                'timetaken' => $parser->getTotalTimeTaken(),
-                'failures' => $parser->getTotalFailures()
-            );
-
-            $this->build->storeMeta('codeception-meta', $meta);
-            $this->build->storeMeta('codeception-data', $output);
-            $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
-
-            $this->phpci->logExecOutput(true);
-
-            return $success;
+            return false;
         }
+
+        $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
+        if (IS_WIN) {
+            $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
+        }
+
+        $configPath = $this->phpci->buildPath . $configPath;
+        $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
+
+
+        $this->phpci->log(
+            'Codeception XML path: '. $this->phpci->buildPath . $this->path . '_output/report.xml',
+            Loglevel::DEBUG
+        );
+        $xml = file_get_contents($this->phpci->buildPath . $this->path . '_output/report.xml', false);
+
+        try {
+            $parser = new Parser($this->phpci, $xml);
+            $output = $parser->parse();
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+
+        $meta = array(
+            'tests' => $parser->getTotalTests(),
+            'timetaken' => $parser->getTotalTimeTaken(),
+            'failures' => $parser->getTotalFailures()
+        );
+
+        $this->build->storeMeta('codeception-meta', $meta);
+        $this->build->storeMeta('codeception-data', $output);
+        $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
+
+        $this->phpci->logExecOutput(true);
+
+        return $success;
     }
 }

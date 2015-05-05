@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a4a95f2b83e336b9e1b285c04af26ce7",
+    "hash": "0be92d5565a805ffe462c6061ed1dcf4",
     "packages": [
         {
             "name": "block8/b8framework",
@@ -219,12 +219,12 @@
             "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/silexphp/Pimple.git",
+                "url": "https://github.com/fabpot/Pimple.git",
                 "reference": "2019c145fe393923f3441b23f29bbdfaa5c58c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/2019c145fe393923f3441b23f29bbdfaa5c58c4d",
+                "url": "https://api.github.com/repos/fabpot/Pimple/zipball/2019c145fe393923f3441b23f29bbdfaa5c58c4d",
                 "reference": "2019c145fe393923f3441b23f29bbdfaa5c58c4d",
                 "shasum": ""
             },
@@ -249,7 +249,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 }
             ],
             "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
@@ -362,16 +364,16 @@
         },
         {
             "name": "sensiolabs/ansi-to-html",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/ansi-to-html.git",
-                "reference": "92d2ef7ffba5418be060d8ba8adaf7223d741f93"
+                "reference": "fd0aa98170e12131ab989c39252df076cff60121"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/ansi-to-html/zipball/92d2ef7ffba5418be060d8ba8adaf7223d741f93",
-                "reference": "92d2ef7ffba5418be060d8ba8adaf7223d741f93",
+                "url": "https://api.github.com/repos/sensiolabs/ansi-to-html/zipball/fd0aa98170e12131ab989c39252df076cff60121",
+                "reference": "fd0aa98170e12131ab989c39252df076cff60121",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +404,7 @@
                 }
             ],
             "description": "A library to convert a text with ANSI codes to HTML",
-            "time": "2014-08-01 14:02:39"
+            "time": "2015-03-17 06:34:10"
         },
         {
             "name": "swiftmailer/swiftmailer",

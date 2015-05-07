@@ -1,12 +1,13 @@
 <?php
+
 /**
- * PHPCI - Continuous Integration for PHP
+ * PHPCI - Continuous Integration for PHP.
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -14,11 +15,10 @@ use PHPCI\Model\Build;
 use PHPCI\Helper\Lang;
 
 /**
-* Copy Build Plugin - Copies the entire build to another directory.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Copy Build Plugin - Copies the entire build to another directory.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class CopyBuild implements \PHPCI\Plugin
 {
     protected $directory;
@@ -30,9 +30,10 @@ class CopyBuild implements \PHPCI\Plugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
@@ -40,14 +41,14 @@ class CopyBuild implements \PHPCI\Plugin
         $this->phpci        = $phpci;
         $this->build = $build;
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
-        $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
+        $this->wipe         = isset($options['wipe']) ?  (bool) $options['wipe'] : false;
+        $this->ignore       = isset($options['respect_ignore']) ?  (bool) $options['respect_ignore'] : false;
         $this->symlink      = isset($options['symlink_to_current']) ? $options['symlink_to_current'] : false;
     }
 
     /**
-    * Copies files from the root of the build directory into the target folder
-    */
+     * Copies files from the root of the build directory into the target folder.
+     */
     public function execute()
     {
         $build = $this->phpci->buildPath;
@@ -70,12 +71,13 @@ class CopyBuild implements \PHPCI\Plugin
         if ($success && $this->symlink) {
             $success = $this->createSymlinkToCurrentBuild();
         }
-        
+
         return $success;
     }
 
     /**
      * Wipe the destination directory if it already exists.
+     *
      * @throws \Exception
      */
     protected function wipeExistingDirectory()
@@ -105,30 +107,31 @@ class CopyBuild implements \PHPCI\Plugin
             }
         }
     }
-     
+
     /**
      * Create symlink to current copy of build directory.
      * Info: Does not work on windows systems.
-     * @return boolean
+     *
+     * @return bool
      */
     protected function createSymlinkToCurrentBuild()
     {
         $success = true;
-        
+
         if (!IS_WIN) {
             $cmd = 'rm "%s" && ln -s "%s" "%s"';
-        
-            $dir = rtrim($this->directory, '/') . '/';
-            $this->phpci->log('Try to create symlink: '.$this->symlink.' --> '.$dir.$this->build->getId());
+
+            $dir = rtrim($this->directory, '/').'/';
+            $this->phpci->log('Try to create symlink '.$this->symlink.' --> '.$dir.$this->build->getId());
             $success = $this->phpci->executeCommand($cmd, $this->symlink, $dir.$this->build->getId(), $this->symlink);
-        
+
             if (!$success) {
-                $this->phpci->logFailure('Unable to create symlink: '.$this->symlink.' --> '.$dir.$this->build->getId());
+                $this->phpci->logFailure('Unable to create symlink.');
             } else {
-                 $this->phpci->log('Symlink successfully created.');
+                $this->phpci->log('Symlink successfully created.');
             }
         }
-        
+
         return $success;
     }
 }

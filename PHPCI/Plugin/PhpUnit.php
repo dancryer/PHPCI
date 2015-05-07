@@ -197,14 +197,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 chdir($this->phpci->buildPath.'/'.$this->runFrom);
             }
 
-
             $phpunit = $this->phpci->findBinary('phpunit');
-
-            if (!$phpunit) {
-                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
-                return false;
-            }
-
 
             $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
@@ -231,11 +224,6 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             chdir($this->phpci->buildPath);
 
             $phpunit = $this->phpci->findBinary('phpunit');
-
-            if (!$phpunit) {
-                $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpunit'));
-                return false;
-            }
 
             $cmd = $phpunit . ' --tap %s "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);

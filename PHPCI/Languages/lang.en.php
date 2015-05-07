@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Password Reset for %s',
     'reset_invalid' => 'Invalid password reset request.',
     'email_address' => 'Email Address',
+    'login' => 'Login / Email Address',
     'password' => 'Password',
     'log_in' => 'Log in',
 
@@ -188,6 +189,12 @@ PHPCI',
     'phpunit' => 'PHP Unit',
     'technical_debt' => 'Technical Debt',
     'behat' => 'Behat',
+
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Time',
+    'codeception_synopsis' => '<strong>%1$d</strong> tests carried out in <strong>%2$f</strong> seconds.
+                               <strong>%3$d</strong> failures.',
 
     'file' => 'File',
     'line' => 'Line',
@@ -342,6 +349,12 @@ PHPCI',
     // Create Admin
     'create_admin_user' => 'Create an admin user',
     'incorrect_format' => 'Incorrect format',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Run all pending PHPCI builds.',

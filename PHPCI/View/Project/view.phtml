@@ -6,7 +6,7 @@
 
 <div class="clearfix"  style="margin-bottom: 20px;">
     <div class="pull-right btn-group">
-        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>">
+        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>/<?php echo urlencode($branch) ?>">
             <?php Lang::out('build_now'); ?>
         </a>
 

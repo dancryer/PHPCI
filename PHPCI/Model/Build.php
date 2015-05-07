@@ -217,4 +217,31 @@ class Build extends BuildBase
     {
         return array($builder, $file, $line, $message);
     }
+
+    /**
+     * Return the path to run this build into.
+     *
+     * @return string|null
+     */
+    public function getBuildPath()
+    {
+        if (!$this->getId()) {
+            return null;
+        }
+        return PHPCI_BUILD_ROOT_DIR . $this->getId();
+    }
+
+    /**
+     * Removes the build directory.
+     */
+    public function removeBuildDirectory()
+    {
+        $buildPath = $this->getBuildPath();
+
+        if (!$buildPath || !is_dir($buildPath)) {
+            return;
+        }
+
+        exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
+    }
 }

@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Passwort zurücksetzen für %s',
     'reset_invalid' => 'Fehlerhafte Anfrage für das Zurücksetzen eines Passwortes',
     'email_address' => 'Emailadresse',
+    'login' => 'Login / Email Address',
     'password' => 'Passwort',
     'log_in' => 'Einloggen',
 
@@ -335,6 +336,12 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     // Create Admin
     'create_admin_user' => 'Administratorenbenutzer erstellen',
     'incorrect_format' => 'Falsches Format',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Führe alle ausstehenden PHPCI Builds aus.',

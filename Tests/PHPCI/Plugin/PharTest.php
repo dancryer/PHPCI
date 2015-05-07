@@ -1,5 +1,14 @@
 <?php
-namespace PHPCI\Plugin\Tests;
+
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2015, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
+
+namespace Tests\PHPCI\Plugin;
 
 use PHPCI\Plugin\Phar as PharPlugin;
 use Phar as PHPPhar;
@@ -78,8 +87,7 @@ class PharTest extends \PHPUnit_Framework_TestCase
     protected function checkReadonly()
     {
         if (ini_get('phar.readonly')) {
-            $this->markTestSkipped();
-            throw new RuntimeException('Readonly Phar');
+            $this->markTestSkipped('phar writing disabled in php.ini.');
         }
     }
 

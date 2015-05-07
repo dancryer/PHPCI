@@ -114,6 +114,7 @@ PHPCI',
                                 (en caso que no puedas agregar el archivo phpci.yml al repositorio)',
     'default_branch' => 'Nombre de la rama por defecto',
     'allow_public_status' => '¿Activar página pública con el estado del proyecto?',
+    'archived' => 'Archivado',
     'save_project' => 'Guardar Proyecto',
 
     'error_mercurial' => 'La URL del repositorio de Mercurial debe comenzar con http:// or https://',

@@ -1,14 +1,19 @@
 <?php
 
-namespace PHPCI\Plugin\Tests\Util;
+/**
+ * PHPCI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2015, Block 8 Limited.
+ * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @link         https://www.phptesting.org/
+ */
 
-require_once __DIR__ . "/ExamplePlugins.php";
+namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Plugin\Util\Executor;
 use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTestCase;
 
-class ExecutorTest extends ProphecyTestCase
+class ExecutorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Executor
@@ -43,14 +48,13 @@ class ExecutorTest extends ProphecyTestCase
     public function testExecutePlugin_KeepsCalledNameSpace()
     {
         $options = array();
-        $pluginName = 'ExamplePluginFull';
-        $pluginNamespace = '\\PHPCI\\Plugin\\Tests\\Util\\';
+        $pluginClass = $this->getFakePluginClassName('ExamplePluginFull');
 
-        $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)
+        $this->mockFactory->buildPlugin($pluginClass, $options)
           ->shouldBeCalledTimes(1)
           ->willReturn($this->prophesize('PHPCI\Plugin')->reveal());
 
-        $this->testedExecutor->executePlugin($pluginNamespace . $pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginClass, $options);
     }
 
     public function testExecutePlugin_CallsExecuteOnFactoryBuildPlugin()
@@ -142,5 +146,11 @@ class ExecutorTest extends ProphecyTestCase
         $this->testedExecutor->executePlugins($config, 'stageOne');
     }
 
+    protected function getFakePluginClassName($pluginName)
+    {
+        $pluginNamespace = '\\Tests\\PHPCI\\Plugin\\Util\\Fake\\';
+
+        return $pluginNamespace . $pluginName;
+    }
 }
- 
+

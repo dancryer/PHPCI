@@ -38,6 +38,7 @@ PHPCI',
     'reset_email_title' => 'Сброс пароля PHPCI для %s',
     'reset_invalid' => 'Некорректный запрос на сброс пароля.',
     'email_address' => 'Email',
+    'login' => 'Логин / Email',
     'password' => 'Пароль',
     'log_in' => 'Войти',
 
@@ -112,7 +113,7 @@ PHPCI',
                                 (если вы не добавили файл phpci.yml в репозиторий вашего проекта)',
     'default_branch' => 'Ветка по умолчанию',
     'allow_public_status' => 'Разрешить публичный статус и изображение (статуса) для проекта',
-    'archived' => 'Archived',
+    'archived' => 'Запакован',
     'save_project' => 'Сохранить проект',
 
     'error_mercurial' => 'URL репозитория Mercurial должен начинаться с http:// или https://',
@@ -335,6 +336,12 @@ PHPCI',
     // Create Admin
     'create_admin_user' => 'Добавить аккаунт администратора',
     'incorrect_format' => 'Неверный формат',
+
+    // Create Build Command
+    'create_build_project' => 'Создать сборку проекта',
+    'project_id_argument' => 'ID проекта',
+    'commit_id_option' => 'ID коммита для сборки',
+    'branch_name_option' => 'Ветка для сборки',
 
     // Run Command
     'run_all_pending' => 'Запустить все ожидающие PHPCI сборки.',

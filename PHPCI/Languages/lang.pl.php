@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Reset Hasła PHPCI dla %s',
     'reset_invalid' => 'Prośba o zmianę hasła jest nieważna.',
     'email_address' => 'Adres email',
+    'login' => 'Login / Email Address',
     'password' => 'Hasło',
     'log_in' => 'Zaloguj się',
 
@@ -340,6 +341,12 @@ Przejrzyj powyższą listę błędów przed kontynuowaniem.',
     // Create Admin
     'create_admin_user' => 'Utwórz admina',
     'incorrect_format' => 'Niepoprawny format',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Uruchom wszystkie oczekujące budowy w PHPCI',

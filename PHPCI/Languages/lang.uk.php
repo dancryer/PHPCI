@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Скидання пароль PHPCI для %s',
     'reset_invalid' => 'Невірний запит скидання паролю.',
     'email_address' => 'Email адреса',
+    'login' => 'Логин / Email адреса',
     'password' => 'Пароль',
     'log_in' => 'Увійти',
 
@@ -339,6 +340,12 @@ PHPCI',
     // Create Admin
     'create_admin_user' => 'Створити аккаунт адміністратора',
     'incorrect_format' => 'Невірний формат',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Запустити всі PHPCI збірки, які очікують.',

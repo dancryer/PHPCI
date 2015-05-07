@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Επαναφορά Κωδικού για %s',
     'reset_invalid' => 'Μη έγκυρο αίτημα επαναφοράς κωδικού πρόσβασης.',
     'email_address' => 'Διεύθυνση email',
+    'login' => 'Login / Email Address',
     'password' => 'Κωδικός πρόσβασης',
     'log_in' => 'Είσοδος',
 
@@ -171,6 +172,7 @@ Services</a> του Bitbucket αποθετηρίου σας.',
     'codeception_errors' => 'Λάθη Codeception',
     'phpmd_warnings' => 'Προειδοποιήσεις PHPMD',
     'phpcs_warnings' => 'Προειδοποιήσεις PHPCS ',
+    'codeception_errors' => 'Λάθη Codeception',
     'phpcs_errors' => 'Λάθη PHPCS',
     'phplint_errors' => 'Λάθη Lint',
     'phpunit_errors' => 'Λάθη PHPUnit ',
@@ -338,6 +340,12 @@ Services</a> του Bitbucket αποθετηρίου σας.',
     // Create Admin
     'create_admin_user' => 'Δημιουργήστε ένα χρήστη διαχειριστή',
     'incorrect_format' => 'Λανθασμένη μορφοποίηση',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Εκτελέστε όλες τις εκκρεμείς PHPCI κατασκευές.',

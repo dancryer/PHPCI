@@ -61,8 +61,8 @@ class Wipe implements \PHPCI\Plugin
             if (IS_WIN) {
                 $cmd = 'rmdir /S /Q "%s"';
             }
-            $success = $this->phpci->executeCommand($cmd, $this->directory);
+            return $this->phpci->executeCommand($cmd, $this->directory);
         }
-        return $success;
+        return true;
     }
 }

@@ -104,11 +104,6 @@ class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         // Check that the binary exists:
         $checker = $this->phpci->findBinary('phpdoccheck');
 
-        if (!$checker) {
-            $this->phpci->logFailure(PHPCI\Helper\Lang::get('could_not_find', 'phpdoccheck'));
-            return false;
-        }
-
         // Build ignore string:
         $ignore = '';
         if (count($this->ignore)) {

@@ -15,10 +15,16 @@ setup:
     prefer_dist: false
 
 test:
+  php_parallel_lint:
+      ignore:
+        # Only ignore vendor
+        - vendor/
   php_mess_detector:
     allowed_warnings: 0
+    rules:
+      - phpmd.xml
   php_code_sniffer:
-    standard: "PSR2"
+    standard: phpcs.xml
     allowed_warnings: 0
     allowed_errors: 0
   php_loc:

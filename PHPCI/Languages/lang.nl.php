@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI wachtwoord reset voor %s',
     'reset_invalid' => 'Ongeldig wachtwoord reset verzoek',
     'email_address' => 'E-mailadres',
+    'login' => 'Login / Email Address',
     'password' => 'Wachtwoord',
     'log_in' => 'Log in',
 
@@ -339,6 +340,12 @@ Gelieve de fouten na te kijken vooraleer verder te gaan.',
     // Create Admin
     'create_admin_user' => 'Administrator-gebruiker aanmaken',
     'incorrect_format' => 'Incorrect formaat',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Voer alle wachtende PHPCI builds uit.',

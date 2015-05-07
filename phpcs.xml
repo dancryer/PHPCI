@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="PHPCI">
+
+    <description>Codestyle ruleset for PHPCI</description>
+
+    <rule ref="PSR2"/>
+
+    <file>PHPCI</file>
+
+    <arg name="encoding" value="UTF-8"/>
+    <arg name="extensions" value="php"/>
+
+    <exclude-pattern>PHPCI/Migrations/*</exclude-pattern>
+    <exclude-pattern>PHPCI/Model/Base/*</exclude-pattern>
+    <exclude-pattern>PHPCI/Languages/*</exclude-pattern>
+    <exclude-pattern>Tests/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
+
+</ruleset>

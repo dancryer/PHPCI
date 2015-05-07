@@ -81,11 +81,6 @@ class Phing implements \PHPCI\Plugin
     {
         $phingExecutable = $this->phpci->findBinary('phing');
 
-        if (!$phingExecutable) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'phing'));
-            return false;
-        }
-
         $cmd[] = $phingExecutable . ' -f ' . $this->getBuildFilePath();
 
         if ($this->getPropertyFile()) {

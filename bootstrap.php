@@ -8,7 +8,6 @@
 */
 
 // Let PHP take a guess as to the default timezone, if the user hasn't set one:
-use PHPCI\Logging\Handler;
 use PHPCI\Logging\LoggerConfig;
 
 $timezone = ini_get('date.timezone');
@@ -43,9 +42,10 @@ if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_I
 // Load Composer autoloader:
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
+\PHPCI\ErrorHandler::register();
+
 if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
     $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-    Handler::register($loggerConfig->getFor('_'));
 }
 
 // Load configuration if present:

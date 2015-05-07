@@ -79,15 +79,10 @@ class Pdepend implements \PHPCI\Plugin
 
         $pdepend = $this->phpci->findBinary('pdepend');
 
-        if (!$pdepend) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'pdepend'));
-            return false;
-        }
-
         $cmd = $pdepend . ' --summary-xml="%s" --jdepend-chart="%s" --overview-pyramid="%s" %s "%s"';
 
         $this->removeBuildArtifacts();
-       
+
         // If we need to ignore directories
         if (count($this->phpci->ignore)) {
             $ignore = ' --ignore=' . implode(',', $this->phpci->ignore);

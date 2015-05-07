@@ -90,18 +90,13 @@ class PhpCpd implements \PHPCI\Plugin
 
         $phpcpd = $this->phpci->findBinary('phpcpd');
 
-        if (!$phpcpd) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'phpcpd'));
-            return false;
-        }
-
         $tmpfilename = tempnam('/tmp', 'phpcpd');
 
         $cmd = $phpcpd . ' --log-pmd "%s" %s "%s"';
         $success = $this->phpci->executeCommand($cmd, $tmpfilename, $ignore, $this->path);
 
         print $this->phpci->getLastOutput();
-        
+
         list($errorCount, $data) = $this->processReport(file_get_contents($tmpfilename));
         $this->build->storeMeta('phpcpd-warnings', $errorCount);
         $this->build->storeMeta('phpcpd-data', $data);

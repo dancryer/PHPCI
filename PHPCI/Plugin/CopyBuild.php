@@ -26,7 +26,6 @@ class CopyBuild implements \PHPCI\Plugin
     protected $wipe;
     protected $phpci;
     protected $build;
-    protected $symlink;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -42,7 +41,6 @@ class CopyBuild implements \PHPCI\Plugin
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
-        $this->symlink      = isset($options['symlink_to_current']) ? $options['symlink_to_current'] : false;
     }
 
     /**
@@ -67,10 +65,6 @@ class CopyBuild implements \PHPCI\Plugin
 
         $this->deleteIgnoredFiles();
 
-        if ($success && $this->symlink) {
-            $success = $this->createSymlinkToCurrentBuild();
-        }
-        
         return $success;
     }
 
@@ -81,7 +75,7 @@ class CopyBuild implements \PHPCI\Plugin
     protected function wipeExistingDirectory()
     {
         if ($this->wipe === true && $this->directory != '/' && is_dir($this->directory)) {
-            $cmd = 'rm -Rf %s*';
+            $cmd = 'rm -Rf "%s"*';
             $success = $this->phpci->executeCommand($cmd, $this->directory);
 
             if (!$success) {
@@ -104,31 +98,5 @@ class CopyBuild implements \PHPCI\Plugin
                 $this->phpci->executeCommand($cmd, $this->directory, $file);
             }
         }
-    }
-     
-    /**
-     * Create symlink to current copy of build directory.
-     * Info: Does not work on windows systems.
-     * @return boolean
-     */
-    protected function createSymlinkToCurrentBuild()
-    {
-        $success = true;
-        
-        if (!IS_WIN) {
-            $cmd = 'rm "%s" && ln -s "%s" "%s"';
-        
-            $dir = rtrim($this->directory, '/') . '/';
-            $this->phpci->log('Try to create symlink: '.$this->symlink.' --> '.$dir.$this->build->getId());
-            $success = $this->phpci->executeCommand($cmd, $this->symlink, $dir.$this->build->getId(), $this->symlink);
-        
-            if (!$success) {
-                $this->phpci->logFailure('Unable to create symlink: '.$this->symlink.' --> '.$dir.$this->build->getId());
-            } else {
-                 $this->phpci->log('Symlink successfully created.');
-            }
-        }
-        
-        return $success;
     }
 }

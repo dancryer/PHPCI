@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
- *
  * @link         https://www.phptesting.org/
  */
+
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -15,10 +15,11 @@ use PHPCI\Model\Build;
 use PHPCI\Helper\Lang;
 
 /**
- * Copy Build Plugin - Copies the entire build to another directory.
- *
- * @author       Dan Cryer <dan@block8.co.uk>
- */
+* Copy Build Plugin - Copies the entire build to another directory.
+* @author       Dan Cryer <dan@block8.co.uk>, Stefan Rausch <srausch@skygate.de>
+* @package      PHPCI
+* @subpackage   Plugins
+*/
 class CopyBuild implements \PHPCI\Plugin
 {
     protected $directory;
@@ -122,7 +123,7 @@ class CopyBuild implements \PHPCI\Plugin
             $cmd = 'rm "%s" && ln -s "%s" "%s"';
 
             $dir = rtrim($this->directory, '/').'/';
-            $this->phpci->log('Try to create symlink '.$this->symlink.' --> '.$dir.$this->build->getId());
+            $this->phpci->log(sprintf('Try to create symlink %s --> %s', $this->symlink, $dir.$this->build->getId()));
             $success = $this->phpci->executeCommand($cmd, $this->symlink, $dir.$this->build->getId(), $this->symlink);
 
             if (!$success) {

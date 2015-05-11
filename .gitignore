@@ -17,4 +17,3 @@ PHPCI/Store/MigrationStore.php
 PHPCI/Store/Base/MigrationStoreBase.php
 local_vars.php
 Tests/PHPCI/config.yml
-/nbproject/

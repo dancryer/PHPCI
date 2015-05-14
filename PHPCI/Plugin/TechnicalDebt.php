@@ -99,6 +99,8 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (isset($options['zero_config']) && $options['zero_config']) {
             $this->allowed_errors = -1;
         }
+
+        $this->setOptions($options);
     }
 
     /**

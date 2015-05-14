@@ -290,23 +290,23 @@ class WebhookController extends \b8\Controller
         $payloadString = file_get_contents("php://input");
         $payload = json_decode($payloadString, true);
 
-		// build on merge request events
-		if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
+        // build on merge request events
+        if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
 
-			$attributes = $payload['object_attributes'];
+            $attributes = $payload['object_attributes'];
 
-			if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
-				$branch = $attributes['source_branch'];
-				$commit = isset($attributes['last_commit']) ? $attributes['last_commit'] : null;
-				$committer = isset($commit['author']['email']) ? $commit['author']['email'] : null;
-				$message = isset($commit['message']) ? $commit['message'] : null;
+            if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
+                $branch = $attributes['source_branch'];
+                $commit = isset($attributes['last_commit']) ? $attributes['last_commit'] : null;
+                $committer = isset($commit['author']['email']) ? $commit['author']['email'] : null;
+                $message = isset($commit['message']) ? $commit['message'] : null;
 
-				return $this->createBuild($project, $commit['id'], $branch, $committer, $message);
-			}
-		}
+                return $this->createBuild($project, $commit['id'], $branch, $committer, $message);
+            }
+        }
 
 
-		// build on push events
+        // build on push events
         if (isset($payload['commits']) && is_array($payload['commits'])) {
             // If we have a list of commits, then add them all as builds to be tested:
 

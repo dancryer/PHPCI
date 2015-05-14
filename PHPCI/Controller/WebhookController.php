@@ -292,7 +292,6 @@ class WebhookController extends \b8\Controller
 
         // build on merge request events
         if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
-
             $attributes = $payload['object_attributes'];
 
             if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {

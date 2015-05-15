@@ -86,29 +86,22 @@ class Application extends b8\Application
     {
         try {
             $this->response = parent::handleRequest();
-        } catch (HttpException $ex) {
-            $this->config->set('page_title', 'Error');
 
-            $view = new View('exception');
-            $view->exception = $ex;
+            if ($this->response->hasLayout() && $this->controller->layout) {
+                $this->setLayoutVariables($this->controller->layout);
 
-            $this->response->setResponseCode($ex->getErrorCode());
-            $this->response->setContent($view->render());
+                $this->controller->layout->content  = $this->response->getContent();
+                $this->response->setContent($this->controller->layout->render());
+            }
+
         } catch (\Exception $ex) {
             $this->config->set('page_title', 'Error');
 
             $view = new View('exception');
             $view->exception = $ex;
 
-            $this->response->setResponseCode(500);
+            $this->response->setResponseCode($ex instanceof HttpException ? $ex->getErrorCode() : 500);
             $this->response->setContent($view->render());
-        }
-
-        if ($this->response->hasLayout() && $this->controller->layout) {
-            $this->setLayoutVariables($this->controller->layout);
-
-            $this->controller->layout->content  = $this->response->getContent();
-            $this->response->setContent($this->controller->layout->render());
         }
 
         return $this->response;

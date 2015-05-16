@@ -102,7 +102,8 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'remote' => 'Externe URL',
     'local' => 'Lokaler Pfad',
     'hg'    => 'Mercurial',
-
+    'svn'   => 'Subversion',
+    
     'where_hosted' => 'Wo wird Ihr Projekt gehostet?',
     'choose_github' => 'Wählen Sie ein GitHub Repository:',
 
@@ -183,7 +184,15 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'phpmd' => 'PHP Mess Detector',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHP Unit',
+    'technical_debt' => 'Technische Schulden',
+    'behat' => 'Behat',
 
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Zeit',
+    'codeception_synopsis' => '<strong>%1$d</strong> Tests in <strong>%2$f</strong> Sekunden ausgeführt.
+                               <strong>%3$d</strong> Fehler.',    
+    
     'file' => 'Datei',
     'line' => 'Zeile',
     'class' => 'Klasse',

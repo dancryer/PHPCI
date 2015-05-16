@@ -94,15 +94,21 @@ class Application extends b8\Application
                 $this->response->setContent($this->controller->layout->render());
             }
 
+            return $this->response;
+
+        } catch (\HttpException $ex) {
+            $this->response->setResponseCode($ex->getErrorCode());
         } catch (\Exception $ex) {
-            $this->config->set('page_title', 'Error');
-
-            $view = new View('exception');
-            $view->exception = $ex;
-
-            $this->response->setResponseCode($ex instanceof HttpException ? $ex->getErrorCode() : 500);
-            $this->response->setContent($view->render());
+            $this->response->setResponseCode(500);
         }
+
+        // We only get there if an excetion has been caught
+        $this->config->set('page_title', 'Error');
+
+        $view = new View('exception');
+        $view->exception = $ex;
+
+        $this->response->setContent($view->render());
 
         return $this->response;
     }

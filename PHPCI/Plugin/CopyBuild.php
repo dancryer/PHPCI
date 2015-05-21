@@ -41,10 +41,30 @@ class CopyBuild implements \PHPCI\Plugin
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->build = $build;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->wipe         = isset($options['wipe']) ?  (bool) $options['wipe'] : false;
-        $this->ignore       = isset($options['respect_ignore']) ?  (bool) $options['respect_ignore'] : false;
-        $this->symlink      = isset($options['symlink_to_current']) ? $options['symlink_to_current'] : false;
+        
+        if (isset($options['directory'])) {
+            $this->directory = $options['directory'];
+        } else {
+            $this->directory = $path;
+        }
+        
+        if (isset($options['wipe'])) {
+            $this->wipe = (bool) $options['wipe'];
+        } else {
+            $this->wipe = false;
+        }
+        
+        if (isset($options['respect_ignore'])) {
+            $this->ignore = (bool) $options['respect_ignore'];
+        } else {
+            $this->ignore = false;
+        }
+        
+        if (isset($options['symlink_to_current'])) {
+            $this->symlink = (bool) $options['respect_ignore'];
+        } else {
+            $this->symlink = false;
+        }
     }
 
     /**
@@ -120,7 +140,11 @@ class CopyBuild implements \PHPCI\Plugin
         $success = true;
 
         if (!IS_WIN) {
-            $cmd = 'rm "%s" && ln -s "%s" "%s"';
+            if (file_exists($this->symlink)) {
+                $cmd = 'rm "%s" && ln -s "%s" "%s"';
+            } else {
+                $cmd = 'ln -s "%s" "%s"';
+            }
 
             $dir = rtrim($this->directory, '/').'/';
             $this->phpci->log(sprintf('Try to create symlink %s --> %s', $this->symlink, $dir.$this->build->getId()));

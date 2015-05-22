@@ -83,7 +83,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
-        $this->path = 'tests/';
+        $this->path = 'tests/_output/';
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
@@ -137,11 +137,13 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $configPath = $this->phpci->buildPath . $configPath;
         $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
-        $reportPath = $this->phpci->buildPath . $this->path . '_output/report.xml';
-        if (!file_exists($reportPath)) {
-            throw new \Exception("Cannot find Codeception XML report: $reportPath");
-        }
-        $xml = file_get_contents($reportPath, false);
+
+            $this->phpci->log(
+                'Codeception XML path: '. $this->phpci->buildPath . $this->path . 'report.xml',
+                Loglevel::DEBUG
+            );
+            $xml = file_get_contents($this->phpci->buildPath . $this->path . 'report.xml', false);
+
 
         $parser = new Parser($this->phpci, $xml);
         $output = $parser->parse();

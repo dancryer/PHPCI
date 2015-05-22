@@ -62,6 +62,11 @@ class Codeception implements ParserInterface
                     $testresult['class'] = (string) $testcase['class'];
                 }
 
+                // PHPUnit testcases does not have feature field. Use class::method instead
+                if (!$testresult['feature']) {
+                    $testresult['feature'] = sprintf('%s::%s', $testresult['class'], $testresult['name']);
+                }
+
                 if (isset($testcase->failure)) {
                     $testresult['pass'] = false;
                     $testresult['message'] = (string) $testcase->failure;

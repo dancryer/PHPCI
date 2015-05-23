@@ -13,9 +13,10 @@ use Symfony\Component\Yaml\Yaml;
 class TapParser
 {
     const TEST_COUNTS_PATTERN = '/^\d+\.\.(\d+)/';
-    const TEST_LINE_PATTERN = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
-    const TEST_YAML_START = '/^(\s*)---/';
-    const TEST_DIAGNOSTIC = '/^#/';
+    const TEST_LINE_PATTERN   = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
+    const TEST_YAML_START     = '/^(\s*)---/';
+    const TEST_DIAGNOSTIC     = '/^#/';
+    const TEST_COVERAGE       = '/^Generating/';
 
     /**
      * @var string
@@ -81,7 +82,7 @@ class TapParser
             $line = $this->nextLine();
         }
 
-        if (count($this->results) !== $this->testCount) {
+        if (false !== $this->testCount && count($this->results) !== $this->testCount) {
             throw new Exception(Lang::get('tap_error'));
         }
 
@@ -126,13 +127,15 @@ class TapParser
     /** Parse a single line.
      *
      * @param string $line
+     *
+     * @throws Exception
      */
     protected function parseLine($line)
     {
         if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
             $this->testCount = intval($matches[1]);
 
-        } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
+        } elseif (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
             return;
 
         } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {

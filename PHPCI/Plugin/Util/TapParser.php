@@ -129,22 +129,6 @@ class TapParser
      *
      * @return boolean
      */
-    protected function testCountLine($line)
-    {
-        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
-            $this->testCount = intval($matches[1]);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $line
-     *
-     * @return boolean
-     */
     protected function testLine($line)
     {
         if (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
@@ -183,20 +167,6 @@ class TapParser
         return false;
     }
 
-    /**
-     * @param string $line
-     *
-     * @return boolean
-     */
-    protected function garbageLine($line)
-    {
-        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
-            return true;
-        }
-
-        return false;
-    }
-
     /** Parse a single line.
      *
      * @param string $line
@@ -205,11 +175,13 @@ class TapParser
      */
     protected function parseLine($line)
     {
-        if ($this->garbageLine($line)) {
+        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
             return;
         }
 
-        if ($this->testCountLine($line)) {
+        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
+            $this->testCount = intval($matches[1]);
+
             return;
         }
 

@@ -201,6 +201,8 @@ class GithubBuild extends RemoteGitBuild
      */
     protected function getDiffLineNumber(Builder $builder, $file, $line)
     {
+        $line = (integer)$line;
+
         $builder->logExecOutput(false);
 
         $prNumber = $this->getExtra('pull_request_number');

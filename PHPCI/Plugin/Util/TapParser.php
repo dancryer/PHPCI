@@ -124,6 +124,79 @@ class TapParser
         return false;
     }
 
+    /**
+     * @param string $line
+     *
+     * @return boolean
+     */
+    protected function testCountLine($line)
+    {
+        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
+            $this->testCount = intval($matches[1]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return boolean
+     */
+    protected function testLine($line)
+    {
+        if (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
+            $this->results[] = $this->processTestLine(
+                $matches[1],
+                isset($matches[2]) ? $matches[2] : '',
+                isset($matches[3]) ? $matches[3] : null,
+                isset($matches[4]) ? $matches[4] : null
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return boolean
+     */
+    protected function yamlLine($line)
+    {
+        if (preg_match(self::TEST_YAML_START, $line, $matches)) {
+            $diagnostic = $this->processYamlBlock($matches[1]);
+            $test       = array_pop($this->results);
+            if (isset($test['message'], $diagnostic['message'])) {
+                $test['message'] .= PHP_EOL . $diagnostic['message'];
+                unset($diagnostic['message']);
+            }
+            $this->results[] = array_replace($test, $diagnostic);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return boolean
+     */
+    protected function garbageLine($line)
+    {
+        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
+            return true;
+        }
+
+        return false;
+    }
+
     /** Parse a single line.
      *
      * @param string $line
@@ -132,32 +205,23 @@ class TapParser
      */
     protected function parseLine($line)
     {
-        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
-            $this->testCount = intval($matches[1]);
-
-        } elseif (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
+        if ($this->garbageLine($line)) {
             return;
-
-        } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
-            $this->results[] = $this->processTestLine(
-                $matches[1],
-                isset($matches[2]) ? $matches[2] : '',
-                isset($matches[3]) ? $matches[3] : null,
-                isset($matches[4]) ? $matches[4] : null
-            );
-
-        } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
-            $diagnostic = $this->processYamlBlock($matches[1]);
-            $test = array_pop($this->results);
-            if (isset($test['message'], $diagnostic['message'])) {
-                $test['message'] .= PHP_EOL . $diagnostic['message'];
-                unset($diagnostic['message']);
-            }
-            $this->results[] = array_replace($test, $diagnostic);
-
-        } else {
-            throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
         }
+
+        if ($this->testCountLine($line)) {
+            return;
+        }
+
+        if ($this->testLine($line)) {
+            return;
+        }
+
+        if ($this->yamlLine($line)) {
+            return;
+        }
+
+        throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
     }
 
     /**

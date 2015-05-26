@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "8b02bb324925eec9e704367ae521a85a",
@@ -1372,16 +1372,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.3.28",
+            "version": "v2.3.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "56bc4057e3849d38aeb5e9742bc800b0518fe1f0"
+                "reference": "c4da51ce0f2ef890d5ab77d91064f2f579076b24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/56bc4057e3849d38aeb5e9742bc800b0518fe1f0",
-                "reference": "56bc4057e3849d38aeb5e9742bc800b0518fe1f0",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/c4da51ce0f2ef890d5ab77d91064f2f579076b24",
+                "reference": "c4da51ce0f2ef890d5ab77d91064f2f579076b24",
                 "shasum": ""
             },
             "require": {
@@ -1463,20 +1463,20 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "The Symfony PHP framework",
-            "homepage": "http://symfony.com",
+            "homepage": "https://symfony.com",
             "keywords": [
                 "framework"
             ],
-            "time": "2015-05-10 15:02:48"
+            "time": "2015-05-26 21:55:27"
         },
         {
             "name": "twig/extensions",

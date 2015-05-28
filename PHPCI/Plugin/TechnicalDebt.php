@@ -43,11 +43,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $allowed_errors;
 
     /**
-     * @var int
-     */
-    protected $allowed_warnings;
-
-    /**
      * @var string, based on the assumption the root may not hold the code to be
      * tested, extends the base path
      */
@@ -94,7 +89,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->directory = $phpci->buildPath;
         $this->path = '';
         $this->ignore = $this->phpci->ignore;
-        $this->allowed_warnings = 0;
         $this->allowed_errors = 0;
         $this->searches = array('TODO', 'FIXME', 'TO DO', 'FIX ME');
 
@@ -103,9 +97,10 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['zero_config']) && $options['zero_config']) {
-            $this->allowed_warnings = -1;
             $this->allowed_errors = -1;
         }
+
+        $this->setOptions($options);
     }
 
     /**
@@ -114,7 +109,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected function setOptions($options)
     {
-        foreach (array('directory', 'path', 'ignore', 'allowed_warnings', 'allowed_errors') as $key) {
+        foreach (array('directory', 'path', 'ignore', 'allowed_errors') as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
             }

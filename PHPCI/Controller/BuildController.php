@@ -13,6 +13,7 @@ use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\AnsiConverter;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
@@ -198,11 +199,7 @@ class BuildController extends \PHPCI\Controller
     */
     protected function cleanLog($log)
     {
-        $log = str_replace('[0;32m', '<span style="color: green">', $log);
-        $log = str_replace('[0;31m', '<span style="color: red">', $log);
-        $log = str_replace('[0m', '</span>', $log);
-
-        return $log;
+        return AnsiConverter::convert($log);
     }
 
     /**

@@ -6,7 +6,7 @@
 
 <div class="clearfix"  style="margin-bottom: 20px;">
     <div class="pull-right btn-group">
-        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>">
+        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>/<?php echo urlencode($branch) ?>">
             <?php Lang::out('build_now'); ?>
         </a>
 
@@ -36,13 +36,13 @@
 	<div class="col-lg-9 col-md-8 col-sm-8">
         <div class="box box-primary">
             <div class="box-header">
-
-                <h3 class="box-title"><?php Lang::out('builds'); ?></h3>
+                <h3 class="box-title"><?php Lang::out('builds'); ?> (<?php print $total; ?>)</h3>
             </div>
 		<table class="table">
 			<thead>
 			<tr>
 				<th><?php Lang::out('id'); ?></th>
+                <th><?php Lang::out('date'); ?></th>
 				<th><?php Lang::out('project'); ?></th>
 				<th class="hidden-md hidden-sm hidden-xs"><?php Lang::out('commit'); ?></th>
 				<th><?php Lang::out('branch'); ?></th>

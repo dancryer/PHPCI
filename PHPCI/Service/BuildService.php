@@ -9,6 +9,7 @@
 
 namespace PHPCI\Service;
 
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
 use PHPCI\Store\BuildStore;
@@ -59,6 +60,7 @@ class BuildService
             $build->setCommitId($commitId);
         } else {
             $build->setCommitId('Manual');
+            $build->setCommitMessage(Lang::get('manual_build'));
         }
 
         if (!is_null($branch)) {
@@ -112,6 +114,7 @@ class BuildService
      */
     public function deleteBuild(Build $build)
     {
+        $build->removeBuildDirectory();
         return $this->buildStore->delete($build);
     }
 }

@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'PHPCI Passwort zurücksetzen für %s',
     'reset_invalid' => 'Fehlerhafte Anfrage für das Zurücksetzen eines Passwortes',
     'email_address' => 'Emailadresse',
+    'login' => 'Login / Email Address',
     'password' => 'Passwort',
     'log_in' => 'Einloggen',
 
@@ -101,7 +102,8 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'remote' => 'Externe URL',
     'local' => 'Lokaler Pfad',
     'hg'    => 'Mercurial',
-
+    'svn'   => 'Subversion',
+    
     'where_hosted' => 'Wo wird Ihr Projekt gehostet?',
     'choose_github' => 'Wählen Sie ein GitHub Repository:',
 
@@ -127,6 +129,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'all_branches' => 'Alle Branches',
     'builds' => 'Builds',
     'id' => 'ID',
+    'date' => 'Date',
     'project' => 'Projekt',
     'commit' => 'Commit',
     'branch' => 'Branch',
@@ -181,7 +184,15 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'phpmd' => 'PHP Mess Detector',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHP Unit',
+    'technical_debt' => 'Technische Schulden',
+    'behat' => 'Behat',
 
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Zeit',
+    'codeception_synopsis' => '<strong>%1$d</strong> Tests in <strong>%2$f</strong> Sekunden ausgeführt.
+                               <strong>%3$d</strong> Fehler.',    
+    
     'file' => 'Datei',
     'line' => 'Zeile',
     'class' => 'Klasse',
@@ -191,14 +202,20 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'end' => 'Ende',
     'from' => 'Von',
     'to' => 'Bis',
-    'suite' => 'Suite',
-    'test' => 'Test',
     'result' => 'Resultat',
     'ok' => 'OK',
     'took_n_seconds' => 'Benötigte %d Sekunden',
     'build_created' => 'Build erstellt',
     'build_started' => 'Build gestartet',
     'build_finished' => 'Build abgeschlossen',
+    'test_message' => 'Message',
+    'test_no_message' => 'No message',
+    'test_success' => 'Succesfull: %d',
+    'test_fail' => 'Failures: %d',
+    'test_skipped' => 'Skipped: %d',
+    'test_error' => 'Errors: %d',
+    'test_todo' => 'Todos: %d',
+    'test_total' => '%d test(s)',
 
     // Users
     'name' => 'Name',
@@ -294,9 +311,9 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
                                 Bitte überprüfen Sie die Fehler, bevor Sie fortfahren,',
     'must_be_valid_email' => 'Muss eine gültige Emailadresse sein.',
     'must_be_valid_url' => 'Muss eine valide URL sein.',
-    'enter_name' => 'Name des Administrators:',
-    'enter_email' => 'Emailadresse des Administrators:',
-    'enter_password' => 'Passwort des Administrators:',
+    'enter_name' => 'Name des Administrators: ',
+    'enter_email' => 'Emailadresse des Administrators: ',
+    'enter_password' => 'Passwort des Administrators: ',
     'enter_phpci_url' => 'Ihre PHPCI-URL (z.B. "http://phpci.local"): ',
 
     'enter_db_host' => 'Bitte geben Sie Ihren MySQL-Host ein [localhost]: ',
@@ -328,6 +345,12 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     // Create Admin
     'create_admin_user' => 'Administratorenbenutzer erstellen',
     'incorrect_format' => 'Falsches Format',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
 
     // Run Command
     'run_all_pending' => 'Führe alle ausstehenden PHPCI Builds aus.',

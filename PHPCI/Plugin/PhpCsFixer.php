@@ -69,11 +69,6 @@ class PhpCsFixer implements \PHPCI\Plugin
 
         $phpcsfixer = $this->phpci->findBinary('php-cs-fixer');
 
-        if (!$phpcsfixer) {
-            $this->phpci->logFailure(Lang::get('could_not_find', 'php-cs-fixer'));
-            return false;
-        }
-
         $cmd = $phpcsfixer . ' fix . %s %s %s';
         $success = $this->phpci->executeCommand($cmd, $this->verbose, $this->diff, $this->level);
 

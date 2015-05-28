@@ -98,7 +98,6 @@ class Behat implements \PHPCI\Plugin
 
         $lines = explode(PHP_EOL, $parts[1]);
 
-        $errorCount = 0;
         $storeFailures = false;
         $data = array();
 

@@ -125,7 +125,7 @@ class GithubBuild extends RemoteGitBuild
 
         if ($this->getExtra('build_type') == 'pull_request') {
             $matches = array();
-            preg_match('/\/([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)/', $this->getExtra('remote_url'), $matches);
+            preg_match('/[\/:]([a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)/', $this->getExtra('remote_url'), $matches);
 
             $reference = $matches[1];
             $branch = $this->getExtra('remote_branch');

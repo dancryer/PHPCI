@@ -323,7 +323,9 @@ class InstallCommand extends Command
     {
         $output->write(Lang::get('setting_up_db'));
 
-        shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
+        $phinxBinary = escapeshellarg(PHPCI_DIR . 'vendor/bin/phinx');
+        $phinxScript = escapeshellarg(PHPCI_DIR . 'phinx.php');
+        shell_exec($phinxBinary . ' migrate -c ' . $phinxScript);
 
         $output->writeln('<info>'.Lang::get('ok').'</info>');
     }

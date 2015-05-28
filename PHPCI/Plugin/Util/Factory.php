@@ -150,11 +150,11 @@ class Factory
     }
 
     /**
-     * @param null $type
-     * @param null $name
-     * @return null
+     * @param string $type
+     * @param string $name
+     * @return mixed
      */
-    private function getResourceFor($type = null, $name = null)
+    public function getResourceFor($type = null, $name = null)
     {
         $fullId = $this->getInternalID($type, $name);
         if (isset($this->container[$fullId])) {
@@ -185,7 +185,7 @@ class Factory
             return $class->getName();
         } elseif ($param->isArray()) {
             return self::TYPE_ARRAY;
-        } elseif ($param->isCallable()) {
+        } elseif (is_callable($param)) {
             return self::TYPE_CALLABLE;
         } else {
             return null;

@@ -11,8 +11,10 @@ namespace PHPCI;
 
 use b8;
 use b8\Exception\HttpException;
+use b8\Http\Request;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
+use b8\Http\Router;
 use b8\View;
 
 /**
@@ -25,6 +27,17 @@ class Application extends b8\Application
      * @var \PHPCI\Controller
      */
     protected $controller;
+
+    public function __construct(Config $config, Request $request, Response $response)
+    {
+        $this->config = $config;
+        $this->response = $response;
+        $this->request = $request;
+
+        $this->router = new Router($this, $this->request, $this->config);
+
+        $this->init();
+    }
 
     /**
      * Initialise PHPCI - Handles session verification, routing, etc.

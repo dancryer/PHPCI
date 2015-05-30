@@ -1,0 +1,16 @@
+parameters:
+  config_file: ./PHPCI/config.yml
+
+services:
+  http.request:
+    class:      b8\Http\Request
+    arguments:  []
+  http.response:
+    class:      b8\Http\Response
+    arguments:  []
+  config:
+    class:      PHPCI\Config
+    arguments:  [%config_file%]
+  application:
+    class:      PHPCI\Application
+    arguments:  [@config, @http.request, @http.response]

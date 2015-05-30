@@ -16,6 +16,8 @@ use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
 use b8\Http\Router;
 use b8\View;
+use PHPCI\Store\UserStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * PHPCI Front Controller
@@ -28,11 +30,23 @@ class Application extends b8\Application
      */
     protected $controller;
 
-    public function __construct(Config $config, Request $request, Response $response)
+    /**
+     * @var \PHPCI\Store\UserStore
+     */
+    protected $userStore;
+
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
+    public function __construct(Config $config, Request $request, Response $response, UserStore $userStore, ProjectStore $projectStore)
     {
         $this->config = $config;
         $this->response = $response;
         $this->request = $request;
+        $this->userStore = $userStore;
+        $this->projectStore = $projectStore;
 
         $this->router = new Router($this, $this->request, $this->config);
 
@@ -51,7 +65,7 @@ class Application extends b8\Application
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
             if (!empty($_SESSION['phpci_user_id'])) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
+                $user = $this->userStore->getByPrimaryKey($_SESSION['phpci_user_id']);
 
                 if ($user) {
                     $_SESSION['phpci_user'] = $user;
@@ -148,9 +162,7 @@ class Application extends b8\Application
      */
     protected function setLayoutVariables(View &$layout)
     {
-        /** @var \PHPCI\Store\ProjectStore $projectStore */
-        $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getWhere(
+        $layout->projects = $this->projectStore->getWhere(
             array('archived' => (int)isset($_GET['archived'])),
             50,
             0,
@@ -161,17 +173,16 @@ class Application extends b8\Application
 
     /**
      * Check whether we should skip auth (because it is disabled)
+     *
      * @return bool
      */
     protected function shouldSkipAuth()
     {
-        $config = b8\Config::getInstance();
-        $state = (bool)$config->get('phpci.authentication_settings.state', false);
-        $userId    = $config->get('phpci.authentication_settings.user_id', 0);
+        $state = (bool) $this->config->get('phpci.authentication_settings.state', false);
+        $userId = $this->config->get('phpci.authentication_settings.user_id', 0);
 
         if (false !== $state && 0 != (int)$userId) {
-            $user = b8\Store\Factory::getStore('User')
-                ->getByPrimaryKey($userId);
+            $user = $this->userStore->getByPrimaryKey($userId);
 
             if ($user) {
                 $_SESSION['phpci_user'] = $user;

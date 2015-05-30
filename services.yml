@@ -13,4 +13,4 @@ services:
     arguments:  [%config_file%]
   application:
     class:      PHPCI\Application
-    arguments:  [@config, @http.request, @http.response]
+    arguments:  [@config, @http.request, @http.response, @store.user, @store.project]

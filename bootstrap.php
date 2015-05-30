@@ -62,6 +62,22 @@ if (file_exists($configFile)) {
     $container['config_file'] = $configFile;
 }
 
+$container['store.user'] = $container->factory(function () {
+    return b8\Store\Factory::getStore('User');
+});
+
+$container['store.project'] = $container->factory(function () {
+    return b8\Store\Factory::getStore('Project');
+});
+
+$container['store.build'] = $container->factory(function () {
+    return b8\Store\Factory::getStore('Build');
+});
+
+$container['store.build_meta'] = $container->factory(function () {
+    return b8\Store\Factory::getStore('BuildMeta');
+});
+
 /**
  * Allow to modify PHPCI configuration without modify versioned code.
  * Dameons should be killed to apply changes in the file.

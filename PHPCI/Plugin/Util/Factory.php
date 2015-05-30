@@ -2,6 +2,8 @@
 
 namespace PHPCI\Plugin\Util;
 
+use Pimple\Container;
+
 /**
  * Plugin Factory - Loads Plugins and passes required dependencies.
  * @package PHPCI\Plugin\Util
@@ -15,19 +17,19 @@ class Factory
     private $currentPluginOptions;
 
     /**
-     * @var \Pimple
+     * @var Container
      */
     private $container;
 
     /**
-     * @param \Pimple $container
+     * @param Container $container
      */
-    public function __construct(\Pimple $container = null)
+    public function __construct(Container $container = null)
     {
         if ($container) {
             $this->container = $container;
         } else {
-            $this->container = new \Pimple();
+            $this->container = new Container();
         }
 
         $self = $this;

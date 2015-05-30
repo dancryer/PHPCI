@@ -22,7 +22,7 @@ class Diff
     /**
      * Take a diff
      * @param string $diff
-     * @return array
+     * @return array|null
      */
     public function getLinePositions($diff)
     {

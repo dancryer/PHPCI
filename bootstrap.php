@@ -62,21 +62,21 @@ if (file_exists($configFile)) {
     $container['config_file'] = $configFile;
 }
 
-$container['store.user'] = $container->factory(function () {
+$container['store.user'] = function () {
     return b8\Store\Factory::getStore('User');
-});
+};
 
-$container['store.project'] = $container->factory(function () {
+$container['store.project'] = function () {
     return b8\Store\Factory::getStore('Project');
-});
+};
 
-$container['store.build'] = $container->factory(function () {
+$container['store.build'] = function () {
     return b8\Store\Factory::getStore('Build');
-});
+};
 
-$container['store.build_meta'] = $container->factory(function () {
+$container['store.build_meta'] = function () {
     return b8\Store\Factory::getStore('BuildMeta');
-});
+};
 
 /**
  * Allow to modify PHPCI configuration without modify versioned code.

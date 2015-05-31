@@ -12,9 +12,7 @@ define('PHPCI_IS_CONSOLE', true);
 
 require('bootstrap.php');
 
-use Symfony\Component\Console\Application;
-
-/** @var Application */
+/** @var \Symfony\Component\Console\Application */
 $application = $container->get('console.application');
 
 $application->run();

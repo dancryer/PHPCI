@@ -145,6 +145,13 @@ services:
           - [add, ['@console.command.poll']]
           - [add, ['@console.command.create_admin']]
           - [add, ['@console.command.create_build']]
+    daemon.application:
+        class:      Symfony\Component\Console\Application
+        arguments:
+          - %application.name%
+          - %application.version%
+        calls:
+          - [add, ['@console.command.daemon']]
     console.logger:
         class:      Monolog\Logger
         arguments:

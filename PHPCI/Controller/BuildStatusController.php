@@ -61,40 +61,6 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Returns status of the last build
-     *
-     * @param int $projectId
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    protected function getStatus($projectId)
-    {
-        $branch = $this->getParam('branch', 'master');
-        try {
-            $project = $this->projectStore->getById($projectId);
-            $status = 'passing';
-
-            if (!$project->getAllowPublicStatus()) {
-                return null;
-            }
-
-            if (isset($project) && $project instanceof Project) {
-                $build = $project->getLatestBuild($branch, array(2,3));
-
-                if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
-                    $status = 'failed';
-                }
-            }
-        } catch (Exception $e) {
-            $status = 'error';
-        }
-
-        return $status;
-    }
-
-    /**
      * Displays projects information in ccmenu format
      *
      * @param int $projectId
@@ -138,18 +104,6 @@ class BuildStatusController extends \PHPCI\Controller
             $xml = new \SimpleXMLElement('<projects/>');
         }
 
-        return $this->renderXml($xml);
-    }
-
-    /**
-     * Render the XML object
-     *
-     * @param \SimpleXMLElement $xml
-     *
-     * @return Response
-     */
-    protected function renderXml(\SimpleXMLElement $xml = null)
-    {
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'text/xml');
         $this->response->setContent($xml->asXML());
@@ -166,16 +120,20 @@ class BuildStatusController extends \PHPCI\Controller
     */
     public function image($projectId)
     {
+        $project = $this->projectStore->getById($projectId);
+
+        if (empty($project)) {
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
+        }
+
+        if (!$project->getAllowPublicStatus()) {
+            throw new NotAuthorizedException();
+        }
+
         $style = $this->getParam('style', 'plastic');
         $label = $this->getParam('label', 'build');
-
-        $status = $this->getStatus($projectId);
-
-        if (is_null($status)) {
-            $response = new b8\Http\Response\RedirectResponse();
-            $response->setHeader('Location', '/');
-            return $response;
-        }
+        $branch = $this->getParam('branch', 'master');
+        $status = $this->getStatus($project, $branch);
 
         $color = ($status == 'passing') ? 'green' : 'red';
         $image = $this->shieldsClient->get(
@@ -234,5 +192,29 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         return $builds['items'];
+    }
+
+    /**
+     * Returns status of the last build
+     *
+     * @param int $projectId
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    protected function getStatus($project, $branch)
+    {
+        try {
+            $build = $project->getLatestBuild($branch, array(2,3));
+
+            if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
+                return 'failed';
+            }
+        } catch (Exception $e) {
+            return 'error';
+        }
+
+        return 'passing';
     }
 }

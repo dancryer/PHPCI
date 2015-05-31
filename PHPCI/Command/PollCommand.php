@@ -32,9 +32,10 @@ class PollCommand extends Command
      */
     protected $logger;
 
-    public function __construct(Logger $logger, $name = null)
+    public function __construct(Logger $logger)
     {
-        parent::__construct($name);
+        parent::__construct();
+
         $this->logger = $logger;
     }
 

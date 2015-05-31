@@ -35,7 +35,8 @@ class BuildStatusControllerTest extends \PHPUnit_Framework_TestCase
             $this->prophesize('b8\Http\Request')->reveal(),
             new \b8\Http\Response(),
             $buildStore->reveal(),
-            $projectStore->reveal()
+            $projectStore->reveal(),
+            $this->prophesize('b8\HttpClient')->reveal()
         );
 
         $result = $webController->handleAction('ccxml', [1]);
@@ -57,7 +58,8 @@ class BuildStatusControllerTest extends \PHPUnit_Framework_TestCase
             $this->prophesize('b8\Http\Request')->reveal(),
             new \b8\Http\Response(),
             $buildStore->reveal(),
-            $projectStore->reveal()
+            $projectStore->reveal(),
+            $this->prophesize('b8\HttpClient')->reveal()
         );
 
         $result = $webController->handleAction('ccxml', [1]);

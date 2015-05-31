@@ -35,6 +35,10 @@ services:
         class:      b8\HttpClient
         arguments:
           - https://api.github.com
+    http_client.shields:
+        class:      b8\HttpClient
+        arguments:
+          - http://img.shields.io
     config:
         class:      PHPCI\Config
         arguments:  [%config_file%]
@@ -81,6 +85,7 @@ services:
           - @http.response
           - @storage.build
           - @storage.project
+          - @http_client.shields
     application.controller.user:
         class:      PHPCI\Controller\UserController
         arguments:

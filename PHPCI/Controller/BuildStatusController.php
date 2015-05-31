@@ -13,8 +13,10 @@ use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Exception\HttpException\NotAuthorizedException;
 use b8\Store;
+use b8\HttpClient;
 use b8\Http\Request;
 use b8\Http\Response;
+use Exception;
 use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
@@ -47,19 +49,25 @@ class BuildStatusController extends \PHPCI\Controller
                                 Request $request,
                                 Response $response,
                                 BuildStore $buildStore,
-                                ProjectStore $projectStore
+                                ProjectStore $projectStore,
+                                HttpClient $shieldsClient
                               )
     {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;
         $this->projectStore = $projectStore;
+        $this->shieldsClient = $shieldsClient;
     }
 
     /**
      * Returns status of the last build
-     * @param $projectId
+     *
+     * @param int $projectId
+     *
      * @return string
+     *
+     * @throws Exception
      */
     protected function getStatus($projectId)
     {
@@ -79,7 +87,7 @@ class BuildStatusController extends \PHPCI\Controller
                     $status = 'failed';
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $status = 'error';
         }
 
@@ -89,10 +97,12 @@ class BuildStatusController extends \PHPCI\Controller
     /**
      * Displays projects information in ccmenu format
      *
-     * @param $projectId
-     * @return bool
-     * @throws \Exception
-     * @throws b8\Exception\HttpException
+     * @param int $projectId
+     *
+     * @return Response
+     *
+     * @throws Exception
+     * @throws HttpException
      */
     public function ccxml($projectId)
     {
@@ -132,8 +142,11 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
+     * Render the XML object
+     *
      * @param \SimpleXMLElement $xml
-     * @return bool
+     *
+     * @return Response
      */
     protected function renderXml(\SimpleXMLElement $xml = null)
     {
@@ -146,6 +159,10 @@ class BuildStatusController extends \PHPCI\Controller
 
     /**
     * Returns the appropriate build status image in SVG format for a given project.
+    *
+    * @param int $projectId
+    *
+    * @return Response
     */
     public function image($projectId)
     {
@@ -161,17 +178,14 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         $color = ($status == 'passing') ? 'green' : 'red';
-        $image = file_get_contents(sprintf(
-            'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
-            $label,
-            $status,
-            $color,
-            $style
-        ));
+        $image = $this->shieldsClient->get(
+            sprintf('/badge/%s-%s-%s.svg', $label, $status, $color),
+            array('style' => $style)
+        );
 
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');
-        $this->response->setContent($image);
+        $this->response->setContent($image['body']);
 
         return $this->response;
     }
@@ -187,11 +201,11 @@ class BuildStatusController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
         if (!$project->getAllowPublicStatus()) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotAuthorizedException();
         }
 
         $builds = $this->getLatestBuilds($projectId);

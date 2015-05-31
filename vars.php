@@ -2,7 +2,7 @@
 
 // Define our APPLICATION_PATH, if not already defined:
 if (!defined('APPLICATION_PATH')) {
-    define('APPLICATION_PATH', dirname(__FILE__) . '/');
+    define('APPLICATION_PATH', __DIR__ . '/');
     define('PHPCI_DIR', APPLICATION_PATH);
 }
 

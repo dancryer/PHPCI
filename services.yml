@@ -76,6 +76,7 @@ services:
         class:      PHPCI\Command\UpdateCommand
         arguments:
           - @console.logger
+          - @config
     console.command.daemon:
         class:      PHPCI\Command\DaemonCommand
         arguments:

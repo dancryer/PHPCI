@@ -47,11 +47,10 @@ class RebuildCommand extends Command
 
     /**
      * @param \Monolog\Logger $logger
-     * @param string $name
      */
     public function __construct(Logger $logger)
     {
-        parent::__construct($name);
+        parent::__construct();
 
         $this->logger = $logger;
     }

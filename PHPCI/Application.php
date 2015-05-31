@@ -18,6 +18,7 @@ use b8\Http\Router;
 use b8\View;
 use PHPCI\Store\UserStore;
 use PHPCI\Store\ProjectStore;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
 * PHPCI Front Controller
@@ -40,13 +41,14 @@ class Application extends b8\Application
      */
     protected $projectStore;
 
-    public function __construct(Config $config, Request $request, Response $response, UserStore $userStore, ProjectStore $projectStore)
+    public function __construct(Config $config, Request $request, Response $response, UserStore $userStore, ProjectStore $projectStore, Container $container)
     {
         $this->config = $config;
         $this->response = $response;
         $this->request = $request;
         $this->userStore = $userStore;
         $this->projectStore = $projectStore;
+        $this->container = $container;
 
         $this->router = new Router($this, $this->request, $this->config);
 

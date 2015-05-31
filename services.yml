@@ -40,7 +40,13 @@ services:
         arguments:  [%config_file%]
     application:
         class:      PHPCI\Application
-        arguments:  [@config, @http.request, @http.response, @storage.user, @storage.project]
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.user
+          - @storage.project
+          - @service_container
     service.build:
         class:      PHPCI\Service\BuildService
         arguments:  [@storage.build]

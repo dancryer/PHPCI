@@ -37,9 +37,12 @@ services:
     application:
         class:      PHPCI\Application
         arguments:  [@config, @http.request, @http.response, @storage.user, @storage.project]
-    build:
+    service.build:
         class:      PHPCI\Service\BuildService
         arguments:  [@storage.build]
+    service.user:
+        class:      PHPCI\Service\UserService
+        arguments:  [@storage.user]
 
     console.application:
         class:      Symfony\Component\Console\Application
@@ -83,12 +86,12 @@ services:
     console.command.create_admin:
         class:      PHPCI\Command\CreateAdminCommand
         arguments:
-          - @storage.user
+          - @service.user
     console.command.create_build:
         class:      PHPCI\Command\CreateBuildCommand
         arguments:
           - @storage.project
-          - @build
+          - @service.build
     console.command.install:
         class:      PHPCI\Command\InstallCommand
     console.command.generate:

@@ -43,7 +43,8 @@ services:
     service.user:
         class:      PHPCI\Service\UserService
         arguments:  [@storage.user]
-
+    process_control:
+        factory: [PHPCI\ProcessControl\Factory, getInstance]
     console.application:
         class:      Symfony\Component\Console\Application
         arguments:
@@ -79,6 +80,7 @@ services:
         class:      PHPCI\Command\DaemonCommand
         arguments:
           - @console.logger
+          - @process_control
     console.command.poll:
         class:      PHPCI\Command\PollCommand
         arguments:

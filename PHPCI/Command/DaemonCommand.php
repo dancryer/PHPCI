@@ -48,11 +48,12 @@ class DaemonCommand extends Command
      */
     protected $processControl;
 
-    public function __construct(Logger $logger, ProcessControlInterface $processControl = null, $name = null)
+    public function __construct(Logger $logger, ProcessControlInterface $processControl)
     {
-        parent::__construct($name);
+        parent::__construct();
+
         $this->logger = $logger;
-        $this->processControl = $processControl ?: Factory::getInstance();
+        $this->processControl = $processControl;
     }
 
     protected function configure()

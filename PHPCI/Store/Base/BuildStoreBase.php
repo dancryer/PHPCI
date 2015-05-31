@@ -22,8 +22,10 @@ class BuildStoreBase extends Store
 
     /**
      * Returns a Build model by primary key.
+     *
      * @param mixed $value
      * @param string $useConnection
+     *
      * @return \@appNamespace\Model\Build|null
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
@@ -33,10 +35,13 @@ class BuildStoreBase extends Store
 
     /**
      * Returns a Build model by Id.
+     *
      * @param mixed $value
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return \@appNamespace\Model\Build|null
+     *
+     * @throws HttpException
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -59,10 +64,13 @@ class BuildStoreBase extends Store
 
     /**
      * Returns an array of Build models by ProjectId.
+     *
      * @param mixed $value
      * @param int $limit
      * @param string $useConnection
+     *
      * @throws HttpException
+     *
      * @return array
      */
     public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
@@ -95,18 +103,20 @@ class BuildStoreBase extends Store
 
     /**
      * Returns an array of Build models by Status.
+     *
      * @param mixed $value
      * @param int $limit
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return array
+     *
+     * @throws HttpException
      */
     public function getByStatus($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
-
 
         $query = 'SELECT * FROM `build` WHERE `status` = :status LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);

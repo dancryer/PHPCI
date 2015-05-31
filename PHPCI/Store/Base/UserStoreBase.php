@@ -22,8 +22,10 @@ class UserStoreBase extends Store
 
     /**
      * Returns a User model by primary key.
+     *
      * @param mixed $value
      * @param string $useConnection
+     *
      * @return \@appNamespace\Model\User|null
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
@@ -33,10 +35,13 @@ class UserStoreBase extends Store
 
     /**
      * Returns a User model by Id.
+     *
      * @param mixed $value
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return \@appNamespace\Model\User|null
+     *
+     * @throws HttpException
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -59,10 +64,13 @@ class UserStoreBase extends Store
 
     /**
      * Returns a User model by Email.
+     *
      * @param string $value
      * @param string $useConnection
+     *
+     *  @return \@appNamespace\Model\User|null
+     *
      * @throws HttpException
-     * @return \@appNamespace\Model\User|null
      */
     public function getByEmail($value, $useConnection = 'read')
     {
@@ -82,13 +90,16 @@ class UserStoreBase extends Store
 
         return null;
     }
-    
+
     /**
      * Returns a User model by Email.
+     *
      * @param string $value
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return \@appNamespace\Model\User|null
+     *
+     * @throws HttpException
      */
     public function getByLoginOrEmail($value, $useConnection = 'read')
     {

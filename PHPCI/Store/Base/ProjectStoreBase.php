@@ -22,8 +22,10 @@ class ProjectStoreBase extends Store
 
     /**
      * Returns a Project model by primary key.
+     *
      * @param mixed $value
      * @param string $useConnection
+     *
      * @return \@appNamespace\Model\Project|null
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
@@ -33,10 +35,13 @@ class ProjectStoreBase extends Store
 
     /**
      * Returns a Project model by Id.
+     *
      * @param mixed $value
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return \@appNamespace\Model\Project|null
+     *
+     * @throws HttpException
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -59,18 +64,20 @@ class ProjectStoreBase extends Store
 
     /**
      * Returns an array of Project models by Title.
+     *
      * @param mixed $value
      * @param int $limit
      * @param string $useConnection
-     * @throws HttpException
+     *
      * @return array
+     *
+     * @throws HttpException
      */
     public function getByTitle($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
-
 
         $query = 'SELECT * FROM `project` WHERE `title` = :title LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);

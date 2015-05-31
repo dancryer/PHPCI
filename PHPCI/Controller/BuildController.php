@@ -223,6 +223,7 @@ class BuildController extends \PHPCI\Controller
 
         $response = new JsonResponse();
         $response->setContent($rtn);
+
         return $response;
     }
 

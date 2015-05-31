@@ -34,9 +34,19 @@ abstract class BaseCommandExecutor implements CommandExecutor
      */
     protected $verbose;
 
+    /**
+     * @var string
+     */
     protected $lastOutput;
+
+    /**
+     * @var string
+     */
     protected $lastError;
 
+    /**
+     * @var bool
+     */
     public $logExecOutput = true;
 
     /**

@@ -54,6 +54,17 @@ class ProjectController extends PHPCI\Controller
      */
     protected $buildService;
 
+    /**
+     * Create the Project controller.
+     *
+     * @param Config         $config
+     * @param Request        $request
+     * @param Response       $response
+     * @param BuildStore     $buildStore
+     * @param ProjectStore   $projectStore
+     * @param ProjectService $projectService
+     * @param BuildService   $buildService
+     */
     public function __construct(
         Config $config,
         Request $request,

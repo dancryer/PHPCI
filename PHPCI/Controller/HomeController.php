@@ -37,6 +37,15 @@ class HomeController extends \PHPCI\Controller
      */
     protected $projectStore;
 
+    /**
+     * Create the Home controller.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param ProjectStore $projectStore
+     */
     public function __construct(
         Config $config,
         Request $request,

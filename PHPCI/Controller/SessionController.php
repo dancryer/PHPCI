@@ -30,6 +30,14 @@ class SessionController extends \PHPCI\Controller
      */
     protected $userStore;
 
+    /**
+     * Create the Sesssion controller.
+     *
+     * @param Config $config
+     * @param Request $request
+     * @param Response $response
+     * @param UserStore $userStore
+     */
     public function __construct(
         Config $config,
         Request $request,
@@ -44,8 +52,8 @@ class SessionController extends \PHPCI\Controller
     }
 
     /**
-    * Handles user login (form and processing)
-    */
+     * Handles user login (form and processing)
+     */
     public function login()
     {
         $isLoginFailure = false;

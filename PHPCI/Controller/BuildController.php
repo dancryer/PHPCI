@@ -41,6 +41,15 @@ class BuildController extends \PHPCI\Controller
      */
     protected $buildService;
 
+    /**
+     * Create the Build controller
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param BuildService $buildService
+     */
     public function __construct(
         Config $config,
         Request $request,

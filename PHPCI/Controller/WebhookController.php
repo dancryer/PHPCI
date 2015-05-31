@@ -48,6 +48,16 @@ class WebhookController extends \b8\Controller
      */
     protected $buildService;
 
+    /**
+     * Create the Webhook controller.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param ProjectStore $projectStore
+     * @param BuildService $buildService
+     */
     public function __construct(
         Config $config,
         Request $request,

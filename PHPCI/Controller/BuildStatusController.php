@@ -44,6 +44,16 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected $projectStore;
 
+    /**
+     * Create the BuildStatus controller.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param ProjectStore $projectStore
+     * @param HttpClient   $shieldsClient
+     */
     public function __construct(
         Config $config,
         Request $request,

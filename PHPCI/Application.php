@@ -41,6 +41,16 @@ class Application extends b8\Application
      */
     protected $projectStore;
 
+    /**
+     * Create the PHPCI web application.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param UserStore    $userStore
+     * @param ProjectStore $projectStore
+     * @param Container    $container
+     */
     public function __construct(
         Config $config,
         Request $request,
@@ -161,6 +171,13 @@ class Application extends b8\Application
         return $this->controller;
     }
 
+    /**
+     * Check if the specified controller exist.
+     *
+     * @param  array $route
+     *
+     * @return boolean
+     */
     public function controllerExists($route)
     {
         return $this->container->has('application.controller.' . strtolower($route['controller']));
@@ -168,6 +185,7 @@ class Application extends b8\Application
 
     /**
      * Injects variables into the layout before rendering it.
+     *
      * @param View $layout
      */
     protected function setLayoutVariables(View &$layout)

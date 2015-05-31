@@ -38,6 +38,15 @@ class UserController extends Controller
      */
     protected $userService;
 
+    /**
+     * Create the User controller.
+     *
+     * @param Config      $config
+     * @param Request     $request
+     * @param Response    $response
+     * @param UserStore   $userStore
+     * @param UserService $userService
+     */
     public function __construct(
         Config $config,
         Request $request,

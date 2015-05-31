@@ -81,6 +81,7 @@ services:
           - @console.logger
           - @storage.build
           - @service.build
+          - @console.command.run
     console.command.update:
         class:      PHPCI\Command\UpdateCommand
         arguments:

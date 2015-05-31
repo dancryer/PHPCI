@@ -56,13 +56,19 @@ class RebuildCommand extends Command
      */
     protected $buildService;
 
-    public function __construct(Logger $logger, BuildStore $buildStore, BuildService $buildService)
+    /**
+     * @param RunCommand
+     */
+    protected $runCommand;
+
+    public function __construct(Logger $logger, BuildStore $buildStore, BuildService $buildService, RunCommand $runCommand)
     {
         parent::__construct();
 
         $this->logger = $logger;
         $this->buildStore = $buildStore;
         $this->buildService = $buildService;
+        $this->runCommand = $runCommand;
     }
 
     protected function configure()
@@ -77,11 +83,8 @@ class RebuildCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runner = new RunCommand($this->logger);
-        $runner->setMaxBuilds(1);
-        $runner->setDaemon(false);
-
-        $service = new BuildService($this->buildStore);
+        $this->runCommand->setMaxBuilds(1);
+        $this->runCommand->setDaemon(false);
 
         $builds = $this->buildStore->getLatestBuilds(null, 1);
         $lastBuild = array_shift($builds);

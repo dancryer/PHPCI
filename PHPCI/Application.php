@@ -135,8 +135,7 @@ class Application extends b8\Application
 
         if ($this->response->hasLayout() && $this->controller->layout) {
             $this->setLayoutVariables($this->controller->layout);
-
-            $this->controller->layout->content  = $this->response->getContent();
+            $this->controller->layout->content = $this->response->getContent();
             $this->response->setContent($this->controller->layout->render());
         }
 
@@ -144,18 +143,26 @@ class Application extends b8\Application
     }
 
     /**
-     * Loads a particular controller, and injects our layout view into it.
-     * @param $class
-     * @return mixed
+     * @return \PHPCI\Controller
      */
-    protected function loadController($class)
+    public function getController()
     {
-        $controller = parent::loadController($class);
-        $controller->layout = new View('layout');
-        $controller->layout->title = 'PHPCI';
-        $controller->layout->breadcrumb = array();
+        if (empty($this->controller)) {
+          try {
+            $this->controller = $this->container->get('application.controller.' . strtolower($this->route['controller']));
+          }
+          catch (\Exception $e) {
+            var_dump($this->route);
+            var_dump($e);
+          }
+        }
 
-        return $controller;
+        return $this->controller;
+    }
+
+    public function controllerExists($route)
+    {
+        return $this->container->has('application.controller.' . strtolower($route['controller']));
     }
 
     /**

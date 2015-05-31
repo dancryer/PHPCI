@@ -52,6 +52,10 @@ class Controller extends \b8\Controller
     {
         parent::__construct($config, $request, $response);
 
+        $this->layout = new View('layout');
+        $this->layout->title = 'PHPCI';
+        $this->layout->breadcrumb = array();
+
         $class = explode('\\', get_class($this));
         $this->className = substr(array_pop($class), 0, -10);
         $this->setControllerView();

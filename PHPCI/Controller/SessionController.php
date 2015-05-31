@@ -31,11 +31,11 @@ class SessionController extends \PHPCI\Controller
     protected $userStore;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                UserStore $userStore,
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        UserStore $userStore,
+    )
     {
         parent::__construct($config, $request, $response);
 

@@ -39,12 +39,12 @@ class UserController extends Controller
     protected $userService;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                UserStore $userStore,
-                                UserService $userService
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        UserStore $userStore,
+        UserService $userService
+    )
     {
         parent::__construct($config, $request, $response);
 

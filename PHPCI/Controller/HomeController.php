@@ -38,12 +38,12 @@ class HomeController extends \PHPCI\Controller
     protected $projectStore;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                BuildStore $buildStore,
-                                ProjectStore $projectStore
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore
+    )
     {
         parent::__construct($config, $request, $response);
 

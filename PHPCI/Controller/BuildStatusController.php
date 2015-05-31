@@ -45,13 +45,13 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                BuildStore $buildStore,
-                                ProjectStore $projectStore,
-                                HttpClient $shieldsClient
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        HttpClient $shieldsClient
+    )
     {
         parent::__construct($config, $request, $response);
 

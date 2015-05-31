@@ -42,12 +42,12 @@ class BuildController extends \PHPCI\Controller
     protected $buildService;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                BuildStore $buildStore,
-                                BuildService $buildService
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        BuildService $buildService
+    )
     {
         parent::__construct($config, $request, $response);
 

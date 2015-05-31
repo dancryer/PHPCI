@@ -49,13 +49,13 @@ class WebhookController extends \b8\Controller
     protected $buildService;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                BuildStore $buildStore,
-                                ProjectStore $projectStore,
-                                BuildService $buildService
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        BuildService $buildService
+    )
     {
         parent::__construct($config, $request, $response);
 

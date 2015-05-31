@@ -55,14 +55,14 @@ class ProjectController extends PHPCI\Controller
     protected $buildService;
 
     public function __construct(
-                                Config $config,
-                                Request $request,
-                                Response $response,
-                                BuildStore $buildStore,
-                                ProjectStore $projectStore,
-                                ProjectService $projectService,
-                                BuildService $buildService
-                              )
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        ProjectService $projectService,
+        BuildService $buildService
+    )
     {
         parent::__construct($config, $request, $response);
 

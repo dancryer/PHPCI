@@ -41,7 +41,14 @@ class Application extends b8\Application
      */
     protected $projectStore;
 
-    public function __construct(Config $config, Request $request, Response $response, UserStore $userStore, ProjectStore $projectStore, Container $container)
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        UserStore $userStore,
+        ProjectStore $projectStore,
+        Container $container
+    )
     {
         $this->config = $config;
         $this->response = $response;
@@ -148,13 +155,7 @@ class Application extends b8\Application
     public function getController()
     {
         if (empty($this->controller)) {
-          try {
             $this->controller = $this->container->get('application.controller.' . strtolower($this->route['controller']));
-          }
-          catch (\Exception $e) {
-            var_dump($this->route);
-            var_dump($e);
-          }
         }
 
         return $this->controller;

@@ -47,6 +47,9 @@ services:
     service.user:
         class:      PHPCI\Service\UserService
         arguments:  [@storage.user]
+    service.build:
+        class:      PHPCI\Service\BuildService
+        arguments:  [@storage.build]
     process_control:
         factory: [PHPCI\ProcessControl\Factory, getInstance]
     console.application:
@@ -76,6 +79,8 @@ services:
         class:      PHPCI\Command\RebuildCommand
         arguments:
           - @console.logger
+          - @storage.build
+          - @service.build
     console.command.update:
         class:      PHPCI\Command\UpdateCommand
         arguments:

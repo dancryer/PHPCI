@@ -12,6 +12,6 @@ session_start();
 
 require_once(__DIR__ . '/../bootstrap.php');
 
-$app = $container['application'];
+$app = $container->get('application');
 
 print $app->handleRequest();

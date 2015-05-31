@@ -1,7 +1,7 @@
 {
     "name"             : "block8/phpci",
     "description"      : "Simple continuous integration for PHP projects.",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "type"             : "library",
     "keywords"         : ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
     "homepage"         : "http://www.phptesting.org/",
@@ -49,7 +49,7 @@
         "robmorgan/phinx": "~0.4",
         "sensiolabs/ansi-to-html": "~1.1",
         "jakub-onderka/php-parallel-lint": "0.8.*",
-        "gonzalo123/yaml2pimple": "^1.0@dev"
+        "symfony/dependency-injection": "~2.7"
     },
 
     "autoload-dev": {

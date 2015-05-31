@@ -1,16 +1,37 @@
 parameters:
-  config_file: ./PHPCI/config.yml
+  config_file: ./../PHPCI/config.yml
+  storage.factory: b8\Store\Factory
 
 services:
-  http.request:
-    class:      b8\Http\Request
-    arguments:  []
-  http.response:
-    class:      b8\Http\Response
-    arguments:  []
-  config:
-    class:      PHPCI\Config
-    arguments:  [%config_file%]
-  application:
-    class:      PHPCI\Application
-    arguments:  [@config, @http.request, @http.response, @store.user, @store.project]
+    storage.user:
+        class:   PHPCI\Store\Base\UserStore
+        factory: [%storage.factory%, getStore]
+        arguments:
+            - User
+    storage.project:
+        class:   PHPCI\Store\Base\ProjectStore
+        factory: [%storage.factory%, getStore]
+        arguments:
+            - Project
+    storage.build:
+        class:   PHPCI\Store\Base\BuildStore
+        factory: [%storage.factory%, getStore]
+        arguments:
+            - Build
+    storage.build_meta:
+        class:   PHPCI\Store\Base\BuildMetaStore
+        factory: [%storage.factory%, getStore]
+        arguments:
+            - BuildMeta
+    http.request:
+        class:      b8\Http\Request
+        arguments:  []
+    http.response:
+        class:      b8\Http\Response
+        arguments:  []
+    config:
+        class:      PHPCI\Config
+        arguments:  [%config_file%]
+    application:
+        class:      PHPCI\Application
+        arguments:  [@config, @http.request, @http.response, @storage.user, @storage.project]

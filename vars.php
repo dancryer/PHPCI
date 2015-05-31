@@ -8,7 +8,7 @@ if (!defined('APPLICATION_PATH')) {
 
 // Define our PHPCI_URL, if not already defined:
 if (!defined('PHPCI_URL')) {
-    define('PHPCI_URL', $container['config']->get('phpci.url'));
+    define('PHPCI_URL', $container->get('config')->get('phpci.url'));
 }
 
 // Define PHPCI_BIN_DIR
@@ -38,5 +38,5 @@ if (!defined('IS_WIN')) {
 // If an environment variable is set defining our config location, use that
 // otherwise fall back to PHPCI/config.yml.
 if (!defined('PHPCI_CONFIG_FILE')) {
-    define('PHPCI_CONFIG_FILE', $container['config_file']);
+    define('PHPCI_CONFIG_FILE', $container->get('config_file'));
 }

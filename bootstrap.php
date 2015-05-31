@@ -26,10 +26,9 @@ if (empty($timezone)) {
 }
 
 use PHPCI\Logging\LoggerConfig;
-use Pimple\Container;
-use G\Yaml2Pimple\ContainerBuilder;
-use G\Yaml2Pimple\YamlFileLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 $configFile = __DIR__ . '/PHPCI/config.yml';
 $configEnv = getenv('phpci_config_file');
@@ -52,31 +51,13 @@ if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
     $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
 }
 
-$container = new Container();
-
-$builder = new ContainerBuilder($container);
-$loader = new YamlFileLoader($builder, new FileLocator(__DIR__));
+$container = new ContainerBuilder();
+$loader = new YamlFileLoader($container, new FileLocator(__DIR__));
 $loader->load('services.yml');
 
 if (file_exists($configFile)) {
-    $container['config_file'] = $configFile;
+    $container->set('config_file', $configFile);
 }
-
-$container['store.user'] = function () {
-    return b8\Store\Factory::getStore('User');
-};
-
-$container['store.project'] = function () {
-    return b8\Store\Factory::getStore('Project');
-};
-
-$container['store.build'] = function () {
-    return b8\Store\Factory::getStore('Build');
-};
-
-$container['store.build_meta'] = function () {
-    return b8\Store\Factory::getStore('BuildMeta');
-};
 
 /**
  * Allow to modify PHPCI configuration without modify versioned code.
@@ -91,4 +72,4 @@ if (is_readable($localVarsFile)) {
 
 require_once(__DIR__ . '/vars.php');
 
-\PHPCI\Helper\Lang::init($container['config']);
+\PHPCI\Helper\Lang::init($container->get('config'));

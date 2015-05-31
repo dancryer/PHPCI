@@ -52,8 +52,7 @@ class HomeController extends \PHPCI\Controller
         Response $response,
         BuildStore $buildStore,
         ProjectStore $projectStore
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;

@@ -43,8 +43,7 @@ class SessionController extends \PHPCI\Controller
         Request $request,
         Response $response,
         UserStore $userStore,
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->response->disableLayout();

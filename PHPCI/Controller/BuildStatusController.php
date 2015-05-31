@@ -61,8 +61,7 @@ class BuildStatusController extends \PHPCI\Controller
         BuildStore $buildStore,
         ProjectStore $projectStore,
         HttpClient $shieldsClient
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;

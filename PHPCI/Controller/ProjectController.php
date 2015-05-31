@@ -73,8 +73,7 @@ class ProjectController extends PHPCI\Controller
         ProjectStore $projectStore,
         ProjectService $projectService,
         BuildService $buildService
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;

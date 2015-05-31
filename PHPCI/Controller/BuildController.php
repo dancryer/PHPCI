@@ -56,8 +56,7 @@ class BuildController extends \PHPCI\Controller
         Response $response,
         BuildStore $buildStore,
         BuildService $buildService
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;

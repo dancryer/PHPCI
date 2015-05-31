@@ -65,8 +65,7 @@ class WebhookController extends \b8\Controller
         BuildStore $buildStore,
         ProjectStore $projectStore,
         BuildService $buildService
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;

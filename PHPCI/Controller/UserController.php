@@ -53,8 +53,7 @@ class UserController extends Controller
         Response $response,
         UserStore $userStore,
         UserService $userService
-    )
-    {
+    ) {
         parent::__construct($config, $request, $response);
 
         $this->userStore = $userStore;

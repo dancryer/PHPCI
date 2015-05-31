@@ -58,8 +58,7 @@ class Application extends b8\Application
         UserStore $userStore,
         ProjectStore $projectStore,
         Container $container
-    )
-    {
+    ) {
         $this->config = $config;
         $this->response = $response;
         $this->request = $request;
@@ -165,7 +164,7 @@ class Application extends b8\Application
     public function getController()
     {
         if (empty($this->controller)) {
-            $this->controller = $this->container->get('application.controller.' . strtolower($this->route['controller']));
+            $this->controller = $this->container->get($this->getControllerId($this->route));
         }
 
         return $this->controller;
@@ -180,7 +179,19 @@ class Application extends b8\Application
      */
     public function controllerExists($route)
     {
-        return $this->container->has('application.controller.' . strtolower($route['controller']));
+        return $this->container->has($this->getControllerId($route));
+    }
+
+    /**
+     * Create controller service Id based on specified route.
+     *
+     * @param  array $route
+     *
+     * @return string
+     */
+    protected function getControllerId($route)
+    {
+        return 'application.controller.' . strtolower($route['controller']);
     }
 
     /**

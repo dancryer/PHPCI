@@ -10,8 +10,12 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Http\Request;
+use b8\Http\Response;
+use PHPCI\Config;
 use PHPCI\Helper\Email;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\UserStore;
 
 /**
 * Session Controller - Handles user login / logout.
@@ -22,17 +26,21 @@ use PHPCI\Helper\Lang;
 class SessionController extends \PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\UserStore
+     * @var UserStore
      */
     protected $userStore;
 
-    /**
-     * Initialise the controller, set up stores and services.
-     */
-    public function init()
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                UserStore $userStore,
+                              )
     {
+        parent::__construct($config, $request, $response);
+
         $this->response->disableLayout();
-        $this->userStore       = b8\Store\Factory::getStore('User');
+        $this->userStore = $userStore;
     }
 
     /**

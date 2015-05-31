@@ -12,8 +12,12 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Form;
+use b8\Http\Request;
+use b8\Http\Response;
+use PHPCI\Config;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\UserStore;
 use PHPCI\Service\UserService;
 
 /**
@@ -25,22 +29,27 @@ use PHPCI\Service\UserService;
 class UserController extends Controller
 {
     /**
-     * @var \PHPCI\Store\UserStore
+     * @var UserStore
      */
     protected $userStore;
 
     /**
-     * @var \PHPCI\Service\UserService
+     * @var UserService
      */
     protected $userService;
 
-    /**
-     * Initialise the controller, set up stores and services.
-     */
-    public function init()
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                UserStore $userStore,
+                                UserService $userService
+                              )
     {
-        $this->userStore = b8\Store\Factory::getStore('User');
-        $this->userService = new UserService($this->userStore);
+        parent::__construct($config, $request, $response);
+
+        $this->userStore = $userStore;
+        $this->userService = $userService;
     }
 
     /**
@@ -48,8 +57,8 @@ class UserController extends Controller
     */
     public function index()
     {
-        $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
-        $this->view->users    = $users;
+        $users = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
+        $this->view->users = $users;
 
         $this->layout->title = Lang::get('manage_users');
 

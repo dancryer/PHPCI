@@ -13,11 +13,16 @@ use b8;
 use b8\Form;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use b8\Http\Request;
+use b8\Http\Response;
 use PHPCI;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\SshKey;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
@@ -30,34 +35,41 @@ use PHPCI\Service\ProjectService;
 class ProjectController extends PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @var ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var \PHPCI\Service\ProjectService
+     * @var ProjectService
      */
     protected $projectService;
 
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @var BuildService
      */
     protected $buildService;
 
-    /**
-     * Initialise the controller, set up stores and services.
-     */
-    public function init()
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                BuildStore $buildStore,
+                                ProjectStore $projectStore,
+                                ProjectService $projectService,
+                                BuildService $buildService
+                              )
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
-        $this->projectService = new ProjectService($this->projectStore);
-        $this->buildService = new BuildService($this->buildStore);
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
+        $this->projectService = $projectService;
+        $this->buildService = $buildService;
     }
 
     /**
@@ -313,7 +325,7 @@ class ProjectController extends PHPCI\Controller
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
             'svn'    => Lang::get('svn'),
-            );
+        );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
         $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|svn)');

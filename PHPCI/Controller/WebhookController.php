@@ -11,7 +11,10 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Store;
+use b8\Http\Request;
+use b8\Http\Response;
 use Exception;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
@@ -45,14 +48,20 @@ class WebhookController extends \b8\Controller
      */
     protected $buildService;
 
-    /**
-     * Initialise the controller, set up stores and services.
-     */
-    public function init()
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                BuildStore $buildStore,
+                                ProjectStore $projectStore,
+                                BuildService $buildService
+                              )
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
-        $this->buildService = new BuildService($this->buildStore);
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
+        $this->buildService = $buildService;
     }
 
     /** Handle the action, Ensuring to return a JsonResponse.

@@ -10,9 +10,14 @@
 namespace PHPCI\Controller;
 
 use b8;
+use b8\Http\Request;
+use b8\Http\Response;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -23,22 +28,27 @@ use PHPCI\Model\Build;
 class HomeController extends \PHPCI\Controller
 {
     /**
-     * @var \b8\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \b8\Store\ProjectStore
+     * @var ProjectStore
      */
     protected $projectStore;
 
-    /**
-     * Initialise the controller, set up stores and services.
-     */
-    public function init()
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                BuildStore $buildStore,
+                                ProjectStore $projectStore
+                              )
     {
-        $this->buildStore      = b8\Store\Factory::getStore('Build');
-        $this->projectStore    = b8\Store\Factory::getStore('Project');
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
     }
 
     /**

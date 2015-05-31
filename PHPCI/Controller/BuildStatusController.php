@@ -12,10 +12,15 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use b8\Http\Request;
+use b8\Http\Response;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 use PHPCI\Service\BuildStatusService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Build Status Controller - Allows external access to build status information / images.
@@ -25,19 +30,30 @@ use PHPCI\Service\BuildStatusService;
 */
 class BuildStatusController extends \PHPCI\Controller
 {
-    /* @var \PHPCI\Store\ProjectStore */
-    protected $projectStore;
-    /* @var \PHPCI\Store\BuildStore */
+    /**
+     * @var BuildStore
+     */
     protected $buildStore;
 
     /**
-     * Initialise the controller, set up stores and services.
+     * @var ProjectStore
      */
-    public function init()
+    protected $projectStore;
+
+    public function __construct(
+                                Config $config,
+                                Request $request,
+                                Response $response,
+                                BuildStore $buildStore,
+                                ProjectStore $projectStore
+                              )
     {
+        parent::__construct($config, $request, $response);
+
         $this->response->disableLayout();
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
     }
 
     /**

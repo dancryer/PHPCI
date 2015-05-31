@@ -47,15 +47,87 @@ services:
           - @storage.user
           - @storage.project
           - @service_container
+    application.controller.home:
+        class:      PHPCI\Controller\HomeController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.build
+          - @storage.project
+    application.controller.project:
+        class:      PHPCI\Controller\ProjectController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.build
+          - @storage.project
+          - @service.project
+          - @service.build
+    application.controller.build:
+        class:      PHPCI\Controller\BuildController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.build
+          - @service.build
+    application.controller.buildstatus:
+        class:      PHPCI\Controller\BuildStatusController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.build
+          - @storage.project
+    application.controller.user:
+        class:      PHPCI\Controller\UserController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.user
+          - @service.user
+    application.controller.session:
+        class:      PHPCI\Controller\SessionController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.user
+    application.controller.settings:
+        class:      PHPCI\Controller\SettingsController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.user
+          - @service.user
+    application.controller.plugin:
+        class:      PHPCI\Controller\PluginController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+    application.controller.webhook:
+        class:      PHPCI\Controller\WebhookController
+        arguments:
+          - @config
+          - @http.request
+          - @http.response
+          - @storage.build
+          - @storage.project
+          - @service.build
     service.build:
         class:      PHPCI\Service\BuildService
         arguments:  [@storage.build]
     service.user:
         class:      PHPCI\Service\UserService
         arguments:  [@storage.user]
-    service.build:
-        class:      PHPCI\Service\BuildService
-        arguments:  [@storage.build]
+    service.project:
+        class:      PHPCI\Service\ProjectService
+        arguments:  [@storage.project]
     process_control:
         factory: [PHPCI\ProcessControl\Factory, getInstance]
     console.application:

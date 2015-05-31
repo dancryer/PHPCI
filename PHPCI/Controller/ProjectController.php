@@ -144,8 +144,12 @@ class ProjectController extends PHPCI\Controller
     }
 
     /**
-    * Delete a project.
-    */
+     * Delete a project.
+     *
+     * @param  int $projectId
+     *
+     * @return  Response
+     */
     public function delete($projectId)
     {
         $this->requireAdmin();

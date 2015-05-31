@@ -292,8 +292,14 @@ class UserController extends Controller
     }
 
     /**
-    * Delete a user.
-    */
+     * Delete a user.
+     *
+     * @param  int $userId
+     *
+     * @return Response
+     *
+     * @throws NotFoundException
+     */
     public function delete($userId)
     {
         $this->requireAdmin();
@@ -308,6 +314,7 @@ class UserController extends Controller
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
+
         return $response;
     }
 }

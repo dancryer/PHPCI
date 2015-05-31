@@ -11,11 +11,13 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Exception\HttpException\NotFoundException;
+use b8\Exception\HttpException\NotAuthorizedException;
 use b8\Store;
 use b8\Http\Request;
 use b8\Http\Response;
 use PHPCI\Config;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 use PHPCI\Service\BuildStatusService;
@@ -49,8 +51,6 @@ class BuildStatusController extends \PHPCI\Controller
                               )
     {
         parent::__construct($config, $request, $response);
-
-        $this->response->disableLayout();
 
         $this->buildStore = $buildStore;
         $this->projectStore = $projectStore;
@@ -98,12 +98,16 @@ class BuildStatusController extends \PHPCI\Controller
     {
         /* @var Project $project */
         $project = $this->projectStore->getById($projectId);
-        $xml = new \SimpleXMLElement('<Projects/>');
 
-        if (!$project instanceof Project || !$project->getAllowPublicStatus()) {
-            return $this->renderXml($xml);
+        if (!$project instanceof Project) {
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
+        if (!$project->getAllowPublicStatus()) {
+            throw new NotAuthorizedException();
+        }
+
+        $xml = new \SimpleXMLElement('<Projects/>');
         try {
             $branchList = $this->buildStore->getBuildBranches($projectId);
 
@@ -120,7 +124,6 @@ class BuildStatusController extends \PHPCI\Controller
                     }
                 }
             }
-
         } catch (\Exception $e) {
             $xml = new \SimpleXMLElement('<projects/>');
         }
@@ -134,12 +137,11 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected function renderXml(\SimpleXMLElement $xml = null)
     {
+        $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'text/xml');
         $this->response->setContent($xml->asXML());
-        $this->response->flush();
-        echo $xml->asXML();
 
-        return true;
+        return $this->response;
     }
 
     /**
@@ -170,6 +172,7 @@ class BuildStatusController extends \PHPCI\Controller
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');
         $this->response->setContent($image);
+
         return $this->response;
     }
 

@@ -42,7 +42,7 @@ class SessionController extends \PHPCI\Controller
         Config $config,
         Request $request,
         Response $response,
-        UserStore $userStore,
+        UserStore $userStore
     ) {
         parent::__construct($config, $request, $response);
 

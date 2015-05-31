@@ -6,22 +6,22 @@ parameters:
 
 services:
     storage.user:
-        class:   PHPCI\Store\Base\UserStore
+        class:   PHPCI\Store\UserStore
         factory: [%storage.factory%, getStore]
         arguments:
             - User
     storage.project:
-        class:   PHPCI\Store\Base\ProjectStore
+        class:   PHPCI\Store\ProjectStore
         factory: [%storage.factory%, getStore]
         arguments:
             - Project
     storage.build:
-        class:   PHPCI\Store\Base\BuildStore
+        class:   PHPCI\Store\BuildStore
         factory: [%storage.factory%, getStore]
         arguments:
             - Build
     storage.build_meta:
-        class:   PHPCI\Store\Base\BuildMetaStore
+        class:   PHPCI\Store\BuildMetaStore
         factory: [%storage.factory%, getStore]
         arguments:
             - BuildMeta
@@ -31,6 +31,10 @@ services:
     http.response:
         class:      b8\Http\Response
         arguments:  []
+    http_client.github:
+        class:      b8\HttpClient
+        arguments:
+          - https://api.github.com
     config:
         class:      PHPCI\Config
         arguments:  [%config_file%]
@@ -85,7 +89,11 @@ services:
     console.command.poll:
         class:      PHPCI\Command\PollCommand
         arguments:
+          - @config
           - @console.logger
+          - @storage.build
+          - @storage.project
+          - @http_client.github
     console.command.create_admin:
         class:      PHPCI\Command\CreateAdminCommand
         arguments:

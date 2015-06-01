@@ -47,10 +47,6 @@ if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONS
 
 \PHPCI\ErrorHandler::register();
 
-if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-    $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
-}
-
 $container = new ContainerBuilder();
 $loader = new YamlFileLoader($container, new FileLocator(__DIR__));
 $loader->load('services.yml');

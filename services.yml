@@ -161,6 +161,14 @@ services:
         class:      Monolog\Logger
         arguments:
           - cli
+          -
+            - @console.logger.handlers.output
+    console.output:
+        class:      Symfony\Component\Console\Output\ConsoleOutput
+    console.logger.handlers.output:
+        class:      PHPCI\Logging\OutputLogHandler
+        arguments:
+          - @console.output
     console.command.run:
         class:      PHPCI\Command\RunCommand
         arguments:

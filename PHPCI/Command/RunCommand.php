@@ -98,7 +98,7 @@ class RunCommand extends Command
             $build = BuildFactory::getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
-            if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
+            if (!$this->isFromDaemon && array_key_exists($build->getProjectId(), $running)) {
                 $this->logger->addInfo(Lang::get('skipping_build', $build->getId()));
                 $result['items'][] = $build;
 

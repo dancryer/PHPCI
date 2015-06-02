@@ -108,6 +108,27 @@ class BuildStore extends BuildStoreBase
     }
 
     /**
+     * Returns all registered branches for project
+     *
+     * @param $projectId
+     * @return array
+     * @throws \Exception
+     */
+    public function getBuildBranches($projectId)
+    {
+        $query = 'SELECT DISTINCT `branch` FROM `build` WHERE `project_id` = :project_id';
+        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt->bindValue(':project_id', $projectId);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+            return $res;
+        } else {
+            return array();
+        }
+    }
+
+    /**
      * Return build metadata by key, project and optionally build id.
      * @param $key
      * @param $projectId
@@ -144,7 +165,9 @@ class BuildStore extends BuildStoreBase
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
         $stmt->bindValue(':numResults', (int)$numResults, \PDO::PARAM_INT);
-        $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
+        if (!is_null($branch)) {
+            $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
+        }
 
         if ($stmt->execute()) {
             $rtn = $stmt->fetchAll(\PDO::FETCH_ASSOC);

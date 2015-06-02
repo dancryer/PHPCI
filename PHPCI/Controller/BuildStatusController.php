@@ -15,6 +15,7 @@ use b8\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
+use PHPCI\Service\BuildStatusService;
 
 /**
 * Build Status Controller - Allows external access to build status information / images.
@@ -24,10 +25,9 @@ use PHPCI\Model\Build;
 */
 class BuildStatusController extends \PHPCI\Controller
 {
-    /**
-     * @var \PHPCI\Store\ProjectStore
-     */
+    /* @var \PHPCI\Store\ProjectStore */
     protected $projectStore;
+    /* @var \PHPCI\Store\BuildStore */
     protected $buildStore;
 
     /**
@@ -71,10 +71,69 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
+     * Displays projects information in ccmenu format
+     *
+     * @param $projectId
+     * @return bool
+     * @throws \Exception
+     * @throws b8\Exception\HttpException
+     */
+    public function ccxml($projectId)
+    {
+        /* @var Project $project */
+        $project = $this->projectStore->getById($projectId);
+        $xml = new \SimpleXMLElement('<Projects/>');
+
+        if (!$project instanceof Project || !$project->getAllowPublicStatus()) {
+            return $this->renderXml($xml);
+        }
+
+        try {
+            $branchList = $this->buildStore->getBuildBranches($projectId);
+
+            if (!$branchList) {
+                $branchList = array($project->getBranch());
+            }
+
+            foreach ($branchList as $branch) {
+                $buildStatusService = new BuildStatusService($branch, $project, $project->getLatestBuild($branch));
+                if ($attributes = $buildStatusService->toArray()) {
+                    $projectXml = $xml->addChild('Project');
+                    foreach ($attributes as $attributeKey => $attributeValue) {
+                        $projectXml->addAttribute($attributeKey, $attributeValue);
+                    }
+                }
+            }
+
+        } catch (\Exception $e) {
+            $xml = new \SimpleXMLElement('<projects/>');
+        }
+
+        return $this->renderXml($xml);
+    }
+
+    /**
+     * @param \SimpleXMLElement $xml
+     * @return bool
+     */
+    protected function renderXml(\SimpleXMLElement $xml = null)
+    {
+        $this->response->setHeader('Content-Type', 'text/xml');
+        $this->response->setContent($xml->asXML());
+        $this->response->flush();
+        echo $xml->asXML();
+
+        return true;
+    }
+
+    /**
     * Returns the appropriate build status image in SVG format for a given project.
     */
     public function image($projectId)
     {
+        $style = $this->getParam('style', 'plastic');
+        $label = $this->getParam('label', 'build');
+
         $status = $this->getStatus($projectId);
 
         if (is_null($status)) {
@@ -84,7 +143,13 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         $color = ($status == 'passing') ? 'green' : 'red';
-        $image = file_get_contents('http://img.shields.io/badge/build-' . $status . '-' . $color . '.svg');
+        $image = file_get_contents(sprintf(
+            'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
+            $label,
+            $status,
+            $color,
+            $style
+        ));
 
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');

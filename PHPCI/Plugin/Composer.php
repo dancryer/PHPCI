@@ -27,6 +27,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $preferDist;
     protected $phpci;
     protected $build;
+    protected $nodev;
 
     /**
      * Check if this plugin can be executed.
@@ -60,6 +61,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->directory = $path;
         $this->action = 'install';
         $this->preferDist = false;
+        $this->nodev = false;
 
         if (array_key_exists('directory', $options)) {
             $this->directory = $path . '/' . $options['directory'];
@@ -71,6 +73,10 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if (array_key_exists('prefer_dist', $options)) {
             $this->preferDist = (bool)$options['prefer_dist'];
+        }
+
+        if (array_key_exists('no_dev', $options)) {
+            $this->nodev = (bool)$options['no_dev'];
         }
     }
 
@@ -95,6 +101,11 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         } else {
             $this->phpci->log('Using --prefer-source flag');
             $cmd .= '--prefer-source';
+        }
+
+        if ($this->nodev) {
+            $this->phpci->log('Using --no-dev flag');
+            $cmd .= ' --no-dev';
         }
 
         $cmd .= ' --working-dir="%s" %s';

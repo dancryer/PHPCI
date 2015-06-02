@@ -44,7 +44,7 @@ class SessionController extends \PHPCI\Controller
 
         if ($this->request->getMethod() == 'POST') {
             $token = $this->getParam('token');
-            if ($token === null || $token !== $_SESSION['login_token']) {
+            if (!isset($token, $_SESSION['login_token']) || $token !== $_SESSION['login_token']) {
                 $isLoginFailure = true;
             } else {
                 unset($_SESSION['login_token']);

@@ -28,6 +28,12 @@
         }
     },
 
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\PHPCI\\": "Tests/PHPCI/"
+        }
+    },
+
     "require": {
         "php": ">=5.3.8",
         "ext-pdo": "*",
@@ -70,6 +76,7 @@
         "behat/behat": "Behat BDD Testing",
         "hipchat/hipchat-php": "Hipchat integration",
         "phptal/phptal": "PHPTAL templating engine",
-        "maknz/slack": "Slack integration"
+        "maknz/slack": "Slack integration",
+        "mremi/flowdock": "Flowdock integration"
     }
 }

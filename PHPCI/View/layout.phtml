@@ -209,7 +209,7 @@
                         </li>
 
                         <li>
-                            <a href="<?php print PHPCI_URL; ?>project/delete/<?php print $project->getId(); ?>">
+                            <a href="<?php print PHPCI_URL; ?>project/delete/<?php print $project->getId(); ?>" onclick="return confirm('<?php Lang::out('delete_project_confirm') ?>')">
                                 <i class="fa fa-angle-double-right"></i> <?php Lang::out('delete_project'); ?>
                             </a>
                         </li>

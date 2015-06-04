@@ -107,8 +107,12 @@ class Pdepend implements \PHPCI\Plugin
             $data['pyramid'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->pyramid);
 
             $data['chart'] = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>', '', $data['chart']);
-            $data['pyramid'] = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
-                    '', $data['pyramid']);
+
+            $data['pyramid'] = str_replace(
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
+                '',
+                $data['pyramid']
+            );
 
             $this->build->storeMeta('pdepend-data', $data);
 

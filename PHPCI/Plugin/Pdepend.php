@@ -101,7 +101,7 @@ class Pdepend implements \PHPCI\Plugin
 
         $config = $this->phpci->getSystemConfig('phpci');
 
-        if ($success) {
+        if ($success) { 
             $data = array();
             $data['chart'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->chart);
             $data['pyramid'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->pyramid);

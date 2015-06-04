@@ -102,17 +102,17 @@ class Pdepend implements \PHPCI\Plugin
         $config = $this->phpci->getSystemConfig('phpci');
 
         if ($success) {
-
-        	$data = array();
-        	$data['chart'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->chart);
-        	$data['pyramid'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->pyramid);
+            $data = array();
+            $data['chart'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->chart);
+            $data['pyramid'] = file_get_contents($this->location . DIRECTORY_SEPARATOR . $this->pyramid);
 
             $data['chart'] = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>', '', $data['chart']);
-            $data['pyramid'] = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>', '', $data['pyramid']);
+            $data['pyramid'] = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
+                    '', $data['pyramid']);
 
-        	$this->build->storeMeta('pdepend-data', $data);
+            $this->build->storeMeta('pdepend-data', $data);
 
-        	$this->phpci->logSuccess(
+            $this->phpci->logSuccess(
                 sprintf(
                     "Pdepend successful. You can use %s\n, ![Chart](%s \"Pdepend Chart\")\n
                     and ![Pyramid](%s \"Pdepend Pyramid\")\n

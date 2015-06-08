@@ -192,6 +192,7 @@ PHPCI',
     'technical_debt' => 'Technical Debt',
     'behat' => 'Behat',
     'pdepend' => 'pDepend',
+    'phpparalelllint' => 'Paralell Lint',
 
     'codeception_feature' => 'Feature',
     'codeception_suite' => 'Suite',

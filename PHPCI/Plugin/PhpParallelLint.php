@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
@@ -19,7 +20,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint implements \PHPCI\Plugin
+class PhpParallelLint implements \PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
      * @var \PHPCI\Builder
@@ -87,10 +88,38 @@ class PhpParallelLint implements \PHPCI\Plugin
 
         $output = $this->phpci->getLastOutput();
 
-        $matches = array();
-        if (preg_match_all('/Parse error\:/', $output, $matches)) {
-            $this->build->storeMeta('phplint-errors', count($matches[0]));
+        $errors = explode('Parse error: ', $output);
+        array_shift($errors);
+
+        $this->build->storeMeta('phplint-errors', count($errors));
+
+        $data = array();
+        foreach ($errors as $line) {
+            $fileName = substr($line, 0, strpos($line, ':'));
+
+            $lineNumber = 0;
+            
+            $matches = array();
+            preg_match('/:([0-9]+)/', $line, $matches);
+
+            if (isset($matches[1])) {
+                $lineNumber = $matches[1];
+            }
+
+            $message = trim(substr($line, strpos($line, ' ')));
+
+            $data[] = array(
+                'file' => $fileName,
+                'line' => $lineNumber,
+                'type' => 'ERROR',
+                'message' => $message
+            );
+
+            $this->build->reportError($this->phpci, $fileName, $message, 'Lint: ' . $message);
+
         }
+
+        $this->build->storeMeta('phplint-data', $data);
 
         return $success;
     }
@@ -108,5 +137,21 @@ class PhpParallelLint implements \PHPCI\Plugin
         $ignore = implode(' ', $ignoreFlags);
 
         return array($ignore);
+    }
+   
+    /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test') {
+            return true;
+        }
+    
+        return false;
     }
 }

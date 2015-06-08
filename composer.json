@@ -48,7 +48,21 @@
         "pimple/pimple": "~1.1",
         "robmorgan/phinx": "~0.4",
         "sensiolabs/ansi-to-html": "~1.1",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
+        "block8/php-docblock-checker": "^1.0",
+        "phpmd/phpmd": "^2.2",
+        "sebastian/phpcpd": "^2.0",
+        "squizlabs/php_codesniffer": "^2.3",
+        "phpspec/phpspec": "^2.2",
+        "fabpot/php-cs-fixer": "^1.8",
+        "phploc/phploc": "^2.1",
+        "atoum/atoum": "^2.1",
+        "jakub-onderka/php-parallel-lint": "^0.8.0",
+        "behat/behat": "^3.0",
+        "hipchat/hipchat-php": "^1.4",
+        "phptal/phptal": "^1.3",
+        "maknz/slack": "^1.7",
+        "mremi/flowdock": "^1.0",
+        "illuminate/support": "^5.0"
     },
 
     "autoload-dev": {
@@ -56,11 +70,7 @@
     },
 
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
-        "phpmd/phpmd": "~2.0",
-        "squizlabs/php_codesniffer": "~2.3",
-        "block8/php-docblock-checker": "~1.0",
-        "phploc/phploc": "~2.0"
+        "phpunit/phpunit": "~4.5"
     },
 
     "suggest": {

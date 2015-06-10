@@ -7,7 +7,7 @@
         "psr-4": { "": "src/", "SymfonyStandard\\": "app/SymfonyStandard/" }
     },
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
         "doctrine/orm": "~2.2,>=2.2.3,<2.5",
         "doctrine/dbal": "<2.5",

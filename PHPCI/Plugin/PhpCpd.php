@@ -28,7 +28,7 @@ class PhpCpd implements \PHPCI\Plugin
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
-     * tested, exteds the base path
+     * tested, extends the base path
      */
     protected $path;
 

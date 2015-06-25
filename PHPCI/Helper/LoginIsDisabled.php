@@ -12,7 +12,7 @@ namespace PHPCI\Helper;
 use b8\Config;
 
 /**
-* Login Is Disabled Helper - Checks if login is disalbed in the view
+* Login Is Disabled Helper - Checks if login is disabled in the view
 * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
 * @package      PHPCI
 * @subpackage   Web

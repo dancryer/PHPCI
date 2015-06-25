@@ -62,7 +62,7 @@ if (file_exists($configFile)) {
 
 /**
  * Allow to modify PHPCI configuration without modify versioned code.
- * Dameons should be killed to apply changes in the file.
+ * Daemons should be killed to apply changes in the file.
  *
  * @ticket 781
  */

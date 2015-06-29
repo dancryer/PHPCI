@@ -161,7 +161,8 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $this->rootDir,
             $this->rootDir . 'vendor/bin/',
         );
-        if(!empty($options['path'])){
+
+        if (!empty($options['path'])) {
             $binPaths[] = $options['path'] . '/';
             $binPaths[] = $this->rootDir . $options['path'] . '/';
             $binPaths[] = $this->buildPath . $options['path'] . '/';

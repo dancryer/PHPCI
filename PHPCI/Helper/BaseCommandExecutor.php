@@ -147,7 +147,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
      * @param bool $quiet
      * @return null|string
      */
-    public function findBinary($binary, $quiet = false)
+    public function findBinary($binary, $quiet = false, $options = array())
     {
         $composerBin = $this->getComposerBinDir(realpath($this->buildPath));
 
@@ -155,22 +155,26 @@ abstract class BaseCommandExecutor implements CommandExecutor
             $binary = array($binary);
         }
 
+        //Set default binary paths
+        $binPaths = array(
+            $composerBin . '/',
+            $this->rootDir,
+            $this->rootDir . 'vendor/bin/',
+        );
+        if(!empty($options['path'])){
+            $binPaths[] = $options['path'] . '/';
+            $binPaths[] = $this->rootDir . $options['path'] . '/';
+            $binPaths[] = $this->buildPath . $options['path'] . '/';
+        }
+
         foreach ($binary as $bin) {
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
-            if (is_dir($composerBin) && is_file($composerBin.'/'.$bin)) {
-                $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
-                return $composerBin . '/' . $bin;
-            }
-
-            if (is_file($this->rootDir . $bin)) {
-                $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
-                return $this->rootDir . $bin;
-            }
-
-            if (is_file($this->rootDir . 'vendor/bin/' . $bin)) {
-                $this->logger->log(Lang::get('found_in_path', 'vendor/bin', $bin), LogLevel::DEBUG);
-                return $this->rootDir . 'vendor/bin/' . $bin;
+            foreach($binPaths as $path){
+                if (is_dir($path) && is_file($path . $bin)) {
+                    $this->logger->log(Lang::get('found_in_path', $path, $bin), LogLevel::DEBUG);
+                    return $path . $bin;
+                }
             }
 
             $findCmdResult = $this->findGlobalBinary($bin);

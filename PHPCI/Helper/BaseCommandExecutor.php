@@ -171,7 +171,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         foreach ($binary as $bin) {
             $this->logger->log(Lang::get('looking_for_binary', $bin), LogLevel::DEBUG);
 
-            foreach($binPaths as $path){
+            foreach ($binPaths as $path) {
                 if (is_dir($path) && is_file($path . $bin)) {
                     $this->logger->log(Lang::get('found_in_path', $path, $bin), LogLevel::DEBUG);
                     return $path . $bin;

@@ -131,11 +131,11 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $this->phpci->logExecOutput(false);
 
         $options = array();
-        if(!empty($this->binPath)){
+        if (!empty($this->binPath)) {
             $options['path'] = $this->binPath;
         }
 
-        $codecept = $this->phpci->findBinary('codecept',null,$options);
+        $codecept = $this->phpci->findBinary('codecept', null, $options);
 
         if (!$codecept) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));

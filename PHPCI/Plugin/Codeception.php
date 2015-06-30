@@ -130,7 +130,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     {
         $this->phpci->logExecOutput(false);
 
-        $options = array();
+        $options = [];
         if (!empty($this->binPath)) {
             $options['path'] = $this->binPath;
         }

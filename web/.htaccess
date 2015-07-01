@@ -5,6 +5,11 @@
 # to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
 DirectoryIndex app.php
 
+# uncomment the following line if you install assets as symlinks
+# or run into problems when compiling LESS/Sass/CoffeScript assets
+#
+# Options FollowSymlinks
+
 # Disabling MultiViews prevents unwanted negotiation, e.g. "/app" should not resolve
 # to the front controller "/app.php" but be rewritten to "/app.php/app".
 <IfModule mod_negotiation.c>

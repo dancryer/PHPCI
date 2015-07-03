@@ -61,6 +61,24 @@ class HipchatNotify implements \PHPCI\Plugin
             } else {
                 $this->notify = false;
             }
+
+            if (isset($options['onSuccess']) && $this->build->isSuccessful()) {
+                if (isset($options['onSuccess']['color'])) {
+                    $this->color = $options['onSuccess']['color'];
+                }
+                if (isset($options['onSuccess']['message'])) {
+                    $this->message = $options['onSuccess']['message'];
+                }
+            }
+
+            if (isset($options['onFailure']) && $this->build->getStatus() === Build::STATUS_FAILED) {
+                if (isset($options['onFailure']['color'])) {
+                    $this->color = $options['onFailure']['color'];
+                }
+                if (isset($options['onFailure']['message'])) {
+                    $this->message = $options['onFailure']['message'];
+                }
+            }
         } else {
             throw new \Exception(Lang::get('hipchat_settings'));
         }

@@ -145,7 +145,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function getErrorList()
     {
-        $dirIterator = new \RecursiveDirectoryIterator($this->directory);
+        $dirIterator = new \RecursiveDirectoryIterator($this->directory . DIRECTORY_SEPARATOR . $this->path);
         $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
         $files = array();
 

@@ -5,9 +5,10 @@
 # to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
 DirectoryIndex app.php
 
-# uncomment the following line if you install assets as symlinks
-# or run into problems when compiling LESS/Sass/CoffeScript assets
-#
+# By default, Apache does not evaluate symbolic links if you did not enable this
+# feature in your server configuration. Uncomment the following line if you
+# install assets as symlinks or if you experience problems related to symlinks
+# when compiling LESS/Sass/CoffeScript assets.
 # Options FollowSymlinks
 
 # Disabling MultiViews prevents unwanted negotiation, e.g. "/app" should not resolve

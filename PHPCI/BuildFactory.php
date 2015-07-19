@@ -24,6 +24,11 @@ class BuildFactory
      */
     protected $buildStore;
 
+    /**
+     * Create a build factory.
+     *
+     * @param BuildStore $buildStore
+     */
     public function __construct(BuildStore $buildStore)
     {
         $this->buildStore = $buildStore;
@@ -31,7 +36,9 @@ class BuildFactory
 
     /**
      * @param $buildId
+     *
      * @return Build
+     *
      * @throws \Exception
      */
     public function getBuildById($buildId)
@@ -47,7 +54,9 @@ class BuildFactory
 
     /**
     * Takes a generic build and returns a type-specific build model.
+    *
     * @param Build $base The build from which to get a more specific build type.
+    *
     * @return Build
     */
     public function getBuild(Build $base)

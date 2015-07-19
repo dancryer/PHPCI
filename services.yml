@@ -167,7 +167,7 @@ services:
           - %application.name%
           - %application.version%
         calls:
-          - [add, ['@console.command.daemon']]
+          - [add, ['@console.command.daemonise']]
     console.logger:
         class:      Monolog\Logger
         arguments:
@@ -208,6 +208,12 @@ services:
         arguments:
           - @console.logger
           - @process_control
+          - @filesystem
+    console.command.daemonise:
+        class:      PHPCI\Command\DaemoniseCommand
+        arguments:
+          - @console.command.run
+          - @console.logger
     console.command.poll:
         class:      PHPCI\Command\PollCommand
         arguments:
@@ -229,3 +235,6 @@ services:
         class:      PHPCI\Command\InstallCommand
     console.command.generate:
         class:      PHPCI\Command\GenerateCommand
+
+    filesystem:
+        class:      Symfony\Component\Filesystem\Filesystem

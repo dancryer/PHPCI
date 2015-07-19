@@ -14,6 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use PHPCI\Command\RunCommand;
 
 /**
 * Daemon that loops and call the run-command.
@@ -23,6 +24,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 */
 class DaemoniseCommand extends Command
 {
+    /**
+     * @var RunCommand
+     */
+    protected $runner;
+
     /**
      * @var Logger
      */
@@ -47,9 +53,10 @@ class DaemoniseCommand extends Command
      * @param \Monolog\Logger $logger
      * @param string $name
      */
-    public function __construct(Logger $logger)
+    public function __construct(RunCommand $runner, Logger $logger)
     {
         parent::__construct();
+        $this->runner = $runner;
         $this->logger = $logger;
     }
 
@@ -72,18 +79,16 @@ class DaemoniseCommand extends Command
         $this->output = $output;
         $this->run   = true;
         $this->sleep = 0;
-        $runner      = new RunCommand($this->logger);
-        $runner->setMaxBuilds(1);
-        $runner->setDaemon(true);
+        $this->runner->setMaxBuilds(1);
+        $this->runner->setDaemon(true);
 
         $emptyInput = new ArgvInput(array());
 
         while ($this->run) {
-
             $buildCount = 0;
 
             try {
-                $buildCount = $runner->run($emptyInput, $output);
+                $buildCount = $this->runner->run($emptyInput, $output);
             } catch (\Exception $e) {
                 $output->writeln('<error>Exception: ' . $e->getMessage() . '</error>');
                 $output->writeln('<error>Line: ' . $e->getLine() . ' - File: ' . $e->getFile() . '</error>');
@@ -100,9 +105,10 @@ class DaemoniseCommand extends Command
     }
 
     /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
+     * Called when log entries are made in Builder / the plugins.
+     *
+     * @see \PHPCI\Builder::log()
+     */
     public function logCallback($log)
     {
         $this->output->writeln($log);

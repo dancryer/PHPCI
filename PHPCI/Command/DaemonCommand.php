@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Daemon that loops and call the run-command.
@@ -27,11 +28,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DaemonCommand extends Command
 {
-
     /**
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var ProcessControlInterface
+     */
+    protected $processControl;
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
     /**
      * @var string
@@ -43,17 +53,16 @@ class DaemonCommand extends Command
      */
     protected $logFilePath;
 
-    /**
-     * @var ProcessControlInterface
-     */
-    protected $processControl;
-
-    public function __construct(Logger $logger, ProcessControlInterface $processControl)
-    {
+    public function __construct(
+        Logger $logger,
+        ProcessControlInterface $processControl,
+        Filesystem $filesystem
+    ) {
         parent::__construct();
 
         $this->logger = $logger;
         $this->processControl = $processControl;
+        $this->filesystem = $filesystem;
     }
 
     protected function configure()
@@ -68,13 +77,13 @@ class DaemonCommand extends Command
                 'pid-file', 'p', InputOption::VALUE_REQUIRED,
                 'Path of the PID file',
                 implode(DIRECTORY_SEPARATOR,
-                    array(PHPCI_DIR, 'daemon', 'daemon.pid'))
+                    array(rtrim(PHPCI_DIR, '/'), 'daemon', 'daemon.pid'))
             )
             ->addOption(
                 'log-file', 'l', InputOption::VALUE_REQUIRED,
                 'Path of the log file',
                 implode(DIRECTORY_SEPARATOR,
-                    array(PHPCI_DIR, 'daemon', 'daemon.log'))
+                    array(rtrim(PHPCI_DIR, '/'), 'daemon', 'daemon.log'))
         );
     }
 
@@ -181,13 +190,14 @@ class DaemonCommand extends Command
         return "notrunning";
     }
 
-    /** Check if there is a running daemon
+    /**
+     * Check if there is a running daemon
      *
      * @return int|null
      */
     protected function getRunningPid()
     {
-        if (!file_exists($this->pidFilePath)) {
+        if (!$this->filesystem->exists($this->pidFilePath)) {
             return;
         }
 
@@ -198,6 +208,6 @@ class DaemonCommand extends Command
         }
 
         // Not found, remove the stale PID file
-        unlink($this->pidFilePath);
+        $this->filesystem->remove($this->pidFilePath);
     }
 }

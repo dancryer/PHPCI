@@ -15,8 +15,7 @@ use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
 use PHPCI\CommandExecutor\CommandExecutorInterface;
-use b8\Config;
-use b8\Store\Factory;
+use PHPCI\Config;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -74,9 +73,9 @@ class Builder implements LoggerAwareInterface
     protected $interpolator;
 
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
-    protected $store;
+    protected $buildStore;
 
     /**
      * @var bool
@@ -107,7 +106,7 @@ class Builder implements LoggerAwareInterface
     public function __construct(Build $build, BuildStore $buildStore, BuildLogger $buildLogger, BuildInterpolator $buildInterpolator, CommandExecutorInterface $commandExecutor, LoggerInterface $logger = null)
     {
         $this->build = $build;
-        $this->store = $buildStore;
+        $this->buildStore = $buildStore;
         $this->buildLogger = $buildLogger;
         $this->interpolator = $buildInterpolator;
 
@@ -177,7 +176,7 @@ class Builder implements LoggerAwareInterface
         // Update the build in the database, ping any external services.
         $this->build->setStatus(Build::STATUS_RUNNING);
         $this->build->setStarted(new \DateTime());
-        $this->store->save($this->build);
+        $this->buildStore->save($this->build);
         $this->build->sendStatusPostback();
         $success = true;
 
@@ -221,7 +220,7 @@ class Builder implements LoggerAwareInterface
         $this->buildLogger->log(Lang::get('removing_build'));
         $this->build->removeBuildDirectory();
 
-        $this->store->save($this->build);
+        $this->buildStore->save($this->build);
     }
 
     /**

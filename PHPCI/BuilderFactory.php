@@ -10,19 +10,12 @@
 namespace PHPCI;
 
 use PHPCI\Helper\BuildInterpolator;
-use PHPCI\Helper\Lang;
-use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
 use PHPCI\Store\BuildStore;
 use PHPCI\Builder;
 use PHPCI\CommandExecutor\Factory as CommandExecutorFactory;
-use PHPCI\Config;
-use b8\Store\Factory;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
-use PHPCI\Plugin\Util\Factory as PluginFactory;
 
 /**
  * PHPCI Build Runner factory
@@ -58,12 +51,20 @@ class BuilderFactory
         LoggerInterface $logger
     ) {
         $this->buildStore = $buildStore;
-        $this->logger = $logger;
         $this->buildInterpolator = $buildInterpolator;
         $this->commandExecutorFactory = $commandExecutorFactory;
+        $this->logger = $logger;
     }
 
-    public function fromBuild($build, $logger = null)
+    /**
+     * Create Builder from Build.
+     *
+     * @param  Build            $build
+     * @param  LoggerInterface  $logger
+     *
+     * @return Builder
+     */
+    public function fromBuild(Build $build, LoggerInterface $logger = null)
     {
         $logger = $logger ?: $this->logger;
         $buildLogger = new BuildLogger($logger, $build);

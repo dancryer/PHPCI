@@ -134,6 +134,7 @@ class Handler
 
     /**
      * Write to the build log.
+     *
      * @param \Exception $exception
      */
     protected function log(\Exception $exception)

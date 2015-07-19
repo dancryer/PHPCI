@@ -7,17 +7,18 @@
  * @link         https://www.phptesting.org/
  */
 
-namespace PHPCI\Helper;
+namespace PHPCI\CommandExecutor;
 
 use Exception;
 use PHPCI\Logging\BuildLogger;
 use Psr\Log\LogLevel;
+use PHPCI\CommandExecutor\CommandExecutorInterface;
 
 /**
  * Handles running system commands with variables.
  * @package PHPCI\Helper
  */
-abstract class BaseCommandExecutor implements CommandExecutor
+abstract class BaseCommandExecutor implements CommandExecutorInterface
 {
     /**
      * @var BuildLogger

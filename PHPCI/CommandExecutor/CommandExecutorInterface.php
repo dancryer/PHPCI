@@ -7,13 +7,14 @@
  * @link         https://www.phptesting.org/
  */
 
-namespace PHPCI\Helper;
+namespace PHPCI\CommandExecutor;
 
-interface CommandExecutor
+interface CommandExecutorInterface
 {
     /**
      * Executes shell commands. Accepts multiple arguments the first
      * is the template and everything else is inserted in. c.f. sprintf
+     *
      * @return bool Indicates success
      */
     public function executeCommand();
@@ -25,6 +26,7 @@ interface CommandExecutor
 
     /**
      * Find a binary required by a plugin.
+     *
      * @param string $binary
      * @param bool $quiet Returns null instead of throwing an execption.
      *
@@ -36,6 +38,7 @@ interface CommandExecutor
 
     /**
      * Set the buildPath property.
+     *
      * @param string $path
      */
     public function setBuildPath($path);

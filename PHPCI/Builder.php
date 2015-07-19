@@ -14,6 +14,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
+use PHPCI\CommandExecutor\CommandExecutorInterface;
 use b8\Config;
 use b8\Store\Factory;
 use Psr\Log\LoggerAwareInterface;
@@ -103,30 +104,18 @@ class Builder implements LoggerAwareInterface
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
      */
-    public function __construct(Build $build, LoggerInterface $logger = null)
+    public function __construct(Build $build, BuildStore $buildStore, BuildLogger $buildLogger, BuildInterpolator $buildInterpolator, CommandExecutorInterface $commandExecutor, LoggerInterface $logger = null)
     {
         $this->build = $build;
-        $this->store = Factory::getStore('Build');
-
-        $this->buildLogger = new BuildLogger($logger, $build);
+        $this->store = $buildStore;
+        $this->buildLogger = $buildLogger;
+        $this->interpolator = $buildInterpolator;
 
         $pluginFactory = $this->buildPluginFactory($build);
         $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
         $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
-        $executorClass = 'PHPCI\Helper\UnixCommandExecutor';
-        if (IS_WIN) {
-            $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
-        }
-
-        $this->commandExecutor = new $executorClass(
-            $this->buildLogger,
-            PHPCI_DIR,
-            $this->quiet,
-            $this->verbose
-        );
-
-        $this->interpolator = new BuildInterpolator();
+        $this->commandExecutor = $commandExecutor;
     }
 
     /**
@@ -223,7 +212,6 @@ class Builder implements LoggerAwareInterface
             $this->build->setStatus(Build::STATUS_FAILED);
             $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
         }
-
 
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
@@ -364,6 +352,7 @@ class Builder implements LoggerAwareInterface
     {
         $this->buildLogger->logFailure($message, $exception);
     }
+
     /**
      * Returns a configured instance of the plugin factory.
      *

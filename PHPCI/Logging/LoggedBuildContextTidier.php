@@ -13,6 +13,7 @@ use PHPCI\Model\Build;
 
 /**
  * Class LoggedBuildContextTidier cleans up build log entries.
+ *
  * @package PHPCI\Logging
  */
 class LoggedBuildContextTidier
@@ -30,6 +31,7 @@ class LoggedBuildContextTidier
      * this is more useful to display.
      *
      * @param array $logRecord
+     *
      * @return array
      */
     protected function tidyLoggedBuildContext(array $logRecord)

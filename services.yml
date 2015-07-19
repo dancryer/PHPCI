@@ -146,6 +146,8 @@ services:
         arguments:  [@storage.project]
     process_control:
         factory: [PHPCI\ProcessControl\Factory, getInstance]
+    command_executor:
+        class:      PHPCI\CommandExecutor\Factory
     console.application:
         class:      Symfony\Component\Console\Application
         arguments:
@@ -168,6 +170,12 @@ services:
           - %application.version%
         calls:
           - [add, ['@console.command.daemonise']]
+    logger:
+        class:      Monolog\Logger
+        arguments:
+          - web
+          -
+            - @console.logger.handlers.file
     console.logger:
         class:      Monolog\Logger
         arguments:
@@ -190,7 +198,10 @@ services:
         class:      PHPCI\Command\RunCommand
         arguments:
           - @factory.build
+          - @storage.build
+          - @config
           - @console.logger
+          - @builder.factory
     console.command.rebuild:
         class:      PHPCI\Command\RebuildCommand
         arguments:
@@ -235,6 +246,14 @@ services:
         class:      PHPCI\Command\InstallCommand
     console.command.generate:
         class:      PHPCI\Command\GenerateCommand
-
     filesystem:
         class:      Symfony\Component\Filesystem\Filesystem
+    interpolator.build:
+        class:      PHPCI\Helper\BuildInterpolator
+    builder.factory:
+        class:      PHPCI\BuilderFactory
+        arguments:
+            - @storage.build
+            - @interpolator.build
+            - @command_executor
+            - @logger

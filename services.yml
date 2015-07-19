@@ -3,6 +3,8 @@ parameters:
     application.version: 1.7-dev
     config_file: PHPCI/config.yml
     storage.factory: b8\Store\Factory
+    console.log_file: logs/console.log
+    console.max_logs: 30
 
 services:
     storage.user:
@@ -170,6 +172,20 @@ services:
         class:      Monolog\Logger
         arguments:
           - cli
+          -
+            - @console.logger.handlers.output
+            - @console.logger.handlers.file
+    console.output:
+        class:      Symfony\Component\Console\Output\ConsoleOutput
+    console.logger.handlers.output:
+        class:      PHPCI\Logging\OutputLogHandler
+        arguments:
+          - @console.output
+    console.logger.handlers.file:
+        class:      Monolog\Handler\RotatingFileHandler
+        arguments:
+          - %console.log_file%
+          - %console.max_logs%
     console.command.run:
         class:      PHPCI\Command\RunCommand
         arguments:

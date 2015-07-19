@@ -123,8 +123,8 @@ class DaemonCommand extends Command
 
         $this->logger->info("Trying to start the daemon");
 
-        $cmd = "nohup %s/daemonise phpci:daemonise > %s 2>&1 &";
-        $command = sprintf($cmd, PHPCI_DIR, $this->logFilePath);
+        $cmd = "nohup %s/daemonise phpci:daemonise -p %s > %s 2>&1 &";
+        $command = sprintf($cmd, PHPCI_DIR, $this->pidFilePath, $this->logFilePath);
         $output = $exitCode = null;
         exec($command, $output, $exitCode);
 

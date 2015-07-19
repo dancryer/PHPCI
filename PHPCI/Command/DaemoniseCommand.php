@@ -12,6 +12,7 @@ namespace PHPCI\Command;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use PHPCI\Command\RunCommand;
@@ -64,7 +65,14 @@ class DaemoniseCommand extends Command
     {
         $this
             ->setName('phpci:daemonise')
-            ->setDescription('Starts the daemon to run commands.');
+            ->setDescription('Starts the daemon to run commands.')
+
+            ->addOption(
+                'pid-file', 'p', InputOption::VALUE_REQUIRED,
+                'Path of the PID file',
+                implode(DIRECTORY_SEPARATOR,
+                    array(rtrim(PHPCI_DIR, '/'), 'daemon', 'daemon.pid'))
+            );
     }
 
     /**
@@ -72,12 +80,12 @@ class DaemoniseCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cmd = "echo %s > '%s/daemon/daemon.pid'";
-        $command = sprintf($cmd, getmypid(), PHPCI_DIR);
+        $pidFilePath = $input->getOption('pid-file');
+        $command = sprintf("echo %s > '%s'", getmypid(), $pidFilePath);
         exec($command);
 
         $this->output = $output;
-        $this->run   = true;
+        $this->run = true;
         $this->sleep = 0;
         $this->runner->setMaxBuilds(1);
         $this->runner->setDaemon(true);

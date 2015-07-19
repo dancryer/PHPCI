@@ -11,6 +11,7 @@ namespace PHPCI\Helper;
 
 /**
  * Class MailerFactory helps to set up and configure a SwiftMailer object.
+ *
  * @package PHPCI\Helper
  */
 class MailerFactory
@@ -22,6 +23,7 @@ class MailerFactory
 
     /**
      * Set the mailer factory configuration.
+     *
      * @param array $config
      */
     public function __construct($config = array())
@@ -34,7 +36,8 @@ class MailerFactory
     }
 
     /**
-     * Returns an instance of Swift_Mailer based on the config.s
+     * Returns an instance of Swift_Mailer based on the config.
+     *
      * @return \Swift_Mailer
      */
     public function getSwiftMailerFromConfig()
@@ -61,7 +64,9 @@ class MailerFactory
 
     /**
      * Return a specific configuration value by key.
+     *
      * @param $configName
+     *
      * @return null|string
      */
     public function getMailConfig($configName)
@@ -70,7 +75,6 @@ class MailerFactory
             return $this->emailConfig[$configName];
         } else {
             // Check defaults
-
             switch($configName) {
                 case 'smtp_address':
                     return "localhost";

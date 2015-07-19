@@ -12,15 +12,17 @@ namespace PHPCI\Helper;
 use b8\Config;
 
 /**
-* Login Is Disabled Helper - Checks if login is disalbed in the view
-* @author       Stephen Ball <phpci@stephen.rebelinblue.com>
-* @package      PHPCI
-* @subpackage   Web
-*/
+ * Login Is Disabled Helper - Checks if login is disalbed in the view
+ *
+ * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
+ * @package      PHPCI
+ * @subpackage   Web
+ */
 class LoginIsDisabled
 {
     /**
      * Checks if
+     *
      * @param $method
      * @param array $params
      * @return mixed|null
@@ -28,7 +30,7 @@ class LoginIsDisabled
     public function __call($method, $params = array())
     {
         unset($method, $params);
-        
+
         $config = Config::getInstance();
         $state = (bool) $config->get('phpci.authentication_settings.state', false);
 

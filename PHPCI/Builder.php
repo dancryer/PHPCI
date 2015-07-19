@@ -99,6 +99,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Set up the builder.
+     *
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
      */
@@ -130,6 +131,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Set the config array, as read from phpci.yml
+     *
      * @param array|null $config
      * @throws \Exception
      */
@@ -144,6 +146,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Access a variable from the phpci.yml file.
+     *
      * @param string
      * @return mixed
      */
@@ -160,6 +163,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Access a variable from the config.yml
+     *
      * @param $key
      * @return mixed
      */
@@ -259,6 +263,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Find a binary required by a plugin.
+     *
      * @param string $binary
      * @param bool $quiet
      *
@@ -272,6 +277,7 @@ class Builder implements LoggerAwareInterface
     /**
      * Replace every occurrence of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
+     *
      * @param string $input
      * @return string
      */
@@ -328,6 +334,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Write to the build log.
+     *
      * @param $message
      * @param string $level
      * @param array $context
@@ -339,6 +346,7 @@ class Builder implements LoggerAwareInterface
 
    /**
      * Add a success-coloured message to the log.
+     *
      * @param string
      */
     public function logSuccess($message)
@@ -348,6 +356,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Add a failure-coloured message to the log.
+     *
      * @param string $message
      * @param \Exception $exception The exception that caused the error.
      */
@@ -359,6 +368,7 @@ class Builder implements LoggerAwareInterface
      * Returns a configured instance of the plugin factory.
      *
      * @param Build $build
+     *
      * @return PluginFactory
      */
     private function buildPluginFactory(Build $build)

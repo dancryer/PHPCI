@@ -12,6 +12,7 @@ session_start();
 
 require_once(__DIR__ . '/../bootstrap.php');
 
+/** @var PHPCI\Application */
 $app = $container->get('application');
 
 print $app->handleRequest();

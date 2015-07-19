@@ -45,6 +45,11 @@ class BuildStatusController extends \PHPCI\Controller
     protected $projectStore;
 
     /**
+     * @var BuildFactory
+     */
+    protected $buildFactory;
+
+    /**
      * Create the BuildStatus controller.
      *
      * @param Config       $config
@@ -53,6 +58,7 @@ class BuildStatusController extends \PHPCI\Controller
      * @param BuildStore   $buildStore
      * @param ProjectStore $projectStore
      * @param HttpClient   $shieldsClient
+     * @param BuildFactory $buildFactory
      */
     public function __construct(
         Config $config,
@@ -60,13 +66,15 @@ class BuildStatusController extends \PHPCI\Controller
         Response $response,
         BuildStore $buildStore,
         ProjectStore $projectStore,
-        HttpClient $shieldsClient
+        HttpClient $shieldsClient,
+        BuildFactory $buildFactory
     ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;
         $this->projectStore = $projectStore;
         $this->shieldsClient = $shieldsClient;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
@@ -197,7 +205,7 @@ class BuildStatusController extends \PHPCI\Controller
         $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
 
         foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         return $builds['items'];

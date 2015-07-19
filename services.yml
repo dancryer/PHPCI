@@ -25,6 +25,10 @@ services:
         factory: [%storage.factory%, getStore]
         arguments:
             - BuildMeta
+    factory.build:
+        class:   PHPCI\BuildFactory
+        arguments:
+            - @storage.build
     http.request:
         class:      b8\Http\Request
         arguments:  []
@@ -59,6 +63,7 @@ services:
           - @http.response
           - @storage.build
           - @storage.project
+          - @factory.build
     application.controller.project:
         class:      PHPCI\Controller\ProjectController
         arguments:
@@ -69,6 +74,7 @@ services:
           - @storage.project
           - @service.project
           - @service.build
+          - @factory.build
     application.controller.build:
         class:      PHPCI\Controller\BuildController
         arguments:
@@ -77,6 +83,7 @@ services:
           - @http.response
           - @storage.build
           - @service.build
+          - @factory.build
     application.controller.buildstatus:
         class:      PHPCI\Controller\BuildStatusController
         arguments:
@@ -86,6 +93,7 @@ services:
           - @storage.build
           - @storage.project
           - @http_client.shields
+          - @factory.build
     application.controller.user:
         class:      PHPCI\Controller\UserController
         arguments:
@@ -124,6 +132,7 @@ services:
           - @storage.build
           - @storage.project
           - @service.build
+          - @factory.build
     service.build:
         class:      PHPCI\Service\BuildService
         arguments:  [@storage.build]
@@ -164,6 +173,7 @@ services:
     console.command.run:
         class:      PHPCI\Command\RunCommand
         arguments:
+          - @factory.build
           - @console.logger
     console.command.rebuild:
         class:      PHPCI\Command\RebuildCommand

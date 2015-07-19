@@ -42,6 +42,11 @@ class RunCommand extends Command
     protected $logger;
 
     /**
+     * @var BuildFactory
+     */
+    protected $buildFactory;
+
+    /**
      * @var int
      */
     protected $maxBuilds = 100;
@@ -52,12 +57,14 @@ class RunCommand extends Command
     protected $isFromDaemon = false;
 
     /**
-     * @param \Monolog\Logger $logger
-     * @param string $name
+     * @param BuildFactory  $buildFactory
+     * @param Logger        $logger
      */
-    public function __construct(Logger $logger)
+    public function __construct(BuildFactory $buildFactory, Logger $logger)
     {
         parent::__construct();
+
+        $this->buildFactory = $buildFactory;
         $this->logger = $logger;
     }
 
@@ -95,7 +102,7 @@ class RunCommand extends Command
 
         while (count($result['items'])) {
             $build = array_shift($result['items']);
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
             if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
@@ -156,7 +163,7 @@ class RunCommand extends Command
 
         foreach ($running['items'] as $build) {
             /** @var \PHPCI\Model\Build $build */
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
 
             $now = time();
             $start = $build->getStarted()->getTimestamp();

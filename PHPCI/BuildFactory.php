@@ -11,6 +11,7 @@ namespace PHPCI;
 
 use b8\Store\Factory;
 use PHPCI\Model\Build;
+use PHPCI\Store\BuildStore;
 
 /**
 * PHPCI Build Factory - Takes in a generic "Build" and returns a type-specific build model.
@@ -19,19 +20,29 @@ use PHPCI\Model\Build;
 class BuildFactory
 {
     /**
+     * @var BuildStore
+     */
+    protected $buildStore;
+
+    public function __construct(BuildStore $buildStore)
+    {
+        $this->buildStore = $buildStore;
+    }
+
+    /**
      * @param $buildId
      * @return Build
      * @throws \Exception
      */
-    public static function getBuildById($buildId)
+    public function getBuildById($buildId)
     {
-        $build = Factory::getStore('Build')->getById($buildId);
+        $build = $this->buildStore->getById($buildId);
 
         if (empty($build)) {
             throw new \Exception('Build ID ' . $buildId . ' does not exist.');
         }
 
-        return self::getBuild($build);
+        return $this->getBuild($build);
     }
 
     /**
@@ -39,7 +50,7 @@ class BuildFactory
     * @param Build $base The build from which to get a more specific build type.
     * @return Build
     */
-    public static function getBuild(Build $base)
+    public function getBuild(Build $base)
     {
         switch($base->getProject()->getType())
         {

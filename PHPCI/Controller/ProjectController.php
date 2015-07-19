@@ -55,6 +55,11 @@ class ProjectController extends PHPCI\Controller
     protected $buildService;
 
     /**
+     * @var BuildFactory
+     */
+    protected $buildFactory;
+
+    /**
      * Create the Project controller.
      *
      * @param Config         $config
@@ -64,6 +69,7 @@ class ProjectController extends PHPCI\Controller
      * @param ProjectStore   $projectStore
      * @param ProjectService $projectService
      * @param BuildService   $buildService
+     * @param BuildFactory   $buildFactory
      */
     public function __construct(
         Config $config,
@@ -72,7 +78,8 @@ class ProjectController extends PHPCI\Controller
         BuildStore $buildStore,
         ProjectStore $projectStore,
         ProjectService $projectService,
-        BuildService $buildService
+        BuildService $buildService,
+        BuildFactory $buildFactory
     ) {
         parent::__construct($config, $request, $response);
 
@@ -80,6 +87,7 @@ class ProjectController extends PHPCI\Controller
         $this->projectStore = $projectStore;
         $this->projectService = $projectService;
         $this->buildService = $buildService;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
@@ -195,7 +203,7 @@ class ProjectController extends PHPCI\Controller
         $view = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         $view->builds   = $builds['items'];

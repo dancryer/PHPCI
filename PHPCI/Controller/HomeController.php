@@ -33,6 +33,11 @@ class HomeController extends \PHPCI\Controller
     protected $buildStore;
 
     /**
+     * @var BuildFactory
+     */
+    protected $buildFactory;
+
+    /**
      * @var ProjectStore
      */
     protected $projectStore;
@@ -45,18 +50,21 @@ class HomeController extends \PHPCI\Controller
      * @param Response     $response
      * @param BuildStore   $buildStore
      * @param ProjectStore $projectStore
+     * @param BuildFactory $buildFactory
      */
     public function __construct(
         Config $config,
         Request $request,
         Response $response,
         BuildStore $buildStore,
-        ProjectStore $projectStore
+        ProjectStore $projectStore,
+        BuildFactory $buildFactory
     ) {
         parent::__construct($config, $request, $response);
 
         $this->buildStore = $buildStore;
         $this->projectStore = $projectStore;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
@@ -77,7 +85,7 @@ class HomeController extends \PHPCI\Controller
         $builds = $this->buildStore->getLatestBuilds(null, 10);
 
         foreach ($builds as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         $this->view->builds   = $builds;
@@ -158,7 +166,7 @@ class HomeController extends \PHPCI\Controller
         $view           = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         $view->builds   = $builds['items'];

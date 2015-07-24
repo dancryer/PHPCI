@@ -101,7 +101,7 @@ class WebhookController extends \b8\Controller
              * invalid event from bitbucket
              */
             return [
-                'status' => 'failed', 
+                'status' => 'failed',
                 'commits' => []
             ];
         }

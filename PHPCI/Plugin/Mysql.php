@@ -10,6 +10,7 @@
 namespace PHPCI\Plugin;
 
 use PDO;
+use PHPCI\Database;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
@@ -65,7 +66,7 @@ class Mysql implements \PHPCI\Plugin
 
         $this->queries = $options;
 
-        $config = \b8\Database::getConnection('write')->getDetails();
+        $config = Database::getConnection('write')->getDetails();
 
         $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
         $this->user = $config['user'];
@@ -98,7 +99,15 @@ class Mysql implements \PHPCI\Plugin
     {
         try {
             $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
+
+            if (strpos($this->host, ':') !== false) {
+                list($host, $port) = explode(':', $this->host);
+                $dsn = 'mysql:host=' . $host . ';port=' . $port;
+            } else {
+                $dsn = 'mysql:host=' . $this->host;
+            }
+
+            $pdo  = new PDO($dsn, $this->user, $this->pass, $opts);
 
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {

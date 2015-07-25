@@ -250,7 +250,7 @@ class InstallCommand extends Command
         $dialog = $this->getHelperSet()->get('dialog');
 
         if (!$dbHost = $input->getOption('db-host')) {
-            $dbHost = $dialog->ask($output, Lang::get('enter_db_host'), 'localhost');
+            $dbHost = $dialog->ask($output, Lang::get('enter_db_host'), 'localhost:3306');
         }
 
         if (!$dbName = $input->getOption('db-name')) {
@@ -283,8 +283,15 @@ class InstallCommand extends Command
     protected function verifyDatabaseDetails(array $db, OutputInterface $output)
     {
         try {
+            if (strpos($db['servers']['write'], ':') !== false) {
+                list($host, $port) = explode(':', $db['servers']['write']);
+                $dsn = 'mysql:host=' . $host . ';port=' . $port;
+            } else {
+                $dsn = 'mysql:host=' . $db['servers']['write'];
+            }
+
             $pdo = new PDO(
-                'mysql:host='.$db['servers']['write'].';dbname='.$db['name'],
+                $dsn . ';dbname='.$db['name'],
                 $db['username'],
                 $db['password'],
                 array(

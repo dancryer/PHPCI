@@ -62,7 +62,7 @@ var Build = Class.extend({
     storePluginOrder: function () {
         var renderOrder = [];
 
-        $('.ui-plugin > div').each(function() {
+        $('.ui-plugin').each(function() {
             renderOrder.push($(this).attr('id'));
         });
 
@@ -108,8 +108,8 @@ var Build = Class.extend({
             output = $('<div class="box-body"></div>').append(output);
         }
 
-        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css);
-        var content = $('<div></div>').attr('id', plugin.id).append(output);
+        var container = $('<div></div>').addClass('ui-plugin ' + plugin.css).attr('id', plugin.id);
+        var content = $('<div></div>').append(output);
         content.addClass('box box-default');
 
         if (plugin.title) {

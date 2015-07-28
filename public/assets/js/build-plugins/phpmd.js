@@ -70,6 +70,12 @@ var phpmdPlugin = ActiveBuild.UiPlugin.extend({
                 '<td>'+errors[i].line_end+'</td>' +
                 '<td>'+errors[i].message+'</td></tr>');
 
+            if (errors[i].priority == 1) {
+                row.addClass('danger');
+            } else if (errors[i].priority == 2) {
+                row.addClass('warning');
+            }
+
             tbody.append(row);
         }
 

@@ -95,6 +95,7 @@ var Build = Class.extend({
         $('#plugins').sortable({
             handle: '.box-title',
             connectWith: '#plugins',
+            cursorAt: { top: 15, left: 25 },
             update: self.storePluginOrder
         });
 

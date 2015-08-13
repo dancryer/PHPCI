@@ -11,9 +11,14 @@ namespace PHPCI;
 
 use b8;
 use b8\Exception\HttpException;
+use b8\Http\Request;
 use b8\Http\Response;
 use b8\Http\Response\RedirectResponse;
+use b8\Http\Router;
 use b8\View;
+use PHPCI\Store\UserStore;
+use PHPCI\Store\ProjectStore;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
 * PHPCI Front Controller
@@ -27,6 +32,46 @@ class Application extends b8\Application
     protected $controller;
 
     /**
+     * @var \PHPCI\Store\UserStore
+     */
+    protected $userStore;
+
+    /**
+     * @var \PHPCI\Store\ProjectStore
+     */
+    protected $projectStore;
+
+    /**
+     * Create the PHPCI web application.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param UserStore    $userStore
+     * @param ProjectStore $projectStore
+     * @param Container    $container
+     */
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        UserStore $userStore,
+        ProjectStore $projectStore,
+        Container $container
+    ) {
+        $this->config = $config;
+        $this->response = $response;
+        $this->request = $request;
+        $this->userStore = $userStore;
+        $this->projectStore = $projectStore;
+        $this->container = $container;
+
+        $this->router = new Router($this, $this->request, $this->config);
+
+        $this->init();
+    }
+
+    /**
      * Initialise PHPCI - Handles session verification, routing, etc.
      */
     public function init()
@@ -38,7 +83,7 @@ class Application extends b8\Application
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
             if (!empty($_SESSION['phpci_user_id'])) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
+                $user = $this->userStore->getByPrimaryKey($_SESSION['phpci_user_id']);
 
                 if ($user) {
                     $_SESSION['phpci_user'] = $user;
@@ -106,8 +151,7 @@ class Application extends b8\Application
 
         if ($this->response->hasLayout() && $this->controller->layout) {
             $this->setLayoutVariables($this->controller->layout);
-
-            $this->controller->layout->content  = $this->response->getContent();
+            $this->controller->layout->content = $this->response->getContent();
             $this->response->setContent($this->controller->layout->render());
         }
 
@@ -115,29 +159,49 @@ class Application extends b8\Application
     }
 
     /**
-     * Loads a particular controller, and injects our layout view into it.
-     * @param $class
-     * @return mixed
+     * @return \PHPCI\Controller
      */
-    protected function loadController($class)
+    public function getController()
     {
-        $controller = parent::loadController($class);
-        $controller->layout = new View('layout');
-        $controller->layout->title = 'PHPCI';
-        $controller->layout->breadcrumb = array();
+        if (empty($this->controller)) {
+            $this->controller = $this->container->get($this->getControllerId($this->route));
+        }
 
-        return $controller;
+        return $this->controller;
+    }
+
+    /**
+     * Check if the specified controller exist.
+     *
+     * @param  array $route
+     *
+     * @return boolean
+     */
+    public function controllerExists($route)
+    {
+        return $this->container->has($this->getControllerId($route));
+    }
+
+    /**
+     * Create controller service Id based on specified route.
+     *
+     * @param  array $route
+     *
+     * @return string
+     */
+    protected function getControllerId($route)
+    {
+        return 'application.controller.' . strtolower($route['controller']);
     }
 
     /**
      * Injects variables into the layout before rendering it.
+     *
      * @param View $layout
      */
     protected function setLayoutVariables(View &$layout)
     {
-        /** @var \PHPCI\Store\ProjectStore $projectStore */
-        $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getWhere(
+        $layout->projects = $this->projectStore->getWhere(
             array('archived' => (int)isset($_GET['archived'])),
             50,
             0,
@@ -148,17 +212,16 @@ class Application extends b8\Application
 
     /**
      * Check whether we should skip auth (because it is disabled)
+     *
      * @return bool
      */
     protected function shouldSkipAuth()
     {
-        $config = b8\Config::getInstance();
-        $state = (bool)$config->get('phpci.authentication_settings.state', false);
-        $userId    = $config->get('phpci.authentication_settings.user_id', 0);
+        $state = (bool) $this->config->get('phpci.authentication_settings.state', false);
+        $userId = $this->config->get('phpci.authentication_settings.user_id', 0);
 
         if (false !== $state && 0 != (int)$userId) {
-            $user = b8\Store\Factory::getStore('User')
-                ->getByPrimaryKey($userId);
+            $user = $this->userStore->getByPrimaryKey($userId);
 
             if ($user) {
                 $_SESSION['phpci_user'] = $user;

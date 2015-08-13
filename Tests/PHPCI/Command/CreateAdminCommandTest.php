@@ -35,7 +35,7 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
         parent::setup();
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateAdminCommand')
-            ->setConstructorArgs(array($this->getMock('PHPCI\\Store\\UserStore')))
+            ->setConstructorArgs(array($this->getMock('PHPCI\\Service\\UserService', array(), array(), '', false)))
             ->setMethods(array('reloadConfig'))
             ->getMock()
         ;

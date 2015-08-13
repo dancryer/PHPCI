@@ -12,6 +12,7 @@ namespace PHPCI\Command;
 use b8\Store\Factory;
 use Monolog\Logger;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,13 +47,28 @@ class RebuildCommand extends Command
     protected $sleep;
 
     /**
-     * @param \Monolog\Logger $logger
-     * @param string $name
+     * @param BuildStore
      */
-    public function __construct(Logger $logger, $name = null)
+    protected $buildStore;
+
+    /**
+     * @param BuildService
+     */
+    protected $buildService;
+
+    /**
+     * @param RunCommand
+     */
+    protected $runCommand;
+
+    public function __construct(Logger $logger, BuildStore $buildStore, BuildService $buildService, RunCommand $runCommand)
     {
-        parent::__construct($name);
+        parent::__construct();
+
         $this->logger = $logger;
+        $this->buildStore = $buildStore;
+        $this->buildService = $buildService;
+        $this->runCommand = $runCommand;
     }
 
     protected function configure()
@@ -67,17 +83,12 @@ class RebuildCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runner = new RunCommand($this->logger);
-        $runner->setMaxBuilds(1);
-        $runner->setDaemon(false);
+        $this->runCommand->setMaxBuilds(1);
+        $this->runCommand->setDaemon(false);
 
-        /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
-        $service = new BuildService($store);
-
-        $builds = $store->getLatestBuilds(null, 1);
+        $builds = $this->buildStore->getLatestBuilds(null, 1);
         $lastBuild = array_shift($builds);
-        $service->createDuplicateBuild($lastBuild);
+        $this->buildService->createDuplicateBuild($lastBuild);
 
         $runner->run(new ArgvInput(array()), $output);
     }

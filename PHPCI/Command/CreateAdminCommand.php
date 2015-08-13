@@ -11,7 +11,6 @@ namespace PHPCI\Command;
 
 use PHPCI\Service\UserService;
 use PHPCI\Helper\Lang;
-use PHPCI\Store\UserStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,18 +24,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateAdminCommand extends Command
 {
     /**
-     * @var UserStore
+     * @var UserService
      */
-    protected $userStore;
+    protected $userService;
 
     /**
-     * @param UserStore $userStore
+     * @param UserService $userService
      */
-    public function __construct(UserStore $userStore)
+    public function __construct(UserService $userService)
     {
         parent::__construct();
 
-        $this->userStore = $userStore;
+        $this->userService = $userService;
     }
 
     protected function configure()
@@ -53,8 +52,6 @@ class CreateAdminCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userService = new UserService($this->userStore);
-
         /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
         $dialog = $this->getHelperSet()->get('dialog');
 
@@ -72,7 +69,7 @@ class CreateAdminCommand extends Command
         $adminPass = $dialog->askHiddenResponse($output, Lang::get('enter_password'));
 
         try {
-            $userService->createUser($adminName, $adminEmail, $adminPass, true);
+            $this->userService->createUser($adminName, $adminEmail, $adminPass, true);
             $output->writeln(Lang::get('user_created'));
         } catch (\Exception $e) {
             $output->writeln(sprintf('<error>%s</error>', Lang::get('failed_to_create')));

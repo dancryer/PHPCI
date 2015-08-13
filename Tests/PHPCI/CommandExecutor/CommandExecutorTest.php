@@ -8,9 +8,9 @@
  * @link         https://www.phptesting.org/
  */
 
-namespace Tests\PHPCI\Plugin\Helper;
+namespace Tests\PHPCI\CommandExecutor;
 
-use PHPCI\Helper\UnixCommandExecutor;
+use PHPCI\CommandExecutor\UnixCommandExecutor;
 
 class CommandExecutorTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class CommandExecutorTest extends \PHPUnit_Framework_TestCase
         }
         parent::setUp();
         $mockBuildLogger = $this->prophesize('PHPCI\Logging\BuildLogger');
-        $class = IS_WIN ? 'PHPCI\Helper\WindowsCommandExecutor' : 'PHPCI\Helper\UnixCommandExecutor';
+        $class = IS_WIN ? 'PHPCI\CommandExecutor\WindowsCommandExecutor' : 'PHPCI\CommandExecutor\UnixCommandExecutor';
         $this->testedExecutor = new $class($mockBuildLogger->reveal(), __DIR__ . "/");
     }
 

@@ -13,11 +13,16 @@ use b8;
 use b8\Form;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
+use b8\Http\Request;
+use b8\Http\Response;
 use PHPCI;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
 use PHPCI\Helper\Lang;
 use PHPCI\Helper\SshKey;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
@@ -30,34 +35,59 @@ use PHPCI\Service\ProjectService;
 class ProjectController extends PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @var ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var \PHPCI\Service\ProjectService
+     * @var ProjectService
      */
     protected $projectService;
 
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @var BuildService
      */
     protected $buildService;
 
     /**
-     * Initialise the controller, set up stores and services.
+     * @var BuildFactory
      */
-    public function init()
-    {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
-        $this->projectService = new ProjectService($this->projectStore);
-        $this->buildService = new BuildService($this->buildStore);
+    protected $buildFactory;
+
+    /**
+     * Create the Project controller.
+     *
+     * @param Config         $config
+     * @param Request        $request
+     * @param Response       $response
+     * @param BuildStore     $buildStore
+     * @param ProjectStore   $projectStore
+     * @param ProjectService $projectService
+     * @param BuildService   $buildService
+     * @param BuildFactory   $buildFactory
+     */
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        ProjectService $projectService,
+        BuildService $buildService,
+        BuildFactory $buildFactory
+    ) {
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
+        $this->projectService = $projectService;
+        $this->buildService = $buildService;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
@@ -122,8 +152,12 @@ class ProjectController extends PHPCI\Controller
     }
 
     /**
-    * Delete a project.
-    */
+     * Delete a project.
+     *
+     * @param  int $projectId
+     *
+     * @return  Response
+     */
     public function delete($projectId)
     {
         $this->requireAdmin();
@@ -169,7 +203,7 @@ class ProjectController extends PHPCI\Controller
         $view = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         $view->builds   = $builds['items'];
@@ -313,7 +347,7 @@ class ProjectController extends PHPCI\Controller
             'local' => Lang::get('local'),
             'hg'    => Lang::get('hg'),
             'svn'    => Lang::get('svn'),
-            );
+        );
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
         $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|svn)');

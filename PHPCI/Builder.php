@@ -14,8 +14,8 @@ use PHPCI\Helper\Lang;
 use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
-use b8\Config;
-use b8\Store\Factory;
+use PHPCI\CommandExecutor\CommandExecutorInterface;
+use PHPCI\Config;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -73,9 +73,9 @@ class Builder implements LoggerAwareInterface
     protected $interpolator;
 
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
-    protected $store;
+    protected $buildStore;
 
     /**
      * @var bool
@@ -99,37 +99,27 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Set up the builder.
+     *
      * @param \PHPCI\Model\Build $build
      * @param LoggerInterface $logger
      */
-    public function __construct(Build $build, LoggerInterface $logger = null)
+    public function __construct(Build $build, BuildStore $buildStore, BuildLogger $buildLogger, BuildInterpolator $buildInterpolator, CommandExecutorInterface $commandExecutor, LoggerInterface $logger = null)
     {
         $this->build = $build;
-        $this->store = Factory::getStore('Build');
-
-        $this->buildLogger = new BuildLogger($logger, $build);
+        $this->buildStore = $buildStore;
+        $this->buildLogger = $buildLogger;
+        $this->interpolator = $buildInterpolator;
 
         $pluginFactory = $this->buildPluginFactory($build);
         $pluginFactory->addConfigFromFile(PHPCI_DIR . "/pluginconfig.php");
         $this->pluginExecutor = new Plugin\Util\Executor($pluginFactory, $this->buildLogger);
 
-        $executorClass = 'PHPCI\Helper\UnixCommandExecutor';
-        if (IS_WIN) {
-            $executorClass = 'PHPCI\Helper\WindowsCommandExecutor';
-        }
-
-        $this->commandExecutor = new $executorClass(
-            $this->buildLogger,
-            PHPCI_DIR,
-            $this->quiet,
-            $this->verbose
-        );
-
-        $this->interpolator = new BuildInterpolator();
+        $this->commandExecutor = $commandExecutor;
     }
 
     /**
      * Set the config array, as read from phpci.yml
+     *
      * @param array|null $config
      * @throws \Exception
      */
@@ -144,6 +134,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Access a variable from the phpci.yml file.
+     *
      * @param string
      * @return mixed
      */
@@ -160,6 +151,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Access a variable from the config.yml
+     *
      * @param $key
      * @return mixed
      */
@@ -184,7 +176,7 @@ class Builder implements LoggerAwareInterface
         // Update the build in the database, ping any external services.
         $this->build->setStatus(Build::STATUS_RUNNING);
         $this->build->setStarted(new \DateTime());
-        $this->store->save($this->build);
+        $this->buildStore->save($this->build);
         $this->build->sendStatusPostback();
         $success = true;
 
@@ -220,7 +212,6 @@ class Builder implements LoggerAwareInterface
             $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
         }
 
-
         // Update the build in the database, ping any external services, etc.
         $this->build->sendStatusPostback();
         $this->build->setFinished(new \DateTime());
@@ -229,7 +220,7 @@ class Builder implements LoggerAwareInterface
         $this->buildLogger->log(Lang::get('removing_build'));
         $this->build->removeBuildDirectory();
 
-        $this->store->save($this->build);
+        $this->buildStore->save($this->build);
     }
 
     /**
@@ -259,6 +250,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Find a binary required by a plugin.
+     *
      * @param string $binary
      * @param bool $quiet
      *
@@ -272,6 +264,7 @@ class Builder implements LoggerAwareInterface
     /**
      * Replace every occurrence of the interpolation vars in the given string
      * Example: "This is build %PHPCI_BUILD%" => "This is build 182"
+     *
      * @param string $input
      * @return string
      */
@@ -328,6 +321,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Write to the build log.
+     *
      * @param $message
      * @param string $level
      * @param array $context
@@ -339,6 +333,7 @@ class Builder implements LoggerAwareInterface
 
    /**
      * Add a success-coloured message to the log.
+     *
      * @param string
      */
     public function logSuccess($message)
@@ -348,6 +343,7 @@ class Builder implements LoggerAwareInterface
 
     /**
      * Add a failure-coloured message to the log.
+     *
      * @param string $message
      * @param \Exception $exception The exception that caused the error.
      */
@@ -355,10 +351,12 @@ class Builder implements LoggerAwareInterface
     {
         $this->buildLogger->logFailure($message, $exception);
     }
+
     /**
      * Returns a configured instance of the plugin factory.
      *
      * @param Build $build
+     *
      * @return PluginFactory
      */
     private function buildPluginFactory(Build $build)

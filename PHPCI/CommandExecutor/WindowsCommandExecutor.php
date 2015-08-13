@@ -7,17 +7,20 @@
  * @link         https://www.phptesting.org/
  */
 
-namespace PHPCI\Helper;
+namespace PHPCI\CommandExecutor;
 
 /**
  * Windows-specific extension of the CommandExecutor class.
- * @package PHPCI\Helper
+ *
+ * @package PHPCI\CommandExecutor
  */
 class WindowsCommandExecutor extends BaseCommandExecutor
 {
     /**
      * Use 'where' on Windows to find a binary, rather than 'which'
+     *
      * @param string $binary
+     *
      * @return null|string
      */
     protected function findGlobalBinary($binary)

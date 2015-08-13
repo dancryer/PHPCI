@@ -9,7 +9,6 @@
 
 namespace PHPCI;
 
-use b8\Config;
 use b8\Exception\HttpException\ForbiddenException;
 use b8\Http\Request;
 use b8\Http\Response;
@@ -52,6 +51,10 @@ class Controller extends \b8\Controller
     public function __construct(Config $config, Request $request, Response $response)
     {
         parent::__construct($config, $request, $response);
+
+        $this->layout = new View('layout');
+        $this->layout->title = 'PHPCI';
+        $this->layout->breadcrumb = array();
 
         $class = explode('\\', get_class($this));
         $this->className = substr(array_pop($class), 0, -10);

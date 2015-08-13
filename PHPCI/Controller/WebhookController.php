@@ -11,7 +11,10 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Store;
+use b8\Http\Request;
+use b8\Http\Response;
 use Exception;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
@@ -46,13 +49,36 @@ class WebhookController extends \b8\Controller
     protected $buildService;
 
     /**
-     * Initialise the controller, set up stores and services.
+     * @var BuildFactory
      */
-    public function init()
-    {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
-        $this->buildService = new BuildService($this->buildStore);
+    protected $buildFactory;
+
+    /**
+     * Create the Webhook controller.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param ProjectStore $projectStore
+     * @param BuildService $buildService
+     * @param BuildFactory $buildFactory
+     */
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        BuildService $buildService,
+        BuildFactory $buildFactory
+    ) {
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
+        $this->buildService = $buildService;
+        $this->buildFactory = $buildFactory;
     }
 
     /** Handle the action, Ensuring to return a JsonResponse.
@@ -364,7 +390,7 @@ class WebhookController extends \b8\Controller
 
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
-        $build = BuildFactory::getBuild($build);
+        $build = $this->buildFactory->getBuild($build);
 
         // Send a status postback if the build type provides one:
         $build->sendStatusPostback();

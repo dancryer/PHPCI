@@ -12,11 +12,15 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Http\Response\JsonResponse;
+use b8\Http\Request;
+use b8\Http\Response;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\AnsiConverter;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Model\Project;
+use PHPCI\Store\BuildStore;
 use PHPCI\Service\BuildService;
 
 /**
@@ -28,22 +32,42 @@ use PHPCI\Service\BuildService;
 class BuildController extends \PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @var BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @var BuildService
      */
     protected $buildService;
 
     /**
-     * Initialise the controller, set up stores and services.
+     * @var BuildFactory
      */
-    public function init()
-    {
-        $this->buildStore = b8\Store\Factory::getStore('Build');
-        $this->buildService = new BuildService($this->buildStore);
+    protected $buildFactory;
+
+    /**
+     * Create the Build controller
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param BuildService $buildService
+     */
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        BuildService $buildService,
+        BuildFactory $buildFactory
+    ) {
+        parent::__construct($config, $request, $response);
+
+        $this->buildStore = $buildStore;
+        $this->buildService = $buildService;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
@@ -52,7 +76,7 @@ class BuildController extends \PHPCI\Controller
     public function view($buildId)
     {
         try {
-            $build = BuildFactory::getBuildById($buildId);
+            $build = $this->buildFactory->getBuildById($buildId);
         } catch (\Exception $ex) {
             $build = null;
         }
@@ -110,7 +134,7 @@ class BuildController extends \PHPCI\Controller
     public function data($buildId)
     {
         $response = new JsonResponse();
-        $build = BuildFactory::getBuildById($buildId);
+        $build = $this->buildFactory->getBuildById($buildId);
 
         if (!$build) {
             $response->setResponseCode(404);
@@ -127,7 +151,7 @@ class BuildController extends \PHPCI\Controller
      */
     public function meta($buildId)
     {
-        $build  = BuildFactory::getBuildById($buildId);
+        $build  = $this->buildFactory->getBuildById($buildId);
         $key = $this->getParam('key', null);
         $numBuilds = $this->getParam('num_builds', 1);
         $data = null;
@@ -161,7 +185,7 @@ class BuildController extends \PHPCI\Controller
     */
     public function rebuild($buildId)
     {
-        $copy   = BuildFactory::getBuildById($buildId);
+        $copy = $this->buildFactory->getBuildById($buildId);
 
         if (empty($copy)) {
             throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
@@ -181,7 +205,7 @@ class BuildController extends \PHPCI\Controller
     {
         $this->requireAdmin();
 
-        $build = BuildFactory::getBuildById($buildId);
+        $build = $this->buildFactory->getBuildById($buildId);
 
         if (empty($build)) {
             throw new NotFoundException(Lang::get('build_x_not_found', $buildId));
@@ -214,6 +238,7 @@ class BuildController extends \PHPCI\Controller
 
         $response = new JsonResponse();
         $response->setContent($rtn);
+
         return $response;
     }
 

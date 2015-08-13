@@ -11,11 +11,20 @@ namespace PHPCI\Controller;
 
 use b8;
 use b8\Exception\HttpException\NotFoundException;
+use b8\Exception\HttpException\NotAuthorizedException;
 use b8\Store;
+use b8\HttpClient;
+use b8\Http\Request;
+use b8\Http\Response;
+use Exception;
+use PHPCI\Config;
 use PHPCI\BuildFactory;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 use PHPCI\Service\BuildStatusService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Build Status Controller - Allows external access to build status information / images.
@@ -25,69 +34,73 @@ use PHPCI\Service\BuildStatusService;
 */
 class BuildStatusController extends \PHPCI\Controller
 {
-    /* @var \PHPCI\Store\ProjectStore */
-    protected $projectStore;
-    /* @var \PHPCI\Store\BuildStore */
+    /**
+     * @var BuildStore
+     */
     protected $buildStore;
 
     /**
-     * Initialise the controller, set up stores and services.
+     * @var ProjectStore
      */
-    public function init()
-    {
-        $this->response->disableLayout();
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
-    }
+    protected $projectStore;
 
     /**
-     * Returns status of the last build
-     * @param $projectId
-     * @return string
+     * @var BuildFactory
      */
-    protected function getStatus($projectId)
-    {
-        $branch = $this->getParam('branch', 'master');
-        try {
-            $project = $this->projectStore->getById($projectId);
-            $status = 'passing';
+    protected $buildFactory;
 
-            if (!$project->getAllowPublicStatus()) {
-                return null;
-            }
+    /**
+     * Create the BuildStatus controller.
+     *
+     * @param Config       $config
+     * @param Request      $request
+     * @param Response     $response
+     * @param BuildStore   $buildStore
+     * @param ProjectStore $projectStore
+     * @param HttpClient   $shieldsClient
+     * @param BuildFactory $buildFactory
+     */
+    public function __construct(
+        Config $config,
+        Request $request,
+        Response $response,
+        BuildStore $buildStore,
+        ProjectStore $projectStore,
+        HttpClient $shieldsClient,
+        BuildFactory $buildFactory
+    ) {
+        parent::__construct($config, $request, $response);
 
-            if (isset($project) && $project instanceof Project) {
-                $build = $project->getLatestBuild($branch, array(2,3));
-
-                if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
-                    $status = 'failed';
-                }
-            }
-        } catch (\Exception $e) {
-            $status = 'error';
-        }
-
-        return $status;
+        $this->buildStore = $buildStore;
+        $this->projectStore = $projectStore;
+        $this->shieldsClient = $shieldsClient;
+        $this->buildFactory = $buildFactory;
     }
 
     /**
      * Displays projects information in ccmenu format
      *
-     * @param $projectId
-     * @return bool
-     * @throws \Exception
-     * @throws b8\Exception\HttpException
+     * @param int $projectId
+     *
+     * @return Response
+     *
+     * @throws Exception
+     * @throws HttpException
      */
     public function ccxml($projectId)
     {
         /* @var Project $project */
         $project = $this->projectStore->getById($projectId);
-        $xml = new \SimpleXMLElement('<Projects/>');
 
-        if (!$project instanceof Project || !$project->getAllowPublicStatus()) {
-            return $this->renderXml($xml);
+        if (!$project instanceof Project) {
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
+        if (!$project->getAllowPublicStatus()) {
+            throw new NotAuthorizedException();
+        }
+
+        $xml = new \SimpleXMLElement('<Projects/>');
         try {
             $branchList = $this->buildStore->getBuildBranches($projectId);
 
@@ -104,56 +117,51 @@ class BuildStatusController extends \PHPCI\Controller
                     }
                 }
             }
-
         } catch (\Exception $e) {
             $xml = new \SimpleXMLElement('<projects/>');
         }
 
-        return $this->renderXml($xml);
-    }
-
-    /**
-     * @param \SimpleXMLElement $xml
-     * @return bool
-     */
-    protected function renderXml(\SimpleXMLElement $xml = null)
-    {
+        $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'text/xml');
         $this->response->setContent($xml->asXML());
-        $this->response->flush();
-        echo $xml->asXML();
 
-        return true;
+        return $this->response;
     }
 
     /**
     * Returns the appropriate build status image in SVG format for a given project.
+    *
+    * @param int $projectId
+    *
+    * @return Response
     */
     public function image($projectId)
     {
-        $style = $this->getParam('style', 'plastic');
-        $label = $this->getParam('label', 'build');
+        $project = $this->projectStore->getById($projectId);
 
-        $status = $this->getStatus($projectId);
-
-        if (is_null($status)) {
-            $response = new b8\Http\Response\RedirectResponse();
-            $response->setHeader('Location', '/');
-            return $response;
+        if (empty($project)) {
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
+        if (!$project->getAllowPublicStatus()) {
+            throw new NotAuthorizedException();
+        }
+
+        $style = $this->getParam('style', 'plastic');
+        $label = $this->getParam('label', 'build');
+        $branch = $this->getParam('branch', 'master');
+        $status = $this->getStatus($project, $branch);
+
         $color = ($status == 'passing') ? 'green' : 'red';
-        $image = file_get_contents(sprintf(
-            'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
-            $label,
-            $status,
-            $color,
-            $style
-        ));
+        $image = $this->shieldsClient->get(
+            sprintf('/badge/%s-%s-%s.svg', $label, $status, $color),
+            array('style' => $style)
+        );
 
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');
-        $this->response->setContent($image);
+        $this->response->setContent($image['body']);
+
         return $this->response;
     }
 
@@ -168,11 +176,11 @@ class BuildStatusController extends \PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
         if (!$project->getAllowPublicStatus()) {
-            throw new NotFoundException('Project with id: ' . $projectId . ' not found');
+            throw new NotAuthorizedException();
         }
 
         $builds = $this->getLatestBuilds($projectId);
@@ -197,9 +205,33 @@ class BuildStatusController extends \PHPCI\Controller
         $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
 
         foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+            $build = $this->buildFactory->getBuild($build);
         }
 
         return $builds['items'];
+    }
+
+    /**
+     * Returns status of the last build
+     *
+     * @param int $projectId
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    protected function getStatus($project, $branch)
+    {
+        try {
+            $build = $project->getLatestBuild($branch, array(2,3));
+
+            if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
+                return 'failed';
+            }
+        } catch (Exception $e) {
+            return 'error';
+        }
+
+        return 'passing';
     }
 }

@@ -9,7 +9,7 @@
 
 namespace PHPCI\Command;
 
-use b8\Config;
+use PHPCI\Config;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
@@ -29,10 +29,17 @@ class UpdateCommand extends Command
      */
     protected $logger;
 
-    public function __construct(Logger $logger, $name = null)
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    public function __construct(Logger $logger, Config $config)
     {
-        parent::__construct($name);
+        parent::__construct();
+
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     protected function configure()
@@ -60,8 +67,7 @@ class UpdateCommand extends Command
 
     protected function verifyInstalled(OutputInterface $output)
     {
-        $config = Config::getInstance();
-        $phpciUrl = $config->get('phpci.url');
+        $phpciUrl = $this->config->get('phpci.url');
 
         return !empty($phpciUrl);
     }

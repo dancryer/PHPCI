@@ -45,7 +45,7 @@
         "symfony/console": "~2.1",
         "psr/log": "~1.0",
         "monolog/monolog": "~1.6",
-        "pimple/pimple": "~1.1",
+        "pimple/pimple": "~3.0",
         "robmorgan/phinx": "~0.4",
         "sensiolabs/ansi-to-html": "~1.1",
         "jakub-onderka/php-parallel-lint": "0.8.*"

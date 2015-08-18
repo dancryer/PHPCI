@@ -75,6 +75,7 @@
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
         "hipchat/hipchat-php": "Hipchat integration",
+        "gorkalaucirica/hipchat-v2-api-client": "Hipchat (APIv2) Integration",
         "phptal/phptal": "PHPTAL templating engine",
         "maknz/slack": "Slack integration",
         "mremi/flowdock": "Flowdock integration"

@@ -85,7 +85,7 @@ class HipchatNotify implements \PHPCI\Plugin
         $result = true;
         if (is_array($this->room)) {
             foreach ($this->room as $room) {
-		            if (!$this->sendHipchatMessage($room, $message)) {
+                if (!$this->sendHipchatMessage($room, $message)) {
                     $result = false;
                 }
             }

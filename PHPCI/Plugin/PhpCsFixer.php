@@ -14,7 +14,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
-* PHP CS Fixer - Works with the PHP CS Fixer for testing coding standards.
+* PHP CS Fixer - Works with the PHP Coding Standards Fixer for testing coding standards.
 * @author       Gabriel Baker <gabriel@autonomicpilot.co.uk>
 * @package      PHPCI
 * @subpackage   Plugins

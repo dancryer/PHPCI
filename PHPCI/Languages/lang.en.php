@@ -114,6 +114,7 @@ PHPCI',
     'build_config' => 'PHPCI build config for this project
                                 (if you cannot add a phpci.yml file in the project repository)',
     'default_branch' => 'Default branch name',
+    'default_branch_only' => 'Build default branch only',
     'allow_public_status' => 'Enable public status page and image for this project?',
     'archived' => 'Archived',
     'save_project' => 'Save Project',

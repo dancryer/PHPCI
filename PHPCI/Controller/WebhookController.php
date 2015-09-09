@@ -362,6 +362,11 @@ class WebhookController extends \b8\Controller
             );
         }
 
+        // Check if this branch is to be built.
+        if ($project->getDefaultBranchOnly() && $branch != $project->getBranch()) {
+            return true;
+        }
+
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
         $build = BuildFactory::getBuild($build);

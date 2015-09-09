@@ -220,6 +220,7 @@ class ProjectController extends PHPCI\Controller
                 'build_config' => $this->getParam('build_config', null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
                 'branch' => $this->getParam('branch', null),
+                'default_branch_only' => $this->getParam('default_branch_only', 0),
             );
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
@@ -284,6 +285,7 @@ class ProjectController extends PHPCI\Controller
             'allow_public_status' => $this->getParam('allow_public_status', 0),
             'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
+            'default_branch_only' => $this->getParam('default_branch_only', 0),
         );
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
@@ -350,6 +352,12 @@ class ProjectController extends PHPCI\Controller
 
         $field = Form\Element\Text::create('branch', Lang::get('default_branch'), true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
+        $form->addField($field);
+
+        $field = Form\Element\Checkbox::create('default_branch_only', Lang::get('default_branch_only'), false);
+        $field->setContainerClass('form-group');
+        $field->setCheckedValue(1);
+        $field->setValue(0);
         $form->addField($field);
 
         $field = Form\Element\Checkbox::create('allow_public_status', Lang::get('allow_public_status'), false);

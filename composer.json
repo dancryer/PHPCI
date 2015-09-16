@@ -8,7 +8,7 @@
     },
     "require": {
         "php": ">=5.3.9",
-        "symfony/symfony": "2.8.x-dev",
+        "symfony/symfony": "2.8.*@dev",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",

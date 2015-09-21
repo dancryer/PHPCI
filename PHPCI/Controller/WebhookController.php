@@ -80,11 +80,88 @@ class WebhookController extends \b8\Controller
     }
 
     /**
-     * Called by Bitbucket POST service.
+     * Called by Bitbucket.
      */
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
+
+        if ($payload = $this->getParam('payload')) {
+            return $this->bitbucketService(json_decode($payload, true), $project);
+        }
+
+        $payload = json_decode(file_get_contents("php://input"), true);
+
+        switch (true) {
+            case isset($payload['pullrequest_created']):
+                return $this->bitbucketCreatePullRequestWebhook($payload, $project);
+                break;
+            case isset($payload['push']['changes']):
+                return $this->bitbucketPushWebhook($payload, $project);
+                break;
+            default:
+                return array('status' => 'failed', 'commits' => array());
+                break;
+        }
+    }
+
+    /**
+     * Bitbucket webhooks for created "pull request".
+     */
+    protected function bitbucketCreatePullRequestWebhook($payload, $project)
+    {
+        $results = array();
+        $status = 'failed';
+        try {
+            $results[] = $this->createBuild(
+                    $project,
+                    $payload['pullrequest_created']['source']['commit']['hash'],
+                    $payload['pullrequest_created']['source']['branch']['name'],
+                    $payload['pullrequest_created']['author']['username'],
+                    $payload['pullrequest_created']['title']
+            );
+            $status = 'ok';
+        } catch (Exception $ex) {
+            $results = array('status' => 'failed', 'error' => $ex->getMessage());
+        }
+
+        return array('status' => $status, 'commits' => $results);
+    }
+
+    /**
+     * Bitbucket webhooks for "push".
+     */
+    protected function bitbucketPushWebhook($payload, $project)
+    {
+        $results = array();
+        $status = 'failed';
+        foreach ($payload['push']['changes'] as $commit) {
+            try {
+                $email = $commit['new']['target']['author']['raw'];
+                $email = substr($email, 0, strpos($email, '>'));
+                $email = substr($email, strpos($email, '<') + 1);
+
+                $results[$commit['new']['target']['hash']] = $this->createBuild(
+                        $project,
+                        $commit['new']['target']['hash'],
+                        $commit['new']['name'],
+                        $email,
+                        $commit['new']['target']['message']
+                );
+                $status = 'ok';
+            } catch (Exception $ex) {
+                $results[$commit['new']['target']['hash']] = array('status' => 'failed', 'error' => $ex->getMessage());
+            }
+        }
+
+        return array('status' => $status, 'commits' => $results);
+    }
+
+    /**
+     * Bitbucket POST service (old style).
+     */
+    protected function bitbucketService($payload, $project)
+    {
         $payload = json_decode($this->getParam('payload'), true);
 
         $results = array();

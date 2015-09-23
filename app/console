@@ -23,8 +23,6 @@ $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(array('-
 
 if ($debug) {
     Debug::enable();
-} else {
-    include_once __DIR__.'/bootstrap.php.cache';
 }
 
 $kernel = new AppKernel($env, $debug);

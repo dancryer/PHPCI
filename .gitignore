@@ -6,5 +6,7 @@
 !var/cache/.gitkeep
 /var/logs/*
 !var/logs/.gitkeep
+/var/sessions/*
+!var/sessions/.gitkeep
 /vendor/
 /web/bundles/

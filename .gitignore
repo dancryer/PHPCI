@@ -1,12 +1,9 @@
 /app/config/parameters.yml
 /build/
 /phpunit.xml
-/var/bootstrap.php.cache
-/var/cache/*
+/var/
 !var/cache/.gitkeep
-/var/logs/*
 !var/logs/.gitkeep
-/var/sessions/*
 !var/sessions/.gitkeep
 /vendor/
 /web/bundles/

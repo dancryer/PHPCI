@@ -32,7 +32,7 @@ test:
   php_docblock_checker:
     allowed_warnings: 0
 
-#failure:
-#  email:
-#    committer: true
-#    cc: ["php-ci@googlegroups.com"]
+failure:
+  email:
+    committer: true
+    cc: ["php-ci@googlegroups.com"]

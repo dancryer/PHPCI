@@ -59,25 +59,35 @@ class GithubBuild extends RemoteGitBuild
             case 0:
             case 1:
                 $status = 'pending';
+                $description = 'PHPCI build running.';
                 break;
             case 2:
                 $status = 'success';
+                $description = 'PHPCI build passed.';
                 break;
             case 3:
                 $status = 'failure';
+                $description = 'PHPCI build failed.';
                 break;
             default:
                 $status = 'error';
+                $description = 'PHPCI build failed to complete.';
                 break;
         }
 
         $phpciUrl = \b8\Config::getInstance()->get('phpci.url');
-        $params = array(    'state' => $status,
-                            'target_url' => $phpciUrl . '/build/view/' . $this->getId());
+
+        $params = array(
+            'state' => $status,
+            'target_url' => $phpciUrl . '/build/view/' . $this->getId(),
+            'description' => $description,
+            'context' => 'PHPCI',
+        );
+
         $headers = array(
             'Authorization: token ' . $token,
             'Content-Type: application/x-www-form-urlencoded'
-            );
+        );
 
         $http->setHeaders($headers);
         $http->request('POST', $url, json_encode($params));

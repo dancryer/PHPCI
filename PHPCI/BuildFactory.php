@@ -36,12 +36,17 @@ class BuildFactory
 
     /**
     * Takes a generic build and returns a type-specific build model.
-    * @param Build $base The build from which to get a more specific build type.
+    * @param Build $build The build from which to get a more specific build type.
+    * @param string $type Set the type manually if you already know it.
     * @return Build
     */
-    public static function getBuild(Build $base)
+    public static function getBuild(Build $build, $type = null)
     {
-        switch ($base->getProject()->getType()) {
+        if (is_null($type) && !is_null($build->getProject())) {
+            $type = $build->getProject()->getType();
+        }
+
+        switch ($type) {
             case 'remote':
                 $type = 'RemoteGitBuild';
                 break;
@@ -63,10 +68,16 @@ class BuildFactory
             case 'svn':
                 $type = 'SubversionBuild';
                 break;
+            default:
+                $type = null;
+                break;
         }
 
-        $type = '\\PHPCI\\Model\\Build\\' . $type;
+        if (!is_null($type)) {
+            $type = '\\PHPCI\\Model\\Build\\' . $type;
+            $build = new $type($build->getDataArray());
+        }
 
-        return new $type($base->getDataArray());
+        return $build;
     }
 }

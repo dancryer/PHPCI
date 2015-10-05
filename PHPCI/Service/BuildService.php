@@ -87,7 +87,7 @@ class BuildService
 
         $build = $this->buildStore->save($build);
 
-        $build = BuildFactory::getBuild($build);
+        $build = BuildFactory::getBuild($build, $project->getType());
         $build->sendStatusPostback();
         $this->addBuildToQueue($build);
 
@@ -140,6 +140,12 @@ class BuildService
      */
     public function addBuildToQueue(Build $build)
     {
+        $buildId = $build->getId();
+
+        if (empty($buildId)) {
+            return;
+        }
+
         $config = Config::getInstance();
 
         $settings = $config->get('phpci.worker', []);

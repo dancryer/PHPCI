@@ -41,8 +41,7 @@ class BuildFactory
     */
     public static function getBuild(Build $base)
     {
-        switch($base->getProject()->getType())
-        {
+        switch ($base->getProject()->getType()) {
             case 'remote':
                 $type = 'RemoteGitBuild';
                 break;

@@ -228,7 +228,7 @@ class Build extends BuildBase
         if (!$this->getId()) {
             return null;
         }
-        return PHPCI_BUILD_ROOT_DIR . $this->getId();
+        return PHPCI_BUILD_ROOT_DIR . $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
     }
 
     /**

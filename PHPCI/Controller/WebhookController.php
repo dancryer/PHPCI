@@ -364,10 +364,6 @@ class WebhookController extends \b8\Controller
 
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
-        $build = BuildFactory::getBuild($build);
-
-        // Send a status postback if the build type provides one:
-        $build->sendStatusPostback();
 
         return array('status' => 'ok', 'buildID' => $build->getID());
     }

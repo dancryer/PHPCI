@@ -47,8 +47,7 @@
         "monolog/monolog": "~1.6",
         "pimple/pimple": "~1.1",
         "robmorgan/phinx": "~0.4",
-        "sensiolabs/ansi-to-html": "~1.1",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
+        "sensiolabs/ansi-to-html": "~1.1"
     },
 
     "autoload-dev": {
@@ -60,7 +59,8 @@
         "phpmd/phpmd": "~2.0",
         "squizlabs/php_codesniffer": "~2.3",
         "block8/php-docblock-checker": "~1.0",
-        "phploc/phploc": "~2.0"
+        "phploc/phploc": "~2.0",
+        "jakub-onderka/php-parallel-lint": "0.8.*"
     },
 
     "suggest": {

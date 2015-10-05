@@ -37,45 +37,39 @@ class BuildFactory
     /**
     * Takes a generic build and returns a type-specific build model.
     * @param Build $build The build from which to get a more specific build type.
-    * @param string $type Set the type manually if you already know it.
     * @return Build
     */
-    public static function getBuild(Build $build, $type = null)
+    public static function getBuild(Build $build)
     {
-        if (is_null($type) && !is_null($build->getProject())) {
-            $type = $build->getProject()->getType();
-        }
+        $project = $build->getProject();
 
-        switch ($type) {
-            case 'remote':
-                $type = 'RemoteGitBuild';
-                break;
-            case 'local':
-                $type = 'LocalBuild';
-                break;
-            case 'github':
-                $type = 'GithubBuild';
-                break;
-            case 'bitbucket':
-                $type = 'BitbucketBuild';
-                break;
-            case 'gitlab':
-                $type = 'GitlabBuild';
-                break;
-            case 'hg':
-                $type = 'MercurialBuild';
-                break;
-            case 'svn':
-                $type = 'SubversionBuild';
-                break;
-            default:
-                $type = null;
-                break;
-        }
-
-        if (!is_null($type)) {
-            $type = '\\PHPCI\\Model\\Build\\' . $type;
-            $build = new $type($build->getDataArray());
+        if (!empty($project)) {
+            switch ($project->getType()) {
+                case 'remote':
+                    $type = 'RemoteGitBuild';
+                    break;
+                case 'local':
+                    $type = 'LocalBuild';
+                    break;
+                case 'github':
+                    $type = 'GithubBuild';
+                    break;
+                case 'bitbucket':
+                    $type = 'BitbucketBuild';
+                    break;
+                case 'gitlab':
+                    $type = 'GitlabBuild';
+                    break;
+                case 'hg':
+                    $type = 'MercurialBuild';
+                    break;
+                case 'svn':
+                    $type = 'SubversionBuild';
+                    break;
+            }
+            
+            $class = '\\PHPCI\\Model\\Build\\' . $type;
+            $build = new $class($build->getDataArray());
         }
 
         return $build;

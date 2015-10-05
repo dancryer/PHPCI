@@ -87,7 +87,7 @@ class BuildService
 
         $build = $this->buildStore->save($build);
 
-        $build = BuildFactory::getBuild($build, $project->getType());
+        $build = BuildFactory::getBuild($build);
         $build->sendStatusPostback();
         $this->addBuildToQueue($build);
 

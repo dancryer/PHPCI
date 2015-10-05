@@ -114,7 +114,13 @@ class BuildService
         $build->setCreated(new \DateTime());
         $build->setStatus(0);
 
-        return $this->buildStore->save($build);
+        $build = $this->buildStore->save($build);
+
+        $build = BuildFactory::getBuild($build);
+        $build->sendStatusPostback();
+        $this->addBuildToQueue($build);
+
+        return $build;
     }
 
     /**

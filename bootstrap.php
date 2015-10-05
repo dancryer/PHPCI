@@ -17,9 +17,11 @@ if (empty($timezone)) {
 
 $configFile = dirname(__FILE__) . '/PHPCI/config.yml';
 $configEnv = getenv('phpci_config_file');
+$usingCustomConfigFile = false;
 
 if (!empty($configEnv) && file_exists($configEnv)) {
     $configFile = $configEnv;
+    $usingCustomConfigFile = true;
 }
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
@@ -53,6 +55,7 @@ $conf = array();
 $conf['b8']['app']['namespace'] = 'PHPCI';
 $conf['b8']['app']['default_controller'] = 'Home';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
+$conf['using_custom_file'] = $usingCustomConfigFile;
 
 $config = new b8\Config($conf);
 

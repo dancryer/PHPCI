@@ -45,11 +45,15 @@ class GithubBuild extends RemoteGitBuild
     {
         $token = \b8\Config::getInstance()->get('phpci.github.token');
 
-        if (empty($token)) {
+        if (empty($token) || empty($this->data['id'])) {
             return;
         }
 
         $project    = $this->getProject();
+
+        if (empty($project)) {
+            return;
+        }
 
         $url    = 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
         $http   = new \b8\HttpClient();
@@ -114,10 +118,14 @@ class GithubBuild extends RemoteGitBuild
     {
         $rtn = parent::getCommitMessage($this->data['commit_message']);
 
-        $reference = $this->getProject()->getReference();
-        $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
-        $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
-        $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+        $project = $this->getProject();
+
+        if (!is_null($project)) {
+            $reference = $project->getReference();
+            $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
+            $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
+            $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+        }
 
         return $rtn;
     }

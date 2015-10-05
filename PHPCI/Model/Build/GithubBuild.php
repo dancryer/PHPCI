@@ -54,8 +54,7 @@ class GithubBuild extends RemoteGitBuild
         $url    = 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
         $http   = new \b8\HttpClient();
 
-        switch($this->getStatus())
-        {
+        switch ($this->getStatus()) {
             case 0:
             case 1:
                 $status = 'pending';

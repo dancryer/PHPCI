@@ -99,8 +99,13 @@ class Build extends BuildBase
     {
         $build_config = null;
 
+        // Try .phpci.yml
+        if (is_file($buildPath . '/.phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/.phpci.yml');
+        }
+
         // Try phpci.yml first:
-        if (is_file($buildPath . '/phpci.yml')) {
+        if (empty($build_config) && is_file($buildPath . '/phpci.yml')) {
             $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 

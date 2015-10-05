@@ -151,6 +151,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $ignores = $this->ignore;
         $ignores[] = 'phpci.yml';
+        $ignores[] = '.phpci.yml';
 
         foreach ($iterator as $file) {
             $filePath = $file->getRealPath();

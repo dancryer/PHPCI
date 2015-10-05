@@ -66,6 +66,7 @@ PHPCI',
     'build_now' => 'Build Now',
     'edit_project' => 'Edit Project',
     'delete_project' => 'Delete Project',
+    'delete_project_confirm' => 'Are you sure you want to delete this project?  This cannot be undone.',
 
     // Project Summary:
     'no_builds_yet' => 'No builds yet!',

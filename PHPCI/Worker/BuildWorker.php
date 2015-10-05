@@ -12,7 +12,10 @@ use PHPCI\BuildFactory;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Model\Build;
 
-
+/**
+ * Class BuildWorker
+ * @package PHPCI\Worker
+ */
 class BuildWorker
 {
     /**

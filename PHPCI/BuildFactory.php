@@ -67,7 +67,7 @@ class BuildFactory
                     $type = 'SubversionBuild';
                     break;
             }
-            
+
             $class = '\\PHPCI\\Model\\Build\\' . $type;
             $build = new $class($build->getDataArray());
         }

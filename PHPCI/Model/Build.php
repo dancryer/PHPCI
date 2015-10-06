@@ -99,8 +99,13 @@ class Build extends BuildBase
     {
         $build_config = null;
 
+        // Try .phpci.yml
+        if (is_file($buildPath . '/.phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/.phpci.yml');
+        }
+
         // Try phpci.yml first:
-        if (is_file($buildPath . '/phpci.yml')) {
+        if (empty($build_config) && is_file($buildPath . '/phpci.yml')) {
             $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 
@@ -228,7 +233,7 @@ class Build extends BuildBase
         if (!$this->getId()) {
             return null;
         }
-        return PHPCI_BUILD_ROOT_DIR . $this->getId();
+        return PHPCI_BUILD_ROOT_DIR . $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
     }
 
     /**

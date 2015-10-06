@@ -45,39 +45,52 @@ class GithubBuild extends RemoteGitBuild
     {
         $token = \b8\Config::getInstance()->get('phpci.github.token');
 
-        if (empty($token)) {
+        if (empty($token) || empty($this->data['id'])) {
             return;
         }
 
         $project    = $this->getProject();
 
+        if (empty($project)) {
+            return;
+        }
+
         $url    = 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
         $http   = new \b8\HttpClient();
 
-        switch($this->getStatus())
-        {
+        switch ($this->getStatus()) {
             case 0:
             case 1:
                 $status = 'pending';
+                $description = 'PHPCI build running.';
                 break;
             case 2:
                 $status = 'success';
+                $description = 'PHPCI build passed.';
                 break;
             case 3:
                 $status = 'failure';
+                $description = 'PHPCI build failed.';
                 break;
             default:
                 $status = 'error';
+                $description = 'PHPCI build failed to complete.';
                 break;
         }
 
         $phpciUrl = \b8\Config::getInstance()->get('phpci.url');
-        $params = array(    'state' => $status,
-                            'target_url' => $phpciUrl . '/build/view/' . $this->getId());
+
+        $params = array(
+            'state' => $status,
+            'target_url' => $phpciUrl . '/build/view/' . $this->getId(),
+            'description' => $description,
+            'context' => 'PHPCI',
+        );
+
         $headers = array(
             'Authorization: token ' . $token,
             'Content-Type: application/x-www-form-urlencoded'
-            );
+        );
 
         $http->setHeaders($headers);
         $http->request('POST', $url, json_encode($params));
@@ -105,10 +118,14 @@ class GithubBuild extends RemoteGitBuild
     {
         $rtn = parent::getCommitMessage($this->data['commit_message']);
 
-        $reference = $this->getProject()->getReference();
-        $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
-        $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
-        $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+        $project = $this->getProject();
+
+        if (!is_null($project)) {
+            $reference = $project->getReference();
+            $commitLink = '<a target="_blank" href="https://github.com/' . $reference . '/issues/$1">#$1</a>';
+            $rtn = preg_replace('/\#([0-9]+)/', $commitLink, $rtn);
+            $rtn = preg_replace('/\@([a-zA-Z0-9_]+)/', '<a target="_blank" href="https://github.com/$1">@$1</a>', $rtn);
+        }
 
         return $rtn;
     }
@@ -221,6 +238,6 @@ class GithubBuild extends RemoteGitBuild
         $helper = new Diff();
         $lines = $helper->getLinePositions($diff);
 
-        return $lines[$line];
+        return isset($lines[$line]) ? $lines[$line] : null;
     }
 }

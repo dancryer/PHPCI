@@ -48,11 +48,7 @@
         "pimple/pimple": "~1.1",
         "robmorgan/phinx": "~0.4",
         "sensiolabs/ansi-to-html": "~1.1",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
-    },
-
-    "autoload-dev": {
-        "psr-4": { "Tests\\PHPCI\\": "Tests/PHPCI" }
+        "pda/pheanstalk": "~3.1"
     },
 
     "require-dev": {
@@ -60,7 +56,8 @@
         "phpmd/phpmd": "~2.0",
         "squizlabs/php_codesniffer": "~2.3",
         "block8/php-docblock-checker": "~1.0",
-        "phploc/phploc": "~2.0"
+        "phploc/phploc": "~2.0",
+        "jakub-onderka/php-parallel-lint": "0.8.*"
     },
 
     "suggest": {
@@ -69,7 +66,7 @@
         "sebastian/phpcpd": "PHP Copy/Paste Detector",
         "squizlabs/php_codesniffer": "PHP Code Sniffer",
         "phpspec/phpspec": "PHP Spec",
-        "fabpot/php-cs-fixer": "PHP Code Sniffer Fixer",
+        "fabpot/php-cs-fixer": "PHP Coding Standards Fixer",
         "phploc/phploc": "PHP Lines of Code",
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",

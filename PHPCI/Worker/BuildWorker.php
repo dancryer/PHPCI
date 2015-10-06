@@ -82,6 +82,7 @@ class BuildWorker
     {
         $pheanstalk = new Pheanstalk($this->host);
         $pheanstalk->watch($this->queue);
+        $pheanstalk->ignore('default');
         $buildStore = Factory::getStore('Build');
 
         $jobs = 0;
@@ -99,6 +100,19 @@ class BuildWorker
 
             // Get the job data and run the job:
             $jobData = json_decode($job->getData(), true);
+
+            if (empty($jobData) || !is_array($jobData)) {
+                // Probably not from PHPCI.
+                $pheanstalk->release($job);
+                continue;
+            }
+
+            if (!array_key_exists('type', $jobData) || $jobData['type'] !== 'phpci.build') {
+                // Probably not from PHPCI.
+                $pheanstalk->release($job);
+                continue;
+            }
+
             $this->logger->addInfo('Received build #'.$jobData['build_id'].' from Beanstalkd');
 
             // If the job comes with config data, reset our config and database connections

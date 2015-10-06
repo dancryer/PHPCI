@@ -76,7 +76,7 @@ class CopyBuild implements \PHPCI\Plugin
             }
 
             $cmd = 'chown -R %s "%s"';
-			$this->phpci->log('Setting usergroup '.$usergroup.' for "'.$this->directory.'"');
+            $this->phpci->log('Setting usergroup '.$usergroup.' for "'.$this->directory.'"');
             $success = $this->phpci->executeCommand($cmd, $usergroup, $this->directory);
         }
 

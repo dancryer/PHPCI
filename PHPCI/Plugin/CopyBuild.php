@@ -41,6 +41,8 @@ class CopyBuild implements \PHPCI\Plugin
         $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
         $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
+        $this->setuser      = isset($options['setuser']) ?  $options['setuser'] : null;
+        $this->setgroup     = isset($options['setgroup']) ?  $options['setgroup'] : null;
     }
 
     /**
@@ -61,7 +63,23 @@ class CopyBuild implements \PHPCI\Plugin
             $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
         }
 
-        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
+
+        $success = $this->phpci->executeCommand($cmd, $this->phpci->interpolate($this->directory), $build, $this->phpci->interpolate($this->directory));
+
+        if($success && (!is_null($this->setuser) || !is_null($this->setgroup)) !IS_WIN)
+        {
+            $usergroup = "";
+            if(!is_null($this->setuser))
+            {
+                $usergroup .= $this->setuser;
+            }
+            if(!is_null($this->setgroup))
+            {
+                 .= ":".$this->setgroup;
+            }
+            $cmd = 'chown -R %s "%s"';
+            $success = $this->phpci->executeCommand($cmd, $usergroup, $this->phpci->interpolate($this->directory));
+        }
 
         $this->deleteIgnoredFiles();
 

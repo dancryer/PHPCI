@@ -63,20 +63,20 @@ class CopyBuild implements \PHPCI\Plugin
             $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
         }
 
+        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory.'/.');
 
-        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
-
-        if ($success && ( !is_null($this->setuser) || !is_null($this->setgroup) ) !IS_WIN) {
+        if ($success && ( !is_null($this->setuser) || !is_null($this->setgroup) ) && !IS_WIN) {
             $usergroup = "";
             if (!is_null($this->setuser)) {
                 $usergroup .= $this->setuser;
             }
 
             if (!is_null($this->setgroup)) {
-                 .= ":".$this->setgroup;
+                $usergroup .= ":".$this->setgroup;
             }
 
             $cmd = 'chown -R %s "%s"';
+			$this->phpci->log('Setting usergroup '.$usergroup.' for "'.$this->directory.'"');
             $success = $this->phpci->executeCommand($cmd, $usergroup, $this->directory);
         }
 

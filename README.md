@@ -22,7 +22,6 @@ We have a chat room for discussing PHPCI, you can access it here: [![Gitter](htt
 ##What it doesn't do (yet):
 * Virtualised testing. *(In progress)*
 * Multiple PHP-version tests. *(In progress)*
-* Multiple testing workers. *(In progress)*
 * Install PEAR or PECL extensions.
 * [Deployments](http://phpdeployment.org)
 

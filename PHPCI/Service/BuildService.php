@@ -152,6 +152,7 @@ class BuildService
 
         if (!empty($settings['host']) && !empty($settings['queue'])) {
             $jobData = array(
+                'type' => 'phpci.build',
                 'build_id' => $build->getId(),
             );
 

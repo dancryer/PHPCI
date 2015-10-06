@@ -59,6 +59,8 @@ class Deployer implements \PHPCI\Plugin
 
         $response = $http->post($this->webhookUrl, array(
             'reason' => $this->phpci->interpolate($this->reason),
+            'source' => 'PHPCI',
+            'url' => $this->phpci->interpolate('%BUILD_URI%'),
         ));
 
         return $response['success'];

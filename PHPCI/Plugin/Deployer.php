@@ -34,7 +34,7 @@ class Deployer implements \PHPCI\Plugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
-        $this->reason = 'PHPCI Build #%BUILD%';
+        $this->reason = 'PHPCI Build #%BUILD% - %COMMIT_MESSAGE%';
 
         if (isset($options['webhook_url'])) {
             $this->webhookUrl = $options['webhook_url'];

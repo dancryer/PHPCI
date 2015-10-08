@@ -58,7 +58,7 @@ class GroupController extends Controller
         $this->requireAdmin();
 
         if (!is_null($groupId)) {
-            $group = $this->groupStore->getById($id);
+            $group = $this->groupStore->getById($groupId);
         } else {
             $group = new ProjectGroup();
         }

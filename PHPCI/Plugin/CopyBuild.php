@@ -51,7 +51,7 @@ class CopyBuild implements \PHPCI\Plugin
     {
         $build = $this->phpci->buildPath;
 
-        if ($this->build_folder) {
+        if (!$this->build_folder) {
             $build .= '/.';
         }
 

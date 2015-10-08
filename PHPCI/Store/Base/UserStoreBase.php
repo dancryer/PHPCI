@@ -20,24 +20,11 @@ class UserStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\User';
     protected $primaryKey  = 'id';
 
-    /**
-     * Returns a User model by primary key.
-     * @param mixed $value
-     * @param string $useConnection
-     * @return \@appNamespace\Model\User|null
-     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
-    /**
-     * Returns a User model by Id.
-     * @param mixed $value
-     * @param string $useConnection
-     * @throws HttpException
-     * @return \@appNamespace\Model\User|null
-     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -57,13 +44,6 @@ class UserStoreBase extends Store
         return null;
     }
 
-    /**
-     * Returns a User model by Email.
-     * @param string $value
-     * @param string $useConnection
-     * @throws HttpException
-     * @return \@appNamespace\Model\User|null
-     */
     public function getByEmail($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -82,23 +62,16 @@ class UserStoreBase extends Store
 
         return null;
     }
-    
-    /**
-     * Returns a User model by Email.
-     * @param string $value
-     * @param string $useConnection
-     * @throws HttpException
-     * @return \@appNamespace\Model\User|null
-     */
-    public function getByLoginOrEmail($value, $useConnection = 'read')
+
+    public function getByName($value, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM `user` WHERE `name` = :value OR `email` = :value LIMIT 1';
+        $query = 'SELECT * FROM `user` WHERE `name` = :name LIMIT 1';
         $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':value', $value);
+        $stmt->bindValue(':name', $value);
 
         if ($stmt->execute()) {
             if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {

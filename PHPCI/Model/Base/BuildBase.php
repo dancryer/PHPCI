@@ -118,7 +118,7 @@ class BuildBase extends Model
             'default' => null,
         ),
         'log' => array(
-            'type' => 'text',
+            'type' => 'mediumtext',
             'nullable' => true,
             'default' => null,
         ),

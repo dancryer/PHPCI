@@ -44,6 +44,7 @@ class ProjectBase extends Model
         'build_config' => null,
         'ssh_public_key' => null,
         'allow_public_status' => null,
+        'default_branch_only' => null,
         'archived' => null,
     );
 
@@ -63,6 +64,7 @@ class ProjectBase extends Model
         'build_config' => 'getBuildConfig',
         'ssh_public_key' => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
+        'default_branch_only' => 'getDefaultBranchOnly',
         'archived' => 'getArchived',
 
         // Foreign key getters:
@@ -84,6 +86,7 @@ class ProjectBase extends Model
         'build_config' => 'setBuildConfig',
         'ssh_public_key' => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
+        'default_branch_only' => 'setDefaultBranchOnly',
         'archived' => 'setArchived',
 
         // Foreign key setters:
@@ -148,6 +151,10 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'allow_public_status' => array(
+            'type' => 'int',
+            'length' => 11,
+        ),
+        'default_branch_only' => array(
             'type' => 'int',
             'length' => 11,
         ),
@@ -301,6 +308,18 @@ class ProjectBase extends Model
     public function getAllowPublicStatus()
     {
         $rtn    = $this->data['allow_public_status'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of DefaultBranchOnly / default_branch_only.
+    *
+    * @return int
+    */
+    public function getDefaultBranchOnly()
+    {
+        $rtn    = $this->data['default_branch_only'];
 
         return $rtn;
     }
@@ -525,6 +544,26 @@ class ProjectBase extends Model
         $this->data['allow_public_status'] = $value;
 
         $this->_setModified('allow_public_status');
+    }
+
+     /**
+    * Set the value of DefaultBranchOnly / default_branch_only.
+    *
+    * Must not be null.
+    * @param $value int
+    */
+    public function setDefaultBranchOnly($value)
+    {
+        $this->_validateNotNull('DefaultBranchOnly', $value);
+        $this->_validateInt('DefaultBranchOnly', $value);
+
+        if ($this->data['default_branch_only'] === $value) {
+            return;
+        }
+
+        $this->data['default_branch_only'] = $value;
+
+        $this->_setModified('default_branch_only');
     }
 
     /**

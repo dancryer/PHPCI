@@ -63,6 +63,7 @@ class ProjectService
         $project->setType($type);
         $project->setReference($reference);
         $project->setAllowPublicStatus(0);
+        $project->setDefaultBranchOnly(0);
 
         // Handle extra project options:
         if (array_key_exists('ssh_private_key', $options)) {
@@ -87,6 +88,10 @@ class ProjectService
 
         if (array_key_exists('branch', $options)) {
             $project->setBranch($options['branch']);
+        }
+
+        if (array_key_exists('default_branch_only', $options)) {
+            $project->setDefaultBranchOnly((int)$options['default_branch_only']);
         }
 
         // Allow certain project types to set access information:

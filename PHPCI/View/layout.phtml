@@ -160,6 +160,12 @@
                             </li>
 
                             <li>
+                                <a href="<?php print PHPCI_URL; ?>group">
+                                    <i class="fa fa-angle-double-right"></i> Project Groups
+                                </a>
+                            </li>
+
+                            <li>
                                 <a href="<?php print PHPCI_URL; ?>settings">
                                     <i class="fa fa-angle-double-right"></i> <?php Lang::out('settings'); ?>
                                 </a>
@@ -180,41 +186,57 @@
                     </li>
                 <?php endif; ?>
 
-                <?php foreach ($projects['items'] as $project): ?>
+                <?php foreach ($groups as $group): ?>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
-                        <span><?php print $project->getTitle(); ?></span>
+                        <i class="fa fa-folder"></i>
+                        <span><?php print $group['title']; ?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
 
+                    <?php if (count($group['projects'])): ?>
                     <ul class="treeview-menu">
+                        <?php foreach($group['projects'] as $project): ?>
                         <li>
                             <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('view'); ?>
+                                <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
+                                <span><?php print $project->getTitle(); ?></span>
                             </a>
-                        </li>
 
-                        <li>
-                            <a href="<?php print PHPCI_URL; ?>project/build/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('build_now'); ?>
-                            </a>
-                        </li>
+                            <?php /* <ul class="treeview-menu">
 
-                        <?php if ($this->User()->getIsAdmin()): ?>
-                        <li>
-                            <a href="<?php print PHPCI_URL; ?>project/edit/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('edit_project'); ?>
-                            </a>
-                        </li>
+                                <li>
+                                    <a href="<?php print PHPCI_URL; ?>project/view/<?php print $project->getId(); ?>">
+                                        <i class="fa fa-angle-double-right"></i> <?php Lang::out('view'); ?>
+                                    </a>
+                                </li>
 
-                        <li>
-                            <a href="<?php print PHPCI_URL; ?>project/delete/<?php print $project->getId(); ?>">
-                                <i class="fa fa-angle-double-right"></i> <?php Lang::out('delete_project'); ?>
-                            </a>
+                                <li>
+                                    <a href="<?php print PHPCI_URL; ?>project/build/<?php print $project->getId(); ?>">
+                                        <i class="fa fa-angle-double-right"></i> <?php Lang::out('build_now'); ?>
+                                    </a>
+                                </li>
+
+                                <?php if ($this->User()->getIsAdmin()): ?>
+                                    <li>
+                                        <a href="<?php print PHPCI_URL; ?>project/edit/<?php print $project->getId(); ?>">
+                                            <i class="fa fa-angle-double-right"></i> <?php Lang::out('edit_project'); ?>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="<?php print PHPCI_URL; ?>project/delete/<?php print $project->getId(); ?>">
+                                            <i class="fa fa-angle-double-right"></i> <?php Lang::out('delete_project'); ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                            */ ?>
                         </li>
-                        <?php endif; ?>
+                        <?php endforeach; ?>
                     </ul>
+                    <?php endif; ?>
+
                 </li>
                 <?php endforeach; ?>
 

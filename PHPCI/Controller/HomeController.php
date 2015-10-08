@@ -159,5 +159,4 @@ class HomeController extends \PHPCI\Controller
 
         return $rtn;
     }
-
 }

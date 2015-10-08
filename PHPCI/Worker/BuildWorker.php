@@ -109,7 +109,7 @@ class BuildWorker
 
             if (!array_key_exists('type', $jobData) || $jobData['type'] !== 'phpci.build') {
                 // Probably not from PHPCI.
-                $pheanstalk->release($job);
+                $pheanstalk->delete($job);
                 continue;
             }
 

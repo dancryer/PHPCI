@@ -124,9 +124,9 @@ class BuildWorker
                 Database::reset($config);
             }
 
-            $build = BuildFactory::getBuildById($jobData['build_id']);
-
-            if (empty($build)) {
+            try {
+                $build = BuildFactory::getBuildById($jobData['build_id']);
+            } catch (\Exception $ex) {
                 $this->logger->addWarning('Build #' . $jobData['build_id'] . ' does not exist in the database.');
                 $pheanstalk->delete($job);
             }

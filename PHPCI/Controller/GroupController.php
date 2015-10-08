@@ -53,11 +53,11 @@ class GroupController extends Controller
         $this->view->groups = $groups;
     }
 
-    public function edit($id = null)
+    public function edit($groupId = null)
     {
         $this->requireAdmin();
 
-        if (!is_null($id)) {
+        if (!is_null($groupId)) {
             $group = $this->groupStore->getById($id);
         } else {
             $group = new ProjectGroup();
@@ -74,7 +74,7 @@ class GroupController extends Controller
 
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL . 'group/edit' . (!is_null($id) ? '/' . $id : ''));
+        $form->setAction(PHPCI_URL . 'group/edit' . (!is_null($groupId) ? '/' . $groupId : ''));
 
         $title = new Form\Element\Text('title');
         $title->setContainerClass('form-group');
@@ -91,10 +91,10 @@ class GroupController extends Controller
         $this->view->form = $form;
     }
 
-    public function delete($id)
+    public function delete($groupId)
     {
         $this->requireAdmin();
-        $group = $this->groupStore->getById($id);
+        $group = $this->groupStore->getById($groupId);
 
         $this->groupStore->delete($group);
         $response = new b8\Http\Response\RedirectResponse();

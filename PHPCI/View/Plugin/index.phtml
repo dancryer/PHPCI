@@ -1,45 +1,40 @@
 <?php use PHPCI\Helper\Lang; ?>
-<?php if (!$canWrite): ?>
-    <p class="alert alert-danger"><?php Lang::out('cannot_update_composer'); ?></p>
-<?php endif; ?>
 
-<?php if (isset($_GET['r'])): ?>
-    <p class="alert alert-success"><?php Lang::out('x_has_been_removed', $_GET['r']); ?></p>
-<?php endif; ?>
-
-<?php if (isset($_GET['w'])): ?>
-    <p class="alert alert-success"><?php Lang::out('x_has_been_added', $_GET['w']); ?></p>
-<?php endif; ?>
-
-<div class="box box-primary">
-    <div class="box-header">
-        <h3 class="box-title"><?php Lang::out('enabled_plugins'); ?></h3>
-    </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th><?php Lang::out('name'); ?></th>
-                <th><?php Lang::out('class'); ?></th>
-                <th><?php Lang::out('provided_by_package'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-<?php foreach ($plugins as $plugin): ?>
-            <tr>
-                <td><?php print $plugin->name; ?></td>
-                <td><?php print $plugin->class; ?></td>
-                <td><?php print $plugin->source; ?></td>
-            </tr>
-<?php endforeach; ?>
-        </tbody>
-    </table>
+<div class="alert alert-danger">
+    <p><strong>Adding requirements to the PHPCI composer.json file is no longer recommended as a method of installing your required testing tools.</strong><br>
+        For this reason, we have removed the ability for PHPCI to modify the composer.json file for you.
+        We recommend that you install testing tools using your project's own composer.json file, by adding them to the "require-dev" section of the file.</p>
 </div>
 
-
-
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title"><?php Lang::out('enabled_plugins'); ?></h3>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th><?php Lang::out('name'); ?></th>
+                    <th><?php Lang::out('class'); ?></th>
+                    <th><?php Lang::out('provided_by_package'); ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($plugins as $plugin): ?>
+                    <tr>
+                        <td><?php print $plugin->name; ?></td>
+                        <td><?php print $plugin->class; ?></td>
+                        <td><?php print $plugin->source; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6">
         <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title"><?php Lang::out('installed_packages'); ?></h3>
@@ -58,44 +53,6 @@
                     <tr>
                         <td><?php echo $package; ?></td>
                         <td><?php echo $version; ?></td>
-                        <td>
-                            <?php if (!in_array($package, $required) && $canWrite): ?>
-                                <a class="btn btn-danger btn-small" href="<?php echo PHPCI_URL ?>plugin/remove?package=<?php echo $package; ?>"><?php Lang::out('remove'); ?></a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-    <div class="col-lg-6">
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title"><?php Lang::out('suggested_packages'); ?></h3>
-            </div>
-
-            <table class="table">
-                <thead>
-                <tr>
-                    <th><?php Lang::out('title'); ?></th>
-                    <th><?php Lang::out('description'); ?></th>
-                    <th width="1"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($suggestedPackages as $package => $version): ?>
-                    <?php if (in_array($package, array_keys($installedPackages))) { continue; } ?>
-                    <tr>
-                        <td><?php echo $package; ?></td>
-                        <td><?php echo $version; ?></td>
-                        <td>
-                            <?php if ($canWrite): ?>
-                                <button data-name="<?php echo $package; ?>" class="install-package btn btn-success btn-small"><?php Lang::out('install'); ?></button>
-                            <?php endif; ?>
-                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -105,108 +62,3 @@
     </div>
 </div>
 
-<div class="box box-primary">
-    <div class="box-header">
-        <h3 class="box-title"><?php Lang::out('search_packagist_for_more'); ?></h3>
-    </div>
-
-    <div class="box-body">
-        <div class="input-group">
-            <input id="search-query" type="text" class="form-control">
-      <span class="input-group-btn">
-        <button id="search-button" class="btn btn-success" type="button"><?php Lang::out('search'); ?></button>
-      </span>
-        </div>
-
-        <div id="results" style="margin-top: 15px; display: none;">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th><?php Lang::out('title'); ?></th>
-                    <th><?php Lang::out('description'); ?></th>
-                    <th width="1"></th>
-                </tr>
-                </thead>
-                <tbody id="search-results">
-
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    var canWrite = <?php print $canWrite ? 'true' : 'false'; ?>;
-
-    $('#search-button').on('click', function() {
-
-        $('#loading').show();
-
-        $.getJSON('<?php print PHPCI_URL; ?>plugin/packagist-search', {q: $('#search-query').val()}, function(data) {
-            $('#loading').hide();
-            $('#results').show();
-            var results = $('#search-results').empty();
-
-            for (var i in data.results) {
-                var thisRes = data.results[i];
-                var thisRow = $('<tr></tr>');
-                thisRow.append($('<td></td>').text(thisRes.name));
-                thisRow.append($('<td></td>').text(thisRes.description));
-
-                var inst = $('<button></button>').data('name', thisRes.name).addClass('btn btn-small btn-success').html(Lang.get('install'));
-
-                inst.on('click', versionChooser);
-
-                thisRow.append($('<td></td>').append(inst));
-                results.append(thisRow);
-            }
-        });
-
-    });
-
-    $('.install-package').on('click', versionChooser);
-
-
-    function versionChooser()
-    {
-        $('#loading').show();
-
-        var thisName = $(this).data('name');
-
-        $.getJSON('<?php print PHPCI_URL; ?>plugin/packagist-versions', {p: thisName}, function(data) {
-
-            var versions = data.package.versions;
-            var vkeys = Object.keys(versions).sort().reverse();
-
-            $('#version-list ul').empty();
-
-            for (var i in vkeys) {
-                var url = '<?php print PHPCI_URL; ?>plugin/install?package=' + thisName + '&version=' + vkeys[i];
-                var li = $('<li></li>');
-                var a = $('<a></a>').attr('href', url).text(vkeys[i]);
-
-                li.append(a);
-
-                $('#version-list ul').append(li);
-            }
-
-            $('#version-list').modal('show');
-            $('#loading').hide();
-        });
-    }
-</script>
-
-<div class="modal fade" id="version-list">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><?php Lang::out('version'); ?></h4>
-            </div>
-            <div class="modal-body">
-                <ul></ul>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->

@@ -47,7 +47,7 @@ class Factory
      */
     public static function createProcessControl()
     {
-        switch(true) {
+        switch (true) {
             case PosixProcessControl::isAvailable():
                 return new PosixProcessControl();
 

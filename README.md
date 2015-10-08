@@ -22,9 +22,8 @@ We have a chat room for discussing PHPCI, you can access it here: [![Gitter](htt
 ##What it doesn't do (yet):
 * Virtualised testing. *(In progress)*
 * Multiple PHP-version tests. *(In progress)*
-* Multiple testing workers. *(In progress)*
 * Install PEAR or PECL extensions.
-* Deployments.
+* [Deployments](http://phpdeployment.org)
 
 ## Getting Started:
 We've got documentation on our website on [installing PHPCI](https://www.phptesting.org/install-phpci) and [adding support for PHPCI to your projects](https://www.phptesting.org/wiki/Adding-PHPCI-Support-to-Your-Projects).

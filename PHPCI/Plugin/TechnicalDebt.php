@@ -151,6 +151,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $ignores = $this->ignore;
         $ignores[] = 'phpci.yml';
+        $ignores[] = '.phpci.yml';
 
         foreach ($iterator as $file) {
             $filePath = $file->getRealPath();
@@ -188,7 +189,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     $content = trim($allLines[$lineNumber - 1]);
 
                     $errorCount++;
-                    $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");
 
                     $fileName = str_replace($this->directory, '', $file);
                     $data[] = array(

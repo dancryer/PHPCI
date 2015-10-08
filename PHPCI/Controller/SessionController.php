@@ -49,7 +49,7 @@ class SessionController extends \PHPCI\Controller
             } else {
                 unset($_SESSION['login_token']);
 
-                $user = $this->userStore->getByLoginOrEmail($this->getParam('email'));
+                $user = $this->userStore->getByEmail($this->getParam('email'));
 
                 if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                     session_regenerate_id(true);
@@ -68,7 +68,7 @@ class SessionController extends \PHPCI\Controller
         $form->setAction(PHPCI_URL.'session/login');
 
         $email = new b8\Form\Element\Email('email');
-        $email->setLabel(Lang::get('login'));
+        $email->setLabel(Lang::get('email_address'));
         $email->setRequired(true);
         $email->setContainerClass('form-group');
         $email->setClass('form-control');

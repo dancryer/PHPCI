@@ -109,7 +109,7 @@ class BuildWorker
 
             if (!array_key_exists('type', $jobData) || $jobData['type'] !== 'phpci.build') {
                 // Probably not from PHPCI.
-                $pheanstalk->release($job);
+                $pheanstalk->delete($job);
                 continue;
             }
 
@@ -124,9 +124,9 @@ class BuildWorker
                 Database::reset($config);
             }
 
-            $build = BuildFactory::getBuildById($jobData['build_id']);
-
-            if (empty($build)) {
+            try {
+                $build = BuildFactory::getBuildById($jobData['build_id']);
+            } catch (\Exception $ex) {
                 $this->logger->addWarning('Build #' . $jobData['build_id'] . ' does not exist in the database.');
                 $pheanstalk->delete($job);
             }

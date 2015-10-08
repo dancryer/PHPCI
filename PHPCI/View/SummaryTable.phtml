@@ -83,7 +83,7 @@ foreach($projects as $project):
 ?>
 
 <?php
-    if (count($projects) > 10) {
+    if (count($projects) > 5) {
         $containerClass = 'small-box-minimal';
     } else {
         $containerClass = 'small-box-full';
@@ -92,7 +92,7 @@ foreach($projects as $project):
 
     <div class="small-box <?php print $containerClass; ?> bg-<?php print $subcls; ?>">
 
-    <?php if (count($projects) > 10): ?>
+    <?php if (count($projects) > 5): ?>
 
         <div class="inner">
             <h4>

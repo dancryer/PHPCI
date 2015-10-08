@@ -23,14 +23,19 @@ use PHPCI\Model\Build;
 class HomeController extends \PHPCI\Controller
 {
     /**
-     * @var \b8\Store\BuildStore
+     * @var \PHPCI\Store\BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \b8\Store\ProjectStore
+     * @var \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
+
+    /**
+     * @var \PHPCI\Store\ProjectGroupStore
+     */
+    protected $groupStore;
 
     /**
      * Initialise the controller, set up stores and services.
@@ -39,6 +44,7 @@ class HomeController extends \PHPCI\Controller
     {
         $this->buildStore      = b8\Store\Factory::getStore('Build');
         $this->projectStore    = b8\Store\Factory::getStore('Project');
+        $this->groupStore    = b8\Store\Factory::getStore('ProjectGroup');
     }
 
     /**
@@ -47,15 +53,6 @@ class HomeController extends \PHPCI\Controller
     public function index()
     {
         $this->layout->title = Lang::get('dashboard');
-
-        $projects = $this->projectStore->getWhere(
-            array('archived' => (int)isset($_GET['archived'])),
-            50,
-            0,
-            array(),
-            array('title' => 'ASC')
-        );
-
         $builds = $this->buildStore->getLatestBuilds(null, 10);
 
         foreach ($builds as &$build) {
@@ -63,8 +60,7 @@ class HomeController extends \PHPCI\Controller
         }
 
         $this->view->builds   = $builds;
-        $this->view->projects = $projects['items'];
-        $this->view->summary  = $this->getSummaryHtml($projects);
+        $this->view->groups = $this->getGroupInfo();
 
         return $this->view->render();
     }
@@ -102,7 +98,7 @@ class HomeController extends \PHPCI\Controller
         $failures      = array();
         $counts        = array();
 
-        foreach ($projects['items'] as $project) {
+        foreach ($projects as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
 
             $count = $this->buildStore->getWhere(
@@ -122,7 +118,7 @@ class HomeController extends \PHPCI\Controller
         }
 
         $summaryView = new b8\View('SummaryTable');
-        $summaryView->projects   = $projects['items'];
+        $summaryView->projects   = $projects;
         $summaryView->builds     = $summaryBuilds;
         $summaryView->successful = $successes;
         $summaryView->failed     = $failures;
@@ -147,4 +143,21 @@ class HomeController extends \PHPCI\Controller
 
         return $view->render();
     }
+
+    protected function getGroupInfo()
+    {
+        $rtn = array();
+        $groups = $this->groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+
+        foreach ($groups['items'] as $group) {
+            $thisGroup = array('title' => $group->getTitle());
+            $projects = $this->projectStore->getByGroupId($group->getId());
+            $thisGroup['projects'] = $projects['items'];
+            $thisGroup['summary'] = $this->getSummaryHtml($thisGroup['projects']);
+            $rtn[] = $thisGroup;
+        }
+
+        return $rtn;
+    }
+
 }

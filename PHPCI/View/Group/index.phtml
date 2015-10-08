@@ -1,0 +1,41 @@
+<div class="clearfix"  style="margin-bottom: 20px;">
+    <a class="btn btn-success pull-right" href="<?php print PHPCI_URL . 'group/edit'; ?>">
+        Add Group
+    </a>
+</div>
+
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title">Project Groups</h3>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th style="width: 100px;">Projects</th>
+            <th style="width: 150px"></th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach($groups as $group): ?>
+            <tr>
+                <td><?php print $group['title']; ?></td>
+                <td><?php print count($group['projects']); ?></td>
+                <td>
+                    <a class="btn btn-sm btn-default" href="<?php print PHPCI_URL . 'group/edit/' . $group['id']; ?>">
+                        Edit
+                    </a>
+
+                    <?php if (!count($group['projects'])): ?>
+                    <a class="btn btn-sm btn-danger delete-group" href="<?php print PHPCI_URL . 'group/delete/' . $group['id']; ?>">
+                        Delete
+                    </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

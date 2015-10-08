@@ -20,24 +20,11 @@ class BuildMetaStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\BuildMeta';
     protected $primaryKey  = 'id';
 
-    /**
-     * Returns a BuildMeta model by primary key.
-     * @param mixed $value
-     * @param string $useConnection
-     * @return \@appNamespace\Model\BuildMeta|null
-     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
-    /**
-     * Returns a BuildMeta model by Id.
-     * @param mixed $value
-     * @param string $useConnection
-     * @throws HttpException
-     * @return \@appNamespace\Model\BuildMeta|null
-     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -57,14 +44,6 @@ class BuildMetaStoreBase extends Store
         return null;
     }
 
-    /**
-     * Returns an array of BuildMeta models by ProjectId.
-     * @param mixed $value
-     * @param int $limit
-     * @param string $useConnection
-     * @throws HttpException
-     * @return array
-     */
     public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -93,14 +72,6 @@ class BuildMetaStoreBase extends Store
         }
     }
 
-    /**
-     * Returns an array of BuildMeta models by BuildId.
-     * @param mixed $value
-     * @param int $limit
-     * @param string $useConnection
-     * @throws HttpException
-     * @return array
-     */
     public function getByBuildId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {

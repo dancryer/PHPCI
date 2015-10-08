@@ -50,12 +50,57 @@ class Executor
     public function executePlugins(&$config, $stage)
     {
         $success = true;
-        // Ignore any stages for which we don't have plugins set:
-        if (!array_key_exists($stage, $config) || !is_array($config[$stage])) {
-            return $success;
+
+        /** @var \PHPCI\Model\Build $build */
+        $build = $this->pluginFactory->getResourceFor('PHPCI\Model\Build');
+        $branch = $build->getBranch();
+        $pluginsToExecute = array();
+
+        // If we have global plugins to execute for this stage, add them to the list to be executed:
+        if (array_key_exists($stage, $config) && is_array($config[$stage])) {
+            $pluginsToExecute[] = $config[$stage];
         }
 
-        foreach ($config[$stage] as $plugin => $options) {
+        // If we have branch-specific plugins to execute, add them to the list to be executed:
+        if (isset($config['branch-' . $branch][$stage]) && is_array($config['branch-' . $branch][$stage])) {
+            $branchConfig = $config['branch-' . $branch];
+            $runOption = isset($branchConfig['run-option']) ? $branchConfig['run-option'] : 'after';
+            $plugins = $config['branch-' . $branch][$stage];
+
+            switch ($runOption) {
+                case 'replace':
+                    $pluginsToExecute = array();
+                    $pluginsToExecute[] = $plugins;
+                    break;
+
+                case 'before':
+                    array_unshift($pluginsToExecute, $plugins);
+                    break;
+
+                case 'after':
+                    array_push($pluginsToExecute, $plugins);
+                    break;
+
+                default:
+                    array_push($pluginsToExecute, $plugins);
+                    break;
+            }
+        }
+
+        foreach ($pluginsToExecute as $pluginSet) {
+            if (!$this->doExecutePlugins($pluginSet, $stage)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    protected function doExecutePlugins(&$plugins, $stage)
+    {
+        $success = true;
+
+        foreach ($plugins as $plugin => $options) {
             $this->logger->log(Lang::get('running_plugin', $plugin));
 
             $this->setPluginStatus($stage, $plugin, Build::STATUS_RUNNING);

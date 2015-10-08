@@ -45,6 +45,11 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     protected $path;
 
     /**
+     * @var string $binPath The path to the codeception binary.
+     */
+    protected $binPath;
+
+    /**
      * @param $stage
      * @param Builder $builder
      * @param Build $build
@@ -84,6 +89,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $this->phpci = $phpci;
         $this->build = $build;
         $this->path = 'tests/_output/';
+        $this->binPath = '';
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
@@ -95,6 +101,9 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         }
         if (isset($options['path'])) {
             $this->path = $options['path'];
+        }
+        if (isset($options['binPath'])) {
+            $this->binPath = $options['binPath'];
         }
     }
 
@@ -121,7 +130,12 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     {
         $this->phpci->logExecOutput(false);
 
-        $codecept = $this->phpci->findBinary('codecept');
+        $options = [];
+        if (!empty($this->binPath)) {
+            $options['path'] = $this->binPath;
+        }
+
+        $codecept = $this->phpci->findBinary('codecept', null, $options);
 
         if (!$codecept) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'codecept'));

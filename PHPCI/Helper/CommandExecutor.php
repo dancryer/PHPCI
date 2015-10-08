@@ -32,7 +32,7 @@ interface CommandExecutor
      *
      * @throws \Exception when no binary has been found and $quiet is false.
      */
-    public function findBinary($binary, $quiet = false);
+    public function findBinary($binary, $quiet = false, $options = array());
 
     /**
      * Set the buildPath property.

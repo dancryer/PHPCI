@@ -136,7 +136,8 @@ class Application extends b8\Application
     protected function setLayoutVariables(View &$layout)
     {
         $groups = array();
-        $groupList = b8\Store\Factory::getStore('ProjectGroup')->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groupStore = b8\Store\Factory::getStore('ProjectGroup');
+        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
 
         foreach ($groupList['items'] as $group) {
             $thisGroup = array('title' => $group->getTitle());

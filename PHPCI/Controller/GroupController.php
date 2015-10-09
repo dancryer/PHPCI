@@ -28,11 +28,17 @@ class GroupController extends Controller
      */
     protected $groupStore;
 
+    /**
+     * Set up this controller.
+     */
     public function init()
     {
         $this->groupStore = b8\Store\Factory::getStore('ProjectGroup');
     }
 
+    /**
+     * List project groups.
+     */
     public function index()
     {
         $this->requireAdmin();
@@ -53,12 +59,17 @@ class GroupController extends Controller
         $this->view->groups = $groups;
     }
 
-    public function edit($id = null)
+    /**
+     * Add or edit a project group.
+     * @param null $groupId
+     * @return void|b8\Http\Response\RedirectResponse
+     */
+    public function edit($groupId = null)
     {
         $this->requireAdmin();
 
-        if (!is_null($id)) {
-            $group = $this->groupStore->getById($id);
+        if (!is_null($groupId)) {
+            $group = $this->groupStore->getById($groupId);
         } else {
             $group = new ProjectGroup();
         }
@@ -74,7 +85,7 @@ class GroupController extends Controller
 
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL . 'group/edit' . (!is_null($id) ? '/' . $id : ''));
+        $form->setAction(PHPCI_URL . 'group/edit' . (!is_null($groupId) ? '/' . $groupId : ''));
 
         $title = new Form\Element\Text('title');
         $title->setContainerClass('form-group');
@@ -91,10 +102,15 @@ class GroupController extends Controller
         $this->view->form = $form;
     }
 
-    public function delete($id)
+    /**
+     * Delete a project group.
+     * @param $groupId
+     * @return b8\Http\Response\RedirectResponse
+     */
+    public function delete($groupId)
     {
         $this->requireAdmin();
-        $group = $this->groupStore->getById($id);
+        $group = $this->groupStore->getById($groupId);
 
         $this->groupStore->delete($group);
         $response = new b8\Http\Response\RedirectResponse();

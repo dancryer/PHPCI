@@ -20,11 +20,18 @@ class ProjectGroupStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\ProjectGroup';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a ProjectGroup by primary key (Id)
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a single ProjectGroup by Id.
+     * @return null|ProjectGroup
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {

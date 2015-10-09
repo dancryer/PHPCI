@@ -20,11 +20,18 @@ class BuildMetaStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\BuildMeta';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a BuildMeta by primary key (Id)
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a single BuildMeta by Id.
+     * @return null|BuildMeta
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +51,10 @@ class BuildMetaStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get multiple BuildMeta by ProjectId.
+     * @return array
+     */
     public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -72,6 +83,10 @@ class BuildMetaStoreBase extends Store
         }
     }
 
+    /**
+     * Get multiple BuildMeta by BuildId.
+     * @return array
+     */
     public function getByBuildId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {

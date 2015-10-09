@@ -87,9 +87,13 @@ class BuildService
 
         $build = $this->buildStore->save($build);
 
-        $build = BuildFactory::getBuild($build);
-        $build->sendStatusPostback();
-        $this->addBuildToQueue($build);
+        $buildId = $build->getId();
+
+        if (!empty($buildId)) {
+            $build = BuildFactory::getBuild($build);
+            $build->sendStatusPostback();
+            $this->addBuildToQueue($build);
+        }
 
         return $build;
     }
@@ -116,9 +120,13 @@ class BuildService
 
         $build = $this->buildStore->save($build);
 
-        $build = BuildFactory::getBuild($build);
-        $build->sendStatusPostback();
-        $this->addBuildToQueue($build);
+        $buildId = $build->getId();
+
+        if (!empty($buildId)) {
+            $build = BuildFactory::getBuild($build);
+            $build->sendStatusPostback();
+            $this->addBuildToQueue($build);
+        }
 
         return $build;
     }

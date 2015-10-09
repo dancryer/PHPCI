@@ -28,11 +28,17 @@ class GroupController extends Controller
      */
     protected $groupStore;
 
+    /**
+     * Set up this controller.
+     */
     public function init()
     {
         $this->groupStore = b8\Store\Factory::getStore('ProjectGroup');
     }
 
+    /**
+     * List project groups.
+     */
     public function index()
     {
         $this->requireAdmin();
@@ -53,6 +59,11 @@ class GroupController extends Controller
         $this->view->groups = $groups;
     }
 
+    /**
+     * Add or edit a project group.
+     * @param null $groupId
+     * @return void|b8\Http\Response\RedirectResponse
+     */
     public function edit($groupId = null)
     {
         $this->requireAdmin();
@@ -91,6 +102,11 @@ class GroupController extends Controller
         $this->view->form = $form;
     }
 
+    /**
+     * Delete a project group.
+     * @param $groupId
+     * @return b8\Http\Response\RedirectResponse
+     */
     public function delete($groupId)
     {
         $this->requireAdmin();

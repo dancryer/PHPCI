@@ -171,6 +171,10 @@ class BuildWorker
         $this->run = false;
     }
 
+    /**
+     * Checks if this worker has done the amount of jobs it is allowed to do, and if so tells it to stop
+     * after this job completes.
+     */
     protected function checkJobLimit()
     {
         // Make sure we don't run more than maxJobs jobs on this worker:
@@ -181,11 +185,17 @@ class BuildWorker
         }
     }
 
+    /**
+     * Checks that the job received is actually from PHPCI, and has a valid type.
+     * @param Job $job
+     * @param $jobData
+     * @return bool
+     */
     protected function verifyJob(Job $job, $jobData)
     {
         if (empty($jobData) || !is_array($jobData)) {
             // Probably not from PHPCI.
-            $this->pheanstalk->release($job);
+            $this->pheanstalk->delete($job);
             return false;
         }
 

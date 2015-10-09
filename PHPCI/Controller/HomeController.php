@@ -144,6 +144,10 @@ class HomeController extends \PHPCI\Controller
         return $view->render();
     }
 
+    /**
+     * Get a summary of the project groups we have, and what projects they have in them.
+     * @return array
+     */
     protected function getGroupInfo()
     {
         $rtn = array();

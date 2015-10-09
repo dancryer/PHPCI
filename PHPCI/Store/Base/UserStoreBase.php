@@ -20,11 +20,18 @@ class UserStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\User';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a User by primary key (Id)
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a single User by Id.
+     * @return null|User
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +51,10 @@ class UserStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get a single User by Email.
+     * @return null|User
+     */
     public function getByEmail($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -63,6 +74,10 @@ class UserStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get a single User by Name.
+     * @return null|User
+     */
     public function getByName($value, $useConnection = 'read')
     {
         if (is_null($value)) {

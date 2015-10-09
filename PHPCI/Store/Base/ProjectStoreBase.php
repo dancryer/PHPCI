@@ -20,11 +20,18 @@ class ProjectStoreBase extends Store
     protected $modelName   = '\PHPCI\Model\Project';
     protected $primaryKey  = 'id';
 
+    /**
+     * Get a Project by primary key (Id)
+     */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
         return $this->getById($value, $useConnection);
     }
 
+    /**
+     * Get a single Project by Id.
+     * @return null|Project
+     */
     public function getById($value, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -44,6 +51,10 @@ class ProjectStoreBase extends Store
         return null;
     }
 
+    /**
+     * Get multiple Project by Title.
+     * @return array
+     */
     public function getByTitle($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
@@ -72,6 +83,10 @@ class ProjectStoreBase extends Store
         }
     }
 
+    /**
+     * Get multiple Project by GroupId.
+     * @return array
+     */
     public function getByGroupId($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {

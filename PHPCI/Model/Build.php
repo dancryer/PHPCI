@@ -31,11 +31,6 @@ class Build extends BuildBase
     public $currentBuildPath = null;
 
     /**
-     * @var \PHPCI\Model\Project $project
-     */
-    protected $project;
-
-    /**
     * Get link to commit from another source (i.e. Github)
     */
     public function getCommitLink()
@@ -260,7 +255,7 @@ class Build extends BuildBase
      */
     public function setProjectObject(\PHPCI\Model\Project $value)
     {
-        $this->project = $value;
+        $this->data['project'] = $value;
         return parent::setProjectObject($value);
     }
 
@@ -269,10 +264,10 @@ class Build extends BuildBase
      */
     public function getProject()
     {
-        if (empty($this->project)) {
-            $this->project = parent::getProject();
+        if (empty($this->data['project'])) {
+            $this->data['project'] = parent::getProject();
         }
 
-        return $this->project;
+        return $this->data['project'];
     }
 }

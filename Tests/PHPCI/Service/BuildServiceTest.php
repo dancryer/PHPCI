@@ -101,9 +101,13 @@ class BuildServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_CreateDuplicateBuild()
     {
+        $project = new Project();
+        $project->setType('hg');
+        $project->setId(101);
+
         $build = new Build();
         $build->setId(1);
-        $build->setProjectId(101);
+        $build->setProject($project);
         $build->setCommitId('abcde');
         $build->setStatus(Build::STATUS_FAILED);
         $build->setLog('Test');

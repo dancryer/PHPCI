@@ -31,6 +31,11 @@ class Build extends BuildBase
     public $currentBuildPath = null;
 
     /**
+     * @var \PHPCI\Model\Project $project
+     */
+    protected $project;
+
+    /**
     * Get link to commit from another source (i.e. Github)
     */
     public function getCommitLink()
@@ -248,5 +253,26 @@ class Build extends BuildBase
         }
 
         exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
+    }
+
+    /**
+     * @param Project $value
+     */
+    public function setProjectObject(\PHPCI\Model\Project $value)
+    {
+        $this->project = $value;
+        return parent::setProjectObject($value);
+    }
+
+    /**
+     * Get the Project model for this Build by Id.
+     */
+    public function getProject()
+    {
+        if (empty($this->project)) {
+            $this->project = parent::getProject();
+        }
+
+        return $this->project;
     }
 }

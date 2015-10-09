@@ -249,25 +249,4 @@ class Build extends BuildBase
 
         exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
     }
-
-    /**
-     * @param Project $value
-     */
-    public function setProjectObject(\PHPCI\Model\Project $value)
-    {
-        $this->data['project'] = $value;
-        return parent::setProjectObject($value);
-    }
-
-    /**
-     * Get the Project model for this Build by Id.
-     */
-    public function getProject()
-    {
-        if (empty($this->data['project'])) {
-            $this->data['project'] = parent::getProject();
-        }
-
-        return $this->data['project'];
-    }
 }

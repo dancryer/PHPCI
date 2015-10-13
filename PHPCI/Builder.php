@@ -188,6 +188,14 @@ class Builder implements LoggerAwareInterface
         $this->build->sendStatusPostback();
         $success = true;
 
+        $previous_build = $this->build->getProject()->getPreviousBuild($this->build->getBranch());
+
+        $previous_state = Build::STATUS_NEW;
+
+        if ($previous_build) {
+            $previous_state = $previous_build->getStatus();
+        }
+
         try {
             // Set up the build:
             $this->setupBuild();
@@ -210,9 +218,19 @@ class Builder implements LoggerAwareInterface
 
             if ($success) {
                 $this->pluginExecutor->executePlugins($this->config, 'success');
+
+                if ($previous_state == Build::STATUS_FAILED) {
+                    $this->pluginExecutor->executePlugins($this->config, 'fixed');
+                }
+
                 $this->buildLogger->logSuccess(Lang::get('build_success'));
             } else {
                 $this->pluginExecutor->executePlugins($this->config, 'failure');
+
+                if ($previous_state == Build::STATUS_SUCCESS || $previous_state == Build::STATUS_NEW) {
+                    $this->pluginExecutor->executePlugins($this->config, 'broken');
+                }
+
                 $this->buildLogger->logFailure(Lang::get('build_failed'));
             }
         } catch (\Exception $ex) {

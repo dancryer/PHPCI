@@ -305,7 +305,9 @@ PHPCI',
     'stage_test' => 'Test',
     'stage_complete' => 'Complete',
     'stage_success' => 'Success',
-    'stage_failure' => 'Failure',
+    'stage_failure' => 'Failure'
+    'stage_broken'  => 'Broken',
+    'stage_fixed' => 'Fixed',
 
     // Installer
     'installation_url' => 'PHPCI Installation URL',

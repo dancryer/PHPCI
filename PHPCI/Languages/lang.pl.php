@@ -116,6 +116,7 @@ od wybranego kodu źródłowego platformy hostingowej.',
     'default_branch' => 'Domyślna nazwa gałęzi',
     'allow_public_status' => 'Włączyć status publiczny dla tego projektu?',
     'archived' => 'W archiwum',
+    'archived_menu' => 'W archiwum',
     'save_project' => 'Zachowaj Projekt',
 
     'error_mercurial' => 'URL repozytorium Mercurialnego powinno zaczynać się od http:// and https://',

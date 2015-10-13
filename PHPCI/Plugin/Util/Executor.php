@@ -50,12 +50,89 @@ class Executor
     public function executePlugins(&$config, $stage)
     {
         $success = true;
-        // Ignore any stages for which we don't have plugins set:
-        if (!array_key_exists($stage, $config) || !is_array($config[$stage])) {
-            return $success;
+        $pluginsToExecute = array();
+
+        // If we have global plugins to execute for this stage, add them to the list to be executed:
+        if (array_key_exists($stage, $config) && is_array($config[$stage])) {
+            $pluginsToExecute[] = $config[$stage];
         }
 
-        foreach ($config[$stage] as $plugin => $options) {
+        $pluginsToExecute = $this->getBranchSpecificPlugins($config, $stage, $pluginsToExecute);
+
+        foreach ($pluginsToExecute as $pluginSet) {
+            if (!$this->doExecutePlugins($pluginSet, $stage)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Check the config for any plugins specific to the branch we're currently building.
+     * @param $config
+     * @param $stage
+     * @param $pluginsToExecute
+     * @return array
+     */
+    protected function getBranchSpecificPlugins(&$config, $stage, $pluginsToExecute)
+    {
+        /** @var \PHPCI\Model\Build $build */
+        $build = $this->pluginFactory->getResourceFor('PHPCI\Model\Build');
+        $branch = $build->getBranch();
+
+        // If we don't have any branch-specific plugins:
+        if (!isset($config['branch-' . $branch][$stage]) || !is_array($config['branch-' . $branch][$stage])) {
+            return $pluginsToExecute;
+        }
+
+        // If we have branch-specific plugins to execute, add them to the list to be executed:
+        $branchConfig = $config['branch-' . $branch];
+        $plugins = $branchConfig[$stage];
+
+        $runOption = 'after';
+
+        if (!empty($branchConfig['run-option'])) {
+            $runOption = $branchConfig['run-option'];
+        }
+
+        switch ($runOption) {
+            // Replace standard plugin set for this stage with just the branch-specific ones:
+            case 'replace':
+                $pluginsToExecute = array();
+                $pluginsToExecute[] = $plugins;
+                break;
+
+            // Run branch-specific plugins before standard plugins:
+            case 'before':
+                array_unshift($pluginsToExecute, $plugins);
+                break;
+
+            // Run branch-specific plugins after standard plugins:
+            case 'after':
+                array_push($pluginsToExecute, $plugins);
+                break;
+
+            default:
+                array_push($pluginsToExecute, $plugins);
+                break;
+        }
+
+        return $pluginsToExecute;
+    }
+
+    /**
+     * Execute the list of plugins found for a given testing stage.
+     * @param $plugins
+     * @param $stage
+     * @return bool
+     * @throws \Exception
+     */
+    protected function doExecutePlugins(&$plugins, $stage)
+    {
+        $success = true;
+
+        foreach ($plugins as $plugin => $options) {
             $this->logger->log(Lang::get('running_plugin', $plugin));
 
             $this->setPluginStatus($stage, $plugin, Build::STATUS_RUNNING);

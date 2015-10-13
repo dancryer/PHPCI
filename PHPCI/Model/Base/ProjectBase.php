@@ -45,6 +45,7 @@ class ProjectBase extends Model
         'ssh_public_key' => null,
         'allow_public_status' => null,
         'archived' => null,
+        'group_id' => null,
     );
 
     /**
@@ -64,8 +65,10 @@ class ProjectBase extends Model
         'ssh_public_key' => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
         'archived' => 'getArchived',
+        'group_id' => 'getGroupId',
 
         // Foreign key getters:
+        'Group' => 'getGroup',
     );
 
     /**
@@ -85,8 +88,10 @@ class ProjectBase extends Model
         'ssh_public_key' => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
         'archived' => 'setArchived',
+        'group_id' => 'setGroupId',
 
         // Foreign key setters:
+        'Group' => 'setGroup',
     );
 
     /**
@@ -153,9 +158,13 @@ class ProjectBase extends Model
         ),
         'archived' => array(
             'type' => 'tinyint',
-            'length' => 4,
-            'nullable' => true,
+            'length' => 1,
             'default' => null,
+        ),
+        'group_id' => array(
+            'type' => 'int',
+            'length' => 11,
+            'default' => 1,
         ),
     );
 
@@ -165,12 +174,20 @@ class ProjectBase extends Model
     public $indexes = array(
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'idx_project_title' => array('columns' => 'title'),
+            'group_id' => array('columns' => 'group_id'),
     );
 
     /**
     * @var array
     */
     public $foreignKeys = array(
+            'project_ibfk_1' => array(
+                'local_col' => 'group_id',
+                'update' => 'CASCADE',
+                'delete' => '',
+                'table' => 'project_group',
+                'col' => 'id'
+                ),
     );
 
     /**
@@ -313,6 +330,18 @@ class ProjectBase extends Model
     public function getArchived()
     {
         $rtn    = $this->data['archived'];
+
+        return $rtn;
+    }
+
+    /**
+    * Get the value of GroupId / group_id.
+    *
+    * @return int
+    */
+    public function getGroupId()
+    {
+        $rtn    = $this->data['group_id'];
 
         return $rtn;
     }
@@ -530,10 +559,12 @@ class ProjectBase extends Model
     /**
     * Set the value of Archived / archived.
     *
+    * Must not be null.
     * @param $value int
     */
     public function setArchived($value)
     {
+        $this->_validateNotNull('Archived', $value);
         $this->_validateInt('Archived', $value);
 
         if ($this->data['archived'] === $value) {
@@ -543,6 +574,83 @@ class ProjectBase extends Model
         $this->data['archived'] = $value;
 
         $this->_setModified('archived');
+    }
+
+    /**
+    * Set the value of GroupId / group_id.
+    *
+    * Must not be null.
+    * @param $value int
+    */
+    public function setGroupId($value)
+    {
+        $this->_validateNotNull('GroupId', $value);
+        $this->_validateInt('GroupId', $value);
+
+        if ($this->data['group_id'] === $value) {
+            return;
+        }
+
+        $this->data['group_id'] = $value;
+
+        $this->_setModified('group_id');
+    }
+
+    /**
+     * Get the ProjectGroup model for this Project by Id.
+     *
+     * @uses \PHPCI\Store\ProjectGroupStore::getById()
+     * @uses \PHPCI\Model\ProjectGroup
+     * @return \PHPCI\Model\ProjectGroup
+     */
+    public function getGroup()
+    {
+        $key = $this->getGroupId();
+
+        if (empty($key)) {
+            return null;
+        }
+
+        $cacheKey   = 'Cache.ProjectGroup.' . $key;
+        $rtn        = $this->cache->get($cacheKey, null);
+
+        if (empty($rtn)) {
+            $rtn    = Factory::getStore('ProjectGroup', 'PHPCI')->getById($key);
+            $this->cache->set($cacheKey, $rtn);
+        }
+
+        return $rtn;
+    }
+
+    /**
+    * Set Group - Accepts an ID, an array representing a ProjectGroup or a ProjectGroup model.
+    *
+    * @param $value mixed
+    */
+    public function setGroup($value)
+    {
+        // Is this an instance of ProjectGroup?
+        if ($value instanceof \PHPCI\Model\ProjectGroup) {
+            return $this->setGroupObject($value);
+        }
+
+        // Is this an array representing a ProjectGroup item?
+        if (is_array($value) && !empty($value['id'])) {
+            return $this->setGroupId($value['id']);
+        }
+
+        // Is this a scalar value representing the ID of this foreign key?
+        return $this->setGroupId($value);
+    }
+
+    /**
+    * Set Group - Accepts a ProjectGroup model.
+    * 
+    * @param $value \PHPCI\Model\ProjectGroup
+    */
+    public function setGroupObject(\PHPCI\Model\ProjectGroup $value)
+    {
+        return $this->setGroupId($value->getId());
     }
 
     /**

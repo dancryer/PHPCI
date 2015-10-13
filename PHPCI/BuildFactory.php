@@ -36,38 +36,44 @@ class BuildFactory
 
     /**
     * Takes a generic build and returns a type-specific build model.
-    * @param Build $base The build from which to get a more specific build type.
+    * @param Build $build The build from which to get a more specific build type.
     * @return Build
     */
-    public static function getBuild(Build $base)
+    public static function getBuild(Build $build)
     {
-        switch($base->getProject()->getType())
-        {
-            case 'remote':
-                $type = 'RemoteGitBuild';
-                break;
-            case 'local':
-                $type = 'LocalBuild';
-                break;
-            case 'github':
-                $type = 'GithubBuild';
-                break;
-            case 'bitbucket':
-                $type = 'BitbucketBuild';
-                break;
-            case 'gitlab':
-                $type = 'GitlabBuild';
-                break;
-            case 'hg':
-                $type = 'MercurialBuild';
-                break;
-            case 'svn':
-                $type = 'SubversionBuild';
-                break;
+        $project = $build->getProject();
+
+        if (!empty($project)) {
+            switch ($project->getType()) {
+                case 'remote':
+                    $type = 'RemoteGitBuild';
+                    break;
+                case 'local':
+                    $type = 'LocalBuild';
+                    break;
+                case 'github':
+                    $type = 'GithubBuild';
+                    break;
+                case 'bitbucket':
+                    $type = 'BitbucketBuild';
+                    break;
+                case 'gitlab':
+                    $type = 'GitlabBuild';
+                    break;
+                case 'hg':
+                    $type = 'MercurialBuild';
+                    break;
+                case 'svn':
+                    $type = 'SubversionBuild';
+                    break;
+                default:
+                    return $build;
+            }
+
+            $class = '\\PHPCI\\Model\\Build\\' . $type;
+            $build = new $class($build->getDataArray());
         }
 
-        $type = '\\PHPCI\\Model\\Build\\' . $type;
-
-        return new $type($base->getDataArray());
+        return $build;
     }
 }

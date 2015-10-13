@@ -99,14 +99,19 @@ class Build extends BuildBase
     {
         $build_config = null;
 
-        // Try phpci.yml first:
-        if (is_file($buildPath . '/phpci.yml')) {
-            $build_config = file_get_contents($buildPath . '/phpci.yml');
-        }
-
         // Try getting the project build config from the database:
         if (empty($build_config)) {
             $build_config = $this->getProject()->getBuildConfig();
+        }
+
+        // Try .phpci.yml
+        if (is_file($buildPath . '/.phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/.phpci.yml');
+        }
+
+        // Try phpci.yml first:
+        if (empty($build_config) && is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 
         // Fall back to zero config plugins:
@@ -228,7 +233,7 @@ class Build extends BuildBase
         if (!$this->getId()) {
             return null;
         }
-        return PHPCI_BUILD_ROOT_DIR . $this->getId();
+        return PHPCI_BUILD_ROOT_DIR . $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
     }
 
     /**

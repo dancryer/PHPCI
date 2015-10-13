@@ -21,6 +21,7 @@ use PHPCI\Command\DaemonCommand;
 use PHPCI\Command\PollCommand;
 use PHPCI\Command\CreateAdminCommand;
 use PHPCI\Command\CreateBuildCommand;
+use PHPCI\Command\WorkerCommand;
 use PHPCI\Service\BuildService;
 use Symfony\Component\Console\Application;
 use b8\Store\Factory;
@@ -36,5 +37,6 @@ $application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
 $application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
 $application->add(new CreateAdminCommand(Factory::getStore('User')));
 $application->add(new CreateBuildCommand(Factory::getStore('Project'), new BuildService(Factory::getStore('Build'))));
+$application->add(new WorkerCommand($loggerConfig->getFor('WorkerCommand')));
 
 $application->run();

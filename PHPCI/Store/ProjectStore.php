@@ -71,4 +71,39 @@ class ProjectStore extends ProjectStoreBase
             return array('items' => array(), 'count' => 0);
         }
     }
+
+    /**
+     * Get multiple Project by GroupId.
+     * @param int $value
+     * @param int $limit
+     * @param string $useConnection
+     * @return array
+     * @throws \Exception
+     */
+    public function getByGroupId($value, $limit = 1000, $useConnection = 'read')
+    {
+        if (is_null($value)) {
+            throw new \Exception('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        }
+
+        $query = 'SELECT * FROM `project` WHERE `group_id` = :group_id ORDER BY title LIMIT :limit';
+        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt->bindValue(':group_id', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $map = function ($item) {
+                return new Project($item);
+            };
+            $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
+    }
 }

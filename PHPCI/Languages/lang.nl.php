@@ -115,6 +115,7 @@ van je gekozen source code hosting platform',
     'default_branch' => 'Standaard branch naam',
     'allow_public_status' => 'Publieke statuspagina en afbeelding beschikbaar maken voor dit project?',
     'archived' => 'Archived',
+    'archived_menu' => 'Archived',
     'save_project' => 'Project opslaan',
 
     'error_mercurial' => 'Mercurial repository URL dient te starten met http:// of https://',

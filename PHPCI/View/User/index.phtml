@@ -40,7 +40,7 @@
                             <td><?php print $status; ?></td>
                             <td>
                                 <?php if($this->User()->getIsAdmin()): ?>
-                                    <div class="btn-group">
+                                    <div class="btn-group pull-right">
                                         <a class="btn btn-default btn-small" href="<?php echo PHPCI_URL ?>user/edit/<?php print $user->getId(); ?>"><?php Lang::out('edit'); ?></a>
                                         <button class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>

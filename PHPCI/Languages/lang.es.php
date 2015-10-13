@@ -115,6 +115,7 @@ PHPCI',
     'default_branch' => 'Nombre de la rama por defecto',
     'allow_public_status' => '¿Activar página pública con el estado del proyecto?',
     'archived' => 'Archivado',
+    'archived_menu' => 'Archivado',
     'save_project' => 'Guardar Proyecto',
 
     'error_mercurial' => 'La URL del repositorio de Mercurial debe comenzar con http:// or https://',

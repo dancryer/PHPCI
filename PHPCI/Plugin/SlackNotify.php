@@ -64,7 +64,7 @@ class SlackNotify implements \PHPCI\Plugin
             if (isset($options['show_status'])) {
                 $this->show_status = (bool) $options['show_status'];
             } else {
-                $this->show_status = false;
+                $this->show_status = true;
             }
 
             if (isset($options['icon'])) {
@@ -130,7 +130,6 @@ class SlackNotify implements \PHPCI\Plugin
 
             $body = '';
         }
-
 
         $message->send($body);
 

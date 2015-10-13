@@ -99,7 +99,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Runs Codeception tests, optionally using specified config file(s).
+     * Runs Codeception tests
      */
     public function execute()
     {

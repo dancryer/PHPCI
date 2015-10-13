@@ -51,6 +51,29 @@ class Project extends ProjectBase
     }
 
     /**
+     * Return the previous build from a specific branch, for this project.
+     * @param string $branch
+     * @return mixed|null
+     */
+    public function getPreviousBuild($branch = 'master')
+    {
+        $criteria       = array('branch' => $branch, 'project_id' => $this->getId());
+
+        $order          = array('id' => 'DESC');
+        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, 1, array(), $order);
+
+        if (is_array($builds['items']) && count($builds['items'])) {
+            $previous = array_shift($builds['items']);
+
+            if (isset($previous) && $previous instanceof Build) {
+                return $previous;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Store this project's access_information data
      * @param string|array $value
      */

@@ -181,6 +181,8 @@ class Builder implements LoggerAwareInterface
      */
     public function execute()
     {
+        $previous_build = $this->build->getProject()->getLatestBuild();
+
         // Update the build in the database, ping any external services.
         $this->build->setStatus(Build::STATUS_RUNNING);
         $this->build->setStarted(new \DateTime());
@@ -188,7 +190,6 @@ class Builder implements LoggerAwareInterface
         $this->build->sendStatusPostback();
         $success = true;
 
-        $previous_build = $this->build->getProject()->getLatestBuild();
         if ($previous_build) {
             $previous_state = $previous_build->getStatus();
         } else {

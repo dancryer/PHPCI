@@ -297,6 +297,8 @@ PHPCI',
     'stage_complete' => 'Завершение',
     'stage_success' => 'Успешное завершение',
     'stage_failure' => 'Провал',
+    'stage_broken'  => 'Поломка',
+    'stage_fixed' => 'Исправление',
 
     // Installer
     'installation_url' => 'URL-адрес PHPCI для установки',

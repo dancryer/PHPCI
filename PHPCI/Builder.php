@@ -226,7 +226,7 @@ class Builder implements LoggerAwareInterface
             } else {
                 $this->pluginExecutor->executePlugins($this->config, 'failure');
 
-                if ($previous_state == Build::STATUS_SUCCESS || $previous_status == Build::STATUS_NEW) {
+                if ($previous_state == Build::STATUS_SUCCESS || $previous_state == Build::STATUS_NEW) {
                     $this->pluginExecutor->executePlugins($this->config, 'broken');
                 }
 

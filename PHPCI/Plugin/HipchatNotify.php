@@ -113,21 +113,21 @@ class HipchatNotify implements \PHPCI\Plugin
         } else {
             $result = true;
             try {
-              $auth = new \GorkaLaucirica\HipchatAPIv2Client\Auth\OAuth2($this->authToken);
-              $client = new \GorkaLaucirica\HipchatAPIv2Client\Client($auth);
-              $room = new \GorkaLaucirica\HipchatAPIv2Client\API\RoomAPI($client);
-              $message = new \GorkaLaucirica\HipchatAPIv2Client\Model\Message();
+                $auth = new \GorkaLaucirica\HipchatAPIv2Client\Auth\OAuth2($this->authToken);
+                $client = new \GorkaLaucirica\HipchatAPIv2Client\Client($auth);
+                $room = new \GorkaLaucirica\HipchatAPIv2Client\API\RoomAPI($client);
+                $message = new \GorkaLaucirica\HipchatAPIv2Client\Model\Message();
 
-              $message->setColor($this->color);
-              $message->setMessage($msg);
-              $message->setNotify($this->notify);
+                $message->setColor($this->color);
+                $message->setMessage($msg);
+                $message->setNotify($this->notify);
 
-              $room->sendRoomNotification($room_id, $message);
+                $room->sendRoomNotification($room_id, $message);
             } catch (Exception $e) {
-              $return = false;
+                $result = false;
             }
 
             return $result;
-       }
+        }
     }
 }

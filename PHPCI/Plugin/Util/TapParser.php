@@ -74,7 +74,7 @@ class TapParser
 
         $line = $this->nextLine();
         if ($line === $header) {
-            throw new Exception("Duplicated TAP log, please check the configration.");
+            throw new Exception("Duplicated TAP log, please check the configuration.");
         }
 
         while ($line !== false && ($this->testCount === false || count($this->results) < $this->testCount)) {
@@ -97,7 +97,7 @@ class TapParser
      */
     protected function findTapLog()
     {
-        // Look for the beggning of the TAP output
+        // Look for the beginning of the TAP output
         do {
             $header = $this->nextLine();
         } while ($header !== false && substr($header, 0, 12) !== 'TAP version ');

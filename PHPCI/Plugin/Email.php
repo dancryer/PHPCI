@@ -134,7 +134,7 @@ class Email implements \PHPCI\Plugin
      * Send an email to a list of specified subjects.
      *
      * @param array $toAddresses
-     *   List of destinatary of message.
+     *   List of destination addresses for message.
      * @param string $subject
      *   Mail subject
      * @param string $body

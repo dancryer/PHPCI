@@ -38,7 +38,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
-     * tested, exteds the base path only if the provided path is relative. Absolute
+     * tested, extends the base path only if the provided path is relative. Absolute
      * paths are used verbatim
      */
     protected $path;
@@ -50,7 +50,7 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Array of PHPMD rules. Can be one of the builtins (codesize, unusedcode, naming, design, controversial)
-     * or a filenname (detected by checking for a / in it), either absolute or relative to the project root.
+     * or a filename (detected by checking for a / in it), either absolute or relative to the project root.
      * @var array
      */
     protected $rules;

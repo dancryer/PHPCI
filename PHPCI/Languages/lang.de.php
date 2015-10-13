@@ -211,7 +211,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'build_finished' => 'Build abgeschlossen',
     'test_message' => 'Message',
     'test_no_message' => 'No message',
-    'test_success' => 'Succesfull: %d',
+    'test_success' => 'Successful: %d',
     'test_fail' => 'Failures: %d',
     'test_skipped' => 'Skipped: %d',
     'test_error' => 'Errors: %d',

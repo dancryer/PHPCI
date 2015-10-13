@@ -170,7 +170,7 @@ class WebhookController extends \b8\Controller
     protected function githubCommitRequest(Project $project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
-        // non-existant commit. We don't want this.
+        // non-existent commit. We don't want this.
         if (array_key_exists('after', $payload) && $payload['after'] === '0000000000000000000000000000000000000000') {
             return array('status' => 'ignored');
         }

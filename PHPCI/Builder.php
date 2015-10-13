@@ -190,10 +190,10 @@ class Builder implements LoggerAwareInterface
 
         $previous_build = $this->build->getProject()->getPreviousBuild($this->build->getBranch());
 
+        $previous_state = Build::STATUS_NEW;
+
         if ($previous_build) {
             $previous_state = $previous_build->getStatus();
-        } else {
-            $previous_state = Build::STATUS_NEW;
         }
 
         try {

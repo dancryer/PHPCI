@@ -115,6 +115,7 @@ PHPCI',
     'default_branch' => 'Προκαθορισμένο όνομα διακλάδωσης',
     'allow_public_status' => 'Ενεργοποίηση της σελίδας δημόσιας κατάστασης και την εικόνα για το έργο αυτό;',
     'archived' => 'Archived',
+    'archived_menu' => 'Archived',
     'save_project' => 'Αποθήκευση έργου',
 
     'error_mercurial' => 'Ο σύνδεσμος URL του ευμετάβλητου αποθετηρίου πρέπει να ξεκινάει με http:// ή https://',

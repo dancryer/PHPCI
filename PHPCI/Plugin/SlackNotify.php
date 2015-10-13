@@ -101,7 +101,6 @@ class SlackNotify implements \PHPCI\Plugin
 
         // Include an attachment which shows the status and hide the message
         if ($this->show_status) {
-
             $successfulBuild = $this->build->isSuccessful();
 
             if ($successfulBuild) {

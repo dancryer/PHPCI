@@ -188,7 +188,7 @@ class Builder implements LoggerAwareInterface
         $this->build->sendStatusPostback();
         $success = true;
 
-        $previous_build = $this->build->getProject()->getPreviousBuild();
+        $previous_build = $this->build->getProject()->getPreviousBuild($this->build->getBranch());
 
         if ($previous_build) {
             $previous_state = $previous_build->getStatus();

@@ -50,7 +50,7 @@ class BuildStatusController extends \PHPCI\Controller
         $branch = $this->getParam('branch', 'master');
         try {
             $project = $this->projectStore->getById($projectId);
-            $status = 'unknown';
+            $status  = Build::STATUS_NEW;
 
             if (!$project->getAllowPublicStatus()) {
                 return null;
@@ -60,24 +60,11 @@ class BuildStatusController extends \PHPCI\Controller
                 $build = $project->getLatestBuild($branch);
 
                 if (isset($build) && $build instanceof Build) {
-                    switch ($build->getStatus()) {
-                        case Build::STATUS_NEW:
-                            $status = 'unknown';
-                            break;
-                        case Build::STATUS_RUNNING:
-                            $status = 'running';
-                            break;
-                        case Build::STATUS_FAILED:
-                            $status = 'failed';
-                            break;
-                        case Build::STATUS_SUCCESS:
-                            $status = 'passing';
-                            break;
-                    }
+                    return $build->getStatus();
                 }
             }
         } catch (\Exception $e) {
-            $status = 'error';
+            $status = Build::STATUS_FAILED;
         }
 
         return $status;
@@ -155,11 +142,13 @@ class BuildStatusController extends \PHPCI\Controller
             return $response;
         }
 
+        list($text, $color) = $this->getImageTextAndColorFromStatus($status);
+
         $image = file_get_contents(sprintf(
             'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
             $label,
-            $status,
-            $this->getImageColorFromStatus($status),
+            $text,
+            $color,
             $style
         ));
 
@@ -216,25 +205,23 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-     * Return the color of the right side of the status badge, as a string,
-     * based on the status type.
+     * Return the image text and color based on the build
+     * status.
      *
-     * @param string $status
-     * @return string
+     * @param $status
+     * @return array
      */
-    protected function getImageColorFromStatus($status)
+    protected function getImageTextAndColorFromStatus($status)
     {
         switch ($status) {
-            case 'passing':
-                return 'green';
-            case 'running':
-                return 'orange';
-            case 'failed':
-            case 'error':
-                return 'red';
-            case 'unknown':
-            default:
-                return 'lightgrey';
+            case Build::STATUS_NEW:
+                return array('pending', 'blue');
+            case Build::STATUS_RUNNING:
+                return array('running', 'yellow');
+            case Build::STATUS_SUCCESS:
+                return array('success', 'green');
+            case Build::STATUS_FAILED:
+                return array('failed', 'red');
         }
     }
 }

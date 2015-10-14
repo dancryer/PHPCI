@@ -10,16 +10,20 @@
 
 namespace Tests\PHPCI\Controller;
 
+use PHPCI\Model\Build;
+
 class BuildStatusControllerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider getImageColorFromStatusDataProvider
+     * @dataProvider getImageTextAndColorFromStatusDataProvider
      *
      * @param string $status
+     * @param string $expectedText
      * @param string $expectedColor
      */
-    public function testGetImageColorFromStatusReturnsTheCorrectColorForEachStatus(
+    public function testGetImageTextAndColorFromStatusReturnsTheCorrectTextAndColorForEachStatus(
         $status,
+        $expectedText,
         $expectedColor
     ) {
         $buildStatusControllerMock =
@@ -32,24 +36,25 @@ class BuildStatusControllerTest extends \PHPUnit_Framework_TestCase
             new \ReflectionClass('PHPCI\Controller\BuildStatusController');
 
         $getImageColorFromStatusReflection =
-            $buildStatusControllerReflection->getMethod('getImageColorFromStatus');
+            $buildStatusControllerReflection->getMethod('getImageTextAndColorFromStatus');
         $getImageColorFromStatusReflection->setAccessible(true);
 
-        $this->assertEquals(
-            $expectedColor,
-            $getImageColorFromStatusReflection->invoke($buildStatusControllerMock, $status)
-        );
+        list($text, $color) = $getImageColorFromStatusReflection->invoke($buildStatusControllerMock, $status);
+
+        $this->assertEquals($expectedText, $text);
+        $this->assertEquals($expectedColor, $color);
     }
 
-    public function getImageColorFromStatusDataProvider()
+    /**
+     * @return array
+     */
+    public function getImageTextAndColorFromStatusDataProvider()
     {
         return array(
-            array('passing', 'green'),
-            array('running', 'orange'),
-            array('failed', 'red'),
-            array('error', 'red'),
-            array('unknown', 'lightgrey'),
-            array('test the default case', 'lightgrey'),
+            array(Build::STATUS_NEW, 'pending', 'blue'),
+            array(Build::STATUS_RUNNING, 'running', 'yellow'),
+            array(Build::STATUS_SUCCESS, 'success', 'green'),
+            array(Build::STATUS_FAILED, 'failed', 'red'),
         );
     }
 }

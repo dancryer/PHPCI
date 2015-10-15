@@ -230,6 +230,8 @@ class Build extends BuildBase
         $lineStart = null,
         $lineEnd = null
     ) {
+        unset($builder);
+        
         $error = new BuildError();
         $error->setBuild($this);
         $error->setCreatedDate(new \DateTime());

@@ -19,6 +19,10 @@ class BuildError extends BuildErrorBase
     const SEVERITY_NORMAL = 2;
     const SEVERITY_LOW = 3;
 
+    /**
+     * Get the language string key for this error's severity level.
+     * @return string
+     */
     public function getSeverityString()
     {
         switch ($this->getSeverity()) {
@@ -36,6 +40,10 @@ class BuildError extends BuildErrorBase
         }
     }
 
+    /**
+     * Get the class to apply to HTML elements representing this error.
+     * @return string
+     */
     public function getSeverityClass()
     {
         switch ($this->getSeverity()) {

@@ -276,6 +276,10 @@ class Build extends BuildBase
         exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
     }
 
+    /**
+     * Get the number of seconds a build has been running for.
+     * @return int
+     */
     public function getDuration()
     {
         $start = $this->getStarted();

@@ -19,6 +19,12 @@ use PHPCI\Model\BuildMeta;
  */
 class BuildMetaStore extends BuildMetaStoreBase
 {
+    /**
+     * Only used by an upgrade migration to move errors from build_meta to build_error
+     * @param $start
+     * @param $limit
+     * @return array
+     */
     public function getErrorsForUpgrade($start, $limit)
     {
         $query = 'SELECT * FROM build_meta

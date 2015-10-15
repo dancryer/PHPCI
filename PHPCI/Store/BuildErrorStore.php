@@ -16,6 +16,12 @@ use PHPCI\Store\Base\BuildErrorStoreBase;
  */
 class BuildErrorStore extends BuildErrorStoreBase
 {
+    /**
+     * Get a list of errors for a given build, since a given time.
+     * @param $buildId
+     * @param string $since date string
+     * @return array
+     */
     public function getErrorsForBuild($buildId, $since = null)
     {
         $query = 'SELECT * FROM build_error

@@ -144,8 +144,6 @@ CPD;
                     $file['line'],
                     (int) $file['line'] + (int) $duplication['lines']
                 );
-                $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
-
             }
 
             $warnings++;

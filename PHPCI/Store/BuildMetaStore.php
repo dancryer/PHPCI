@@ -25,15 +25,14 @@ class BuildMetaStore extends BuildMetaStoreBase
      * @param $limit
      * @return array
      */
-    public function getErrorsForUpgrade($start, $limit)
+    public function getErrorsForUpgrade($limit)
     {
         $query = 'SELECT * FROM build_meta
                     WHERE meta_key IN (\'phpmd-data\', \'phpcs-data\', \'phpdoccheck-data\')
-                    ORDER BY id ASC LIMIT :start, :limit';
+                    ORDER BY id ASC LIMIT :limit';
 
         $stmt = Database::getConnection('read')->prepare($query);
 
-        $stmt->bindValue(':start', $start, \PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {

@@ -151,7 +151,7 @@ class GithubBuild extends RemoteGitBuild
         $link = 'https://github.com/' . $reference . '/';
         $link .= 'blob/' . $branch . '/';
         $link .= '{FILE}';
-        $link .= '#L{LINE}';
+        $link .= '#L{LINE}-L{LINE_END}';
 
         return $link;
     }

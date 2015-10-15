@@ -49,7 +49,9 @@
         "robmorgan/phinx": "~0.4",
         "sensiolabs/ansi-to-html": "~1.1",
         "pda/pheanstalk": "~3.1",
-        "maknz/slack": "~1.7"
+        "maknz/slack": "~1.7",
+        "hipchat/hipchat-php": "~1.4",
+        "mremi/flowdock": "~1.0"
     },
 
     "require-dev": {
@@ -72,9 +74,6 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
-        "hipchat/hipchat-php": "Hipchat integration",
-        "phptal/phptal": "PHPTAL templating engine",
-        "maknz/slack": "Slack integration",
-        "mremi/flowdock": "Flowdock integration"
+        "phptal/phptal": "PHPTAL templating engine"
     }
 }

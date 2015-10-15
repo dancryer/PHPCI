@@ -1,6 +1,6 @@
 var warningsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-warnings-chart',
-    css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
+    css: 'col-xs-12',
     title: Lang.get('quality_trend'),
     keys: {
         'codeception-errors': Lang.get('codeception_errors'),

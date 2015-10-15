@@ -107,7 +107,7 @@ class UserBase extends Model
             'PRIMARY' => array('unique' => true, 'columns' => 'id'),
             'idx_email' => array('unique' => true, 'columns' => 'email'),
             'email' => array('unique' => true, 'columns' => 'email'),
-            'name' => array('unique' => true, 'columns' => 'name'),
+            'name' => array('columns' => 'name'),
     );
 
     /**

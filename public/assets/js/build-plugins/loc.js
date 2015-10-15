@@ -1,6 +1,6 @@
 var locPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-lines-chart',
-    css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
+    css: 'col-xs-12',
     title: Lang.get('lines_of_code'),
     lastData: null,
     displayOnUpdate: false,

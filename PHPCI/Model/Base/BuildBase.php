@@ -622,6 +622,18 @@ class BuildBase extends Model
     }
 
     /**
+     * Get BuildError models by BuildId for this Build.
+     *
+     * @uses \PHPCI\Store\BuildErrorStore::getByBuildId()
+     * @uses \PHPCI\Model\BuildError
+     * @return \PHPCI\Model\BuildError[]
+     */
+    public function getBuildBuildErrors()
+    {
+        return Factory::getStore('BuildError', 'PHPCI')->getByBuildId($this->getId());
+    }
+
+    /**
      * Get BuildMeta models by BuildId for this Build.
      *
      * @uses \PHPCI\Store\BuildMetaStore::getByBuildId()

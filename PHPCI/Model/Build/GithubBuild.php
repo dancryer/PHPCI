@@ -190,9 +190,16 @@ class GithubBuild extends RemoteGitBuild
     /**
      * @inheritDoc
      */
-    public function reportError(Builder $builder, $file, $line, $message)
-    {
-        $diffLineNumber = $this->getDiffLineNumber($builder, $file, $line);
+    public function reportError(
+        Builder $builder,
+        $plugin,
+        $message,
+        $severity = BuildError::SEVERITY_NORMAL,
+        $file = null,
+        $lineStart = null,
+        $lineEnd = null
+    ) {
+        $diffLineNumber = $this->getDiffLineNumber($builder, $file, $lineStart);
 
         if (!is_null($diffLineNumber)) {
             $helper = new Github();
@@ -207,6 +214,8 @@ class GithubBuild extends RemoteGitBuild
                 $helper->createCommitComment($repo, $commit, $file, $diffLineNumber, $message);
             }
         }
+
+        return parent::reportError($builder, $plugin, $message, $severity, $file, $lineStart, $lineEnd);
     }
 
     /**

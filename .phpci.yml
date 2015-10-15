@@ -8,6 +8,7 @@ build_settings:
     - "PHPCI/Migrations" # Ignore the migrations directory, as both PHPMD and PHPCS can't cope with them.
     - "PHPCI/Model/Base" # These files are auto-generated, and sometimes hit PHPMD complexity thresholds.
     - "PHPCI/Languages" # PHPCS fails on character counts for non-Latin languages
+    - "public/assets" # If there are any PHP files in here, we didn't write them.
 
 setup:
   composer:
@@ -32,7 +33,7 @@ test:
   php_docblock_checker:
     allowed_warnings: 0
 
-failure:
+broken:
   email:
     committer: true
     cc: ["php-ci@googlegroups.com"]

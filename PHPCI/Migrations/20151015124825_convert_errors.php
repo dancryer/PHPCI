@@ -47,7 +47,7 @@ class ConvertErrors extends AbstractMigration
                             $this->processPhpCpdMeta($meta);
                             break;
 
-                        case 'technicaldebt-data':
+                        case 'technical_debt-data':
                             $this->processTechnicalDebtMeta($meta);
                             break;
                     }

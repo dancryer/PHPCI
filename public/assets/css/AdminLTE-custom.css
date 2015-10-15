@@ -1,4 +1,4 @@
-.skin-blue .logo, .skin-blue .logo:hover  {
+.phpci .main-header .logo, .phpci .main-header .logo:hover  {
     background-image: url('/assets/img/logo-large.png');
     background-repeat: no-repeat;
     background-size: 40%;
@@ -74,16 +74,6 @@
     margin-left: 1px;
     margin-top: 19px;
     font-size: 11px;
-}
-
-.user-panel > .image {
-    padding-right: 15px;
-}
-
-.user-panel > .info {
-    padding: 0;
-    font-size: inherit;
-    line-height: inherit;
 }
 
 #phpunit-data th div { margin: 0 0.5em; }

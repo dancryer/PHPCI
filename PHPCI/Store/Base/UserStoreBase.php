@@ -75,25 +75,34 @@ class UserStoreBase extends Store
     }
 
     /**
-     * Get a single User by Name.
-     * @return null|User
+     * Get multiple User by Name.
+     * @return array
      */
-    public function getByName($value, $useConnection = 'read')
+    public function getByName($value, $limit = 1000, $useConnection = 'read')
     {
         if (is_null($value)) {
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM `user` WHERE `name` = :name LIMIT 1';
+
+        $query = 'SELECT * FROM `user` WHERE `name` = :name LIMIT :limit';
         $stmt = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':name', $value);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new User($data);
-            }
-        }
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        return null;
+            $map = function ($item) {
+                return new User($item);
+            };
+            $rtn = array_map($map, $res);
+
+            $count = count($rtn);
+
+            return array('items' => $rtn, 'count' => $count);
+        } else {
+            return array('items' => array(), 'count' => 0);
+        }
     }
 }

@@ -135,15 +135,18 @@ class Application extends b8\Application
      */
     protected function setLayoutVariables(View &$layout)
     {
-        /** @var \PHPCI\Store\ProjectStore $projectStore */
-        $projectStore = b8\Store\Factory::getStore('Project');
-        $layout->projects = $projectStore->getWhere(
-            array('archived' => (int)isset($_GET['archived'])),
-            50,
-            0,
-            array(),
-            array('title' => 'ASC')
-        );
+        $groups = array();
+        $groupStore = b8\Store\Factory::getStore('ProjectGroup');
+        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+
+        foreach ($groupList['items'] as $group) {
+            $thisGroup = array('title' => $group->getTitle());
+            $projects = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
+            $thisGroup['projects'] = $projects['items'];
+            $groups[] = $thisGroup;
+        }
+
+        $layout->groups = $groups;
     }
 
     /**

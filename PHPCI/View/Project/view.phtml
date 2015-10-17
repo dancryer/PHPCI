@@ -5,8 +5,16 @@
 </script>
 
 <div class="clearfix"  style="margin-bottom: 20px;">
+    <a class="btn btn-default" href="<?php print PHPCI_URL . 'project/edit/' . $project->getId(); ?>">
+        <?php Lang::out('edit_project'); ?>
+    </a>
+
+    <a  class="btn btn-danger" href="javascript:confirmDelete('<?php print PHPCI_URL . 'project/delete/' . $project->getId(); ?>', '<?php print Lang::out('project'); ?>', true)">
+        <?php Lang::out('delete_project'); ?>
+    </a>
+
     <div class="pull-right btn-group">
-        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?>/<?php echo urlencode($branch) ?>">
+        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?><?php echo !empty($branch) ? '/' . urlencode($branch) : '' ?>">
             <?php Lang::out('build_now'); ?>
         </a>
 

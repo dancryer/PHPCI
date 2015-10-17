@@ -69,8 +69,7 @@ class PackageBuild implements \PHPCI\Plugin
         }
 
         foreach ($this->format as $format) {
-            switch($format)
-            {
+            switch ($format) {
                 case 'tar':
                     $cmd = 'tar cfz "%s/%s.tar.gz" ./*';
                     break;

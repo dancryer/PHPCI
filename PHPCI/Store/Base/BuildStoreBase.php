@@ -21,10 +21,7 @@ class BuildStoreBase extends Store
     protected $primaryKey  = 'id';
 
     /**
-     * Returns a Build model by primary key.
-     * @param mixed $value
-     * @param string $useConnection
-     * @return \@appNamespace\Model\Build|null
+     * Get a Build by primary key (Id)
      */
     public function getByPrimaryKey($value, $useConnection = 'read')
     {
@@ -32,11 +29,8 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Returns a Build model by Id.
-     * @param mixed $value
-     * @param string $useConnection
-     * @throws HttpException
-     * @return \@appNamespace\Model\Build|null
+     * Get a single Build by Id.
+     * @return null|Build
      */
     public function getById($value, $useConnection = 'read')
     {
@@ -58,11 +52,7 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Returns an array of Build models by ProjectId.
-     * @param mixed $value
-     * @param int $limit
-     * @param string $useConnection
-     * @throws HttpException
+     * Get multiple Build by ProjectId.
      * @return array
      */
     public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
@@ -94,11 +84,7 @@ class BuildStoreBase extends Store
     }
 
     /**
-     * Returns an array of Build models by Status.
-     * @param mixed $value
-     * @param int $limit
-     * @param string $useConnection
-     * @throws HttpException
+     * Get multiple Build by Status.
      * @return array
      */
     public function getByStatus($value, $limit = 1000, $useConnection = 'read')

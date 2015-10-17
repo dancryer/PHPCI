@@ -166,10 +166,11 @@ class Mysql implements \PHPCI\Plugin
         $args = array(
             ':import_file' => escapeshellarg($import_file),
             ':decomp_cmd' => $decomp_cmd,
+            ':host' => escapeshellarg($this->host),
             ':user' => escapeshellarg($this->user),
             ':pass' => escapeshellarg($this->pass),
             ':database' => ($database === null)? '': escapeshellarg($database),
         );
-        return strtr('cat :import_file :decomp_cmd | mysql -u:user -p:pass :database', $args);
+        return strtr('cat :import_file :decomp_cmd | mysql -h:host -u:user -p:pass :database', $args);
     }
 }

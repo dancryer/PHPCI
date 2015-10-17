@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildError;
 
 /**
 * PHP Copy / Paste Detector - Allows PHP Copy / Paste Detector testing.
@@ -28,7 +29,7 @@ class PhpCpd implements \PHPCI\Plugin
 
     /**
      * @var string, based on the assumption the root may not hold the code to be
-     * tested, exteds the base path
+     * tested, extends the base path
      */
     protected $path;
 
@@ -74,7 +75,7 @@ class PhpCpd implements \PHPCI\Plugin
         if (count($this->ignore)) {
             $map = function ($item) {
                 // remove the trailing slash
-                $item = (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+                $item = rtrim($item, '/');
 
                 if (is_file($this->path . '/' . $item)) {
                     return ' --names-exclude ' . $item;
@@ -97,9 +98,8 @@ class PhpCpd implements \PHPCI\Plugin
 
         print $this->phpci->getLastOutput();
 
-        list($errorCount, $data) = $this->processReport(file_get_contents($tmpfilename));
+        $errorCount = $this->processReport(file_get_contents($tmpfilename));
         $this->build->storeMeta('phpcpd-warnings', $errorCount);
-        $this->build->storeMeta('phpcpd-data', $data);
 
         unlink($tmpfilename);
 
@@ -122,19 +122,10 @@ class PhpCpd implements \PHPCI\Plugin
         }
 
         $warnings = 0;
-        $data = array();
-
         foreach ($xml->duplication as $duplication) {
             foreach ($duplication->file as $file) {
                 $fileName = (string)$file['path'];
                 $fileName = str_replace($this->phpci->buildPath, '', $fileName);
-
-                $data[] = array(
-                    'file' => $fileName,
-                    'line_start' => (int) $file['line'],
-                    'line_end' => (int) $file['line'] + (int) $duplication['lines'],
-                    'code' => (string) $duplication->codefragment
-                );
 
                 $message = <<<CPD
 Copy and paste detected:
@@ -144,13 +135,20 @@ Copy and paste detected:
 ```
 CPD;
 
-                $this->build->reportError($this->phpci, $fileName, $file['line'], $message);
-
+                $this->build->reportError(
+                    $this->phpci,
+                    'php_cpd',
+                    $message,
+                    BuildError::SEVERITY_NORMAL,
+                    $fileName,
+                    $file['line'],
+                    (int) $file['line'] + (int) $duplication['lines']
+                );
             }
 
             $warnings++;
         }
 
-        return array($warnings, $data);
+        return $warnings;
     }
 }

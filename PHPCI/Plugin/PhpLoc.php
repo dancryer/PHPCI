@@ -71,7 +71,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $ignore = '';
         if (count($this->phpci->ignore)) {
             $map    = function ($item) {
-                return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
+                return ' --exclude ' . rtrim($item, '/');
             };
             $ignore = array_map($map, $this->phpci->ignore);
 

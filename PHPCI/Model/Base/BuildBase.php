@@ -118,7 +118,7 @@ class BuildBase extends Model
             'default' => null,
         ),
         'log' => array(
-            'type' => 'text',
+            'type' => 'mediumtext',
             'nullable' => true,
             'default' => null,
         ),
@@ -619,6 +619,18 @@ class BuildBase extends Model
     public function setProjectObject(\PHPCI\Model\Project $value)
     {
         return $this->setProjectId($value->getId());
+    }
+
+    /**
+     * Get BuildError models by BuildId for this Build.
+     *
+     * @uses \PHPCI\Store\BuildErrorStore::getByBuildId()
+     * @uses \PHPCI\Model\BuildError
+     * @return \PHPCI\Model\BuildError[]
+     */
+    public function getBuildBuildErrors()
+    {
+        return Factory::getStore('BuildError', 'PHPCI')->getByBuildId($this->getId());
     }
 
     /**

@@ -22,6 +22,8 @@ var PHPCI = {
             if (typeof PHPCI_PROJECT_ID != 'undefined') {
                 PHPCI.intervals.getProjectBuilds = setInterval(PHPCI.getProjectBuilds, 10000);
             }
+
+            PHPCI.uiUpdated();
         });
 
         $(window).on('builds-updated', function (e, data) {
@@ -79,16 +81,55 @@ var PHPCI = {
             });
         }
 
+    },
+
+    get: function (uri, success) {
+
+        $.ajax({
+            url: window.PHPCI_URL + uri,
+
+            success: function (data) {
+                success();
+                PHPCI.uiUpdated();
+            },
+
+            error: PHPCI.handleFailedAjax
+        });
+    },
+
+    handleFailedAjax: function (xhr) {
+        if (xhr.status == 401) {
+            window.location.href = window.PHPCI_URL + 'session/login';
+        }
+    },
+
+    uiUpdated: function () {
+        $('.duration').each(function () {
+            var seconds = $(this).data('duration');
+
+            if (seconds == 0) {
+                return;
+            }
+
+            $(this).text(moment.duration(seconds, 'seconds').humanize());
+        });
+
+        $('.datetime').each(function () {
+            var dateString = $(this).data('date');
+
+            if (!dateString) {
+                return;
+            }
+
+            $(this).text(moment(dateString).format('lll'));
+        });
     }
 };
 
 PHPCI.init();
 
-function handleFailedAjax(xhr)
-{
-    if (xhr.status == 401) {
-        window.location.href = window.PHPCI_URL + 'session/login';
-    }
+function handleFailedAjax(xhr) {
+    PHPCI.handleFailedAjax(xhr);
 }
 
 /**

@@ -31,7 +31,7 @@ class PosixProcessControl implements ProcessControlInterface
      * Sends a TERMINATE or KILL signal to the process using posix_kill.
      *
      * @param int $pid
-     * @param bool $forcefully Whetehr to send TERMINATE (false) or KILL (true).
+     * @param bool $forcefully Whether to send TERMINATE (false) or KILL (true).
      */
     public function kill($pid, $forcefully = false)
     {

@@ -71,7 +71,7 @@ class MailerFactory
         } else {
             // Check defaults
 
-            switch($configName) {
+            switch ($configName) {
                 case 'smtp_address':
                     return "localhost";
                 case 'default_mailto_address':

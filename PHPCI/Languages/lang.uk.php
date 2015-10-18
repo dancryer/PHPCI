@@ -414,5 +414,5 @@ PHPCI',
     'php_cpd' => 'PHP Copy/Paste Detector',
     'php_docblock_checker' => 'PHP Docblock Checker',
     'behat' => 'Behat',
-    'technical_debt' => 'Technical Debt',
+    'technical_debt' => 'Technical Debt'
 );

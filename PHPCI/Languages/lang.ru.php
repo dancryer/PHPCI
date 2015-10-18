@@ -51,6 +51,10 @@ PHPCI',
     'branch_x' => 'Ветка: %s',
     'created_x' => 'Создан: %s',
     'started_x' => 'Запущен: %s',
+    
+    // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
 
     // Sidebar
     'hello_name' => 'Привет, %s',

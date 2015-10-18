@@ -388,6 +388,12 @@ PHPCI',
     'plugin_missing' => 'Плагина не существует: %s',
     'tap_version' => 'TapParser поддерживает только TAP версии 13',
     'tap_error' => 'Некорректная TAP-строка, количество тестов не совпадает с заявленным.',
+    
+     // Error Levels:
+    'critical' => 'Критично',
+    'high' => 'Важно',
+    'normal' => 'Обычный',
+    'low' => 'Не приоритет',
 
     // Build Plugins:
     'no_tests_performed' => 'Никакие тесты не были запущены.',

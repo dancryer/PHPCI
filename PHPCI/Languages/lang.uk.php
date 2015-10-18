@@ -405,5 +405,14 @@ PHPCI',
     'build_file_missing' => 'Вказаний файл збірки не існує.',
     'property_file_missing' => 'Вказаний файл властивості не існує.',
     'could_not_process_report' => 'Неможливо обробити звіт, згенерований цією утилітою.',
-    'shell_not_enabled' => 'Плагін shell не увімкнений. Будь ласка, увімкніть його через config.yml.'
+    'shell_not_enabled' => 'Плагін shell не увімкнений. Будь ласка, увімкніть його через config.yml.',
+    
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt',
 );

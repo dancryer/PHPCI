@@ -42,6 +42,10 @@ PHPCI',
     'login' => 'Логин / Email адреса',
     'password' => 'Пароль',
     'log_in' => 'Увійти',
+    
+    // View Build
+    'errors' => 'Помилки',
+    'information' => 'Інформація',
 
 
     // Top Nav

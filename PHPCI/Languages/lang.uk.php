@@ -375,6 +375,12 @@ PHPCI',
     'plugin_missing' => 'Плагін не існує: %s',
     'tap_version' => 'TapParser підтримує тільки TAP версії 13',
     'tap_error' => 'Некоректний TAP-рядок, кількість тестів не співпадає із вказаними.',
+    
+    // Error Levels:
+    'critical' => 'Критично',
+    'high' => 'Пріорітетий',
+    'normal' => 'Звичайний',
+    'low' => 'Низько',
 
     // Build Plugins:
     'no_tests_performed' => 'Жодних тестів не було запущено.',

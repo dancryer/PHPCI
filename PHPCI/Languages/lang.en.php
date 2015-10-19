@@ -432,6 +432,7 @@ PHPCI',
     // Plugins that generate errors:
     'php_mess_detector' => 'PHP Mess Detector',
     'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_lint' => 'PHP Lint',
     'php_unit' => 'PHP Unit',
     'php_cpd' => 'PHP Copy/Paste Detector',
     'php_docblock_checker' => 'PHP Docblock Checker',

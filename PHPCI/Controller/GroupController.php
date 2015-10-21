@@ -14,6 +14,7 @@ use b8\Form;
 use b8\Store;
 use PHPCI\Controller;
 use PHPCI\Model\ProjectGroup;
+use PHPCI\Helper\Lang;
 
 /**
  * Project Controller - Allows users to create, edit and view projects.
@@ -90,11 +91,11 @@ class GroupController extends Controller
         $title = new Form\Element\Text('title');
         $title->setContainerClass('form-group');
         $title->setClass('form-control');
-        $title->setLabel('Group Title');
+        $title->setLabel(Lang::get('group_title'));
         $title->setValue($group->getTitle());
 
         $submit = new Form\Element\Submit();
-        $submit->setValue('Save Group');
+        $submit->setValue(Lang::get('group_save'));
 
         $form->addField($title);
         $form->addField($submit);

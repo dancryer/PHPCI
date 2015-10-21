@@ -1,20 +1,20 @@
+<?php use PHPCI\Helper\Lang; ?>
 <div class="clearfix"  style="margin-bottom: 20px;">
     <a class="btn btn-success pull-right" href="<?php print PHPCI_URL . 'group/edit'; ?>">
-        Add Group
+        <?php Lang::out('group_add'); ?>
     </a>
 </div>
 
-
 <div class="box box-primary">
     <div class="box-header">
-        <h3 class="box-title">Project Groups</h3>
+        <h3 class="box-title"><?php Lang::out('project_groups'); ?></h3>
     </div>
 
     <table class="table">
         <thead>
         <tr>
             <th>Title</th>
-            <th style="width: 100px;">Projects</th>
+            <th style="width: 100px;"><?php Lang::out('group_projects'); ?></th>
             <th style="width: 150px"></th>
         </tr>
         </thead>
@@ -25,12 +25,12 @@
                 <td><?php print count($group['projects']); ?></td>
                 <td>
                     <a class="btn btn-sm btn-default" href="<?php print PHPCI_URL . 'group/edit/' . $group['id']; ?>">
-                        Edit
+                        <?php Lang::out('group_edit'); ?>
                     </a>
 
                     <?php if (!count($group['projects'])): ?>
                     <a class="btn btn-sm btn-danger delete-group" href="<?php print PHPCI_URL . 'group/delete/' . $group['id']; ?>">
-                        Delete
+                        <?php Lang::out('group_delete'); ?>
                     </a>
                     <?php endif; ?>
                 </td>

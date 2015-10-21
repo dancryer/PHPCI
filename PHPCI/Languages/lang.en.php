@@ -59,6 +59,7 @@ PHPCI',
     'dashboard' => 'Dashboard',
     'admin_options' => 'Admin Options',
     'add_project' => 'Add Project',
+    'project_groups' => 'Project Groups',
     'settings' => 'Settings',
     'manage_users' => 'Manage Users',
     'plugins' => 'Plugins',
@@ -152,6 +153,15 @@ PHPCI',
                                 as a "POST" service in the
                                 <a href="https://bitbucket.org/%s/admin/services">
                                 Services</a> section of your Bitbucket repository.',
+
+    // Project Groups
+    'group_projects' => 'Projects',
+    'group_edit'     => 'Edit',
+    'group_delete'   => 'Delete',
+    'group_add'      => 'Add Group',
+    'group_add_edit' => 'Add / Edit Group',
+    'group_title'    => 'Group Title',
+    'group_save'     => 'Save Group',
 
     // View Build
     'errors' => 'Errors',

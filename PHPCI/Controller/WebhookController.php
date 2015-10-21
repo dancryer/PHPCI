@@ -175,6 +175,11 @@ class WebhookController extends \b8\Controller
 
     /**
      * Bitbucket POST service (old style).
+     *
+     * @param array   $payload incoming request in payload
+     * @param Project $project current project
+     *
+     * @return array
      */
     protected function bitbucketService($payload, $project)
     {

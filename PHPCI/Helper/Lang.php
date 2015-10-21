@@ -18,9 +18,25 @@ use b8\Config;
  */
 class Lang
 {
-    protected static $language = null;
-    protected static $strings = array();
+    /**
+     * @var string
+     */
+    protected static $language  = null;
+
+    /**
+     * @var array
+     */
     protected static $languages = array();
+
+    /**
+     * @var array
+     */
+    protected static $strings    = array();
+
+    /**
+     * @var array
+     */
+    protected static $en_strings = array();
 
     /**
      * Get a specific string from the language file.
@@ -34,6 +50,9 @@ class Lang
 
         if (array_key_exists($string, self::$strings)) {
             $vars[0] = self::$strings[$string];
+            return call_user_func_array('sprintf', $vars);
+        } elseif ('en' !== self::$language && array_key_exists($string, self::$en_strings)) {
+            $vars[0] = self::$en_strings[$string];
             return call_user_func_array('sprintf', $vars);
         }
 
@@ -111,6 +130,7 @@ class Lang
      */
     public static function init(Config $config)
     {
+        self::$en_strings = self::loadLanguage('en');
         self::loadAvailableLanguages();
 
         // Try cookies first:
@@ -140,17 +160,22 @@ class Lang
 
         // Fall back to English:
         self::$language = 'en';
-        self::$strings = self::loadLanguage();
+        self::$strings  = self::loadLanguage();
     }
 
     /**
      * Load a specific language file.
      *
+     * @param string $language
+     *
      * @return string[]|null
      */
-    protected static function loadLanguage()
+    protected static function loadLanguage($language = null)
     {
-        $langFile = PHPCI_DIR . 'PHPCI/Languages/lang.' . self::$language . '.php';
+        $language = $language
+            ? $language
+            : self::$language;
+        $langFile = PHPCI_DIR . 'PHPCI/Languages/lang.' . $language . '.php';
 
         if (!file_exists($langFile)) {
             return null;

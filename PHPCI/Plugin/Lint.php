@@ -161,9 +161,7 @@ class Lint implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     protected function lintFile($php, $path)
     {
-        $success = true;
-
-        if (!$this->phpci->executeCommand($php . ' -d display_errors=0 -l "%s" 2>&1', $this->phpci->buildPath . $path)) {
+        if (!$this->phpci->executeCommand($php . ' -d error_reporting=E_ALL -d display_errors=0 -n -l "%s" 2>&1', $this->phpci->buildPath . $path)) {
             $output = $this->phpci->getLastOutput();
 
             preg_match('/Parse error:\s*syntax error,(.+?)\s+in\s+.+?\s*line\s+(\d+)/', $output, $matches);

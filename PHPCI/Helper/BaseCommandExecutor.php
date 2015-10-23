@@ -162,7 +162,12 @@ abstract class BaseCommandExecutor implements CommandExecutor
                 $this->logger->log(Lang::get('found_in_path', $composerBin, $bin), LogLevel::DEBUG);
                 return $composerBin . '/' . $bin;
             }
-
+            
+            if (is_dir($this->buildPath) && is_file($this->buildPath.$bin)) {
+                $this->logger->log(Lang::get('found_in_path', $this->buildPath, $bin), LogLevel::DEBUG);
+                return $this->buildPath . $bin;
+            }
+            
             if (is_file($this->rootDir . $bin)) {
                 $this->logger->log(Lang::get('found_in_path', 'root', $bin), LogLevel::DEBUG);
                 return $this->rootDir . $bin;

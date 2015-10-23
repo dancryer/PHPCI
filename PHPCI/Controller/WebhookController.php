@@ -85,30 +85,25 @@ class WebhookController extends \b8\Controller
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
-        
-        /*
-         * support both old services and new webhooks
-         */
-        
+    
+        // Support both old services and new webhooks
         if ($payload = $this->getParam('payload')) {
             return $this->bitbucketService(json_decode($payload, true), $project);
         }
-        
+
         $payload = json_decode(file_get_contents("php://input"), true);
-        
+
         if (empty($payload['push']['changes'])) {
-            /*
-             * invalid event from bitbucket
-             */
+            // Invalid event from bitbucket
             return [
                 'status' => 'failed',
                 'commits' => []
             ];
         }
-        
+
         return $this->bitbucketWebhook($payload, $project);
     }
-    
+
     /**
      * Bitbucket webhooks.
      */
@@ -137,7 +132,7 @@ class WebhookController extends \b8\Controller
 
         return array('status' => $status, 'commits' => $results);
     }
-    
+
     /**
      * Bitbucket POST service.
      */

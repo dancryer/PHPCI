@@ -38,7 +38,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
-        $path = $builder->buildPath . '/composer.json';
+        $path = $builder->buildPath . DIRECTORY_SEPARATOR . 'composer.json';
 
         if (file_exists($path) && $stage == 'setup') {
             return true;
@@ -55,16 +55,16 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path = $phpci->buildPath;
-        $this->phpci = $phpci;
-        $this->build = $build;
-        $this->directory = $path;
-        $this->action = 'install';
+        $path             = $phpci->buildPath;
+        $this->phpci      = $phpci;
+        $this->build      = $build;
+        $this->directory  = $path;
+        $this->action     = 'install';
         $this->preferDist = false;
-        $this->nodev = false;
+        $this->nodev      = false;
 
         if (array_key_exists('directory', $options)) {
-            $this->directory = $path . '/' . $options['directory'];
+            $this->directory = $path . DIRECTORY_SEPARATOR . $options['directory'];
         }
 
         if (array_key_exists('action', $options)) {

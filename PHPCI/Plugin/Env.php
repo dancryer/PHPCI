@@ -52,7 +52,7 @@ class Env implements \PHPCI\Plugin
                 // This allows the standard syntax: "FOO: bar"
                 $env_var = "$key=$value";
             }
-            
+
             if (!putenv($this->phpci->interpolate($env_var))) {
                 $success = false;
                 $this->phpci->logFailure(Lang::get('unable_to_set_env'));

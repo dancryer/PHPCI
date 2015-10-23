@@ -1,36 +1,162 @@
 <?php use PHPCI\Helper\Lang; ?>
-<div class="build-info-panel box box-solid">
-
-    <div class="box-header">
-        <h1 class="box-title">
-            <?php Lang::out('committed_by_x', $build->getCommitterEmail()); ?>
-            <label class="pull-right label"></label>
-        </h1>
-    </div>
-
-    <div class="box-body">
-        <img class="pull-left" src="//www.gravatar.com/avatar/<?php print md5($build->getCommitterEmail()); ?>?d=mm">
-
-        <div id="build-info">
-            <?php if ($build->getCommitMessage()): ?>
-                <div class="commit-message">
-                    <?php print $build->getCommitMessage(); ?>
-                </div>
-            <?php endif; ?>
-
-            <?php Lang::out('branch_x', $build->getBranch()); ?>
-
-            <?php if ($build->getCommitId() != 'Manual'): ?>
-                <br><?php Lang::out('commit_id_x', $build->getCommitId()); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
 
 <div class="row">
-	<div class="col-lg-12">
-		<div id="status"></div>
-        <div id="plugins" class="row"></div>
+    <div class="col-sm-4">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Build Details
+                </h3>
+            </div>
+
+            <div class="box-body no-padding">
+                <table class="table">
+                    <tr>
+                        <th>Project</th>
+                        <td style="text-align: right">
+                            <a href="<?php print PHPCI_URL . 'project/view/' . $build->getProjectId(); ?>">
+                                <i class="fa fa-<?php print $build->getProject()->getIcon(); ?>"></i>
+                                <?php print $build->getProject()->getTitle(); ?>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Branch</th>
+                        <td style="text-align: right">
+                            <a target="_blank" href="<?php print $build->getBranchLink(); ?>">
+                                <span class="label label-default"><?php print $build->getBranch(); ?></span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Duration</th>
+                        <td style="text-align: right" class="build-duration duration" data-duration="<?php print $build->getDuration(); ?>">
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Commit Details
+                </h3>
+            </div>
+
+            <div class="box-body no-padding">
+                <table class="table">
+                    <tr>
+                        <th>Commit</th>
+                        <td style="text-align: right">
+                            <a target="_blank" href="<?php print $build->getCommitLink(); ?>">
+                                <?php print substr($build->getCommitId(), 0, 7); ?>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Committer</th>
+                        <td style="text-align: right">
+                            <?php print $build->getCommitterEmail(); ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <?php print $build->getCommitMessage(); ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Timing
+                </h3>
+            </div>
+
+            <div class="box-body no-padding">
+                <table class="table">
+                    <tr>
+                        <th>Created</th>
+                        <td style="text-align: right" class="build-created datetime" data-date="<?php print $build->getCreated() ? $build->getCreated()->format('Y-m-d H:i:s') : ''; ?>">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Started</th>
+                        <td style="text-align: right" class="build-started datetime" data-date="<?php print $build->getStarted() ? $build->getStarted()->format('Y-m-d H:i:s') : ''; ?>">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Finished</th>
+                        <td style="text-align: right" class="build-finished datetime" data-date="<?php print $build->getFinished() ? $build->getFinished()->format('Y-m-d H:i:s') : ''; ?>">
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#log" data-toggle="tab"><i class="fa fa-cogs"></i> <?php print Lang::get('build_log'); ?></a>
+        </li>
+        <li class="">
+            <a href="#errors" data-toggle="tab">
+                <i class="fa fa-exclamation-triangle"></i>  <?php print Lang::get('errors'); ?>
+                <?php if ($data['errors'] == 0): ?>
+                    <span class="errors-label label label-danger" style="display: none">0</span>
+                <?php else: ?>
+                    <span class="errors-label label label-danger"><?php print $data['errors']; ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li class="">
+            <a href="#information" data-toggle="tab"><i class="fa fa-info-circle"></i>  <?php print Lang::get('information'); ?></a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="log">
+            <pre style="height: 400px; overflow-y: auto;"><?php print $data['log']; ?></pre>
+        </div>
+
+        <div class="tab-pane" id="errors">
+            <table class="errors-table table table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Severity</th>
+                        <th>Plugin</th>
+                        <th>File</th>
+                        <th data-orderable="false">Lines</th>
+                        <th data-orderable="false">Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php print $data['error_html']; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane" id="information">
+            <div id="plugins" class="row"></div>
+        </div>
     </div>
 </div>
 
@@ -38,14 +164,13 @@
 <script>
 
     var ActiveBuild = new Build(<?php print $build->getId() ?>);
-    ActiveBuild.buildData = <?php print $data; ?>;
-    ActiveBuild.fileLinkTemplate = <?php print json_encode($build->getFileLinkTemplate()); ?>;
+    ActiveBuild.setupBuild(<?php print json_encode($data); ?>, <?php print json_encode($build->getFileLinkTemplate()); ?>);
 
 </script>
 
 <?php
 foreach ($plugins as $plugin) {
-    print '<script src="'.PHPCI_URL.'assets/js/build-plugins/' . $plugin . '"></script>';
+    print '<script src="'.PHPCI_URL.'assets/js/build-plugins/' . $plugin . '"></script>' . PHP_EOL;
 }
 ?>
 
@@ -59,47 +184,7 @@ foreach ($plugins as $plugin) {
                 "<?php echo PHPCI_URL ?>build/delete/<?php print $build->getId(); ?>", "Build"
             ).onCloseConfirmed = function () {window.location = '/'};
         });
-
-        $(window).on('build-updated', function(data) {
-            updateBuildStatus(data.queryData.status);
-        });
-
-        updateBuildStatus(<?php print $build->getStatus(); ?>);
     });
 
-    function updateBuildStatus(status) {
-        switch (status) {
-            case 0:
-                $('.build-info-panel')
-                    .removeClass('bg-yellow')
-                    .removeClass('bg-green')
-                    .removeClass('bg-red')
-                    .addClass('bg-blue');
-                break;
 
-            case 1:
-                $('.build-info-panel')
-                    .removeClass('bg-green')
-                    .removeClass('bg-red')
-                    .removeClass('bg-blue')
-                    .addClass('bg-yellow');
-                break;
-
-            case 2:
-                $('.build-info-panel')
-                    .removeClass('bg-yellow')
-                    .removeClass('bg-red')
-                    .removeClass('bg-blue')
-                    .addClass('bg-green');
-                break;
-
-            case 3:
-                $('.build-info-panel')
-                    .removeClass('bg-yellow')
-                    .removeClass('bg-green')
-                    .removeClass('bg-blue')
-                    .addClass('bg-red');
-                break;
-        }
-    }
 </script>

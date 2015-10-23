@@ -1,0 +1,37 @@
+<?php
+use PHPCI\Helper\Lang;
+
+$linkTemplate = $build->getFileLinkTemplate();
+
+/** @var \PHPCI\Model\BuildError $error */
+foreach ($errors as $error):
+
+    $link = str_replace('{FILE}', $error->getFile(), $linkTemplate);
+    $link = str_replace('{LINE}', $error->getLineStart(), $link);
+    $link = str_replace('{LINE_END}', $error->getLineEnd(), $link);
+?>
+
+   <tr class="bg-<?php print $error->getSeverityClass(); ?>">
+       <td>
+           <span class="label label-<?php print $error->getSeverityClass(); ?>">
+               <?php print Lang::get($error->getSeverityString()); ?>
+           </span>
+       </td>
+       <td><?php print Lang::get($error->getPlugin()); ?></td>
+       <td><a href="<?php print $link; ?>" target="_blank"><?php print $error->getFile(); ?></a></td>
+       <td>
+           <a href="<?php print $link; ?>" target="_blank">
+           <?php
+           if ($error->getLineStart() == $error->getLineEnd() || !$error->getLineEnd()) {
+               print $error->getLineStart();
+           } else {
+               print $error->getLineStart() . ' - ' . $error->getLineEnd();
+           }
+           ?>
+           </a>
+       </td>
+       <td><?php print $error->getMessage(); ?></td>
+
+   </tr>
+
+<?php endforeach; ?>

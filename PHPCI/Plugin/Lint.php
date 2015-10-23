@@ -41,9 +41,9 @@ class Lint implements PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
         $this->build = $build;
-        $this->directories    = array('');
+        $this->directories = array('');
         $this->ignore = $phpci->ignore;
 
         if (!empty($options['directory'])) {
@@ -116,7 +116,7 @@ class Lint implements PHPCI\Plugin
                 continue;
             }
 
-            $itemPath = $path . $item->getFilename();
+            $itemPath = $path . '/' . $item->getFilename();
 
             if (in_array($itemPath, $this->ignore)) {
                 continue;

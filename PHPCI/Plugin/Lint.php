@@ -93,7 +93,7 @@ class Lint implements PHPCI\Plugin
 
         if ($item->isFile() && $item->getExtension() == 'php' && !$this->lintFile($php, $itemPath)) {
             $success = false;
-        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . '/')) {
+        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . DIRECTORY_SEPARATOR)) {
             $success = false;
         }
 
@@ -116,7 +116,8 @@ class Lint implements PHPCI\Plugin
                 continue;
             }
 
-            $itemPath = $path . '/' . $item->getFilename();
+            $itemPath  = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $itemPath .= ltrim($item->getFilename(), DIRECTORY_SEPARATOR);
 
             if (in_array($itemPath, $this->ignore)) {
                 continue;

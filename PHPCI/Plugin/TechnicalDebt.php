@@ -163,7 +163,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             }
 
             // Ignore hidden files, else .git, .sass_cache, etc. all get looped over
-            if (stripos($filePath, '/.') !== false) {
+            if (stripos($filePath, DIRECTORY_SEPARATOR . '.') !== false) {
                 $skipFile = true;
             }
 

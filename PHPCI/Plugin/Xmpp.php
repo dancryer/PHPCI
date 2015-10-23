@@ -132,8 +132,9 @@ class XMPP implements \PHPCI\Plugin
      */
     public function findConfigFile()
     {
-        if (file_exists($this->phpci->buildPath . '/.sendxmpprc')) {
-            if (md5(file_get_contents($this->phpci->buildPath . '/.sendxmpprc')) !== md5($this->getConfigFormat())) {
+        if (file_exists($this->phpci->buildPath . DIRECTORY_SEPARATOR . '.sendxmpprc')) {
+            if (md5(file_get_contents($this->phpci->buildPath . DIRECTORY_SEPARATOR . '.sendxmpprc'))
+                !== md5($this->getConfigFormat())) {
                 return null;
             }
 
@@ -160,7 +161,7 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Try to build conf file
          */
-        $config_file = $this->phpci->buildPath . '/.sendxmpprc';
+        $config_file = $this->phpci->buildPath . DIRECTORY_SEPARATOR . '.sendxmpprc';
         if (is_null($this->findConfigFile())) {
             file_put_contents($config_file, $this->getConfigFormat());
             chmod($config_file, 0600);
@@ -174,7 +175,7 @@ class XMPP implements \PHPCI\Plugin
             $tls = ' -t';
         }
 
-        $message_file = $this->phpci->buildPath . '/' . uniqid('xmppmessage');
+        $message_file = $this->phpci->buildPath . DIRECTORY_SEPARATOR . uniqid('xmppmessage');
         if ($this->buildMessage($message_file) === false) {
             return false;
         }

@@ -213,7 +213,7 @@ class Phar implements \PHPCI\Plugin
         $content  = '';
         $filename = $this->getStub();
         if ($filename) {
-            $content = file_get_contents($this->getPHPCI()->buildPath . '/' . $this->getStub());
+            $content = file_get_contents($this->getPHPCI()->buildPath . DIRECTORY_SEPARATOR . $this->getStub());
         }
         return $content;
     }
@@ -227,7 +227,8 @@ class Phar implements \PHPCI\Plugin
         $success = false;
 
         try {
-            $phar = new PHPPhar($this->getDirectory() . '/' . $this->getFilename(), 0, $this->getFilename());
+            $file = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getFilename();
+            $phar = new PHPPhar($file, 0, $this->getFilename());
             $phar->buildFromDirectory($this->getPHPCI()->buildPath, $this->getRegExp());
 
             $stub = $this->getStubContent();
@@ -236,7 +237,6 @@ class Phar implements \PHPCI\Plugin
             }
 
             $success = true;
-
         } catch (Exception $e) {
             $this->getPHPCI()->log(Lang::get('phar_internal_error'));
             $this->getPHPCI()->log($e->getMessage());

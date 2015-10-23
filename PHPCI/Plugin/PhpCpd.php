@@ -75,9 +75,9 @@ class PhpCpd implements \PHPCI\Plugin
         if (count($this->ignore)) {
             $map = function ($item) {
                 // remove the trailing slash
-                $item = rtrim($item, '/');
+                $item = rtrim($item, DIRECTORY_SEPARATOR);
 
-                if (is_file($this->path . '/' . $item)) {
+                if (is_file(rtrim($this->path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item)) {
                     return ' --names-exclude ' . $item;
                 } else {
                     return ' --exclude ' . $item;

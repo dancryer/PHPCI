@@ -4,7 +4,8 @@
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-4": { "": "src/" }
+        "psr-4": { "": "src/" },
+        "files": [ "app/AppKernel.php" ]
     },
     "autoload-dev": {
         "psr-4": { "Tests\\": "tests/" }
@@ -14,7 +15,6 @@
         "symfony/symfony": "3.0.x-dev",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
-        "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.7@dev",
         "sensio/distribution-bundle": "~5.0@dev",

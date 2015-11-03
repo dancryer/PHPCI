@@ -89,7 +89,7 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
     drawChart: function () {
         var self = this;
 
-        if ($('#information').hasClass('active') && self.chartData) {
+        if ($('#information').hasClass('active') && self.chartData && self.lastData) {
             $('#build-lines-chart').show();
 
             var ctx = $("#phploc-lines-chart").get(0).getContext("2d");

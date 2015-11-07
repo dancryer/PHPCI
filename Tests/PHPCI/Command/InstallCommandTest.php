@@ -107,6 +107,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             '--admin-name' => 'phpci4',
             '--admin-pass' => 'phpci5',
             '--url' => 'http://test.phpci.org',
+            '--queue-disabled' => null,
         );
 
         if (!is_null($exclude)) {

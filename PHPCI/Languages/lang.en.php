@@ -338,6 +338,7 @@ PHPCI',
     'enter_phpci_url' => 'Your PHPCI URL ("http://phpci.local" for example): ',
 
     'enter_db_host' => 'Please enter your MySQL host [localhost]: ',
+    'enter_db_port' => 'Please enter your MySQL port [3306]: ',
     'enter_db_name' => 'Please enter your MySQL database name [phpci]: ',
     'enter_db_user' => 'Please enter your MySQL username [phpci]: ',
     'enter_db_pass' => 'Please enter your MySQL password: ',

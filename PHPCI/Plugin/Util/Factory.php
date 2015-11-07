@@ -8,8 +8,8 @@ namespace PHPCI\Plugin\Util;
  */
 class Factory
 {
-    const TYPE_ARRAY = "array";
-    const TYPE_CALLABLE = "callable";
+    const TYPE_ARRAY             = "array";
+    const TYPE_CALLABLE          = "callable";
     const INTERFACE_PHPCI_PLUGIN = '\PHPCI\Plugin';
 
     private $currentPluginOptions;

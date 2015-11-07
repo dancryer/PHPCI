@@ -52,9 +52,9 @@ class Email implements \PHPCI\Plugin
         Build $build,
         array $options = array()
     ) {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
-        $this->options      = $options;
+        $this->phpci   = $phpci;
+        $this->build   = $build;
+        $this->options = $options;
     }
 
     /**

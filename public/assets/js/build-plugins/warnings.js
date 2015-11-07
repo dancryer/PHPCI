@@ -101,12 +101,11 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
 
             var i = 0;
             for (var key in self.keys) {
-                self.chartData[i].data.push(parseInt(self.data[build][key]));
+
+                self.chartData.datasets[i].data.push(parseInt(self.data[build][key]));
                 i++;
             }
         }
-
-        console.log(self.chartData);
 
         self.drawChart();
     },

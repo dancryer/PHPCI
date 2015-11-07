@@ -73,14 +73,16 @@ var Build = Class.extend({
         var uri = 'build/meta/' + self.buildId;
         var query = query || {};
 
-        if (name == 'build-updated') {
-            uri = 'build/data/' + self.buildId + '?since=' + self.buildData.since;
-        }
-
         var cb = function() {
+            var fullUri = window.PHPCI_URL + uri;
+
+            if (name == 'build-updated') {
+                fullUri = window.PHPCI_URL + 'build/data/' + self.buildId + '?since=' + self.buildData.since;
+            }
+
             $.ajax({
                 dataType: "json",
-                url: window.PHPCI_URL + uri,
+                url: fullUri,
                 data: query,
                 success: function(data) {
                     $(window).trigger({type: name, queryData: data});

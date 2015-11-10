@@ -22,7 +22,7 @@
         "incenteev/composer-parameter-handler": "~2.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~3.0"
     },
     "scripts": {
         "post-install-cmd": [

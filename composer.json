@@ -13,8 +13,9 @@
     "require": {
         "php": ">=5.5.9",
         "symfony/symfony": "3.0.*@dev",
-        "doctrine/orm": "^2.4.8",
-        "doctrine/doctrine-bundle": "~1.4",
+        "doctrine/orm": "~2.5@dev",
+        "doctrine/doctrine-bundle": "~1.6@dev",
+        "doctrine/doctrine-cache-bundle": "~1.0@dev",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.7@dev",
         "sensio/distribution-bundle": "~5.0@dev",

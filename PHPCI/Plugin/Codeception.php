@@ -83,7 +83,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
-        $this->path = 'tests/_output/';
+        $this->path = 'tests' . DIRECTORY_SEPARATOR . '_output' . DIRECTORY_SEPARATOR;
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
@@ -148,9 +148,9 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $output = $parser->parse();
 
         $meta = array(
-            'tests' => $parser->getTotalTests(),
+            'tests'     => $parser->getTotalTests(),
             'timetaken' => $parser->getTotalTimeTaken(),
-            'failures' => $parser->getTotalFailures()
+            'failures'  => $parser->getTotalFailures()
         );
 
         $this->build->storeMeta('codeception-meta', $meta);

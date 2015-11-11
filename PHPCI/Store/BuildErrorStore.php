@@ -31,7 +31,7 @@ class BuildErrorStore extends BuildErrorStoreBase
             $query .= ' AND created_date > :since';
         }
 
-        $query .= ' LIMIT 5000';
+        $query .= ' LIMIT 15000';
 
         $stmt = Database::getConnection('read')->prepare($query);
 

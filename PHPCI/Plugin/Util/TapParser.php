@@ -235,18 +235,20 @@ class TapParser
      */
     protected function processYamlBlock($indent)
     {
-        $startLine = $this->lineNumber+1;
-        $endLine = $indent.'...';
+        $startLine = $this->lineNumber + 1;
+        $endLine   = $indent . '...';
         $yamlLines = array();
+
         do {
             $line = $this->nextLine();
+
             if ($line === false) {
                 throw new Exception(Lang::get('tap_error_endless_yaml', $startLine));
             } elseif ($line === $endLine) {
                 break;
             }
-            $yamlLines[] = substr($line, strlen($indent));
 
+            $yamlLines[] = substr($line, strlen($indent));
         } while (true);
 
         return Yaml::parse(join("\n", $yamlLines));

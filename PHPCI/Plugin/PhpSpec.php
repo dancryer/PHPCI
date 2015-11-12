@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpSpec implements PHPCI\Plugin
+class PhpSpec extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */

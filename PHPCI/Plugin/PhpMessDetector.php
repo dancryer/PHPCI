@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * PHP Mess Detector Plugin - Allows PHP Mess Detector testing.
@@ -19,8 +20,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpMessDetector extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */

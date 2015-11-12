@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Irc implements \PHPCI\Plugin
+class Irc extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     protected $phpci;
     protected $build;
     protected $message;

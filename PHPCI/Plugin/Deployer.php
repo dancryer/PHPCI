@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Deployer implements \PHPCI\Plugin
+class Deployer extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     protected $webhookUrl;
     protected $reason;
 

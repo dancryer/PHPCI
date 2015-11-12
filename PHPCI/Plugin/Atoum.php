@@ -17,8 +17,13 @@ use PHPCI\Model\Build;
  * Atoum plugin, runs Atoum tests within a project.
  * @package PHPCI\Plugin
  */
-class Atoum implements \PHPCI\Plugin
+class Atoum extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     private $args;
     private $config;
     private $directory;

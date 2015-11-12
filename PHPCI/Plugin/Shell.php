@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Shell implements \PHPCI\Plugin
+class Shell extends AbstractPlugin
 {
     /**
      * @var \PHPCI\Builder

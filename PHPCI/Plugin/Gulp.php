@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Gulp implements \PHPCI\Plugin
+class Gulp extends AbstractPlugin
 {
     protected $directory;
     protected $task;

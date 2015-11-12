@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Pdepend implements \PHPCI\Plugin
+class Pdepend extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $args;
     /**
      * @var \PHPCI\Builder

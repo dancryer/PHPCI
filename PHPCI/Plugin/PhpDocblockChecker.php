@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * PHP Docblock Checker Plugin - Checks your PHP files for appropriate uses of Docblocks
@@ -19,8 +20,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpDocblockChecker implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpDocblockChecker extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */

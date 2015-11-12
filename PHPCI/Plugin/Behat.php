@@ -20,8 +20,13 @@ use PHPCI\Model\BuildError;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Behat implements \PHPCI\Plugin
+class Behat extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $phpci;
     protected $build;
     protected $features;

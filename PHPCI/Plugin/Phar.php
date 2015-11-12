@@ -10,7 +10,7 @@ use Phar as PHPPhar;
 /**
  * Phar Plugin
  */
-class Phar implements \PHPCI\Plugin
+class Phar extends AbstractPlugin
 {
     /**
      * PHPCI

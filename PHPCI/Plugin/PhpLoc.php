@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\ZeroConfigPlugin;
 
 /**
  * PHP Loc - Allows PHP Copy / Lines of Code testing.
@@ -19,7 +20,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpLoc extends AbstractPlugin implements ZeroConfigPlugin
 {
     /**
      * @var string

@@ -14,6 +14,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TestResultParsers\Codeception as Parser;
 use Psr\Log\LogLevel;
+use PHPCI\ZeroConfigPlugin;
 
 /**
  * Codeception Plugin - Enables full acceptance, unit, and functional testing.
@@ -23,8 +24,13 @@ use Psr\Log\LogLevel;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
+class Codeception extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /** @var string */
     protected $args = '';
 

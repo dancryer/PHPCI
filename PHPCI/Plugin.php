@@ -15,5 +15,6 @@ namespace PHPCI;
 */
 interface Plugin
 {
+    public function isAllowedInStage($stage);
     public function execute();
 }

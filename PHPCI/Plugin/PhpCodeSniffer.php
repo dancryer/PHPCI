@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Model\BuildError;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * PHP Code Sniffer Plugin - Allows PHP Code Sniffer testing.
@@ -20,8 +21,13 @@ use PHPCI\Model\BuildError;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpCodeSniffer extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */

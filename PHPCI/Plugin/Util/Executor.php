@@ -138,7 +138,7 @@ class Executor
             $this->setPluginStatus($stage, $plugin, Build::STATUS_RUNNING);
 
             // Try and execute it
-            if ($this->executePlugin($plugin, $options)) {
+            if ($this->executePlugin($plugin, $options, $stage)) {
                 // Execution was successful
                 $this->logger->logSuccess(Lang::get('plugin_success'));
                 $this->setPluginStatus($stage, $plugin, Build::STATUS_SUCCESS);
@@ -166,8 +166,12 @@ class Executor
 
     /**
      * Executes a given plugin, with options and returns the result.
+     * @param string $plugin Plugin name
+     * @param array $options Plugin options (from phpci.yml)
+     * @param string $stage Stage name
+     * @return bool
      */
-    public function executePlugin($plugin, $options)
+    public function executePlugin($plugin, $options, $stage)
     {
         // Any plugin name without a namespace separator is a PHPCI built in plugin
         // if not we assume it's a fully name-spaced class name that implements the plugin interface.
@@ -188,6 +192,12 @@ class Executor
         try {
             // Build and run it
             $obj = $this->pluginFactory->buildPlugin($class, $options);
+
+            if (!$obj->isAllowedInStage($stage)) {
+                $this->logger->logFailure('Plugin "' . $plugin . '" cannot be run in stage: ' . $stage);
+                return false;
+            }
+
             return $obj->execute();
         } catch (\Exception $ex) {
             $this->logger->logFailure(Lang::get('exception') . $ex->getMessage(), $ex);

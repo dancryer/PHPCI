@@ -20,8 +20,13 @@ use PHPCI\Model\BuildError;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCpd implements \PHPCI\Plugin
+class PhpCpd extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $directory;
     protected $args;
     protected $phpci;

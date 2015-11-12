@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TapParser;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * PHP Unit Plugin - Allows PHP Unit testing.
@@ -20,8 +21,13 @@ use PHPCI\Plugin\Util\TapParser;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class PhpUnit extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $args;
     protected $phpci;
     protected $build;

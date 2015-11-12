@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Helper\Lang;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * Composer Plugin - Provides access to Composer functionality.
@@ -20,7 +21,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Composer extends AbstractPlugin implements ZeroConfigPlugin
 {
     protected $directory;
     protected $action;

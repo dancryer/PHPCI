@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class HipchatNotify implements \PHPCI\Plugin
+class HipchatNotify extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     protected $authToken;
     protected $color;
     protected $notify;

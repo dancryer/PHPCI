@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint implements PHPCI\Plugin
+class Lint extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $directories;
     protected $recursive = true;
     protected $ignore;

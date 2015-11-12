@@ -19,8 +19,13 @@ use Mremi\Flowdock\Api\Push\TeamInboxMessage;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class FlowdockNotify implements \PHPCI\Plugin
+class FlowdockNotify extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     private $api_key;
     private $email;
     const MESSAGE_DEFAULT = 'Build %BUILD% has finished for commit <a href="%COMMIT_URI%">%SHORT_COMMIT%</a>

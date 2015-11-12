@@ -12,7 +12,7 @@ namespace Tests\PHPCI\Plugin\Util\Fake;
 
 use PHPCI\Plugin;
 
-class ExamplePluginWithSingleRequiredArg implements Plugin
+class ExamplePluginWithSingleRequiredArg extends Plugin\AbstractPlugin
 {
 
     public $RequiredArgument;

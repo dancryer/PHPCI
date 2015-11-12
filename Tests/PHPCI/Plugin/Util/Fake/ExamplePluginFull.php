@@ -14,7 +14,7 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Plugin;
 
-class ExamplePluginFull implements Plugin {
+class ExamplePluginFull extends Plugin\AbstractPlugin {
     /**
      * @var array
      */

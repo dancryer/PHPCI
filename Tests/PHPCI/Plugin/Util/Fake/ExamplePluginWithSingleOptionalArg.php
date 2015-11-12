@@ -12,7 +12,7 @@ namespace Tests\PHPCI\Plugin\Util\Fake;
 
 use PHPCI\Plugin;
 
-class ExamplePluginWithSingleOptionalArg implements Plugin
+class ExamplePluginWithSingleOptionalArg extends Plugin\AbstractPlugin
 {
     function __construct($optional = null)
     {

@@ -4,6 +4,10 @@ namespace PHPCI\Plugin;
 
 use PHPCI\Plugin;
 
+/**
+ * Base for all of the standard PHPCI plugins. Provides the isAllowedInStage() functionality.
+ * @package PHPCI\Plugin
+ */
 abstract class AbstractPlugin implements Plugin
 {
     /**

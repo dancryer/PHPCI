@@ -72,7 +72,7 @@ class CopyBuild implements \PHPCI\Plugin
 
         $cmd = 'mkdir -p "%s" && cp -R "%s"' . $suffix . ' "%s"';
         if (IS_WIN) {
-            $cmd = 'mkdir -p "%s" && xcopy /E "%s"' . $suffix . ' "%s"';
+            $cmd = 'mkdir -p "%s" && xcopy /E "%s' . $suffix . '" "%s"';
         }
 
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);

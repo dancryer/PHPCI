@@ -17,5 +17,5 @@ use PHPCI\Model\Build;
  */
 interface ZeroConfigPlugin
 {
-    public static function canExecute($stage, Builder $builder, Build $build);
+    public static function canRunZeroConfig($stage, Builder $builder, Build $build);
 }

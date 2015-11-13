@@ -73,7 +73,7 @@ class TechnicalDebt extends AbstractPlugin implements ZeroConfigPlugin
      * @param Build $build
      * @return bool
      */
-    public static function canExecute($stage, Builder $builder, Build $build)
+    public static function canRunZeroConfig($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
             return true;

@@ -7,6 +7,10 @@
          colors="true"
          bootstrap="app/autoload.php"
 >
+    <php>
+        <ini name="error_reporting" value="-1" />
+    </php>
+
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>

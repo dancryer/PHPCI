@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3caa49879695a3f2565f2030e94b0c75",
-    "content-hash": "0df877ea9845fdec19a4f8f0d6255461",
+    "hash": "3e09252c392ffc44fcf9bd49a0976fb9",
+    "content-hash": "e86f1bfbcda90e5127c12a810c011322",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -698,12 +698,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "1187c51a89e14d892191f9147deb4bb9d3b72c3d"
+                "reference": "71bb27a62fe792c75803e5b701f3d4afe0795f35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/1187c51a89e14d892191f9147deb4bb9d3b72c3d",
-                "reference": "1187c51a89e14d892191f9147deb4bb9d3b72c3d",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/71bb27a62fe792c75803e5b701f3d4afe0795f35",
+                "reference": "71bb27a62fe792c75803e5b701f3d4afe0795f35",
                 "shasum": ""
             },
             "require": {
@@ -767,7 +767,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2015-11-09 03:54:20"
+            "time": "2015-11-13 16:38:55"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -1285,12 +1285,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/monolog-bundle.git",
-                "reference": "b9307832598946576da2c3c536f920fd9f268a71"
+                "reference": "201fec36b7d80e8c83b40b5a1dc6205fa31e531e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/b9307832598946576da2c3c536f920fd9f268a71",
-                "reference": "b9307832598946576da2c3c536f920fd9f268a71",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/201fec36b7d80e8c83b40b5a1dc6205fa31e531e",
+                "reference": "201fec36b7d80e8c83b40b5a1dc6205fa31e531e",
                 "shasum": ""
             },
             "require": {
@@ -1336,7 +1336,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2015-10-29 22:18:34"
+            "time": "2015-11-13 16:18:14"
         },
         {
             "name": "symfony/polyfill-intl-icu",
@@ -1901,12 +1901,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "e5928f7d61d65bee1db5bc9b7f3520e9f191d0c4"
+                "reference": "819154127b8fc76d681ee62a793abd32773e453c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/e5928f7d61d65bee1db5bc9b7f3520e9f191d0c4",
-                "reference": "e5928f7d61d65bee1db5bc9b7f3520e9f191d0c4",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/819154127b8fc76d681ee62a793abd32773e453c",
+                "reference": "819154127b8fc76d681ee62a793abd32773e453c",
                 "shasum": ""
             },
             "require": {
@@ -2024,7 +2024,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-11-11 14:08:33"
+            "time": "2015-11-12 01:15:38"
         },
         {
             "name": "twig/twig",
@@ -2140,6 +2140,58 @@
             ],
             "description": "This bundle generates code for you",
             "time": "2015-11-10 13:25:32"
+        },
+        {
+            "name": "symfony/phpunit-bridge",
+            "version": "v2.7.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/phpunit-bridge.git",
+                "reference": "896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4",
+                "reference": "896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "symfony/debug": "For tracking deprecated interfaces usages at runtime with DebugClassLoader"
+            },
+            "type": "symfony-bridge",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Bridge\\PhpUnit\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PHPUnit Bridge",
+            "homepage": "https://symfony.com",
+            "time": "2015-09-27 10:08:51"
         }
     ],
     "aliases": [],

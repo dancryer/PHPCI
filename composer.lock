@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6042d527f9c4f34bce8812788002488b",
-    "content-hash": "833596a0bb6251a99ba4a70bf74c552f",
+    "hash": "32378fd3ef30487df1eacf75030e6926",
+    "content-hash": "f7c9c8a4647bd0801e25231a1fdc8a1f",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1850,12 +1850,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "775129fcd2982362552540bdab939807e495b0c3"
+                "reference": "fef28b2fa143119161e421a5c8ecd558189d2938"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/775129fcd2982362552540bdab939807e495b0c3",
-                "reference": "775129fcd2982362552540bdab939807e495b0c3",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/fef28b2fa143119161e421a5c8ecd558189d2938",
+                "reference": "fef28b2fa143119161e421a5c8ecd558189d2938",
                 "shasum": ""
             },
             "require": {
@@ -1975,7 +1975,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-11-10 12:35:38"
+            "time": "2015-11-12 01:14:48"
         },
         {
             "name": "twig/twig",
@@ -2091,6 +2091,58 @@
             ],
             "description": "This bundle generates code for you",
             "time": "2015-11-10 13:25:32"
+        },
+        {
+            "name": "symfony/phpunit-bridge",
+            "version": "v2.7.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/phpunit-bridge.git",
+                "reference": "896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4",
+                "reference": "896bbd1742a6ecd2f7904167bdb6bf88eb6cfbe4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "symfony/debug": "For tracking deprecated interfaces usages at runtime with DebugClassLoader"
+            },
+            "type": "symfony-bridge",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Bridge\\PhpUnit\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PHPUnit Bridge",
+            "homepage": "https://symfony.com",
+            "time": "2015-09-27 10:08:51"
         }
     ],
     "aliases": [],

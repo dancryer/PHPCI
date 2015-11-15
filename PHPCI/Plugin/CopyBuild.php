@@ -21,7 +21,7 @@ use PHPCI\Helper\Lang;
 */
 class CopyBuild implements \PHPCI\Plugin
 {
-    protected $directory;
+    protected $dest;
     protected $ignore;
     protected $wipe;
     protected $phpci;
@@ -39,10 +39,19 @@ class CopyBuild implements \PHPCI\Plugin
         $path               = $phpci->buildPath;
         $this->phpci        = $phpci;
         $this->build        = $build;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->includeDir   = isset($options['include_build_dir']) ?  $options['include_build_dir'] : true;
+        $this->src          = isset($options['src']) ? $options['src'] : '/';
+        $this->dest         = isset($options['dest']) ? $options['dest'] : $path;
+        $this->includeDir   = isset($options['include_src_dir']) ?  $options['include_src_dir'] : true;
         $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
         $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
+
+        // Sanitise the src directory. We don't want people leaving build dir.
+        $this->src = str_replace('..' . DIRECTORY_SEPARATOR, '', $this->src);
+        
+        // Backwards compatibility
+        if (! isset($options['dest']) && isset($options['directory'])) {
+            $this->dest = $options['directory'];
+        }
     }
 
     /**
@@ -53,18 +62,18 @@ class CopyBuild implements \PHPCI\Plugin
 
         $build = $this->phpci->buildPath;
 
-        if ($this->directory == $build) {
+        if ($this->dest == $build) {
             return false;
         }
 
         $this->wipeExistingDirectory();
 
         $suffix = '';
-
+        
         if ($this->includeDir == false) {
 
-            if (substr($build, -1) != DIRECTORY_SEPARATOR) {
-                $build .= DIRECTORY_SEPARATOR;
+            if (substr($this->src, -1) != DIRECTORY_SEPARATOR) {
+                $this->src .= DIRECTORY_SEPARATOR;
             }
 
             $suffix = "*";
@@ -75,7 +84,7 @@ class CopyBuild implements \PHPCI\Plugin
             $cmd = 'mkdir -p "%s" && xcopy /E "%s' . $suffix . '" "%s"';
         }
 
-        $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);
+        $success = $this->phpci->executeCommand($cmd, $this->dest, $this->src, $this->dest);
 
         $this->deleteIgnoredFiles();
 
@@ -88,18 +97,18 @@ class CopyBuild implements \PHPCI\Plugin
      */
     protected function wipeExistingDirectory()
     {
-        if ($this->wipe === true && $this->directory != '/' && is_dir($this->directory)) {
+        if ($this->wipe === true && $this->dest != '/' && is_dir($this->dest)) {
             $cmd = 'rm -Rf "%s*"';
-            $success = $this->phpci->executeCommand($cmd, $this->directory);
+            $success = $this->phpci->executeCommand($cmd, $this->dest);
 
             if (!$success) {
-                throw new \Exception(Lang::get('failed_to_wipe', $this->directory));
+                throw new \Exception(Lang::get('failed_to_wipe', $this->dest));
             }
         }
     }
 
     /**
-     * Delete any ignored files from the build prior to copying.
+     * Delete any ignored files from the build after copying.
      */
     protected function deleteIgnoredFiles()
     {
@@ -109,7 +118,7 @@ class CopyBuild implements \PHPCI\Plugin
                 if (IS_WIN) {
                     $cmd = 'rmdir /S /Q "%s\%s"';
                 }
-                $this->phpci->executeCommand($cmd, $this->directory, $file);
+                $this->phpci->executeCommand($cmd, $this->dest, $file);
             }
         }
     }

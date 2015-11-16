@@ -698,12 +698,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "71bb27a62fe792c75803e5b701f3d4afe0795f35"
+                "reference": "84eb175dbf638a50ad00aaed5b31238e1b8deb7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/71bb27a62fe792c75803e5b701f3d4afe0795f35",
-                "reference": "71bb27a62fe792c75803e5b701f3d4afe0795f35",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/84eb175dbf638a50ad00aaed5b31238e1b8deb7d",
+                "reference": "84eb175dbf638a50ad00aaed5b31238e1b8deb7d",
                 "shasum": ""
             },
             "require": {
@@ -725,8 +725,7 @@
                 "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
             },
             "bin": [
-                "bin/doctrine",
-                "bin/doctrine.php"
+                "bin/doctrine"
             ],
             "type": "library",
             "extra": {
@@ -767,7 +766,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2015-11-13 16:38:55"
+            "time": "2015-11-16 03:24:01"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -1081,12 +1080,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "1045b31102f9d6017725ada4d4b5d0fce085fc9f"
+                "reference": "f48d77dcb3023577eb54f6901a27af025d6a313e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/1045b31102f9d6017725ada4d4b5d0fce085fc9f",
-                "reference": "1045b31102f9d6017725ada4d4b5d0fce085fc9f",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/f48d77dcb3023577eb54f6901a27af025d6a313e",
+                "reference": "f48d77dcb3023577eb54f6901a27af025d6a313e",
                 "shasum": ""
             },
             "require": {
@@ -1125,7 +1124,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-10-27 18:48:37"
+            "time": "2015-11-16 12:45:35"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -1901,12 +1900,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "819154127b8fc76d681ee62a793abd32773e453c"
+                "reference": "bd54cb4811411745ea1754f388c23783c897d4a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/819154127b8fc76d681ee62a793abd32773e453c",
-                "reference": "819154127b8fc76d681ee62a793abd32773e453c",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/bd54cb4811411745ea1754f388c23783c897d4a8",
+                "reference": "bd54cb4811411745ea1754f388c23783c897d4a8",
                 "shasum": ""
             },
             "require": {
@@ -2024,7 +2023,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-11-12 01:15:38"
+            "time": "2015-11-16 14:08:25"
         },
         {
             "name": "twig/twig",

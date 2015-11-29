@@ -12,7 +12,7 @@ $strings = array(
     'language' => 'Idioma',
 
     // Log in:
-    'log_in_to_phpci' => 'Fazer Login no PHPCI',
+    'log_in_to_phpci' => 'Log in to PHPCI',
     'login_error' => 'Email ou senha incorretos',
     'forgotten_password_link' => 'Esqueceu sua senha?',
     'reset_emailed' => 'Enviamos um email para redefinir sua senha.',
@@ -40,7 +40,9 @@ PHPCI',
     'reset_invalid' => 'Pedido inválido.',
     'email_address' => 'Endereço de email',
     'password' => 'Senha',
-    'log_in' => 'Fazer Login',
+    'login' => 'Login / Email Address',
+    'password' => 'Senha',
+    'log_in' => 'Enviar',
 
 
     // Top Nav
@@ -114,8 +116,8 @@ PHPCI',
                                 (caso não possa adicionar o arquivo phpci.yml ao repositório)',
     'default_branch' => 'Nome do branch (ramo) padrão',
     'allow_public_status' => 'Habilitar página pública com o estado do projeto?',
-    'archived' => 'Arquivado',
-    'archived_menu' => 'Arquivado',
+    'archived' => 'Arquivar',
+    'archived_menu' => 'Arquivo',
     'save_project' => 'Salvar Projeto',
 
     'error_mercurial' => 'A URL do repositório deve começar com http:// ou https://',

@@ -12,8 +12,8 @@ Standard Edition:
    - The generated `app/bootstrap.php.cache` does not include autoloading anymore.
      So you need to add the autoloading code in your front controllers `web/app.php`,
      `web/app_dev.php`, `app/console` and `app/phpunit.xml.dist` (bootstrap config).
-   - If have been using the Symfony 3 directory structure already, you need to
-     overwrite the cache and log directory in your `AppKernel` as it is also done
+   - If you have been using the Symfony 3 directory structure already, you need to
+     overwrite the cache and log directories in your `AppKernel` as it is also done
      in Symfony 3 now (see
      [`app/AppKernel.php`](https://github.com/symfony/symfony-standard/blob/master/app/AppKernel.php#L31-L44)).
  * The `app/AppKernel.php` is now autoloaded via composer.

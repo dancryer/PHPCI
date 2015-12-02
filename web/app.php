@@ -18,8 +18,6 @@ $loader->unregister();
 $apcLoader->register(true);
 */
 
-//require_once __DIR__.'/../app/AppCache.php';
-
 $kernel = new AppKernel('prod', false);
 $kernel->loadClassCache();
 //$kernel = new AppCache($kernel);

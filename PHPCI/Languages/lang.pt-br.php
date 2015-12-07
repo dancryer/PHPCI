@@ -131,6 +131,7 @@ PHPCI',
     'all_branches' => 'Todas os branches',
     'builds' => 'Builds',
     'id' => 'ID',
+	'date'	=>'Data',
     'project' => 'Projeto',
     'commit' => 'Commit',
     'branch' => 'Branch',
@@ -154,6 +155,8 @@ PHPCI',
                                 Services</a> do seu repositório no Bitbucket.',
 
     // View Build
+    'errors' => 'Erros',
+    'information' => 'Informação',	
     'build_x_not_found' => 'O build com ID %d não existe.',
     'build_n' => 'Build %d',
     'rebuild_now' => 'Rebuild agora',
@@ -190,7 +193,13 @@ PHPCI',
     'phpunit' => 'PHP Unit',
     'technical_debt' => 'Déficit Técnica',
     'behat' => 'Behat',
-
+	
+    'codeception_feature' => 'Fuincionalidade',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Tempo',
+    'codeception_synopsis' => '<strong>%1$d</strong> testes realizados em <strong>%2$f</strong> segundos.
+                               <strong>%3$d</strong> falhas.',
+							   
     'file' => 'Arquivo',
     'line' => 'Linha',
     'class' => 'Classe',
@@ -208,7 +217,16 @@ PHPCI',
     'build_created' => 'Build Criado',
     'build_started' => 'Build Iniciado',
     'build_finished' => 'Build Terminado',
-
+   
+	'test_message' => 'Mensagem',
+    'test_no_message' => 'Nenhuma mensagem',
+    'test_success' => 'Bem Sucedidos: %d',
+    'test_fail' => 'Falhas: %d',
+    'test_skipped' => 'Ignorados: %d',
+    'test_error' => 'Erros: %d',
+    'test_todo' => 'Para Fazer: %d',
+    'test_total' => '%d teste(s)',
+	
     // Users
     'name' => 'Nome',
     'password_change' => 'Senha (deixar em branco se não quiser trocar)',
@@ -282,6 +300,19 @@ PHPCI',
     'remove' => 'Eliminar &raquo;',
     'search_packagist_for_more' => 'Buscar mais pacotes no Packagist',
     'search' => 'Buscar &raquo;',
+	
+	// Summary plugin
+    'build-summary' => 'Resumo',
+    'stage' => 'Etapa',
+    'duration' => 'Duração',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Configuração',
+    'stage_test' => 'Teste',
+    'stage_complete' => 'Completo',
+    'stage_success' => 'Sucesso',
+    'stage_failure' => 'Falha',
+    'stage_broken'  => 'Quebrado',
+    'stage_fixed' => 'Corrigido',
 
     // Installer
     'installation_url' => 'URL da instalação PHPCI',
@@ -334,6 +365,12 @@ PHPCI',
     'adding_new_build' => 'Último commit é diferente da base de dados, agregando novo build.',
     'finished_processing_builds' => 'Fim do processamento de builds.',
 
+    // Create Build Command
+    'create_build_project' => 'Criado um build para o projeto',
+    'project_id_argument' => 'ID do projeto',
+    'commit_id_option' => 'Commit ID para o build',
+    'branch_name_option' => 'Branch para o build',	
+	
     // Create Admin
     'create_admin_user' => 'Criar um usuário Admin',
     'incorrect_format' => 'Formato incorreto',

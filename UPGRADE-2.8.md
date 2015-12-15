@@ -16,7 +16,7 @@ Standard Edition:
      overwrite the cache and log directories in your `AppKernel` as it is also done
      in Symfony 3 now (see
      [`app/AppKernel.php`](https://github.com/symfony/symfony-standard/blob/master/app/AppKernel.php#L31-L44)).
- * The `app/AppKernel.php` is now autoloaded via composer.
+ * The `app/AppKernel.php` and `app/AppCache.php` files are now autoloaded via Composer.
 
 You can have a look at the
 [diff](https://github.com/symfony/symfony-standard/compare/2.7...2.8)

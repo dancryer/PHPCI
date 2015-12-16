@@ -116,8 +116,7 @@ class Lint implements PHPCI\Plugin
                 continue;
             }
 
-            $itemPath  = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-            $itemPath .= ltrim($item->getFilename(), DIRECTORY_SEPARATOR);
+            $itemPath = $path . $item->getFilename();
 
             if (in_array($itemPath, $this->ignore)) {
                 continue;

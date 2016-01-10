@@ -55,10 +55,10 @@ class PhpParallelLint implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build        = $build;
-        $this->directory    = $phpci->buildPath;
-        $this->ignore       = $this->phpci->ignore;
+        $this->phpci = $phpci;
+        $this->build = $build;
+        $this->directory = $phpci->buildPath;
+        $this->ignore = $this->phpci->ignore;
 
         if (isset($options['directory'])) {
             $this->directory = $phpci->buildPath.$options['directory'];

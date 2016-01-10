@@ -41,9 +41,9 @@ class Lint implements PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
+        $this->phpci = $phpci;
         $this->build = $build;
-        $this->directories    = array('');
+        $this->directories = array('');
         $this->ignore = $phpci->ignore;
 
         if (!empty($options['directory'])) {
@@ -93,7 +93,7 @@ class Lint implements PHPCI\Plugin
 
         if ($item->isFile() && $item->getExtension() == 'php' && !$this->lintFile($php, $itemPath)) {
             $success = false;
-        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . '/')) {
+        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($php, $itemPath . DIRECTORY_SEPARATOR)) {
             $success = false;
         }
 

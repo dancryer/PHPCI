@@ -39,9 +39,9 @@ class CleanBuild implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci        = $phpci;
-        $this->build = $build;
-        $this->remove       = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
+        $this->phpci  = $phpci;
+        $this->build  = $build;
+        $this->remove = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
     }
 
     /**
@@ -57,7 +57,7 @@ class CleanBuild implements \PHPCI\Plugin
         $this->phpci->executeCommand($cmd, $this->phpci->buildPath . 'composer.lock');
 
         $success = true;
-        
+
         foreach ($this->remove as $file) {
             $ok = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $file);
 

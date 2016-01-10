@@ -32,9 +32,11 @@ class PluginInformationCollection implements InstalledPluginInformation
     public function getInstalledPlugins()
     {
         $arr = array();
+
         foreach ($this->pluginInformations as $single) {
             $arr = array_merge($arr, $single->getInstalledPlugins());
         }
+
         return $arr;
     }
 
@@ -47,9 +49,11 @@ class PluginInformationCollection implements InstalledPluginInformation
     public function getPluginClasses()
     {
         $arr = array();
+
         foreach ($this->pluginInformations as $single) {
             $arr = array_merge($arr, $single->getPluginClasses());
         }
+
         return $arr;
     }
 }

@@ -52,7 +52,7 @@ class Grunt implements \PHPCI\Plugin
 
         // Handle options:
         if (isset($options['directory'])) {
-            $this->directory = $path . '/' . $options['directory'];
+            $this->directory = $path . DIRECTORY_SEPARATOR . $options['directory'];
         }
 
         if (isset($options['task'])) {

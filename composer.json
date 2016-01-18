@@ -49,6 +49,8 @@
             "php": "5.5.9"
         }
     },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-bin-dir": "bin",

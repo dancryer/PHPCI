@@ -20,7 +20,7 @@ class FixDatabaseColumns extends AbstractMigration
         $build->changeColumn('project_id', 'integer', array('null' => false));
         $build->changeColumn('commit_id', 'string', array('limit' => 50, 'null' => false));
         $build->changeColumn('status', 'integer', array('null' => false));
-        $build->changeColumn('log', 'text', array('null' => true, 'default' => ''));
+        $build->changeColumn('log', 'text', array('null' => true));
         $build->changeColumn('branch', 'string', array('limit' => 50, 'null' => false, 'default' => 'master'));
         $build->changeColumn('created', 'datetime', array('null' => true));
         $build->changeColumn('started', 'datetime', array('null' => true));

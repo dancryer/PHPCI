@@ -28,6 +28,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $phpci;
     protected $build;
     protected $nodev;
+    protected $ignorePlatformReqs;
 
     /**
      * Check if this plugin can be executed.
@@ -62,6 +63,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->action     = 'install';
         $this->preferDist = false;
         $this->nodev      = false;
+        $this->ignorePlatformReqs = false;
 
         if (array_key_exists('directory', $options)) {
             $this->directory = $path . DIRECTORY_SEPARATOR . $options['directory'];
@@ -77,6 +79,10 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if (array_key_exists('no_dev', $options)) {
             $this->nodev = (bool)$options['no_dev'];
+        }
+
+        if (array_key_exists('ignore_platform_reqs', $options)) {
+            $this->ignorePlatformReqs = (bool)$options['ignore_platform_reqs'];
         }
     }
 
@@ -106,6 +112,11 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if ($this->nodev) {
             $this->phpci->log('Using --no-dev flag');
             $cmd .= ' --no-dev';
+        }
+
+        if ($this->ignorePlatformReqs) {
+            $this->phpci->log('Using --ignore-platform-reqs flag');
+            $cmd .= ' --ignore-platform-reqs';
         }
 
         $cmd .= ' --working-dir="%s" %s';

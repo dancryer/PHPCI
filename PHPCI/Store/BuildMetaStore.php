@@ -28,7 +28,7 @@ class BuildMetaStore extends BuildMetaStoreBase
     public function getErrorsForUpgrade($limit)
     {
         $query = 'SELECT * FROM build_meta
-                    WHERE meta_key IN (\'phpmd-data\', \'phpcs-data\', \'phpdoccheck-data\')
+                    WHERE meta_key IN (\'phpmd-data\', \'phpcs-data\', \'phpdoccheck-data\', \'technical_debt-data\')
                     ORDER BY id ASC LIMIT :limit';
 
         $stmt = Database::getConnection('read')->prepare($query);

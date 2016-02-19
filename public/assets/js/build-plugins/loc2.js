@@ -1,4 +1,4 @@
-var locPlugin = ActiveBuild.UiPlugin.extend({
+var locPlugin2 = ActiveBuild.UiPlugin.extend({
     id: 'build-lines-chart',
     css: 'col-xs-12',
     title: Lang.get('structure'),
@@ -103,4 +103,4 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
     }
 });
 
-ActiveBuild.registerPlugin(new locPlugin());
+ActiveBuild.registerPlugin(new locPlugin2());

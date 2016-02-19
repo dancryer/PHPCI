@@ -102,7 +102,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 $matches[6] = (int) $matches[6],
             );
 
-            $this->build->storeMeta('phplocStructure', $data);
+            $this->build->storeMeta('phploc-structure', $data);
         }
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches2)) {

@@ -93,6 +93,18 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             $this->build->storeMeta('phploc', $data);
         }
 
+        if (preg_match_all('/(Namespaces|Interfaces|Classes|Methods)\s+([0-9]+)/', $output, $matches)) {
+            $matches= $matches[1];
+            $data = array(
+                $matches[1] = (int)$matches[1],
+                $matches[2] = (int)$matches[2],
+                $matches[3] = (int)$matches[3],
+                $matches[6] = (int)$matches[6],
+            );
+
+            $this->build->storeMeta('phplocStructure', $data);
+        }
+
         return $success;
     }
 }

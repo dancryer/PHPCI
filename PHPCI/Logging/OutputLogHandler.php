@@ -21,13 +21,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OutputLogHandler extends AbstractProcessingHandler
 {
-
+    /**
+     * @var array
+     */
     protected static $levels = array(
         OutputInterface::VERBOSITY_QUIET => Logger::ERROR,
         OutputInterface::VERBOSITY_NORMAL => Logger::WARNING,
         OutputInterface::VERBOSITY_VERBOSE => Logger::NOTICE,
         OutputInterface::VERBOSITY_VERY_VERBOSE => Logger::INFO,
         OutputInterface::VERBOSITY_DEBUG => Logger::DEBUG,
+    );
+    /**
+     * @var array
+     */
+    protected static $colors = array(
+        Logger::ERROR => 'red',
+        Logger::WARNING => 'yellow',
+        Logger::NOTICE => 'green',
+        Logger::INFO => 'white'
     );
     /**
      * @var OutputInterface
@@ -42,8 +53,23 @@ class OutputLogHandler extends AbstractProcessingHandler
     public function __construct(OutputInterface $output)
     {
         parent::__construct(static::$levels[$output->getVerbosity()]);
-
         $this->output = $output;
+        $this->pushProcessor(array($this, 'addConsoleColor'));
+
+    }
+
+    public function addConsoleColor($record)
+    {
+        foreach (static::$colors as $level => $color) {
+            if ($record['level'] >= $level) {
+                break;
+            }
+
+        }
+
+        $record['message'] = sprintf('<fg=%s>%s</fg=%s>', $color, rtrim($record['message']), $color);
+
+        return $record;
     }
 
     /**

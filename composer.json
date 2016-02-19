@@ -68,7 +68,8 @@
     "block8/php-docblock-checker": "~1.0",
     "phploc/phploc": "~3.0",
     "jakub-onderka/php-parallel-lint": "0.9.*",
-    "theseer/phpdox": "0.8.1.1"
+    "theseer/phpdox": "0.8.1.1",
+    "phpspec/phpspec": "~2.0"
   },
   "suggest": {
     "block8/php-docblock-checker": "PHP Docblock Checker",

@@ -57,20 +57,20 @@
   "require": {
     "php": ">=5.3.8",
     "ext-pdo": "*",
-    "ox/b8framework": "@dev",
+    "block8/b8framework": "@dev",
     "ircmaxell/password-compat": "1.0.*",
     "swiftmailer/swiftmailer": "5.4.*",
-    "symfony/yaml": "3.0.*",
-    "symfony/console": "3.0.*",
+    "symfony/yaml": "~2.1",
+    "symfony/console": "~2.1",
     "psr/log": "1.0.*",
     "monolog/monolog": "1.17.*",
-    "pimple/pimple": "3.0.*",
+    "pimple/pimple": "~2.0",
     "robmorgan/phinx": "0.5.*",
     "sensiolabs/ansi-to-html": "1.1.*",
     "pda/pheanstalk": "3.1.*",
     "maknz/slack": "1.7.*",
     "hipchat/hipchat-php": "1.*",
-    "ox/flowdock": "@dev"
+    "mremi/flowdock": "@dev"
   },
   "require-dev": {
     "phpunit/phpunit": "5.2.*",

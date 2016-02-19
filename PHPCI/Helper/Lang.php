@@ -37,7 +37,7 @@ class Lang
             return call_user_func_array('sprintf', $vars);
         }
 
-        return $string;
+        return '%%MISSING STRING: ' . $string . '%%';
     }
 
     /**

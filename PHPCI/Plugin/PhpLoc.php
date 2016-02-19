@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use b8\Store\Factory;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
@@ -93,6 +94,15 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
         $output = $this->phpci->getLastOutput();
 
+        if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches2)) {
+            $data = array();
+            foreach ($matches2[1] as $k => $v) {
+                $data[$v] = (int)$matches2[2][$k];
+            }
+
+            $this->build->storeMeta('phploc', $data);
+        }
+
         if (preg_match_all('/(Namespaces|Interfaces|Classes|Methods)\s+([0-9]+)/', $output, $matches)) {
             $matches = $matches[1];
             $data = array(
@@ -102,18 +112,10 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                 $matches[6] = (int) $matches[6],
             );
 
-            $this->build->storeMeta('phploc-structure', $data);
+            $this->build->storeMeta('phploc-summary', $data);
         }
 
-        if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches2)) {
-            $data = array();
-            foreach ($matches2[1] as $k => $v) {
-                $data[$v] = (int) $matches2[2][$k];
-            }
 
-            $this->build->storeMeta('phploc', $data);
-        }
-        $this->build->storeMeta('phploc-test', array("test"=>"val"));
         return $success;
     }
 }

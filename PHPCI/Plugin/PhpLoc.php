@@ -9,7 +9,6 @@
 
 namespace PHPCI\Plugin;
 
-use b8\Store\Factory;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
@@ -97,25 +96,24 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches2)) {
             $data = array();
             foreach ($matches2[1] as $k => $v) {
-                $data[$v] = (int)$matches2[2][$k];
+                $data[$v] = (int) $matches2[2][$k];
             }
 
             $this->build->storeMeta('phploc', $data);
         }
 
         if (preg_match_all('/(Namespaces|Interfaces|Classes|Methods)\s+([0-9]+)/', $output, $matches)) {
-            $key= $matches[1];
-            $val= $matches[2];
+            $key = $matches[1];
+            $val = $matches[2];
             $data = array(
-                $key[1] = (int)$val[1],
-                $key[2] = (int)$val[2],
-                $key[3] = (int)$val[3],
-                $key[6] = (int)$val[6],
+                $key[1] => (int) $val[1],
+                $key[2] => (int) $val[2],
+                $key[3] => (int) $val[3],
+                $key[6] => (int) $val[6],
             );
 
-            $this->build->storeMeta('phploc-summary', $data);
+            $this->build->storeMeta('phploc-structure', $data);
         }
-
 
         return $success;
     }

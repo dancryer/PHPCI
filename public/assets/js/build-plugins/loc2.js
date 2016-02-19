@@ -1,5 +1,5 @@
 var locPlugin2 = ActiveBuild.UiPlugin.extend({
-    id: 'build-lines-chart',
+    id: 'build-lines-chart-structure',
     css: 'col-xs-12',
     title: Lang.get('structure'),
     lastData: null,
@@ -28,7 +28,7 @@ var locPlugin2 = ActiveBuild.UiPlugin.extend({
         container.append('<canvas id="phploc-structure-chart" style="width: 100%; height: 300px"></canvas>');
 
         $(document).on('shown.bs.tab', function () {
-            $('#build-lines-chart').hide();
+            $('#build-lines-chart-structure').hide();
             self.drawChart();
         });
 
@@ -90,7 +90,7 @@ var locPlugin2 = ActiveBuild.UiPlugin.extend({
         var self = this;
 
         if ($('#information').hasClass('active') && self.chartData && self.lastData) {
-            $('#build-lines-chart').show();
+            $('#build-lines-chart-structure').show();
 
             var ctx = $("#phploc-structure-chart").get(0).getContext("2d");
             var phpLocChart = new Chart(ctx);

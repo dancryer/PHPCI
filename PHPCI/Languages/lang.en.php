@@ -167,6 +167,7 @@ PHPCI',
 
     'chart_display' => 'This chart will display once the build has completed.',
 
+    'structure' => 'Structure',
     'build' => 'Build',
     'lines' => 'Lines',
     'comment_lines' => 'Comment Lines',

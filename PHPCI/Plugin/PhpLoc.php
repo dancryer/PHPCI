@@ -113,7 +113,7 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $this->build->storeMeta('phploc', $data);
         }
-
+        $this->build->storeMeta('phploc-test', array("test"=>"val"));
         return $success;
     }
 }

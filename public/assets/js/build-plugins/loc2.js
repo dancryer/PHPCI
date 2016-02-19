@@ -1,6 +1,6 @@
 var locPlugin2 = ActiveBuild.UiPlugin.extend({
     id: 'build-lines-chart-structure',
-    css: 'col-xs-12',
+    css: 'col-xs-6',
     title: Lang.get('structure'),
     lastData: null,
     displayOnUpdate: false,

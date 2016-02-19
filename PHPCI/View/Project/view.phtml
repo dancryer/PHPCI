@@ -9,7 +9,7 @@
         <?php Lang::out('edit_project'); ?>
     </a>
 
-    <a  class="btn btn-danger" href="javascript:confirmDelete('<?php print PHPCI_URL . 'project/delete/' . $project->getId(); ?>', '<?php print Lang::out('project'); ?>', true)">
+    <a  class="btn btn-danger" href="confirmDelete('<?php print PHPCI_URL . 'project/delete/' . $project->getId(); ?>', '<?php print Lang::out('project'); ?>', true)">
         <?php Lang::out('delete_project'); ?>
     </a>
 

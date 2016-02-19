@@ -104,12 +104,13 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (preg_match_all('/(Namespaces|Interfaces|Classes|Methods)\s+([0-9]+)/', $output, $matches)) {
-            $matches = $matches[1];
+            $key= $matches[1];
+            $val= $matches[2];
             $data = array(
-                $matches[1] = (int) $matches[1],
-                $matches[2] = (int) $matches[2],
-                $matches[3] = (int) $matches[3],
-                $matches[6] = (int) $matches[6],
+                $key[1] = (int)$val[1],
+                $key[2] = (int)$val[2],
+                $key[3] = (int)$val[3],
+                $key[6] = (int)$val[6],
             );
 
             $this->build->storeMeta('phploc-summary', $data);

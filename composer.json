@@ -69,7 +69,8 @@
     "phploc/phploc": "~3.0",
     "jakub-onderka/php-parallel-lint": "0.9.*",
     "theseer/phpdox": "0.8.1.1",
-    "atoum/atoum": "2.5.*"
+    "atoum/atoum": "2.5.*",
+    "phplint/phplint": "@dev"
   },
   "suggest": {
     "block8/php-docblock-checker": "PHP Docblock Checker",

@@ -423,5 +423,6 @@ PHPCI',
     'php_code_sniffer' => 'PHP Code Sniffer',
     'php_unit' => 'PHP Unit',
     'php_cpd' => 'PHP Copy/Paste Detector',
-    'php_docblock_checker' => 'PHP Docblock Checker'
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'php_lint' => 'PHP Lint'
 );

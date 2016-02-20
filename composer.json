@@ -56,7 +56,11 @@
     "pda/pheanstalk": "~3.1",
     "maknz/slack": "~1.7",
     "hipchat/hipchat-php": "~1.4",
-    "mremi/flowdock": "~1.0"
+    "mremi/flowdock": "~1.0",
+    "enrise/phpci-rocketeer": "0.1.*",
+    "upassist/phpci-deployer": "1.0.*",
+    "mindteam/phpci-symfony2-plugin": "@dev",
+    "hipay/phpci-composer-security-checker": "@dev"
   },
   "require-dev": {
     "phpmd/phpmd": "@stable",
@@ -70,11 +74,7 @@
     "jakub-onderka/php-parallel-lint": "0.9.*",
     "theseer/phpdox": "0.8.1.1",
     "atoum/atoum": "2.5.*",
-    "phplint/phplint": "@dev",
-    "enrise/phpci-rocketeer": "0.1.*",
-    "upassist/phpci-deployer": "1.0.*",
-    "mindteam/phpci-symfony2-plugin": "@dev",
-    "hipay/phpci-composer-security-checker": "@dev"
+    "phplint/phplint": "@dev"
   },
   "suggest": {
     "block8/php-docblock-checker": "PHP Docblock Checker",

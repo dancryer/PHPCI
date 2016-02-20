@@ -70,7 +70,11 @@
     "jakub-onderka/php-parallel-lint": "0.9.*",
     "theseer/phpdox": "0.8.1.1",
     "atoum/atoum": "2.5.*",
-    "phplint/phplint": "@dev"
+    "phplint/phplint": "@dev",
+    "enrise/phpci-rocketeer": "0.1.*",
+    "upassist/phpci-deployer": "1.0.*",
+    "mindteam/phpci-symfony2-plugin": "@dev",
+    "hipay/phpci-composer-security-checker": "@dev"
   },
   "suggest": {
     "block8/php-docblock-checker": "PHP Docblock Checker",

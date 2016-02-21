@@ -37,7 +37,7 @@ class Shell2 implements \PHPCI\Plugin
     /**
      * @var string[] $commands The commands to be executed
      */
-    protected $commands = array();
+    protected $command;
 
     /**
      * Standard Constructor
@@ -58,8 +58,8 @@ class Shell2 implements \PHPCI\Plugin
 
         if (isset($options['command'])) {
             // Keeping this for backwards compatibility, new projects should use interpolation vars.
-            $options['command'] = str_replace("%buildpath%", $options['directory'], $options['command']);
-            $this->commands = $options['command'];
+            $options['command'] = str_replace("%buildpath%", $this->phpci->buildPath, $options['command']);
+            $this->command = $options['command'];
 
             return;
         }
@@ -76,7 +76,7 @@ class Shell2 implements \PHPCI\Plugin
 
         $success = true;
 
-        if (!$this->phpci->executeCommand($this->commands)) {
+        if (!$this->phpci->executeCommand($this->command)) {
             $success = false;
         }
 

@@ -74,7 +74,7 @@ class Shell2 implements \PHPCI\Plugin
             throw new \Exception(Lang::get('shell_not_enabled'));
         }
         $ignore='';
-        $success = $this->phpci->executeCommand($this->command . ' %s "%s"', $ignore, $this->phpci->buildPath);
+        $success = $this->phpci->executeCommand($this->command . ' %s "%s"', $ignore, "php -v");
         return $success;
     }
 }

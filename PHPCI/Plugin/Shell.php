@@ -87,7 +87,7 @@ class Shell implements \PHPCI\Plugin
 
         foreach ($this->commands as $command) {
             $command = $this->phpci->interpolate($command);
-
+            print_r($command);
             if (!$this->phpci->executeCommand($command)) {
                 $success = false;
             }

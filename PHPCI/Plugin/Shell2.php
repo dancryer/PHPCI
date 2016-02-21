@@ -75,11 +75,8 @@ class Shell2 implements \PHPCI\Plugin
         }
 
         $success = true;
+        $this->phpci->logExecOutput(true);
 
-        if (!shell_exec($this->command)) {
-            $success = false;
-        }
-
-        return $success;
+        return $this->phpci->executeCommand($this->command);
     }
 }

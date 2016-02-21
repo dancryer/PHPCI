@@ -76,7 +76,7 @@ class Shell2 implements \PHPCI\Plugin
 
         $success = true;
 
-        if (!$this->phpci->executeCommand($this->command)) {
+        if (!shell_exec($this->command)) {
             $success = false;
         }
 

@@ -15,7 +15,6 @@ use PHPCI\Model\Build;
 
 /**
  * Shell Plugin - Allows execute shell commands.
- *
  * @author       Kinn Coelho Julião <kinncj@gmail.com>
  * @package      PHPCI
  * @subpackage   Plugins
@@ -60,7 +59,6 @@ class Shell implements \PHPCI\Plugin
             // Keeping this for backwards compatibility, new projects should use interpolation vars.
             $options['command'] = str_replace("%buildpath%", $this->phpci->buildPath, $options['command']);
             $this->commands = array($options['command']);
-
             return;
         }
 

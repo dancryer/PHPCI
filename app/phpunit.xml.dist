@@ -9,6 +9,9 @@
 >
     <php>
         <ini name="error_reporting" value="-1" />
+        <!--
+            <server name="KERNEL_DIR" value="/path/to/your/app/" />
+        -->
     </php>
 
     <testsuites>
@@ -18,12 +21,6 @@
             <directory>../src/*Bundle/Tests</directory>
         </testsuite>
     </testsuites>
-
-    <!--
-    <php>
-        <server name="KERNEL_DIR" value="/path/to/your/app/" />
-    </php>
-    -->
 
     <filter>
         <whitelist>

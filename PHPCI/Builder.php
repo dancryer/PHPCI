@@ -213,8 +213,6 @@ class Builder implements LoggerAwareInterface
                 $this->build->setStatus(Build::STATUS_FAILED);
             }
 
-            // Complete stage plugins are always run
-            $this->pluginExecutor->executePlugins($this->config, 'complete');
 
             if ($success) {
                 $this->pluginExecutor->executePlugins($this->config, 'success');
@@ -236,6 +234,9 @@ class Builder implements LoggerAwareInterface
         } catch (\Exception $ex) {
             $this->build->setStatus(Build::STATUS_FAILED);
             $this->buildLogger->logFailure(Lang::get('exception') . $ex->getMessage());
+        }finally{
+            // Complete stage plugins are always run
+            $this->pluginExecutor->executePlugins($this->config, 'complete');
         }
 
 

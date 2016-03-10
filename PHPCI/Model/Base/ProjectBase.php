@@ -117,7 +117,7 @@ class ProjectBase extends Model
         ),
         'branch' => array(
             'type' => 'varchar',
-            'length' => 50,
+            'length' => 250,
             'default' => 'master',
         ),
         'ssh_private_key' => array(

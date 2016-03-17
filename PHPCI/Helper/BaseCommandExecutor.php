@@ -77,9 +77,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $command = call_user_func_array('sprintf', $args);
 
-        if ($this->quiet) {
-            $this->logger->log('Executing: ' . $command);
-        }
+        $this->logger->log('Executing: ' . $command);
 
         $status = 0;
         $descriptorSpec = array(

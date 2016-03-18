@@ -258,7 +258,7 @@ class Build extends BuildBase
 
         if (empty($this->currentBuildPath)) {
             $buildDirectory = $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
-            $this->currentBuildPath = PHPCI_BUILD_ROOT_DIR . $buildDirectory . DIRECTORY_SEPARATOR;
+            $this->currentBuildPath = PHPCI_BUILD_ROOT_DIR . $buildDirectory;
         }
 
         return $this->currentBuildPath;

@@ -90,6 +90,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
+        mkdir($this->buildPath); // Prevents CreateProcess failed, error code - 267 -- see http://stackoverflow.com/a/30296289/95195
         $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {

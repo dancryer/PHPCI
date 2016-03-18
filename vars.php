@@ -18,7 +18,7 @@ if (!defined('PHPCI_BIN_DIR')) {
 
 // Define PHPCI_BUILD_ROOT_DIR
 if (!defined('PHPCI_BUILD_ROOT_DIR')) {
-    define('PHPCI_BUILD_ROOT_DIR', PHPCI_DIR . 'PHPCI/build/');
+    define('PHPCI_BUILD_ROOT_DIR', PHPCI_DIR . 'PHPCI' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR);
 }
 
 // Should PHPCI run the Shell plugin?

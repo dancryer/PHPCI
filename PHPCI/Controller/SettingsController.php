@@ -444,7 +444,7 @@ class SettingsController extends Controller
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
         $field->setOptions(Lang::getLanguageOptions());
-        $field->setValue('en');
+        $field->setValue(Lang::getLanguage());
         $form->addField($field);
 
 

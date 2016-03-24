@@ -23,6 +23,7 @@ class Deployer implements \PHPCI\Plugin
 {
     protected $webhookUrl;
     protected $reason;
+    protected $updateOnly;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -43,6 +44,8 @@ class Deployer implements \PHPCI\Plugin
         if (isset($options['reason'])) {
             $this->reason = $options['reason'];
         }
+        
+        $this->updateOnly = isset($options['update_only']) ? (bool) $options['update_only'] : true;
     }
 
     /**
@@ -61,6 +64,8 @@ class Deployer implements \PHPCI\Plugin
             'reason' => $this->phpci->interpolate($this->reason),
             'source' => 'PHPCI',
             'url' => $this->phpci->interpolate('%BUILD_URI%'),
+            'branch' => $this->phpci->interpolate('%BRANCH%'),
+            'update_only' => $this->updateOnly
         ));
 
         return $response['success'];

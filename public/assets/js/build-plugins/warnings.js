@@ -101,8 +101,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
 
             var i = 0;
             for (var key in self.keys) {
-
-                self.chartData.datasets[i].data.push(parseInt(self.data[build][key]));
+                var value = parseInt(self.data[build][key]) || 0;
+                self.chartData.datasets[i].data.push(value);
                 i++;
             }
         }

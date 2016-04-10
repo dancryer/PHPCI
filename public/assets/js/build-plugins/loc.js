@@ -16,7 +16,7 @@ var locPlugin = ActiveBuild.UiPlugin.extend({
         });
 
         $(window).on('build-updated', function(data) {
-            if (data.queryData.status > 1 && !self.rendered) {
+            if (data.queryData && data.queryData.status > 1 && !self.rendered) {
                 query();
             }
         });

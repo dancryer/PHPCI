@@ -27,7 +27,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         });
 
         $(window).on('build-updated', function(data) {
-            if (!self.rendered && data.queryData.status > 1) {
+            if (!self.rendered && data.queryData && data.queryData.status > 1) {
                 self.displayOnUpdate = true;
                 for (var query in queries) {
                   queries[query]();

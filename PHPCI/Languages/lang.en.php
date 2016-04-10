@@ -181,6 +181,7 @@ PHPCI',
     'phpcs_errors' => 'PHPCS Errors',
     'phplint_errors' => 'Lint Errors',
     'phpunit_errors' => 'PHPUnit Errors',
+    'phpcpd_warnings' => 'PHP Copy/Paste Detector Warnings',
     'phpdoccheck_warnings' => 'Missing Docblocks',
     'issues' => 'Issues',
 

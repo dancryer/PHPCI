@@ -172,6 +172,7 @@ PHPCI',
     'phpcs_errors' => 'Ошибки PHPCS',
     'phplint_errors' => 'Ошибки Lint',
     'phpunit_errors' => 'Ошибки PHPUnit',
+    'phpcpd_warnings' => 'Предупреждения PHP Copy/Paste Detector',
     'phpdoccheck_warnings' => 'Пропущенные Docblocks',
     'issues' => 'Проблемы',
 

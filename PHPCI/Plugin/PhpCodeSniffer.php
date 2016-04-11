@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildError;
 
 /**
 * PHP Code Sniffer Plugin - Allows PHP Code Sniffer testing.
@@ -163,14 +164,13 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         );
 
         $output = $this->phpci->getLastOutput();
-        list($errors, $warnings, $data) = $this->processReport($output);
+        list($errors, $warnings) = $this->processReport($output);
 
         $this->phpci->logExecOutput(true);
 
         $success = true;
         $this->build->storeMeta('phpcs-warnings', $warnings);
         $this->build->storeMeta('phpcs-errors', $errors);
-        $this->build->storeMeta('phpcs-data', $data);
 
         if ($this->allowed_warnings != -1 && $warnings > $this->allowed_warnings) {
             $success = false;
@@ -226,23 +226,21 @@ class PhpCodeSniffer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $errors = $data['totals']['errors'];
         $warnings = $data['totals']['warnings'];
 
-        $rtn = array();
-
         foreach ($data['files'] as $fileName => $file) {
             $fileName = str_replace($this->phpci->buildPath, '', $fileName);
 
             foreach ($file['messages'] as $message) {
-                $this->build->reportError($this->phpci, $fileName, $message['line'], 'PHPCS: ' . $message['message']);
-
-                $rtn[] = array(
-                    'file' => $fileName,
-                    'line' => $message['line'],
-                    'type' => $message['type'],
-                    'message' => $message['message'],
+                $this->build->reportError(
+                    $this->phpci,
+                    'php_code_sniffer',
+                    'PHPCS: ' . $message['message'],
+                    $message['type'] == 'ERROR' ? BuildError::SEVERITY_HIGH : BuildError::SEVERITY_LOW,
+                    $fileName,
+                    $message['line']
                 );
             }
         }
 
-        return array($errors, $warnings, $rtn);
+        return array($errors, $warnings);
     }
 }

@@ -303,8 +303,7 @@ class Builder implements LoggerAwareInterface
      */
     protected function setupBuild()
     {
-        $this->buildPath = $this->build->getBuildPath() . '/';
-        $this->build->currentBuildPath = $this->buildPath;
+        $this->buildPath = $this->build->getBuildPath();
 
         $this->interpolator->setupInterpolationVars(
             $this->build,

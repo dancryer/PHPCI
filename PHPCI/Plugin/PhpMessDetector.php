@@ -123,9 +123,8 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $this->executePhpMd($phpmdBinaryPath);
 
-        list($errorCount, $data) = $this->processReport(trim($this->phpci->getLastOutput()));
+        $errorCount = $this->processReport(trim($this->phpci->getLastOutput()));
         $this->build->storeMeta('phpmd-warnings', $errorCount);
-        $this->build->storeMeta('phpmd-data', $data);
 
         return $this->wasLastExecSuccessful($errorCount);
     }
@@ -158,7 +157,6 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         $warnings = 0;
-        $data = array();
 
         foreach ($xml->file as $file) {
             $fileName = (string)$file['name'];
@@ -166,22 +164,20 @@ class PhpMessDetector implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             foreach ($file->violation as $violation) {
                 $warnings++;
-                $warning = array(
-                    'file' => $fileName,
-                    'line_start' => (int)$violation['beginline'],
-                    'line_end' => (int)$violation['endline'],
-                    'rule' => (string)$violation['rule'],
-                    'ruleset' => (string)$violation['ruleset'],
-                    'priority' => (int)$violation['priority'],
-                    'message' => (string)$violation,
-                );
 
-                $this->build->reportError($this->phpci, $fileName, (int)$violation['beginline'], (string)$violation);
-                $data[] = $warning;
+                $this->build->reportError(
+                    $this->phpci,
+                    'php_mess_detector',
+                    (string)$violation,
+                    PHPCI\Model\BuildError::SEVERITY_HIGH,
+                    $fileName,
+                    (int)$violation['beginline'],
+                    (int)$violation['endline']
+                );
             }
         }
 
-        return array($warnings, $data);
+        return $warnings;
     }
 
     /**

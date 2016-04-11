@@ -73,9 +73,9 @@ class Pgsql implements \PHPCI\Plugin
     }
 
     /**
-    * Connects to PgSQL and runs a specified set of queries.
-    * @return boolean
-    */
+     * Connects to PgSQL and runs a specified set of queries.
+     * @return boolean
+     */
     public function execute()
     {
         try {

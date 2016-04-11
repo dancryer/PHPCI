@@ -38,19 +38,19 @@ class Campfire implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
-        $this->message = $options['message'];
+        $this->phpci     = $phpci;
+        $this->build     = $build;
+        $this->message   = $options['message'];
         $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
-        $this->cookie = "phpcicookie";
+        $this->cookie    = "phpcicookie";
 
         $buildSettings = $phpci->getConfig('build_settings');
+
         if (isset($buildSettings['campfire'])) {
-            $campfire = $buildSettings['campfire'];
-            $this->url = $campfire['url'];
+            $campfire        = $buildSettings['campfire'];
+            $this->url       = $campfire['url'];
             $this->authToken = $campfire['authToken'];
-            $this->roomId = $campfire['roomId'];
+            $this->roomId    = $campfire['roomId'];
         } else {
             throw new \Exception(Lang::get('no_campfire_settings'));
         }
@@ -63,7 +63,7 @@ class Campfire implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $url = PHPCI_URL."build/view/".$this->build->getId();
+        $url = PHPCI_URL . "build/view/" . $this->build->getId();
         $message = str_replace("%buildurl%", $url, $this->message);
         $this->joinRoom($this->roomId);
         $status = $this->speak($message, $this->roomId);
@@ -101,6 +101,7 @@ class Campfire implements \PHPCI\Plugin
     public function speak($message, $roomId, $isPaste = false)
     {
         $page = '/room/'.$roomId.'/speak.json';
+
         if ($isPaste) {
             $type = 'PasteMessage';
         } else {
@@ -143,10 +144,12 @@ class Campfire implements \PHPCI\Plugin
 
         // We tend to get one space with an otherwise blank response
         $output = trim($output);
+
         if (strlen($output)) {
             /* Responses are JSON. Decode it to a data structure */
             return json_decode($output);
         }
+
         // Simple 200 OK response (such as for joining a room)
         return true;
     }

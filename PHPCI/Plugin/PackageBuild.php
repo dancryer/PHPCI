@@ -33,12 +33,12 @@ class PackageBuild implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path               = $phpci->buildPath;
-        $this->build        = $build;
-        $this->phpci        = $phpci;
-        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
-        $this->filename     = isset($options['filename']) ? $options['filename'] : 'build';
-        $this->format       = isset($options['format']) ?  $options['format'] : 'zip';
+        $path            = $phpci->buildPath;
+        $this->build     = $build;
+        $this->phpci     = $phpci;
+        $this->directory = isset($options['directory']) ? $options['directory'] : $path;
+        $this->filename  = isset($options['filename']) ? $options['filename'] : 'build';
+        $this->format    = isset($options['format']) ?  $options['format'] : 'zip';
     }
 
     /**
@@ -46,7 +46,7 @@ class PackageBuild implements \PHPCI\Plugin
     */
     public function execute()
     {
-        $path = $this->phpci->buildPath;
+        $path  = $this->phpci->buildPath;
         $build = $this->build;
 
         if ($this->directory == $path) {

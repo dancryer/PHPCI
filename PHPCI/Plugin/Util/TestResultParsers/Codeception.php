@@ -20,6 +20,7 @@ class Codeception implements ParserInterface
     protected $totalTests;
     protected $totalTimeTaken;
     protected $totalFailures;
+    protected $totalErrors;
 
     /**
      * @param Builder $phpci
@@ -47,6 +48,7 @@ class Codeception implements ParserInterface
             $this->totalTests += (int) $testsuite['tests'];
             $this->totalTimeTaken += (float) $testsuite['time'];
             $this->totalFailures += (int) $testsuite['failures'];
+            $this->totalErrors += (int) $testsuite['errors'];
 
             foreach ($testsuite->testcase as $testcase) {
                 $testresult = array(
@@ -67,9 +69,9 @@ class Codeception implements ParserInterface
                     $testresult['feature'] = sprintf('%s::%s', $testresult['class'], $testresult['name']);
                 }
 
-                if (isset($testcase->failure)) {
+                if (isset($testcase->failure) || isset($testcase->error)) {
                     $testresult['pass'] = false;
-                    $testresult['message'] = (string) $testcase->failure;
+                    $testresult['message'] =  isset($testcase->failure) ? (string) $testcase->failure : (string) $testcase->error;
                 } else {
                     $testresult['pass'] = true;
                 }
@@ -108,6 +110,6 @@ class Codeception implements ParserInterface
      */
     public function getTotalFailures()
     {
-        return $this->totalFailures;
+        return $this->totalFailures + $this->totalErrors;
     }
 }

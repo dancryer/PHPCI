@@ -104,7 +104,9 @@ class BuildLogger implements LoggerAwareInterface
      */
     public function logDebug($message)
     {
-        $this->log("\033[0;33m" . $message . "\033[0m");
+        if (defined('PHPCI_DEBUG_MODE') && PHPCI_DEBUG_MODE) {
+            $this->log("\033[0;33m" . $message . "\033[0m");
+        }
     }
 
     /**

@@ -30,7 +30,6 @@ class Codeception implements ParserInterface
     {
         $this->phpci = $phpci;
         $this->resultsXml = $resultsXml;
-
         $this->totalTests = 0;
     }
 
@@ -71,7 +70,7 @@ class Codeception implements ParserInterface
 
                 if (isset($testcase->failure) || isset($testcase->error)) {
                     $testresult['pass'] = false;
-                    $testresult['message'] =  isset($testcase->failure) ? (string) $testcase->failure : (string) $testcase->error;
+                    $testresult['message'] =  (string)$testcase->failure . (string)$testcase->error;
                 } else {
                     $testresult['pass'] = true;
                 }

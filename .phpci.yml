@@ -13,7 +13,6 @@ build_settings:
 setup:
   composer:
     action: "install"
-    prefer_dist: false
 
 test:
   php_parallel_lint:

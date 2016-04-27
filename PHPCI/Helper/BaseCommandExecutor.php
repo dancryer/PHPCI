@@ -90,6 +90,10 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         $pipes = array();
 
+        if (defined('PHPCI_DEBUG_MODE')) {
+            $this->logger->logDebug($command);
+        }
+
         $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {

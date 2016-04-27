@@ -165,6 +165,7 @@ class BuildStore extends BuildStoreBase
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
         $stmt->bindValue(':numResults', (int)$numResults, \PDO::PARAM_INT);
+
         if (!is_null($branch)) {
             $stmt->bindValue(':branch', $branch, \PDO::PARAM_STR);
         }
@@ -183,7 +184,6 @@ class BuildStore extends BuildStoreBase
             } else {
                 return $rtn;
             }
-
         } else {
             return null;
         }

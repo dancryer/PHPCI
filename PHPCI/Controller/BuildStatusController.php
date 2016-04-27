@@ -104,7 +104,6 @@ class BuildStatusController extends \PHPCI\Controller
                     }
                 }
             }
-
         } catch (\Exception $e) {
             $xml = new \SimpleXMLElement('<projects/>');
         }

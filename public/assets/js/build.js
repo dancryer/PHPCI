@@ -6,7 +6,7 @@ var Build = Class.extend({
     queries: {},
     updateInterval: null,
 
-    init: function(build) {
+    init: function (build) {
         var self = this;
         self.buildId = build;
     },
@@ -18,7 +18,7 @@ var Build = Class.extend({
 
         self.registerQuery('build-updated', 10);
 
-        $(window).on('build-updated', function(data) {
+        $(window).on('build-updated', function (data) {
 
             self.buildData = data.queryData;
 
@@ -68,12 +68,12 @@ var Build = Class.extend({
         });
     },
 
-    registerQuery: function(name, seconds, query) {
+    registerQuery: function (name, seconds, query) {
         var self = this;
         var uri = 'build/meta/' + self.buildId;
         var query = query || {};
 
-        var cb = function() {
+        var cb = function () {
             var fullUri = window.PHPCI_URL + uri;
 
             if (name == 'build-updated') {
@@ -84,7 +84,7 @@ var Build = Class.extend({
                 dataType: "json",
                 url: fullUri,
                 data: query,
-                success: function(data) {
+                success: function (data) {
                     $(window).trigger({type: name, queryData: data});
                 },
                 error: handleFailedAjax
@@ -102,7 +102,7 @@ var Build = Class.extend({
         clearInterval(this.queries[name]);
     },
 
-    registerPlugin: function(plugin) {
+    registerPlugin: function (plugin) {
         this.plugins[plugin.id] = plugin;
         plugin.register();
     },
@@ -110,14 +110,14 @@ var Build = Class.extend({
     storePluginOrder: function () {
         var renderOrder = [];
 
-        $('.ui-plugin > div').each(function() {
+        $('.ui-plugin > div').each(function () {
             renderOrder.push($(this).attr('id'));
         });
 
         localStorage.setItem('phpci-plugin-order', JSON.stringify(renderOrder));
     },
 
-    renderPlugins: function() {
+    renderPlugins: function () {
         var self = this;
         var rendered = [];
         var renderOrder = localStorage.getItem('phpci-plugin-order');
@@ -155,7 +155,7 @@ var Build = Class.extend({
         $(window).trigger({type: 'build-updated', queryData: self.buildData});
     },
 
-    renderPlugin: function(plugin) {
+    renderPlugin: function (plugin) {
         var output = plugin.render();
 
         if (!plugin.box) {
@@ -167,26 +167,102 @@ var Build = Class.extend({
         content.addClass('box box-default');
 
         if (plugin.title) {
-            content.prepend('<div class="box-header"><h3 class="box-title">'+plugin.title+'</h3></div>');
+            content.prepend('<div class="box-header"><h3 class="box-title">' + plugin.title + '</h3></div>');
         }
-
+        this.toggleWidget(content);
         container.append(content);
 
         $('#plugins').append(container);
+    },
+    toggleWidget: function ($box) {
+
+        var self = this;
+        var id = $box.attr('id');
+        var $header = $box.find('.box-header');
+        var $content = $header.next();
+
+        // Add widget toggler
+
+        var $toggle = $('<i class="box-tools fa pull-right fa-angle-down"></i>');
+
+        if (self.isWidgetHidden(id)) {
+            $content.addClass('hidden');
+            $toggle.toggleClass('fa-angle-down fa-angle-left');
+        }
+        $toggle.appendTo($header).click(function () {
+            $content.toggleClass('hidden');
+
+            if ($content.hasClass('hidden')) {
+                self.hideWidget(id);
+
+            } else {
+                self.showWidget(id);
+
+            }
+            $(this).toggleClass('fa-angle-down fa-angle-left');
+
+        });
+
+    },
+    isWidgetHidden: function (id) {
+
+        var settings = this._getSettings('hidden_widgets');
+        return (settings.indexOf(id) != -1);
+
+    },
+
+    hideWidget: function (id) {
+
+        var settings = this._getSettings('hidden_widgets');
+        var index = settings.indexOf(id);
+
+        if (index == -1) {
+            settings.push(id);
+            this._storeSettings('hidden_widgets', settings);
+
+        }
+
+    },
+
+    showWidget: function (id) {
+
+        var settings = this._getSettings('hidden_widgets');
+        var index = settings.indexOf(id);
+
+        if (index != -1) {
+            settings.splice(index, 1);
+            this._storeSettings('hidden_widgets', settings);
+        }
+
+    },
+
+    _getSettings: function (setting) {
+
+        var settingsArray = [];
+        var settingsString = $.cookie(setting);
+
+        if (settingsString) {
+            settingsArray = settingsString.split(',');
+        }
+
+        return settingsArray;
+
+    },
+    _storeSettings: function (setting, value) {
+        $.cookie(setting, value.toString());
+
     },
 
     UiPlugin: Class.extend({
         id: null,
         css: 'col-lg-4 col-md-6 col-sm-12 col-xs-12',
         box: false,
-
-        init: function(){
+        init: function () {
         },
 
-        register: function() {
+        register: function () {
             var self = this;
-
-            $(window).on('build-updated', function(data) {
+            $(window).on('build-updated', function (data) {
                 self.onUpdate(data);
             });
         },

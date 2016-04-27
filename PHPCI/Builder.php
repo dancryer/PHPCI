@@ -245,7 +245,7 @@ class Builder implements LoggerAwareInterface
 
         // Clean up:
         $this->buildLogger->log(Lang::get('removing_build'));
-        $this->build->removeBuildDirectory();
+        //$this->build->removeBuildDirectory();
 
         $this->store->save($this->build);
     }

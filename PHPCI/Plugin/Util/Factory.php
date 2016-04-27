@@ -2,32 +2,37 @@
 
 namespace PHPCI\Plugin\Util;
 
+use Pimple\Container;
+
 /**
  * Plugin Factory - Loads Plugins and passes required dependencies.
+ *
  * @package PHPCI\Plugin\Util
  */
 class Factory
 {
-    const TYPE_ARRAY             = "array";
-    const TYPE_CALLABLE          = "callable";
+    const TYPE_ARRAY = "array";
+    const TYPE_CALLABLE = "callable";
     const INTERFACE_PHPCI_PLUGIN = '\PHPCI\Plugin';
 
     private $currentPluginOptions;
 
     /**
-     * @var \Pimple
+     * @var Container
      */
     private $container;
 
     /**
-     * @param \Pimple $container
+     * Factory constructor.
+     *
+     * @param Container|null $container
      */
-    public function __construct(\Pimple $container = null)
+    public function __construct(Container $container = null)
     {
         if ($container) {
             $this->container = $container;
         } else {
-            $this->container = new \Pimple();
+            $this->container = new Container();
         }
 
         $self = $this;
@@ -46,6 +51,7 @@ class Factory
      * This enables the config file to call any public methods.
      *
      * @param $configPath
+     *
      * @return bool - true if the function exists else false.
      */
     public function addConfigFromFile($configPath)
@@ -56,14 +62,17 @@ class Factory
             $configFunction = require($configPath);
             if (is_callable($configFunction)) {
                 $configFunction($this);
+
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Get most recently used factory options.
+     *
      * @return mixed
      */
     public function getLastOptions()
@@ -75,8 +84,9 @@ class Factory
      * Builds an instance of plugin of class $className. $options will
      * be passed along with any resources registered with the factory.
      *
-     * @param $className
+     * @param            $className
      * @param array|null $options
+     *
      * @throws \InvalidArgumentException if $className doesn't represent a valid plugin
      * @return \PHPCI\Plugin
      */
@@ -108,9 +118,10 @@ class Factory
     }
 
     /**
-     * @param callable $loader
+     * @param callable    $loader
      * @param string|null $name
      * @param string|null $type
+     *
      * @throws \InvalidArgumentException
      * @internal param mixed $resource
      */
@@ -118,7 +129,8 @@ class Factory
         $loader,
         $name = null,
         $type = null
-    ) {
+    )
+    {
         if ($name === null && $type === null) {
             throw new \InvalidArgumentException(
                 "Type or Name must be specified"
@@ -138,20 +150,24 @@ class Factory
 
     /**
      * Get an internal resource ID.
+     *
      * @param null $type
      * @param null $name
+     *
      * @return string
      */
     private function getInternalID($type = null, $name = null)
     {
-        $type = $type ? : "";
-        $name = $name ? : "";
+        $type = $type ?: "";
+        $name = $name ?: "";
+
         return $type . "-" . $name;
     }
 
     /**
      * @param string $type
      * @param string $name
+     *
      * @return mixed
      */
     public function getResourceFor($type = null, $name = null)
@@ -176,6 +192,7 @@ class Factory
 
     /**
      * @param \ReflectionParameter $param
+     *
      * @return null|string
      */
     private function getParamType(\ReflectionParameter $param)
@@ -193,8 +210,9 @@ class Factory
     }
 
     /**
-     * @param $existingArgs
+     * @param                      $existingArgs
      * @param \ReflectionParameter $param
+     *
      * @return array
      * @throws \DomainException
      */

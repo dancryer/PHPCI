@@ -33,6 +33,3 @@ Contributions from others would be very much appreciated! Please read our [guide
 
 ##Questions?
 Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci), if you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.
-
-
-Test

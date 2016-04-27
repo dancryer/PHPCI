@@ -27,6 +27,8 @@ use PHPCI\Store\ProjectStore;
  * @author       Guillaume Perréal <adirelle@gmail.com>
  * @package      PHPCI
  * @subpackage   Web
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class WebhookController extends \b8\Controller
 {

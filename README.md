@@ -20,16 +20,16 @@ We have a chat room for discussing PHPCI, you can access it here: [![Gitter](htt
 * You can mark certain plugins as being allowed to fail (but still run.)
 
 ##What it doesn't do (yet):
-* Virtualised testing. *(In progress)*
-* Multiple PHP-version tests. *(In progress)*
+* Virtualised testing.
+* Multiple PHP-version tests.
 * Install PEAR or PECL extensions.
-* [Deployments](http://phpdeployment.org)
+* Deployments - We strongly recommend using [Deployer](http://phpdeployment.org)
 
 ## Getting Started:
 We've got documentation on our website on [installing PHPCI](https://www.phptesting.org/install-phpci) and [adding support for PHPCI to your projects](https://www.phptesting.org/wiki/Adding-PHPCI-Support-to-Your-Projects).
 
 ##Contributing
-Contributions from others would be very much appreciated! Please read our [guide to contributing](https://www.phptesting.org/wiki/Contributing-to-PHPCI) for more information on how to get involved.
+Contributions from others would be very much appreciated! Please read our [guide to contributing](https://github.com/Block8/PHPCI/blob/master/.github/CONTRIBUTING.md) for more information on how to get involved.
 
 ##Questions?
 Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci), if you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

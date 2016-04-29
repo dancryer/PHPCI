@@ -27,6 +27,8 @@ use PHPCI\Store\ProjectStore;
  * @author       Guillaume Perréal <adirelle@gmail.com>
  * @package      PHPCI
  * @subpackage   Web
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class WebhookController extends \b8\Controller
 {
@@ -80,11 +82,64 @@ class WebhookController extends \b8\Controller
     }
 
     /**
-     * Called by Bitbucket POST service.
+     * Called by Bitbucket.
      */
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
+    
+        // Support both old services and new webhooks
+        if ($payload = $this->getParam('payload')) {
+            return $this->bitbucketService(json_decode($payload, true), $project);
+        }
+
+        $payload = json_decode(file_get_contents("php://input"), true);
+
+        if (empty($payload['push']['changes'])) {
+            // Invalid event from bitbucket
+            return [
+                'status' => 'failed',
+                'commits' => []
+            ];
+        }
+
+        return $this->bitbucketWebhook($payload, $project);
+    }
+
+    /**
+     * Bitbucket webhooks.
+     */
+    protected function bitbucketWebhook($payload, $project)
+    {
+        $results = array();
+        $status = 'failed';
+        foreach ($payload['push']['changes'] as $commit) {
+            try {
+                $email = $commit['new']['target']['author']['raw'];
+                $email = substr($email, 0, strpos($email, '>'));
+                $email = substr($email, strpos($email, '<') + 1);
+
+                $results[$commit['new']['target']['hash']] = $this->createBuild(
+                    $project,
+                    $commit['new']['target']['hash'],
+                    $commit['new']['name'],
+                    $email,
+                    $commit['new']['target']['message']
+                );
+                $status = 'ok';
+            } catch (Exception $ex) {
+                $results[$commit['new']['target']['hash']] = array('status' => 'failed', 'error' => $ex->getMessage());
+            }
+        }
+
+        return array('status' => $status, 'commits' => $results);
+    }
+
+    /**
+     * Bitbucket POST service.
+     */
+    protected function bitbucketService($payload, $project)
+    {
         $payload = json_decode($this->getParam('payload'), true);
 
         $results = array();

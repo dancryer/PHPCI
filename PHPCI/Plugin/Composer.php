@@ -61,6 +61,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $this->directory  = $path;
         $this->action     = 'install';
         $this->preferDist = false;
+        $this->preferSource = false;
         $this->nodev      = false;
 
         if (array_key_exists('directory', $options)) {
@@ -73,6 +74,11 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if (array_key_exists('prefer_dist', $options)) {
             $this->preferDist = (bool)$options['prefer_dist'];
+        }
+
+        if (array_key_exists('prefer_source', $options)) {
+            $this->preferDist = false;
+            $this->preferSource = (bool)$options['prefer_source'];
         }
 
         if (array_key_exists('no_dev', $options)) {
@@ -97,10 +103,12 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         if ($this->preferDist) {
             $this->phpci->log('Using --prefer-dist flag');
-            $cmd .= '--prefer-dist';
-        } else {
+            $cmd .= ' --prefer-dist';
+        }
+
+        if ($this->preferSource) {
             $this->phpci->log('Using --prefer-source flag');
-            $cmd .= '--prefer-source';
+            $cmd .= ' --prefer-source';
         }
 
         if ($this->nodev) {

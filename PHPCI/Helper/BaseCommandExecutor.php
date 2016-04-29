@@ -76,6 +76,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
         $this->lastOutput = array();
 
         $command = call_user_func_array('sprintf', $args);
+        $this->logger->logDebug($command);
 
         if ($this->quiet) {
             $this->logger->log('Executing: ' . $command);
@@ -89,7 +90,6 @@ abstract class BaseCommandExecutor implements CommandExecutor
         );
 
         $pipes = array();
-
         $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
         if (is_resource($process)) {

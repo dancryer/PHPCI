@@ -154,6 +154,9 @@ od wybranego kodu źródłowego platformy hostingowej.',
 Services</a> repozytoria Bitbucket.',
 
     // View Build
+    'errors' => 'Błędy',
+    'information' => 'Informacje',
+	
     'build_x_not_found' => 'Budowanie o ID %d nie istnieje.',
     'build_n' => 'Budowanie %d',
     'rebuild_now' => 'Przebuduj Teraz',
@@ -288,6 +291,19 @@ wywołaniu polecenia composer update.',
     'search_packagist_for_more' => 'Przeszukaj Packagist po więcej pakietów',
     'search' => 'Szukaj &raquo;',
 
+    // Summary plugin
+    'build-summary' => 'Podsumowanie',
+    'stage' => 'Etap',
+    'duration' => 'Czas trwania',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Konfiguracja',
+    'stage_test' => 'Testy',
+    'stage_complete' => 'Zakończony',
+    'stage_success' => 'Sukces',
+    'stage_failure' => 'Błąd',
+    'stage_broken'  => 'Zepsuty',
+    'stage_fixed' => 'Naprawiony',
+	
     // Installer
     'installation_url' => 'URL instalacyjny PHPCI',
     'db_host' => 'Host Bazy Danych',

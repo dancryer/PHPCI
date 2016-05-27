@@ -7,7 +7,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         'phplint-errors': Lang.get('phplint_errors'),
         'phpunit-errors': Lang.get('phpunit_errors'),
         'phptallint-errors': Lang.get('phptal_errors'),
-        'phptallint-warnings': Lang.get('phptal_warnings')
+        'phptallint-warnings': Lang.get('phptal_warnings'),
+        'phpcs-errors': Lang.get('phpcs_errors'),
     },
     data: {},
     displayOnUpdate: false,
@@ -22,7 +23,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
           queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('codeception-errors phptallint-warnings phptallint-errors phplint-errors phpunit-errors', function(data) {
+        $(window).on('codeception-errors phptallint-warnings phptallint-errors phplint-errors phpunit-errors phpcs-errors', function(data) {
             self.onUpdate(data);
         });
 

@@ -369,13 +369,13 @@ class ProjectController extends PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Checkbox::create('allow_public_status', Lang::get('allow_public_status'), false);
-        $field->setContainerClass('form-group');
+        $field->setContainerClass('checkbox');
         $field->setCheckedValue(1);
         $field->setValue(0);
         $form->addField($field);
 
         $field = Form\Element\Checkbox::create('archived', Lang::get('archived'), false);
-        $field->setContainerClass('form-group');
+        $field->setContainerClass('checkbox');
         $field->setCheckedValue(1);
         $field->setValue(0);
         $form->addField($field);

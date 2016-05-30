@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0c633a374115a8b62fd1a3433e80bde3",
-    "content-hash": "e7ac9102d7ae27f977a0669b86f0c599",
+    "hash": "8a4f83da0d6ebec4ea9c8d13e2a8622b",
+    "content-hash": "4be3c063eb6331a8a3de74d3393dee92",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1751,16 +1751,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "3.1.x-dev",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "52f75d852f72680d820fe8892474dda9fa6cb9fc"
+                "reference": "e71d4713c506686e6cf027af44c97ee5d94c7db4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/52f75d852f72680d820fe8892474dda9fa6cb9fc",
-                "reference": "52f75d852f72680d820fe8892474dda9fa6cb9fc",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e71d4713c506686e6cf027af44c97ee5d94c7db4",
+                "reference": "e71d4713c506686e6cf027af44c97ee5d94c7db4",
                 "shasum": ""
             },
             "require": {
@@ -1882,7 +1882,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-05-26 08:31:29"
+            "time": "2016-05-30 07:24:54"
         },
         {
             "name": "twig/twig",
@@ -2001,16 +2001,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.0.6",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "3231629ff97abccd60f93ff900accfb5b39c8200"
+                "reference": "f5e7cdc9b5cd3f7d9b0228692cd6ec5736c3b074"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/3231629ff97abccd60f93ff900accfb5b39c8200",
-                "reference": "3231629ff97abccd60f93ff900accfb5b39c8200",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/f5e7cdc9b5cd3f7d9b0228692cd6ec5736c3b074",
+                "reference": "f5e7cdc9b5cd3f7d9b0228692cd6ec5736c3b074",
                 "shasum": ""
             },
             "require": {
@@ -2022,7 +2022,7 @@
             "type": "symfony-bridge",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -2052,14 +2052,12 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2016-04-12 18:09:53"
+            "time": "2016-04-12 18:27:47"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "symfony/symfony": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

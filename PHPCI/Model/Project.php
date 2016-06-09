@@ -97,7 +97,11 @@ class Project extends ProjectBase
 
         // Handle old-format (serialized) access information first:
         if (!empty($info) && substr($info, 0, 1) != '{') {
-            $data = unserialize($info);
+            try {
+                $data = unserialize($info);
+            } catch (\Exception $e){
+                $data = null;
+            }
         } else {
             $data = json_decode($info, true);
         }

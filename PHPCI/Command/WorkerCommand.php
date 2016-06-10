@@ -50,7 +50,8 @@ class WorkerCommand extends Command
     {
         $this
             ->setName('phpci:worker')
-            ->setDescription('Runs the PHPCI build worker.');
+            ->setDescription('Runs the PHPCI build worker.')
+            ->addOption('debug', null, null, 'Run PHPCI in Debug Mode');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -63,6 +64,12 @@ class WorkerCommand extends Command
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
+        }
+
+        // Allow PHPCI to run in "debug mode"
+        if ($input->hasOption('debug') && $input->getOption('debug')) {
+            $output->writeln('<comment>Debug mode enabled.</comment>');
+            define('PHPCI_DEBUG_MODE', true);
         }
 
         $config = Config::getInstance()->get('phpci.worker', []);

@@ -180,7 +180,7 @@ class BuildController extends \PHPCI\Controller
         $errorView->build = $build;
         $errorView->errors = $errors;
 
-        $data['errors']     = count($errors);
+        $data['errors']     = $errorStore->getErrorTotalForBuild($build->getId());
         $data['error_html'] = $errorView->render();
         $data['since'] = (new \DateTime())->format('Y-m-d H:i:s');
 

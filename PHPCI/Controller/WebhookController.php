@@ -27,6 +27,8 @@ use PHPCI\Store\ProjectStore;
  * @author       Guillaume Perréal <adirelle@gmail.com>
  * @package      PHPCI
  * @subpackage   Web
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class WebhookController extends \b8\Controller
 {
@@ -80,11 +82,64 @@ class WebhookController extends \b8\Controller
     }
 
     /**
-     * Called by Bitbucket POST service.
+     * Called by Bitbucket.
      */
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
+    
+        // Support both old services and new webhooks
+        if ($payload = $this->getParam('payload')) {
+            return $this->bitbucketService(json_decode($payload, true), $project);
+        }
+
+        $payload = json_decode(file_get_contents("php://input"), true);
+
+        if (empty($payload['push']['changes'])) {
+            // Invalid event from bitbucket
+            return [
+                'status' => 'failed',
+                'commits' => []
+            ];
+        }
+
+        return $this->bitbucketWebhook($payload, $project);
+    }
+
+    /**
+     * Bitbucket webhooks.
+     */
+    protected function bitbucketWebhook($payload, $project)
+    {
+        $results = array();
+        $status = 'failed';
+        foreach ($payload['push']['changes'] as $commit) {
+            try {
+                $email = $commit['new']['target']['author']['raw'];
+                $email = substr($email, 0, strpos($email, '>'));
+                $email = substr($email, strpos($email, '<') + 1);
+
+                $results[$commit['new']['target']['hash']] = $this->createBuild(
+                    $project,
+                    $commit['new']['target']['hash'],
+                    $commit['new']['name'],
+                    $email,
+                    $commit['new']['target']['message']
+                );
+                $status = 'ok';
+            } catch (Exception $ex) {
+                $results[$commit['new']['target']['hash']] = array('status' => 'failed', 'error' => $ex->getMessage());
+            }
+        }
+
+        return array('status' => $status, 'commits' => $results);
+    }
+
+    /**
+     * Bitbucket POST service.
+     */
+    protected function bitbucketService($payload, $project)
+    {
         $payload = json_decode($this->getParam('payload'), true);
 
         $results = array();
@@ -170,7 +225,7 @@ class WebhookController extends \b8\Controller
     protected function githubCommitRequest(Project $project, array $payload)
     {
         // Github sends a payload when you close a pull request with a
-        // non-existant commit. We don't want this.
+        // non-existent commit. We don't want this.
         if (array_key_exists('after', $payload) && $payload['after'] === '0000000000000000000000000000000000000000') {
             return array('status' => 'ignored');
         }
@@ -364,10 +419,6 @@ class WebhookController extends \b8\Controller
 
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
-        $build = BuildFactory::getBuild($build);
-
-        // Send a status postback if the build type provides one:
-        $build->sendStatusPostback();
 
         return array('status' => 'ok', 'buildID' => $build->getID());
     }

@@ -2,7 +2,17 @@
 <div class="row">
 
     <div class="col-sm-5">
-        <?php print $summary; ?>
+        <?php foreach ($groups as $group): ?>
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title"><?php print $group['title']; ?></h3>
+            </div>
+
+            <div class="box-body">
+                <?php print $group['summary']; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
     </div>
 
     <div class="col-sm-7 pull-left">

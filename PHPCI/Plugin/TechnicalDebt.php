@@ -124,12 +124,11 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $success = true;
         $this->phpci->logExecOutput(false);
 
-        list($errorCount, $data) = $this->getErrorList();
+        $errorCount = $this->getErrorList();
 
         $this->phpci->log("Found $errorCount instances of " . implode(', ', $this->searches));
 
         $this->build->storeMeta('technical_debt-warnings', $errorCount);
-        $this->build->storeMeta('technical_debt-data', $data);
 
         if ($this->allowed_errors != -1 && $errorCount > $this->allowed_errors) {
             $success = false;
@@ -151,6 +150,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $ignores = $this->ignore;
         $ignores[] = 'phpci.yml';
+        $ignores[] = '.phpci.yml';
 
         foreach ($iterator as $file) {
             $filePath = $file->getRealPath();
@@ -163,7 +163,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             }
 
             // Ignore hidden files, else .git, .sass_cache, etc. all get looped over
-            if (stripos($filePath, '/.') !== false) {
+            if (stripos($filePath, DIRECTORY_SEPARATOR . '.') !== false) {
                 $skipFile = true;
             }
 
@@ -174,7 +174,6 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
         $files = array_filter(array_unique($files));
         $errorCount = 0;
-        $data = array();
 
         foreach ($files as $file) {
             foreach ($this->searches as $search) {
@@ -188,21 +187,21 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
                     $content = trim($allLines[$lineNumber - 1]);
 
                     $errorCount++;
-                    $this->phpci->log("Found $search on line $lineNumber of $file:\n$content");
 
                     $fileName = str_replace($this->directory, '', $file);
-                    $data[] = array(
-                        'file' => $fileName,
-                        'line' => $lineNumber,
-                        'message' => $content
+
+                    $this->build->reportError(
+                        $this->phpci,
+                        'technical_debt',
+                        $content,
+                        PHPCI\Model\BuildError::SEVERITY_LOW,
+                        $fileName,
+                        $lineNumber
                     );
-
-                    $this->build->reportError($this->phpci, $fileName, $lineNumber, $content);
-
                 }
             }
         }
 
-        return array( $errorCount, $data );
+        return $errorCount;
     }
 }

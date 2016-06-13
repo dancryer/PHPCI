@@ -76,8 +76,8 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return 'phpunit.xml';
         }
 
-        if (file_exists($buildPath . 'tests/phpunit.xml')) {
-            return 'tests/phpunit.xml';
+        if (file_exists($buildPath . 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml')) {
+            return 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml';
         }
 
         if (file_exists($buildPath . 'phpunit.xml.dist')) {
@@ -85,7 +85,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (file_exists($buildPath . 'tests/phpunit.xml.dist')) {
-            return 'tests/phpunit.xml.dist';
+            return 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml.dist';
         }
 
         return null;
@@ -133,7 +133,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (isset($options['coverage'])) {
-            $this->coverage = " --coverage-html {$options['coverage']} ";
+            $this->coverage = ' --coverage-html ' . $this->phpci->interpolate($options['coverage']) . ' ';
         }
     }
 
@@ -194,7 +194,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
-                chdir($this->phpci->buildPath.'/'.$this->runFrom);
+                chdir($this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->runFrom);
             }
 
             $phpunit = $this->phpci->findBinary('phpunit');

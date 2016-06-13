@@ -21,7 +21,7 @@ final class AnsiConverter
     static private $converter = null;
 
     /**
-     * Initialize the singletion.
+     * Initialize the singleton.
      *
      * @return AnsiToHtmlConverter
      */
@@ -35,7 +35,7 @@ final class AnsiConverter
     }
 
     /**
-     * Convert a text containing ANSI colr sequences into HTML code.
+     * Convert a text containing ANSI color sequences into HTML code.
      *
      * @param string $text The text to convert
      *
@@ -47,7 +47,7 @@ final class AnsiConverter
     }
 
     /**
-     * Do not instanciate this class.
+     * Do not instantiate this class.
      */
     private function __construct()
     {

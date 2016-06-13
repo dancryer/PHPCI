@@ -1,21 +1,18 @@
 var warningsPlugin = ActiveBuild.UiPlugin.extend({
     id: 'build-warnings-chart',
-    css: 'col-lg-6 col-md-6 col-sm-12 col-xs-12',
+    css: 'col-xs-12',
     title: Lang.get('quality_trend'),
     keys: {
         'codeception-errors': Lang.get('codeception_errors'),
-        'phpmd-warnings': Lang.get('phpmd_warnings'),
-        'phpcs-warnings': Lang.get('phpcs_warnings'),
-        'phpcs-errors': Lang.get('phpcs_errors'),
         'phplint-errors': Lang.get('phplint_errors'),
         'phpunit-errors': Lang.get('phpunit_errors'),
-        'phpdoccheck-warnings': Lang.get('phpdoccheck'),
         'phptallint-errors': Lang.get('phptal_errors'),
         'phptallint-warnings': Lang.get('phptal_warnings')
     },
     data: {},
     displayOnUpdate: false,
     rendered: false,
+    chartData: null,
 
     register: function() {
         var self = this;
@@ -25,7 +22,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
           queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('codeception-errors phpmd-warnings phpcs-warnings phptallint-warnings phptallint-errors phpcs-errors phplint-errors phpunit-errors phpdoccheck-warnings', function(data) {
+        $(window).on('codeception-errors phptallint-warnings phptallint-errors phplint-errors phpunit-errors', function(data) {
             self.onUpdate(data);
         });
 
@@ -37,12 +34,19 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
                 }
             }
         });
-
-        google.load("visualization", "1", {packages:["corechart"]});
     },
 
     render: function() {
-        return $('<div id="build-warnings"></div>').text(Lang.get('chart_display'));
+        var self = this;
+        var container = $('<div id="build-warnings" style="width: 100%; height: 300px"></div>');
+        container.append('<canvas id="build-warnings-linechart" style="width: 100%; height: 300px"></canvas>');
+
+        $(document).on('shown.bs.tab', function () {
+            $('#build-warnings-chart').hide();
+            self.drawChart();
+        });
+
+        return container;
     },
 
     onUpdate: function(e) {
@@ -74,38 +78,52 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         var self = this;
         self.rendered = true;
 
-        $('#build-warnings').empty().animate({height: '275px'});
+        var colors = ['#4D4D4D', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F', '#B276B2', '#DECF3F', '#F15854'];
 
-        var titles = ['Build'];
-        for (var key in self.keys) {
-            titles.push(self.keys[key]);
-        }
-
-        var data = [titles];
-        for (var build in self.data) {
-            var thisBuild = ['#' + build];
-
-            for (var key in self.keys) {
-                thisBuild.push(parseInt(self.data[build][key]));
-            }
-
-            data.push(thisBuild);
-        }
-
-        var data = google.visualization.arrayToDataTable(data);
-        var options = {
-            hAxis: {title: Lang.get('builds')},
-            vAxis: {title: Lang.get('issues'), logScale:true},
-            backgroundColor: { fill: 'transparent' },
-            height: 275,
-            pointSize: 3,
-            legend: {position: 'bottom'}
+        self.chartData = {
+            labels: [],
+            datasets: []
         };
 
-        $('#build-warnings-chart').show();
+        for (var key in self.keys) {
+            var color = colors.shift();
 
-        var chart = new google.visualization.LineChart(document.getElementById('build-warnings'));
-        chart.draw(data, options);
+            self.chartData.datasets.push({
+                label: self.keys[key],
+                strokeColor: color,
+                pointColor: color,
+                data: []
+            });
+        }
+
+        for (var build in self.data) {
+            self.chartData.labels.push('Build ' + build);
+
+            var i = 0;
+            for (var key in self.keys) {
+
+                self.chartData.datasets[i].data.push(parseInt(self.data[build][key]));
+                i++;
+            }
+        }
+
+        self.drawChart();
+    },
+
+    drawChart: function () {
+        var self = this;
+
+        if ($('#information').hasClass('active') && self.chartData) {
+            $('#build-warnings-chart').show();
+
+            var ctx = $("#build-warnings-linechart").get(0).getContext("2d");
+            var buildWarningsChart = new Chart(ctx);
+
+            buildWarningsChart.Line(self.chartData, {
+                datasetFill: false,
+                multiTooltipTemplate: "<%=datasetLabel%>: <%= value %>"
+            });
+        }
     }
 });
 

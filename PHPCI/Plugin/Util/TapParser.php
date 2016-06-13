@@ -13,9 +13,10 @@ use Symfony\Component\Yaml\Yaml;
 class TapParser
 {
     const TEST_COUNTS_PATTERN = '/^\d+\.\.(\d+)/';
-    const TEST_LINE_PATTERN = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
-    const TEST_YAML_START = '/^(\s*)---/';
-    const TEST_DIAGNOSTIC = '/^#/';
+    const TEST_LINE_PATTERN   = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
+    const TEST_YAML_START     = '/^(\s*)---/';
+    const TEST_DIAGNOSTIC     = '/^#/';
+    const TEST_COVERAGE       = '/^Generating/';
 
     /**
      * @var string
@@ -73,7 +74,7 @@ class TapParser
 
         $line = $this->nextLine();
         if ($line === $header) {
-            throw new Exception("Duplicated TAP log, please check the configration.");
+            throw new Exception("Duplicated TAP log, please check the configuration.");
         }
 
         while ($line !== false && ($this->testCount === false || count($this->results) < $this->testCount)) {
@@ -81,7 +82,7 @@ class TapParser
             $line = $this->nextLine();
         }
 
-        if (count($this->results) !== $this->testCount) {
+        if (false !== $this->testCount && count($this->results) !== $this->testCount) {
             throw new Exception(Lang::get('tap_error'));
         }
 
@@ -96,7 +97,7 @@ class TapParser
      */
     protected function findTapLog()
     {
-        // Look for the beggning of the TAP output
+        // Look for the beginning of the TAP output
         do {
             $header = $this->nextLine();
         } while ($header !== false && substr($header, 0, 12) !== 'TAP version ');
@@ -123,19 +124,14 @@ class TapParser
         return false;
     }
 
-    /** Parse a single line.
-     *
+    /**
      * @param string $line
+     *
+     * @return boolean
      */
-    protected function parseLine($line)
+    protected function testLine($line)
     {
-        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
-            $this->testCount = intval($matches[1]);
-
-        } elseif (preg_match(self::TEST_DIAGNOSTIC, $line)) {
-            return;
-
-        } elseif (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
+        if (preg_match(self::TEST_LINE_PATTERN, $line, $matches)) {
             $this->results[] = $this->processTestLine(
                 $matches[1],
                 isset($matches[2]) ? $matches[2] : '',
@@ -143,18 +139,61 @@ class TapParser
                 isset($matches[4]) ? $matches[4] : null
             );
 
-        } elseif (preg_match(self::TEST_YAML_START, $line, $matches)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return boolean
+     */
+    protected function yamlLine($line)
+    {
+        if (preg_match(self::TEST_YAML_START, $line, $matches)) {
             $diagnostic = $this->processYamlBlock($matches[1]);
-            $test = array_pop($this->results);
+            $test       = array_pop($this->results);
             if (isset($test['message'], $diagnostic['message'])) {
                 $test['message'] .= PHP_EOL . $diagnostic['message'];
                 unset($diagnostic['message']);
             }
             $this->results[] = array_replace($test, $diagnostic);
 
-        } else {
-            throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
+            return true;
         }
+
+        return false;
+    }
+
+    /** Parse a single line.
+     *
+     * @param string $line
+     *
+     * @throws Exception
+     */
+    protected function parseLine($line)
+    {
+        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
+            return;
+        }
+
+        if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
+            $this->testCount = intval($matches[1]);
+
+            return;
+        }
+
+        if ($this->testLine($line)) {
+            return;
+        }
+
+        if ($this->yamlLine($line)) {
+            return;
+        }
+
+        throw new Exception(sprintf('Incorrect TAP data, line %d: %s', $this->lineNumber, $line));
     }
 
     /**
@@ -196,18 +235,20 @@ class TapParser
      */
     protected function processYamlBlock($indent)
     {
-        $startLine = $this->lineNumber+1;
-        $endLine = $indent.'...';
+        $startLine = $this->lineNumber + 1;
+        $endLine   = $indent . '...';
         $yamlLines = array();
+
         do {
             $line = $this->nextLine();
+
             if ($line === false) {
                 throw new Exception(Lang::get('tap_error_endless_yaml', $startLine));
             } elseif ($line === $endLine) {
                 break;
             }
-            $yamlLines[] = substr($line, strlen($indent));
 
+            $yamlLines[] = substr($line, strlen($indent));
         } while (true);
 
         return Yaml::parse(join("\n", $yamlLines));

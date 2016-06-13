@@ -67,7 +67,7 @@ class BuildLogger implements LoggerAwareInterface
         }
     }
 
-   /**
+    /**
      * Add a success-coloured message to the log.
      * @param string
      */
@@ -96,6 +96,17 @@ class BuildLogger implements LoggerAwareInterface
             LogLevel::ERROR,
             $context
         );
+    }
+
+    /**
+     * Add a debug message to the log.
+     * @param string
+     */
+    public function logDebug($message)
+    {
+        if (defined('PHPCI_DEBUG_MODE') && PHPCI_DEBUG_MODE) {
+            $this->log("\033[0;33m" . $message . "\033[0m");
+        }
     }
 
     /**

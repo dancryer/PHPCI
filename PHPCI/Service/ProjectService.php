@@ -89,6 +89,10 @@ class ProjectService
             $project->setBranch($options['branch']);
         }
 
+        if (array_key_exists('group', $options)) {
+            $project->setGroup($options['group']);
+        }
+
         // Allow certain project types to set access information:
         $this->processAccessInformation($project);
 

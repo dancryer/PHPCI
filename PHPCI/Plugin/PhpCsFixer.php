@@ -14,7 +14,7 @@ use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
-* PHP CS Fixer - Works with the PHP CS Fixer for testing coding standards.
+* PHP CS Fixer - Works with the PHP Coding Standards Fixer for testing coding standards.
 * @author       Gabriel Baker <gabriel@autonomicpilot.co.uk>
 * @package      PHPCI
 * @subpackage   Plugins
@@ -32,10 +32,10 @@ class PhpCsFixer implements \PHPCI\Plugin
     protected $build;
 
     protected $workingDir = '';
-    protected $level      = ' --level=all';
-    protected $verbose    = '';
-    protected $diff       = '';
-    protected $levels     = array('psr0', 'psr1', 'psr2', 'all');
+    protected $level = ' --level=psr2';
+    protected $verbose = '';
+    protected $diff = '';
+    protected $levels = array('psr0', 'psr1', 'psr2', 'symfony');
 
     /**
      * Standard Constructor

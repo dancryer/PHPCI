@@ -69,19 +69,20 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->phpci->ignore)) {
-            $map    = function ($item) {
-                return ' --exclude ' . (substr($item, -1) == '/' ? substr($item, 0, -1) : $item);
-            };
-            $ignore = array_map($map, $this->phpci->ignore);
 
+        if (count($this->phpci->ignore)) {
+            $map = function ($item) {
+                return ' --exclude ' . rtrim($item, DIRECTORY_SEPARATOR);
+            };
+
+            $ignore = array_map($map, $this->phpci->ignore);
             $ignore = implode('', $ignore);
         }
 
         $phploc = $this->phpci->findBinary('phploc');
 
         $success = $this->phpci->executeCommand($phploc . ' %s "%s"', $ignore, $this->directory);
-        $output = $this->phpci->getLastOutput();
+        $output  = $this->phpci->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
             $data = array();

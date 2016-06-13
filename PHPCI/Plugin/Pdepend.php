@@ -73,8 +73,11 @@ class Pdepend implements \PHPCI\Plugin
      */
     public function execute()
     {
+        if (!file_exists($this->location)) {
+            mkdir($this->location);
+        }
         if (!is_writable($this->location)) {
-            throw new \Exception(sprintf('The location %s is not writable.', $this->location));
+            throw new \Exception(sprintf('The location %s is not writable or does not exist.', $this->location));
         }
 
         $pdepend = $this->phpci->findBinary('pdepend');

@@ -115,6 +115,7 @@ PHPCI',
     'default_branch' => 'Nom de la branche par défaut',
     'allow_public_status' => 'Activer la page de statut publique et l\'image pour ce projet&nbsp;?',
     'archived' => 'Archived',
+    'archived_menu' => 'Archived',
     'save_project' => 'Enregistrer le projet',
 
     'error_mercurial' => 'Les URLs de dépôt Mercurial doivent commencer par http:// ou https://',

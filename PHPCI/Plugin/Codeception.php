@@ -83,7 +83,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     {
         $this->phpci = $phpci;
         $this->build = $build;
-        $this->path = 'tests/_output/';
+        $this->path = 'tests' . DIRECTORY_SEPARATOR . '_output' . DIRECTORY_SEPARATOR;
 
         if (empty($options['config'])) {
             $this->ymlConfigFile = self::findConfigFile($this->phpci->buildPath);
@@ -99,7 +99,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Runs Codeception tests, optionally using specified config file(s).
+     * Runs Codeception tests
      */
     public function execute()
     {
@@ -130,6 +130,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         }
 
         $cmd = 'cd "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
+
         if (IS_WIN) {
             $cmd = 'cd /d "%s" && ' . $codecept . ' run -c "%s" --xml ' . $this->args;
         }
@@ -137,27 +138,24 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $configPath = $this->phpci->buildPath . $configPath;
         $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
+        $this->phpci->log(
+            'Codeception XML path: '. $this->phpci->buildPath . $this->path . 'report.xml',
+            Loglevel::DEBUG
+        );
 
-            $this->phpci->log(
-                'Codeception XML path: '. $this->phpci->buildPath . $this->path . 'report.xml',
-                Loglevel::DEBUG
-            );
-            $xml = file_get_contents($this->phpci->buildPath . $this->path . 'report.xml', false);
-
-
+        $xml = file_get_contents($this->phpci->buildPath . $this->path . 'report.xml', false);
         $parser = new Parser($this->phpci, $xml);
         $output = $parser->parse();
 
         $meta = array(
-            'tests' => $parser->getTotalTests(),
+            'tests'     => $parser->getTotalTests(),
             'timetaken' => $parser->getTotalTimeTaken(),
-            'failures' => $parser->getTotalFailures()
+            'failures'  => $parser->getTotalFailures()
         );
 
         $this->build->storeMeta('codeception-meta', $meta);
         $this->build->storeMeta('codeception-data', $output);
         $this->build->storeMeta('codeception-errors', $parser->getTotalFailures());
-
         $this->phpci->logExecOutput(true);
 
         return $success;

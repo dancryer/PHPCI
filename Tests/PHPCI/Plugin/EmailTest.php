@@ -236,11 +236,11 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers PHPUnit::execute
      */
-    public function testExecute_UniqueRecipientsWithCommiter()
+    public function testExecute_UniqueRecipientsWithCommitter()
     {
         $this->loadEmailPluginWithOptions(
             array(
-                'commiter'  => true,
+                'committer'  => true,
                 'addresses' => array('test-receiver@example.com', 'committer@test.com')
             )
         );

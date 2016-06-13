@@ -15,7 +15,7 @@ use PHPCI\Plugin\Util\FilesPluginInformation;
 class FilesPluginInformationTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testGetInstalledPlugins_returnsObjectes()
+    public function testGetInstalledPlugins_returnsObjects()
     {
         $pluginDirPath = realpath(__DIR__ . "/../../../../PHPCI/Plugin/");
         $test = FilesPluginInformation::newFromDir($pluginDirPath);

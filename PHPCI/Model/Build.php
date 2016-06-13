@@ -28,7 +28,7 @@ class Build extends BuildBase
     const STATUS_SUCCESS = 2;
     const STATUS_FAILED = 3;
 
-    public $currentBuildPath = null;
+    public $currentBuildPath;
 
     /**
     * Get link to commit from another source (i.e. Github)
@@ -99,14 +99,19 @@ class Build extends BuildBase
     {
         $build_config = null;
 
-        // Try phpci.yml first:
-        if (is_file($buildPath . '/phpci.yml')) {
-            $build_config = file_get_contents($buildPath . '/phpci.yml');
-        }
-
         // Try getting the project build config from the database:
         if (empty($build_config)) {
             $build_config = $this->getProject()->getBuildConfig();
+        }
+
+        // Try .phpci.yml
+        if (is_file($buildPath . '/.phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/.phpci.yml');
+        }
+
+        // Try phpci.yml first:
+        if (empty($build_config) && is_file($buildPath . '/phpci.yml')) {
+            $build_config = file_get_contents($buildPath . '/phpci.yml');
         }
 
         // Fall back to zero config plugins:
@@ -208,14 +213,36 @@ class Build extends BuildBase
     /**
      * Allows specific build types (e.g. Github) to report violations back to their respective services.
      * @param Builder $builder
-     * @param $file
-     * @param $line
+     * @param $plugin
      * @param $message
-     * @return mixed
+     * @param int $severity
+     * @param null $file
+     * @param null $lineStart
+     * @param null $lineEnd
+     * @return BuildError
      */
-    public function reportError(Builder $builder, $file, $line, $message)
-    {
-        return array($builder, $file, $line, $message);
+    public function reportError(
+        Builder $builder,
+        $plugin,
+        $message,
+        $severity = BuildError::SEVERITY_NORMAL,
+        $file = null,
+        $lineStart = null,
+        $lineEnd = null
+    ) {
+        unset($builder);
+
+        $error = new BuildError();
+        $error->setBuild($this);
+        $error->setCreatedDate(new \DateTime());
+        $error->setPlugin($plugin);
+        $error->setMessage($message);
+        $error->setSeverity($severity);
+        $error->setFile($file);
+        $error->setLineStart($lineStart);
+        $error->setLineEnd($lineEnd);
+
+        return Factory::getStore('BuildError')->save($error);
     }
 
     /**
@@ -228,7 +255,13 @@ class Build extends BuildBase
         if (!$this->getId()) {
             return null;
         }
-        return PHPCI_BUILD_ROOT_DIR . $this->getId();
+
+        if (empty($this->currentBuildPath)) {
+            $buildDirectory = $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
+            $this->currentBuildPath = PHPCI_BUILD_ROOT_DIR . $buildDirectory . DIRECTORY_SEPARATOR;
+        }
+
+        return $this->currentBuildPath;
     }
 
     /**
@@ -243,5 +276,26 @@ class Build extends BuildBase
         }
 
         exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
+    }
+
+    /**
+     * Get the number of seconds a build has been running for.
+     * @return int
+     */
+    public function getDuration()
+    {
+        $start = $this->getStarted();
+
+        if (empty($start)) {
+            return 0;
+        }
+
+        $end = $this->getFinished();
+
+        if (empty($end)) {
+            $end = new \DateTime();
+        }
+
+        return $end->getTimestamp() - $start->getTimestamp();
     }
 }

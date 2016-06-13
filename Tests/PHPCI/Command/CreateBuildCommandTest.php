@@ -78,7 +78,7 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testExecuteWithUnknowProjectId()
+    public function testExecuteWithUnknownProjectId()
     {
         $commandTester = $this->getCommandTester();
         $commandTester->execute(array('projectId' => 2));

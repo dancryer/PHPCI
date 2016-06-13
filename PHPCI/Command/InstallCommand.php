@@ -16,6 +16,7 @@ use b8\Config;
 use b8\Store\Factory;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,6 +47,9 @@ class InstallCommand extends Command
             ->addOption('admin-pass', null, InputOption::VALUE_OPTIONAL, Lang::get('admin_pass'))
             ->addOption('admin-mail', null, InputOption::VALUE_OPTIONAL, Lang::get('admin_email'))
             ->addOption('config-path', null, InputOption::VALUE_OPTIONAL, Lang::get('config_path'), $defaultPath)
+            ->addOption('queue-disabled', null, InputOption::VALUE_NONE, 'Don\'t ask for queue details')
+            ->addOption('queue-server', null, InputOption::VALUE_OPTIONAL, 'Beanstalkd queue server hostname')
+            ->addOption('queue-name', null, InputOption::VALUE_OPTIONAL, 'Beanstalkd queue name')
             ->setDescription(Lang::get('install_phpci'));
     }
 
@@ -229,8 +233,35 @@ class InstallCommand extends Command
         }
 
         $phpci['url'] = $url;
+        $phpci['worker'] = $this->getQueueInformation($input, $output, $dialog);
 
         return $phpci;
+    }
+
+    /**
+     * If the user wants to use a queue, get the necessary details.
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param DialogHelper $dialog
+     * @return array
+     */
+    protected function getQueueInformation(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    {
+        if ($input->getOption('queue-disabled')) {
+            return null;
+        }
+
+        $rtn = [];
+
+        if (!$rtn['host'] = $input->getOption('queue-server')) {
+            $rtn['host'] = $dialog->ask($output, 'Enter your beanstalkd hostname [localhost]: ', 'localhost');
+        }
+
+        if (!$rtn['queue'] = $input->getOption('queue-name')) {
+            $rtn['queue'] = $dialog->ask($output, 'Enter the queue (tube) name to use [phpci]: ', 'phpci');
+        }
+
+        return $rtn;
     }
 
     /**

@@ -107,6 +107,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             '--admin-name' => 'phpci4',
             '--admin-pass' => 'phpci5',
             '--url' => 'http://test.phpci.org',
+            '--queue-disabled' => null,
         );
 
         if (!is_null($exclude)) {
@@ -175,7 +176,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('testedvalue', $this->config['b8']['database']['name']);
     }
 
-    public function testDatabaseUserameConfig()
+    public function testDatabaseUserConfig()
     {
         $dialog = $this->getDialogHelperMock();
 
@@ -243,7 +244,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test@phpci.com', $this->admin['mail']);
     }
 
-    public function testAdminUserameConfig()
+    public function testAdminNameConfig()
     {
         $dialog = $this->getDialogHelperMock();
 

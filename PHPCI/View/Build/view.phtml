@@ -5,14 +5,14 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">
-                    Build Details
+                    <?php Lang::out('build_details'); ?>
                 </h3>
             </div>
 
             <div class="box-body no-padding">
                 <table class="table">
                     <tr>
-                        <th>Project</th>
+                        <th><?php Lang::out('project'); ?></th>
                         <td style="text-align: right">
                             <a href="<?php print PHPCI_URL . 'project/view/' . $build->getProjectId(); ?>">
                                 <i class="fa fa-<?php print $build->getProject()->getIcon(); ?>"></i>
@@ -22,7 +22,7 @@
                     </tr>
 
                     <tr>
-                        <th>Branch</th>
+                        <th><?php Lang::out('branch'); ?></th>
                         <td style="text-align: right">
                             <a target="_blank" href="<?php print $build->getBranchLink(); ?>">
                                 <span class="label label-default"><?php print $build->getBranch(); ?></span>
@@ -31,7 +31,7 @@
                     </tr>
 
                     <tr>
-                        <th>Duration</th>
+                        <th><?php Lang::out('duration'); ?></th>
                         <td style="text-align: right" class="build-duration duration" data-duration="<?php print $build->getDuration(); ?>">
 
                         </td>
@@ -45,14 +45,14 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">
-                    Commit Details
+                    <?php Lang::out('commit_details'); ?>
                 </h3>
             </div>
 
             <div class="box-body no-padding">
                 <table class="table">
                     <tr>
-                        <th>Commit</th>
+                        <th><?php Lang::out('commit'); ?></th>
                         <td style="text-align: right">
                             <a target="_blank" href="<?php print $build->getCommitLink(); ?>">
                                 <?php print substr($build->getCommitId(), 0, 7); ?>
@@ -61,7 +61,7 @@
                     </tr>
 
                     <tr>
-                        <th>Committer</th>
+                        <th><?php Lang::out('committer'); ?></th>
                         <td style="text-align: right">
                             <?php print $build->getCommitterEmail(); ?>
                         </td>
@@ -81,26 +81,26 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">
-                    Timing
+                    <?php Lang::out('timing'); ?>
                 </h3>
             </div>
 
             <div class="box-body no-padding">
                 <table class="table">
                     <tr>
-                        <th>Created</th>
+                        <th><?php Lang::out('created'); ?></th>
                         <td style="text-align: right" class="build-created datetime" data-date="<?php print $build->getCreated() ? $build->getCreated()->format('Y-m-d H:i:s') : ''; ?>">
                         </td>
                     </tr>
 
                     <tr>
-                        <th>Started</th>
+                        <th><?php Lang::out('started'); ?></th>
                         <td style="text-align: right" class="build-started datetime" data-date="<?php print $build->getStarted() ? $build->getStarted()->format('Y-m-d H:i:s') : ''; ?>">
                         </td>
                     </tr>
 
                     <tr>
-                        <th>Finished</th>
+                        <th><?php Lang::out('finished'); ?></th>
                         <td style="text-align: right" class="build-finished datetime" data-date="<?php print $build->getFinished() ? $build->getFinished()->format('Y-m-d H:i:s') : ''; ?>">
 
                         </td>

@@ -311,6 +311,14 @@ PHPCI',
     'stage_failure' => 'Failure',
     'stage_broken'  => 'Broken',
     'stage_fixed' => 'Fixed',
+    
+    'build_details'  => 'Build Details',
+    'commit_details' => 'Commit Details',
+    'committer'      => 'Committer', 
+    'timing'         => 'Timing',
+    'created'        => 'Created',
+    'started'        => 'Started',
+    'finished'       => 'Finished',
 
     // Installer
     'installation_url' => 'PHPCI Installation URL',

@@ -116,6 +116,10 @@ class ProjectController extends PHPCI\Controller
         $email = $_SESSION['phpci_user']->getEmail();
         $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
+        if ($this->buildService->queueError) {
+            $_SESSION['global_error'] = Lang::get('add_to_queue_failed');
+        }
+
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
         return $response;

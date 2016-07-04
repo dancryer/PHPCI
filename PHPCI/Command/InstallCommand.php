@@ -21,6 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use PHPCI\Service\UserService;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Install console command - Installs PHPCI.
@@ -252,6 +253,14 @@ class InstallCommand extends Command
         }
 
         $rtn = [];
+
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion('Use beanstalkd to manage build queue? ', true);
+
+        if (!$helper->ask($input, $output, $question)) {
+            $output->writeln('<error>Skipping beanstalkd configuration.</error>');
+            return null;
+        }
 
         if (!$rtn['host'] = $input->getOption('queue-server')) {
             $rtn['host'] = $dialog->ask($output, 'Enter your beanstalkd hostname [localhost]: ', 'localhost');

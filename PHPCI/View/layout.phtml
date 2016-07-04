@@ -292,6 +292,14 @@
 
         <!-- Main content -->
         <section class="content">
+            <?php
+            if (!empty($_SESSION['global_error'])) {
+                $message = $_SESSION['global_error'];
+                unset($_SESSION['global_error']);
+                print '<div class="alert alert-danger">' . $message . '</div>';
+            }
+            ?>
+
             <?php print $content; ?>
         </section><!-- /.content -->
     </aside><!-- /.content-wrapper -->

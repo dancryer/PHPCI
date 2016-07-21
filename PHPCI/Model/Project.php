@@ -96,7 +96,7 @@ class Project extends ProjectBase
         $info = $this->data['access_information'];
 
         // Handle old-format (serialized) access information first:
-        if (!empty($info) && substr($info, 0, 1) != '{') {
+        if (!empty($info) && !in_array(substr($info, 0, 1), array('{', '['))) {
             $data = unserialize($info);
         } else {
             $data = json_decode($info, true);

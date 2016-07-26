@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\ProcessControl;
 
 /**
@@ -17,8 +17,8 @@ namespace PHPCI\ProcessControl;
 class PosixProcessControl implements ProcessControlInterface
 {
     /**
-     *
      * @param int $pid
+     *
      * @return bool
      */
     public function isRunning($pid)
@@ -30,7 +30,7 @@ class PosixProcessControl implements ProcessControlInterface
     /**
      * Sends a TERMINATE or KILL signal to the process using posix_kill.
      *
-     * @param int $pid
+     * @param int  $pid
      * @param bool $forcefully Whether to send TERMINATE (false) or KILL (true).
      */
     public function kill($pid, $forcefully = false)

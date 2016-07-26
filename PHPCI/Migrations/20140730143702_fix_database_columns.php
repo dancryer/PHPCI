@@ -17,41 +17,41 @@ class FixDatabaseColumns extends AbstractMigration
         }
 
         $build = $this->table('build');
-        $build->changeColumn('project_id', 'integer', array('null' => false));
-        $build->changeColumn('commit_id', 'string', array('limit' => 50, 'null' => false));
-        $build->changeColumn('status', 'integer', array('null' => false));
-        $build->changeColumn('log', 'text', array('null' => true));
-        $build->changeColumn('branch', 'string', array('limit' => 50, 'null' => false, 'default' => 'master'));
-        $build->changeColumn('created', 'datetime', array('null' => true));
-        $build->changeColumn('started', 'datetime', array('null' => true));
-        $build->changeColumn('finished', 'datetime', array('null' => true));
-        $build->changeColumn('committer_email', 'string', array('limit' => 512, 'null' => true));
-        $build->changeColumn('commit_message', 'text', array('null' => true));
-        $build->changeColumn('extra', 'text', array('null' => true));
+        $build->changeColumn('project_id', 'integer', ['null' => false]);
+        $build->changeColumn('commit_id', 'string', ['limit' => 50, 'null' => false]);
+        $build->changeColumn('status', 'integer', ['null' => false]);
+        $build->changeColumn('log', 'text', ['null' => true]);
+        $build->changeColumn('branch', 'string', ['limit' => 50, 'null' => false, 'default' => 'master']);
+        $build->changeColumn('created', 'datetime', ['null' => true]);
+        $build->changeColumn('started', 'datetime', ['null' => true]);
+        $build->changeColumn('finished', 'datetime', ['null' => true]);
+        $build->changeColumn('committer_email', 'string', ['limit' => 512, 'null' => true]);
+        $build->changeColumn('commit_message', 'text', ['null' => true]);
+        $build->changeColumn('extra', 'text', ['null' => true]);
 
         $buildMeta = $this->table('build_meta');
-        $buildMeta->changeColumn('project_id', 'integer', array('null' => false));
-        $buildMeta->changeColumn('build_id', 'integer', array('null' => false));
-        $buildMeta->changeColumn('meta_key', 'string', array('limit' => 250, 'null' => false));
-        $buildMeta->changeColumn('meta_value', 'text', array('null' => false));
+        $buildMeta->changeColumn('project_id', 'integer', ['null' => false]);
+        $buildMeta->changeColumn('build_id', 'integer', ['null' => false]);
+        $buildMeta->changeColumn('meta_key', 'string', ['limit' => 250, 'null' => false]);
+        $buildMeta->changeColumn('meta_value', 'text', ['null' => false]);
 
         $project = $this->table('project');
-        $project->changeColumn('title', 'string', array('limit' => 250, 'null' => false));
-        $project->changeColumn('reference', 'string', array('limit' => 250, 'null' => false));
-        $project->changeColumn('branch', 'string', array('limit' => 50, 'null' => false, 'default' => 'master'));
-        $project->changeColumn('ssh_private_key', 'text', array('null' => true, 'default' => null));
-        $project->changeColumn('ssh_public_key', 'text', array('null' => true, 'default' => null));
-        $project->changeColumn('type', 'string', array('limit' => 50, 'null' => false));
-        $project->changeColumn('access_information', 'string', array('limit' => 250, 'null' => true, 'default' => null));
-        $project->changeColumn('last_commit', 'string', array('limit' => 250, 'null' => true, 'default' => null));
-        $project->changeColumn('ssh_public_key', 'text', array('null' => true, 'default' => null));
-        $project->changeColumn('allow_public_status', 'integer', array('null' => false, 'default' => 0));
+        $project->changeColumn('title', 'string', ['limit' => 250, 'null' => false]);
+        $project->changeColumn('reference', 'string', ['limit' => 250, 'null' => false]);
+        $project->changeColumn('branch', 'string', ['limit' => 50, 'null' => false, 'default' => 'master']);
+        $project->changeColumn('ssh_private_key', 'text', ['null' => true, 'default' => null]);
+        $project->changeColumn('ssh_public_key', 'text', ['null' => true, 'default' => null]);
+        $project->changeColumn('type', 'string', ['limit' => 50, 'null' => false]);
+        $project->changeColumn('access_information', 'string', ['limit' => 250, 'null' => true, 'default' => null]);
+        $project->changeColumn('last_commit', 'string', ['limit' => 250, 'null' => true, 'default' => null]);
+        $project->changeColumn('ssh_public_key', 'text', ['null' => true, 'default' => null]);
+        $project->changeColumn('allow_public_status', 'integer', ['null' => false, 'default' => 0]);
 
         $user = $this->table('user');
-        $user->changeColumn('email', 'string', array('limit' => 250, 'null' => false));
-        $user->changeColumn('hash', 'string', array('limit' => 250, 'null' => false));
-        $user->changeColumn('is_admin', 'integer', array('null' => false, 'default' => 0));
-        $user->changeColumn('name', 'string', array('limit' => 250, 'null' => false));
+        $user->changeColumn('email', 'string', ['limit' => 250, 'null' => false]);
+        $user->changeColumn('hash', 'string', ['limit' => 250, 'null' => false]);
+        $user->changeColumn('is_admin', 'integer', ['null' => false, 'default' => 0]);
+        $user->changeColumn('name', 'string', ['limit' => 250, 'null' => false]);
 
         if ($dbAdapter instanceof \Phinx\Db\Adapter\PdoAdapter) {
             $pdo = $dbAdapter->getConnection();

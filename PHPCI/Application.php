@@ -4,9 +4,9 @@
 *
 * @copyright    Copyright 2014, Block 8 Limited.
 * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+*
 * @link         https://www.phptesting.org/
 */
-
 namespace PHPCI;
 
 use b8;
@@ -16,13 +16,14 @@ use b8\Http\Response\RedirectResponse;
 use b8\View;
 
 /**
-* PHPCI Front Controller
-* @author   Dan Cryer <dan@block8.co.uk>
-*/
+ * PHPCI Front Controller
+ *
+ * @author   Dan Cryer <dan@block8.co.uk>
+ */
 class Application extends b8\Application
 {
     /**
-     * @var \PHPCI\Controller
+     * @type \PHPCI\Controller
      */
     protected $controller;
 
@@ -31,17 +32,18 @@ class Application extends b8\Application
      */
     public function init()
     {
-        $request =& $this->request;
-        $route = '/:controller/:action';
-        $opts = array('controller' => 'Home', 'action' => 'index');
+        $request = &$this->request;
+        $route   = '/:controller/:action';
+        $opts    = ['controller' => 'Home', 'action' => 'index'];
 
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
-            if (!empty($_SESSION['phpci_user_id'])) {
+            if (! empty($_SESSION['phpci_user_id'])) {
                 $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
 
                 if ($user) {
                     $_SESSION['phpci_user'] = $user;
+
                     return true;
                 }
 
@@ -51,20 +53,20 @@ class Application extends b8\Application
             return false;
         };
 
-        $skipAuth = array($this, 'shouldSkipAuth');
+        $skipAuth = [$this, 'shouldSkipAuth'];
 
         // Handler for the route we're about to register, checks for a valid session where necessary:
         $routeHandler = function (&$route, Response &$response) use (&$request, $validateSession, $skipAuth) {
-            $skipValidation = in_array($route['controller'], array('session', 'webhook', 'build-status'));
+            $skipValidation = in_array($route['controller'], ['session', 'webhook', 'build-status']);
 
-            if (!$skipValidation && !$validateSession() && (!is_callable($skipAuth) || !$skipAuth())) {
+            if (! $skipValidation && ! $validateSession() && (! is_callable($skipAuth) || ! $skipAuth())) {
                 if ($request->isAjax()) {
                     $response->setResponseCode(401);
                     $response->setContent('');
                 } else {
                     $_SESSION['phpci_login_redirect'] = substr($request->getPath(), 1);
-                    $response = new RedirectResponse($response);
-                    $response->setHeader('Location', PHPCI_URL.'session/login');
+                    $response                         = new RedirectResponse($response);
+                    $response->setHeader('Location', PHPCI_URL . 'session/login');
                 }
 
                 return false;
@@ -89,7 +91,7 @@ class Application extends b8\Application
         } catch (HttpException $ex) {
             $this->config->set('page_title', 'Error');
 
-            $view = new View('exception');
+            $view            = new View('exception');
             $view->exception = $ex;
 
             $this->response->setResponseCode($ex->getErrorCode());
@@ -97,7 +99,7 @@ class Application extends b8\Application
         } catch (\Exception $ex) {
             $this->config->set('page_title', 'Error');
 
-            $view = new View('exception');
+            $view            = new View('exception');
             $view->exception = $ex;
 
             $this->response->setResponseCode(500);
@@ -116,34 +118,37 @@ class Application extends b8\Application
 
     /**
      * Loads a particular controller, and injects our layout view into it.
+     *
      * @param $class
+     *
      * @return mixed
      */
     protected function loadController($class)
     {
-        $controller = parent::loadController($class);
-        $controller->layout = new View('layout');
-        $controller->layout->title = 'PHPCI';
-        $controller->layout->breadcrumb = array();
+        $controller                     = parent::loadController($class);
+        $controller->layout             = new View('layout');
+        $controller->layout->title      = 'PHPCI';
+        $controller->layout->breadcrumb = [];
 
         return $controller;
     }
 
     /**
      * Injects variables into the layout before rendering it.
+     *
      * @param View $layout
      */
     protected function setLayoutVariables(View &$layout)
     {
-        $groups = array();
+        $groups     = [];
         $groupStore = b8\Store\Factory::getStore('ProjectGroup');
-        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groupList  = $groupStore->getWhere([], 100, 0, [], ['title' => 'ASC']);
 
         foreach ($groupList['items'] as $group) {
-            $thisGroup = array('title' => $group->getTitle());
-            $projects = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
+            $thisGroup             = ['title' => $group->getTitle()];
+            $projects              = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
             $thisGroup['projects'] = $projects['items'];
-            $groups[] = $thisGroup;
+            $groups[]              = $thisGroup;
         }
 
         $layout->groups = $groups;
@@ -151,20 +156,22 @@ class Application extends b8\Application
 
     /**
      * Check whether we should skip auth (because it is disabled)
+     *
      * @return bool
      */
     protected function shouldSkipAuth()
     {
-        $config = b8\Config::getInstance();
-        $state = (bool)$config->get('phpci.authentication_settings.state', false);
+        $config    = b8\Config::getInstance();
+        $state     = (bool) $config->get('phpci.authentication_settings.state', false);
         $userId    = $config->get('phpci.authentication_settings.user_id', 0);
 
-        if (false !== $state && 0 != (int)$userId) {
+        if (false !== $state && 0 != (int) $userId) {
             $user = b8\Store\Factory::getStore('User')
                 ->getByPrimaryKey($userId);
 
             if ($user) {
                 $_SESSION['phpci_user'] = $user;
+
                 return true;
             }
         }

@@ -12,6 +12,6 @@ class PosixProcessControlTest extends UnixProcessControlTest
 
     public function testIsAvailable()
     {
-        $this->assertEquals(function_exists('posix_kill'), PosixProcessControl::isAvailable());
+        $this->assertSame(function_exists('posix_kill'), PosixProcessControl::isAvailable());
     }
 }

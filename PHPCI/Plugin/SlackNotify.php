@@ -1,11 +1,12 @@
 <?php
 /**
  * PHPCI - Continuous Integration for PHP
+ *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -13,9 +14,8 @@ use PHPCI\Model\Build;
 
 /**
  * Slack Plugin
+ *
  * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class SlackNotify implements \PHPCI\Plugin
 {
@@ -28,12 +28,14 @@ class SlackNotify implements \PHPCI\Plugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
+     *
      * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
@@ -77,6 +79,7 @@ class SlackNotify implements \PHPCI\Plugin
 
     /**
      * Run the Slack plugin.
+     *
      * @return bool
      */
     public function execute()
@@ -87,15 +90,15 @@ class SlackNotify implements \PHPCI\Plugin
 
         $message = $client->createMessage();
 
-        if (!empty($this->room)) {
+        if (! empty($this->room)) {
             $message->setChannel($this->room);
         }
 
-        if (!empty($this->username)) {
+        if (! empty($this->username)) {
             $message->setUsername($this->username);
         }
 
-        if (!empty($this->icon)) {
+        if (! empty($this->icon)) {
             $message->setIcon($this->icon);
         }
 
@@ -105,25 +108,25 @@ class SlackNotify implements \PHPCI\Plugin
 
             if ($successfulBuild) {
                 $status = 'Success';
-                $color = 'good';
+                $color  = 'good';
             } else {
                 $status = 'Failed';
-                $color = 'danger';
+                $color  = 'danger';
             }
 
             // Build up the attachment data
-            $attachment = new \Maknz\Slack\Attachment(array(
+            $attachment = new \Maknz\Slack\Attachment([
                 'fallback' => $body,
                 'pretext'  => $body,
                 'color'    => $color,
-                'fields'   => array(
-                    new \Maknz\Slack\AttachmentField(array(
+                'fields'   => [
+                    new \Maknz\Slack\AttachmentField([
                         'title' => 'Status',
                         'value' => $status,
-                        'short' => false
-                    ))
-                )
-            ));
+                        'short' => false,
+                    ]),
+                ],
+            ]);
 
             $message->attach($attachment);
 

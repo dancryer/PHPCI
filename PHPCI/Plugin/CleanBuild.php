@@ -4,21 +4,20 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* Clean build removes Composer related files and allows PHPCI users to clean up their build directory.
-* Useful as a precursor to copy_build.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Clean build removes Composer related files and allows PHPCI users to clean up their build directory.
+ * Useful as a precursor to copy_build.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class CleanBuild implements \PHPCI\Plugin
 {
     protected $remove;
@@ -37,16 +36,16 @@ class CleanBuild implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci  = $phpci;
         $this->build  = $build;
-        $this->remove = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : array();
+        $this->remove = isset($options['remove']) && is_array($options['remove']) ? $options['remove'] : [];
     }
 
     /**
-    * Executes Composer and runs a specified command (e.g. install / update)
-    */
+     * Executes Composer and runs a specified command (e.g. install / update)
+     */
     public function execute()
     {
         $cmd = 'rm -Rf "%s"';
@@ -61,7 +60,7 @@ class CleanBuild implements \PHPCI\Plugin
         foreach ($this->remove as $file) {
             $ok = $this->phpci->executeCommand($cmd, $this->phpci->buildPath . $file);
 
-            if (!$ok) {
+            if (! $ok) {
                 $success = false;
             }
         }

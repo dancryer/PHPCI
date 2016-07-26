@@ -4,14 +4,14 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Controller;
 
 use b8;
-use b8\Form;
 use b8\Exception\HttpException\NotFoundException;
+use b8\Form;
 use b8\Store;
 use PHPCI;
 use PHPCI\BuildFactory;
@@ -22,30 +22,29 @@ use PHPCI\Service\BuildService;
 use PHPCI\Service\ProjectService;
 
 /**
-* Project Controller - Allows users to create, edit and view projects.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Web
-*/
+ * Project Controller - Allows users to create, edit and view projects.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class ProjectController extends PHPCI\Controller
 {
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @type \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var \PHPCI\Service\ProjectService
+     * @type \PHPCI\Service\ProjectService
      */
     protected $projectService;
 
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @type \PHPCI\Store\BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var \PHPCI\Service\BuildService
+     * @type \PHPCI\Service\BuildService
      */
     protected $buildService;
 
@@ -54,18 +53,18 @@ class ProjectController extends PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore     = Store\Factory::getStore('Build');
+        $this->projectStore   = Store\Factory::getStore('Project');
         $this->projectService = new ProjectService($this->projectStore);
-        $this->buildService = new BuildService($this->buildStore);
+        $this->buildService   = new BuildService($this->buildStore);
     }
 
     /**
-    * View a specific project.
-    */
+     * View a specific project.
+     */
     public function view($projectId)
     {
-        $branch = $this->getParam('branch', '');
+        $branch  = $this->getParam('branch', '');
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
@@ -79,7 +78,8 @@ class ProjectController extends PHPCI\Controller
 
         if ($page > $pages) {
             $response = new b8\Http\Response\RedirectResponse();
-            $response->setHeader('Location', PHPCI_URL.'project/view/'.$projectId);
+            $response->setHeader('Location', PHPCI_URL . 'project/view/' . $projectId);
+
             return $response;
         }
 
@@ -91,15 +91,15 @@ class ProjectController extends PHPCI\Controller
         $this->view->page     = $page;
         $this->view->pages    = $pages;
 
-        $this->layout->title = $project->getTitle();
+        $this->layout->title    = $project->getTitle();
         $this->layout->subtitle = $this->view->branch;
 
         return $this->view->render();
     }
 
     /**
-    * Create a new pending build for a project.
-    */
+     * Create a new pending build for a project.
+     */
     public function build($projectId, $branch = '')
     {
         /* @var \PHPCI\Model\Project $project */
@@ -121,13 +121,14 @@ class ProjectController extends PHPCI\Controller
         }
 
         $response = new b8\Http\Response\RedirectResponse();
-        $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
+        $response->setHeader('Location', PHPCI_URL . 'build/view/' . $build->getId());
+
         return $response;
     }
 
     /**
-    * Delete a project.
-    */
+     * Delete a project.
+     */
     public function delete($projectId)
     {
         $this->requireAdmin();
@@ -137,12 +138,13 @@ class ProjectController extends PHPCI\Controller
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL);
+
         return $response;
     }
 
     /**
-    * AJAX get latest builds.
-    */
+     * AJAX get latest builds.
+     */
     public function builds($projectId)
     {
         $branch = $this->getParam('branch', '');
@@ -150,6 +152,7 @@ class ProjectController extends PHPCI\Controller
 
         $this->response->disableLayout();
         $this->response->setContent($builds[0]);
+
         return $this->response;
     }
 
@@ -158,19 +161,20 @@ class ProjectController extends PHPCI\Controller
      *
      * @param $projectId
      * @param string $branch A urldecoded branch name.
-     * @param int $start
+     * @param int    $start
+     *
      * @return array
      */
     protected function getLatestBuildsHtml($projectId, $branch = '', $start = 0)
     {
-        $criteria = array('project_id' => $projectId);
-        if (!empty($branch)) {
+        $criteria = ['project_id' => $projectId];
+        if (! empty($branch)) {
             $criteria['branch'] = $branch;
         }
 
-        $order = array('id' => 'DESC');
-        $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
-        $view = new b8\View('BuildsTable');
+        $order  = ['id' => 'DESC'];
+        $builds = $this->buildStore->getWhere($criteria, 10, $start, [], $order);
+        $view   = new b8\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
             $build = BuildFactory::getBuild($build);
@@ -178,12 +182,12 @@ class ProjectController extends PHPCI\Controller
 
         $view->builds   = $builds['items'];
 
-        return array($view->render(), $builds['count']);
+        return [$view->render(), $builds['count']];
     }
 
     /**
-    * Add a new project. Handles both the form, and processing.
-    */
+     * Add a new project. Handles both the form, and processing.
+     */
     public function add()
     {
         $this->layout->title = Lang::get('add_project');
@@ -191,21 +195,21 @@ class ProjectController extends PHPCI\Controller
 
         $method = $this->request->getMethod();
 
-        $pub = null;
+        $pub    = null;
         $values = $this->getParams();
 
         if ($method != 'POST') {
             $sshKey = new SshKey();
-            $key = $sshKey->generate();
+            $key    = $sshKey->generate();
 
             $values['key']    = $key['private_key'];
             $values['pubkey'] = $key['public_key'];
-            $pub = $key['public_key'];
+            $pub              = $key['public_key'];
         }
 
         $form = $this->projectForm($values);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
+        if ($method != 'POST' || ($method == 'POST' && ! $form->validate())) {
             $view           = new b8\View('ProjectForm');
             $view->type     = 'add';
             $view->project  = null;
@@ -214,51 +218,52 @@ class ProjectController extends PHPCI\Controller
 
             return $view->render();
         } else {
-            $title = $this->getParam('title', 'New Project');
+            $title     = $this->getParam('title', 'New Project');
             $reference = $this->getParam('reference', null);
-            $type = $this->getParam('type', null);
+            $type      = $this->getParam('type', null);
 
-            $options = array(
-                'ssh_private_key' => $this->getParam('key', null),
-                'ssh_public_key' => $this->getParam('pubkey', null),
-                'build_config' => $this->getParam('build_config', null),
+            $options = [
+                'ssh_private_key'     => $this->getParam('key', null),
+                'ssh_public_key'      => $this->getParam('pubkey', null),
+                'build_config'        => $this->getParam('build_config', null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
-                'branch' => $this->getParam('branch', null),
-                'group' => $this->getParam('group_id', null),
-            );
+                'branch'              => $this->getParam('branch', null),
+                'group'               => $this->getParam('group_id', null),
+            ];
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
 
             $response = new b8\Http\Response\RedirectResponse();
-            $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
+            $response->setHeader('Location', PHPCI_URL . 'project/view/' . $project->getId());
+
             return $response;
         }
     }
 
     /**
-    * Edit a project. Handles both the form and processing.
-    */
+     * Edit a project. Handles both the form and processing.
+     */
     public function edit($projectId)
     {
         $this->requireAdmin();
 
-        $method = $this->request->getMethod();
+        $method  = $this->request->getMethod();
         $project = $this->projectStore->getById($projectId);
 
         if (empty($project)) {
             throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
-        $this->layout->title = $project->getTitle();
+        $this->layout->title    = $project->getTitle();
         $this->layout->subtitle = Lang::get('edit_project');
 
-        $values = $project->getDataArray();
-        $values['key'] = $values['ssh_private_key'];
+        $values           = $project->getDataArray();
+        $values['key']    = $values['ssh_private_key'];
         $values['pubkey'] = $values['ssh_public_key'];
 
-        if ($values['type'] == "gitlab") {
-            $accessInfo = $project->getAccessInformation();
-            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+        if ($values['type'] == 'gitlab') {
+            $accessInfo          = $project->getAccessInformation();
+            $reference           = $accessInfo['user'] . '@' . $accessInfo['domain'] . ':' . $project->getReference() . '.git';
             $values['reference'] = $reference;
         }
 
@@ -268,7 +273,7 @@ class ProjectController extends PHPCI\Controller
 
         $form = $this->projectForm($values, 'edit/' . $projectId);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
+        if ($method != 'POST' || ($method == 'POST' && ! $form->validate())) {
             $view           = new b8\View('ProjectForm');
             $view->type     = 'edit';
             $view->project  = $project;
@@ -278,48 +283,49 @@ class ProjectController extends PHPCI\Controller
             return $view->render();
         }
 
-        $title = $this->getParam('title', Lang::get('new_project'));
+        $title     = $this->getParam('title', Lang::get('new_project'));
         $reference = $this->getParam('reference', null);
-        $type = $this->getParam('type', null);
+        $type      = $this->getParam('type', null);
 
-        $options = array(
-            'ssh_private_key' => $this->getParam('key', null),
-            'ssh_public_key' => $this->getParam('pubkey', null),
-            'build_config' => $this->getParam('build_config', null),
+        $options = [
+            'ssh_private_key'     => $this->getParam('key', null),
+            'ssh_public_key'      => $this->getParam('pubkey', null),
+            'build_config'        => $this->getParam('build_config', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
-            'archived' => $this->getParam('archived', 0),
-            'branch' => $this->getParam('branch', null),
-            'group' => $this->getParam('group_id', null),
-        );
+            'archived'            => $this->getParam('archived', 0),
+            'branch'              => $this->getParam('branch', null),
+            'group'               => $this->getParam('group_id', null),
+        ];
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
 
         $response = new b8\Http\Response\RedirectResponse();
-        $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
+        $response->setHeader('Location', PHPCI_URL . 'project/view/' . $project->getId());
+
         return $response;
     }
 
     /**
-    * Create add / edit project form.
-    */
+     * Create add / edit project form.
+     */
     protected function projectForm($values, $type = 'add')
     {
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL.'project/' . $type);
+        $form->setAction(PHPCI_URL . 'project/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
         $form->addField(new Form\Element\Hidden('pubkey'));
 
-        $options = array(
-            'choose' => Lang::get('select_repository_type'),
-            'github' => Lang::get('github'),
+        $options = [
+            'choose'    => Lang::get('select_repository_type'),
+            'github'    => Lang::get('github'),
             'bitbucket' => Lang::get('bitbucket'),
-            'gitlab' => Lang::get('gitlab'),
-            'remote' => Lang::get('remote'),
-            'local' => Lang::get('local'),
-            'hg'    => Lang::get('hg'),
-            'svn'    => Lang::get('svn'),
-            );
+            'gitlab'    => Lang::get('gitlab'),
+            'remote'    => Lang::get('remote'),
+            'local'     => Lang::get('local'),
+            'hg'        => Lang::get('hg'),
+            'svn'       => Lang::get('svn'),
+            ];
 
         $field = Form\Element\Select::create('type', Lang::get('where_hosted'), true);
         $field->setPattern('^(github|bitbucket|gitlab|remote|local|hg|svn)');
@@ -361,9 +367,9 @@ class ProjectController extends PHPCI\Controller
         $field = Form\Element\Select::create('group_id', 'Project Group', true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue(1);
 
-        $groups = array();
+        $groups     = [];
         $groupStore = b8\Store\Factory::getStore('ProjectGroup');
-        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groupList  = $groupStore->getWhere([], 100, 0, [], ['title' => 'ASC']);
 
         foreach ($groupList['items'] as $group) {
             $groups[$group->getId()] = $group->getTitle();
@@ -391,24 +397,28 @@ class ProjectController extends PHPCI\Controller
         $form->addField($field);
 
         $form->setValues($values);
+
         return $form;
     }
 
     /**
-    * Get an array of repositories from Github's API.
-    */
+     * Get an array of repositories from Github's API.
+     */
     protected function githubRepositories()
     {
         $github = new Github();
 
         $response = new b8\Http\Response\JsonResponse();
         $response->setContent($github->getRepositories());
+
         return $response;
     }
 
     /**
      * Get the validator to use to check project references.
+     *
      * @param $values
+     *
      * @return callable
      */
     protected function getReferenceValidator($values)
@@ -416,32 +426,32 @@ class ProjectController extends PHPCI\Controller
         return function ($val) use ($values) {
             $type = $values['type'];
 
-            $validators = array(
-                'hg' => array(
-                    'regex' => '/^(https?):\/\//',
-                    'message' => Lang::get('error_mercurial')
-                ),
-                'remote' => array(
-                    'regex' => '/^(git|https?):\/\//',
-                    'message' => Lang::get('error_remote')
-                ),
-                'gitlab' => array(
-                    'regex' => '`^(.*)@(.*):(.*)/(.*)\.git`',
-                    'message' => Lang::get('error_gitlab')
-                ),
-                'github' => array(
-                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
-                    'message' => Lang::get('error_github')
-                ),
-                'bitbucket' => array(
-                    'regex' => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
-                    'message' => Lang::get('error_bitbucket')
-                ),
-            );
+            $validators = [
+                'hg' => [
+                    'regex'   => '/^(https?):\/\//',
+                    'message' => Lang::get('error_mercurial'),
+                ],
+                'remote' => [
+                    'regex'   => '/^(git|https?):\/\//',
+                    'message' => Lang::get('error_remote'),
+                ],
+                'gitlab' => [
+                    'regex'   => '`^(.*)@(.*):(.*)/(.*)\.git`',
+                    'message' => Lang::get('error_gitlab'),
+                ],
+                'github' => [
+                    'regex'   => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => Lang::get('error_github'),
+                ],
+                'bitbucket' => [
+                    'regex'   => '/^[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-\.]+$/',
+                    'message' => Lang::get('error_bitbucket'),
+                ],
+            ];
 
-            if (in_array($type, $validators) && !preg_match($validators[$type]['regex'], $val)) {
+            if (in_array($type, $validators) && ! preg_match($validators[$type]['regex'], $val)) {
                 throw new \Exception($validators[$type]['message']);
-            } elseif ($type == 'local' && !is_dir($val)) {
+            } elseif ($type == 'local' && ! is_dir($val)) {
                 throw new \Exception(Lang::get('error_path'));
             }
 

@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -15,31 +15,32 @@ use PHPCI\Model\Build;
 
 /**
  * Git plugin.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class Git implements \PHPCI\Plugin
 {
     protected $phpci;
     protected $build;
-    protected $actions = array();
+    protected $actions = [];
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        $this->phpci   = $phpci;
+        $this->build   = $build;
         $this->actions = $options;
     }
 
     /**
      * Run the Git plugin.
+     *
      * @return bool
      */
     public function execute()
@@ -47,7 +48,7 @@ class Git implements \PHPCI\Plugin
         $buildPath = $this->phpci->buildPath;
 
         // Check if there are any actions to be run for the branch we're running on:
-        if (!array_key_exists($this->build->getBranch(), $this->actions)) {
+        if (! array_key_exists($this->build->getBranch(), $this->actions)) {
             return true;
         }
 
@@ -57,7 +58,7 @@ class Git implements \PHPCI\Plugin
 
         $success = true;
         foreach ($this->actions[$this->build->getBranch()] as $action => $options) {
-            if (!$this->runAction($action, $options)) {
+            if (! $this->runAction($action, $options)) {
                 $success = false;
                 break;
             }
@@ -70,11 +71,13 @@ class Git implements \PHPCI\Plugin
 
     /**
      * Determine which action to run, and run it.
+     *
      * @param $action
      * @param array $options
+     *
      * @return bool
      */
-    protected function runAction($action, array $options = array())
+    protected function runAction($action, array $options = [])
     {
         switch ($action) {
             case 'merge':
@@ -90,27 +93,31 @@ class Git implements \PHPCI\Plugin
                 return $this->runPushAction($options);
         }
 
-
         return false;
     }
 
     /**
      * Handle a merge action.
+     *
      * @param $options
+     *
      * @return bool
      */
     protected function runMergeAction($options)
     {
         if (array_key_exists('branch', $options)) {
-            $cmd = 'cd "%s" && git checkout %s && git merge "%s"';
+            $cmd  = 'cd "%s" && git checkout %s && git merge "%s"';
             $path = $this->phpci->buildPath;
+
             return $this->phpci->executeCommand($cmd, $path, $options['branch'], $this->build->getBranch());
         }
     }
 
     /**
      * Handle a tag action.
+     *
      * @param $options
+     *
      * @return bool
      */
     protected function runTagAction($options)
@@ -127,12 +134,15 @@ class Git implements \PHPCI\Plugin
         }
 
         $cmd = 'git tag %s -m "%s"';
+
         return $this->phpci->executeCommand($cmd, $tagName, $message);
     }
 
     /**
      * Handle a pull action.
+     *
      * @param $options
+     *
      * @return bool
      */
     protected function runPullAction($options)
@@ -153,7 +163,9 @@ class Git implements \PHPCI\Plugin
 
     /**
      * Handle a push action.
+     *
      * @param $options
+     *
      * @return bool
      */
     protected function runPushAction($options)

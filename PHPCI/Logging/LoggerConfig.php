@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Logging;
 
 use Monolog\ErrorHandler;
@@ -14,28 +14,29 @@ use Monolog\Logger;
 
 /**
  * Class LoggerConfig
- * @package PHPCI\Logging
  */
 class LoggerConfig
 {
-    const KEY_ALWAYS_LOADED = "_";
+    const KEY_ALWAYS_LOADED = '_';
     private $config;
-    private $cache = array();
+    private $cache = [];
 
     /**
      * The filepath is expected to return an array which will be
      * passed to the normal constructor.
      *
      * @param string $filePath
+     *
      * @return LoggerConfig
      */
     public static function newFromFile($filePath)
     {
         if (file_exists($filePath)) {
-            $configArray = require($filePath);
+            $configArray = require $filePath;
         } else {
-            $configArray = array();
+            $configArray = [];
         }
+
         return new self($configArray);
     }
 
@@ -43,9 +44,10 @@ class LoggerConfig
      * Each key of the array is the name of a logger. The value of
      * each key should be an array or a function that returns an
      * array of LogHandlers.
+     *
      * @param array $configArray
      */
-    public function __construct(array $configArray = array())
+    public function __construct(array $configArray = [])
     {
         $this->config = $configArray;
     }
@@ -53,7 +55,9 @@ class LoggerConfig
     /**
      * Returns an instance of Monolog with all configured handlers
      * added. The Monolog instance will be given $name.
+     *
      * @param $name
+     *
      * @return Logger
      */
     public function getFor($name)
@@ -76,12 +80,14 @@ class LoggerConfig
 
     /**
      * Return an array of enabled log handlers.
+     *
      * @param $key
+     *
      * @return array|mixed
      */
     protected function getHandlers($key)
     {
-        $handlers = array();
+        $handlers = [];
 
         // They key is expected to either be an array or
         // a callable function that returns an array
@@ -92,6 +98,7 @@ class LoggerConfig
                 $handlers = $this->config[$key];
             }
         }
+
         return $handlers;
     }
 }

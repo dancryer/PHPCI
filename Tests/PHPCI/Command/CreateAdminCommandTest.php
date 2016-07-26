@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin\Command;
 
 use Symfony\Component\Console\Application;
@@ -16,17 +16,17 @@ use Symfony\Component\Console\Tester\CommandTester;
 class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPCI\Command\CreateAdminCommand|\PHPUnit_Framework_MockObject_MockObject
+     * @type \PHPCI\Command\CreateAdminCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $command;
 
     /**
-     * @var \Symfony\Component\Console\Application|\PHPUnit_Framework_MockObject_MockObject
+     * @type \Symfony\Component\Console\Application|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $application;
 
     /**
-     * @var \Symfony\Component\Console\Helper\DialogHelper|\PHPUnit_Framework_MockObject_MockObject
+     * @type \Symfony\Component\Console\Helper\DialogHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dialog;
 
@@ -35,19 +35,17 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
         parent::setup();
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateAdminCommand')
-            ->setConstructorArgs(array($this->getMock('PHPCI\\Store\\UserStore')))
-            ->setMethods(array('reloadConfig'))
-            ->getMock()
-        ;
+            ->setConstructorArgs([$this->getMock('PHPCI\\Store\\UserStore')])
+            ->setMethods(['reloadConfig'])
+            ->getMock();
 
         $this->dialog = $this->getMockBuilder('Symfony\\Component\\Console\\Helper\\DialogHelper')
-            ->setMethods(array(
+            ->setMethods([
                 'ask',
                 'askAndValidate',
                 'askHiddenResponse',
-            ))
-            ->getMock()
-        ;
+            ])
+            ->getMock();
 
         $this->application = new Application();
     }
@@ -59,7 +57,7 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->application->getHelperSet()->set($this->dialog, 'dialog');
         $this->application->add($this->command);
-        $command = $this->application->find('phpci:create-admin');
+        $command       = $this->application->find('phpci:create-admin');
         $commandTester = new CommandTester($command);
 
         return $commandTester;
@@ -72,8 +70,8 @@ class CreateAdminCommandTest extends \PHPUnit_Framework_TestCase
         $this->dialog->expects($this->at(2))->method('askHiddenResponse')->will($this->returnValue('foobar123'));
 
         $commandTester = $this->getCommandTester();
-        $commandTester->execute(array());
+        $commandTester->execute([]);
 
-        $this->assertEquals('User account created!' . PHP_EOL, $commandTester->getDisplay());
+        $this->assertSame('User account created!' . PHP_EOL, $commandTester->getDisplay());
     }
 }

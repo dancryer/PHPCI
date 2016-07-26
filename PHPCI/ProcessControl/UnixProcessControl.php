@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\ProcessControl;
 
 /**
@@ -20,24 +20,26 @@ class UnixProcessControl implements ProcessControlInterface
      * Check process using the "ps" command.
      *
      * @param int $pid
-     * @return boolean
+     *
+     * @return bool
      */
     public function isRunning($pid)
     {
         $output = $exitCode = null;
-        exec(sprintf("ps %d", $pid), $output, $exitCode);
+        exec(sprintf('ps %d', $pid), $output, $exitCode);
+
         return $exitCode === 0;
     }
 
     /**
      * Sends a signal using the "kill" command.
      *
-     * @param int $pid
+     * @param int  $pid
      * @param bool $forcefully
      */
     public function kill($pid, $forcefully = false)
     {
-        exec(sprintf("kill -%d %d", $forcefully ? 9 : 15, $pid));
+        exec(sprintf('kill -%d %d', $forcefully ? 9 : 15, $pid));
     }
 
     /**
@@ -49,6 +51,6 @@ class UnixProcessControl implements ProcessControlInterface
      */
     public static function isAvailable()
     {
-        return DIRECTORY_SEPARATOR === '/' && exec("which ps") && exec("which kill");
+        return DIRECTORY_SEPARATOR === '/' && exec('which ps') && exec('which kill');
     }
 }

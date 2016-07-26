@@ -4,53 +4,52 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
-use Exception;
 use b8\View;
+use Exception;
 use PHPCI\Builder;
-use PHPCI\Helper\Lang;
-use PHPCI\Model\Build;
 use PHPCI\Helper\Email as EmailHelper;
+use PHPCI\Model\Build;
 use Psr\Log\LogLevel;
 
 /**
-* Email Plugin - Provides simple email capability to PHPCI.
-* @author       Steve Brazier <meadsteve@gmail.com>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Email Plugin - Provides simple email capability to PHPCI.
+ *
+ * @author       Steve Brazier <meadsteve@gmail.com>
+ */
 class Email implements \PHPCI\Plugin
 {
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
 
     /**
-     * @var \PHPCI\Model\Build
+     * @type \PHPCI\Model\Build
      */
     protected $build;
 
     /**
-     * @var array
+     * @type array
      */
     protected $options;
 
     /**
      * Set up the plugin, configure options, etc.
-     * @param Builder $phpci
-     * @param Build $build
+     *
+     * @param Builder       $phpci
+     * @param Build         $build
      * @param \Swift_Mailer $mailer
-     * @param array $options
+     * @param array         $options
      */
     public function __construct(
         Builder $phpci,
         Build $build,
-        array $options = array()
+        array $options = []
     ) {
         $this->phpci   = $phpci;
         $this->build   = $build;
@@ -70,7 +69,7 @@ class Email implements \PHPCI\Plugin
             return false;
         }
 
-        $buildStatus  = $this->build->isSuccessful() ? "Passing Build" : "Failing Build";
+        $buildStatus  = $this->build->isSuccessful() ? 'Passing Build' : 'Failing Build';
         $projectName  = $this->build->getProject()->getTitle();
 
         try {
@@ -83,34 +82,35 @@ class Email implements \PHPCI\Plugin
             $view = $this->getDefaultMailTemplate();
         }
 
-        $view->build = $this->build;
+        $view->build   = $this->build;
         $view->project = $this->build->getProject();
 
-        $layout = new View('Email/layout');
-        $layout->build = $this->build;
+        $layout          = new View('Email/layout');
+        $layout->build   = $this->build;
         $layout->project = $this->build->getProject();
         $layout->content = $view->render();
-        $body = $layout->render();
+        $body            = $layout->render();
 
         $sendFailures = $this->sendSeparateEmails(
             $addresses,
-            sprintf("PHPCI - %s - %s", $projectName, $buildStatus),
+            sprintf('PHPCI - %s - %s', $projectName, $buildStatus),
             $body
         );
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
-        $this->phpci->log(sprintf("%d emails failed to send", $sendFailures));
+        $this->phpci->log(sprintf('%d emails sent', (count($addresses) - $sendFailures)));
+        $this->phpci->log(sprintf('%d emails failed to send', $sendFailures));
 
-        return ($sendFailures === 0);
+        return $sendFailures === 0;
     }
 
     /**
-     * @param string $toAddress Single address to send to
+     * @param string   $toAddress Single address to send to
      * @param string[] $ccList
-     * @param string $subject Email subject
-     * @param string $body Email body
-     * @return array                      Array of failed addresses
+     * @param string   $subject   Email subject
+     * @param string   $body      Email body
+     *
+     * @return array Array of failed addresses
      */
     protected function sendEmail($toAddress, $ccList, $subject, $body)
     {
@@ -133,38 +133,40 @@ class Email implements \PHPCI\Plugin
     /**
      * Send an email to a list of specified subjects.
      *
-     * @param array $toAddresses
-     *   List of destination addresses for message.
+     * @param array  $toAddresses
+     *                            List of destination addresses for message.
      * @param string $subject
-     *   Mail subject
+     *                            Mail subject
      * @param string $body
-     *   Mail body
+     *                            Mail body
      *
      * @return int number of failed messages
      */
     public function sendSeparateEmails(array $toAddresses, $subject, $body)
     {
         $failures = 0;
-        $ccList = $this->getCcAddresses();
+        $ccList   = $this->getCcAddresses();
 
         foreach ($toAddresses as $address) {
-            if (!$this->sendEmail($address, $ccList, $subject, $body)) {
-                $failures++;
+            if (! $this->sendEmail($address, $ccList, $subject, $body)) {
+                ++$failures;
             }
         }
+
         return $failures;
     }
 
     /**
      * Get the list of email addresses to send to.
+     *
      * @return array
      */
     protected function getEmailAddresses()
     {
-        $addresses = array();
+        $addresses = [];
         $committer = $this->build->getCommitterEmail();
 
-        if (isset($this->options['committer']) && !empty($committer)) {
+        if (isset($this->options['committer']) && ! empty($committer)) {
             $addresses[] = $committer;
         }
 
@@ -188,7 +190,7 @@ class Email implements \PHPCI\Plugin
      */
     protected function getCcAddresses()
     {
-        $ccAddresses = array();
+        $ccAddresses = [];
 
         if (isset($this->options['cc'])) {
             foreach ($this->options['cc'] as $address) {

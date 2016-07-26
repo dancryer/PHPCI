@@ -4,25 +4,24 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Controller;
 
 use b8;
 use b8\Exception\HttpException\NotFoundException;
 use b8\Store;
 use PHPCI\BuildFactory;
-use PHPCI\Model\Project;
 use PHPCI\Model\Build;
+use PHPCI\Model\Project;
 use PHPCI\Service\BuildStatusService;
 
 /**
-* Build Status Controller - Allows external access to build status information / images.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Web
-*/
+ * Build Status Controller - Allows external access to build status information / images.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class BuildStatusController extends \PHPCI\Controller
 {
     /* @var \PHPCI\Store\ProjectStore */
@@ -42,7 +41,9 @@ class BuildStatusController extends \PHPCI\Controller
 
     /**
      * Returns status of the last build
+     *
      * @param $projectId
+     *
      * @return string
      */
     protected function getStatus($projectId)
@@ -50,14 +51,14 @@ class BuildStatusController extends \PHPCI\Controller
         $branch = $this->getParam('branch', 'master');
         try {
             $project = $this->projectStore->getById($projectId);
-            $status = 'passing';
+            $status  = 'passing';
 
-            if (!$project->getAllowPublicStatus()) {
-                return null;
+            if (! $project->getAllowPublicStatus()) {
+                return;
             }
 
             if (isset($project) && $project instanceof Project) {
-                $build = $project->getLatestBuild($branch, array(2,3));
+                $build = $project->getLatestBuild($branch, [2, 3]);
 
                 if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
                     $status = 'failed';
@@ -74,25 +75,27 @@ class BuildStatusController extends \PHPCI\Controller
      * Displays projects information in ccmenu format
      *
      * @param $projectId
-     * @return bool
+     *
      * @throws \Exception
      * @throws b8\Exception\HttpException
+     *
+     * @return bool
      */
     public function ccxml($projectId)
     {
         /* @var Project $project */
         $project = $this->projectStore->getById($projectId);
-        $xml = new \SimpleXMLElement('<Projects/>');
+        $xml     = new \SimpleXMLElement('<Projects/>');
 
-        if (!$project instanceof Project || !$project->getAllowPublicStatus()) {
+        if (! $project instanceof Project || ! $project->getAllowPublicStatus()) {
             return $this->renderXml($xml);
         }
 
         try {
             $branchList = $this->buildStore->getBuildBranches($projectId);
 
-            if (!$branchList) {
-                $branchList = array($project->getBranch());
+            if (! $branchList) {
+                $branchList = [$project->getBranch()];
             }
 
             foreach ($branchList as $branch) {
@@ -113,6 +116,7 @@ class BuildStatusController extends \PHPCI\Controller
 
     /**
      * @param \SimpleXMLElement $xml
+     *
      * @return bool
      */
     protected function renderXml(\SimpleXMLElement $xml = null)
@@ -126,8 +130,8 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
+     * Returns the appropriate build status image in SVG format for a given project.
+     */
     public function image($projectId)
     {
         $style = $this->getParam('style', 'plastic');
@@ -138,6 +142,7 @@ class BuildStatusController extends \PHPCI\Controller
         if (is_null($status)) {
             $response = new b8\Http\Response\RedirectResponse();
             $response->setHeader('Location', '/');
+
             return $response;
         }
 
@@ -153,14 +158,18 @@ class BuildStatusController extends \PHPCI\Controller
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');
         $this->response->setContent($image);
+
         return $this->response;
     }
 
     /**
      * View the public status page of a given project, if enabled.
+     *
      * @param $projectId
-     * @return string
+     *
      * @throws \b8\Exception\HttpException\NotFoundException
+     *
+     * @return string
      */
     public function view($projectId)
     {
@@ -170,7 +179,7 @@ class BuildStatusController extends \PHPCI\Controller
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
-        if (!$project->getAllowPublicStatus()) {
+        if (! $project->getAllowPublicStatus()) {
             throw new NotFoundException('Project with id: ' . $projectId . ' not found');
         }
 
@@ -180,7 +189,7 @@ class BuildStatusController extends \PHPCI\Controller
             $this->view->latest = $builds[0];
         }
 
-        $this->view->builds = $builds;
+        $this->view->builds  = $builds;
         $this->view->project = $project;
 
         return $this->view->render();
@@ -191,9 +200,9 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected function getLatestBuilds($projectId)
     {
-        $criteria       = array('project_id' => $projectId);
-        $order          = array('id' => 'DESC');
-        $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
+        $criteria       = ['project_id' => $projectId];
+        $order          = ['id' => 'DESC'];
+        $builds         = $this->buildStore->getWhere($criteria, 10, 0, [], $order);
 
         foreach ($builds['items'] as &$build) {
             $build = BuildFactory::getBuild($build);

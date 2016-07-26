@@ -29,12 +29,12 @@ class RemoveUniqueNameIndex extends AbstractMigration
     {
         $user = $this->table('user');
 
-        if ($user->hasIndex('name', array('unique' => true))) {
-            $user->removeIndex('name', array('unique' => true));
+        if ($user->hasIndex('name', ['unique' => true])) {
+            $user->removeIndex('name', ['unique' => true]);
             $user->save();
         }
 
-        $user->addIndex('name', array('unique' => false));
+        $user->addIndex('name', ['unique' => false]);
         $user->save();
     }
 }

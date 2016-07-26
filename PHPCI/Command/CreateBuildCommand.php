@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
 use PHPCI\Helper\Lang;
@@ -20,19 +20,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Create build command - creates a build for a project
+ *
  * @author       Jérémy DECOOL (@jdecool)
- * @package      PHPCI
- * @subpackage   Console
  */
 class CreateBuildCommand extends Command
 {
     /**
-     * @var ProjectStore
+     * @type ProjectStore
      */
     protected $projectStore;
 
     /**
-     * @var BuildService
+     * @type BuildService
      */
     protected $buildService;
 
@@ -48,7 +47,7 @@ class CreateBuildCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -61,13 +60,13 @@ class CreateBuildCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $projectId = $input->getArgument('projectId');
-        $commitId = $input->getOption('commit');
-        $branch = $input->getOption('branch');
+        $commitId  = $input->getOption('commit');
+        $branch    = $input->getOption('branch');
 
         $project = $this->projectStore->getById($projectId);
         if (empty($project)) {

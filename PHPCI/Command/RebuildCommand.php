@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
 use b8\Store\Factory;
@@ -18,36 +18,35 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
-* Re-runs the last run build.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Console
-*/
+ * Re-runs the last run build.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class RebuildCommand extends Command
 {
     /**
-     * @var Logger
+     * @type Logger
      */
     protected $logger;
 
     /**
-     * @var OutputInterface
+     * @type OutputInterface
      */
     protected $output;
 
     /**
-     * @var boolean
+     * @type bool
      */
     protected $run;
 
     /**
-     * @var int
+     * @type int
      */
     protected $sleep;
 
     /**
      * @param \Monolog\Logger $logger
-     * @param string $name
+     * @param string          $name
      */
     public function __construct(Logger $logger, $name = null)
     {
@@ -63,29 +62,30 @@ class RebuildCommand extends Command
     }
 
     /**
-    * Loops through running.
-    */
+     * Loops through running.
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $runner = new RunCommand($this->logger);
         $runner->setMaxBuilds(1);
         $runner->setDaemon(false);
 
-        /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
+        /** @type \PHPCI\Store\BuildStore $store */
+        $store   = Factory::getStore('Build');
         $service = new BuildService($store);
 
-        $builds = $store->getLatestBuilds(null, 1);
+        $builds    = $store->getLatestBuilds(null, 1);
         $lastBuild = array_shift($builds);
         $service->createDuplicateBuild($lastBuild);
 
-        $runner->run(new ArgvInput(array()), $output);
+        $runner->run(new ArgvInput([]), $output);
     }
 
     /**
-    * Called when log entries are made in Builder / the plugins.
-    * @see \PHPCI\Builder::log()
-    */
+     * Called when log entries are made in Builder / the plugins.
+     *
+     * @see \PHPCI\Builder::log()
+     */
     public function logCallback($log)
     {
         $this->output->writeln($log);

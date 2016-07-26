@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PDO;
@@ -15,41 +15,40 @@ use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
-* MySQL Plugin - Provides access to a MySQL database.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @author       Steve Kamerman <stevekamerman@gmail.com>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * MySQL Plugin - Provides access to a MySQL database.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ * @author       Steve Kamerman <stevekamerman@gmail.com>
+ */
 class Mysql implements \PHPCI\Plugin
 {
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
 
     /**
-     * @var \PHPCI\Model\Build
+     * @type \PHPCI\Model\Build
      */
     protected $build;
 
     /**
-     * @var array
+     * @type array
      */
-    protected $queries = array();
+    protected $queries = [];
 
     /**
-     * @var string
+     * @type string
      */
     protected $host;
 
     /**
-     * @var string
+     * @type string
      */
     protected $user;
 
     /**
-     * @var string
+     * @type string
      */
     protected $pass;
 
@@ -58,7 +57,7 @@ class Mysql implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
@@ -67,21 +66,21 @@ class Mysql implements \PHPCI\Plugin
 
         $config = \b8\Database::getConnection('write')->getDetails();
 
-        $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
+        $this->host = (defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
         $this->user = $config['user'];
         $this->pass = $config['pass'];
 
         $buildSettings = $phpci->getConfig('build_settings');
 
-        if (!isset($buildSettings['mysql'])) {
+        if (! isset($buildSettings['mysql'])) {
             return;
         }
 
-        if (!empty($buildSettings['mysql']['host'])) {
+        if (! empty($buildSettings['mysql']['host'])) {
             $this->host = $this->phpci->interpolate($buildSettings['mysql']['host']);
         }
 
-        if (!empty($buildSettings['mysql']['user'])) {
+        if (! empty($buildSettings['mysql']['user'])) {
             $this->user = $this->phpci->interpolate($buildSettings['mysql']['user']);
         }
 
@@ -91,17 +90,18 @@ class Mysql implements \PHPCI\Plugin
     }
 
     /**
-    * Connects to MySQL and runs a specified set of queries.
-    * @return boolean
-    */
+     * Connects to MySQL and runs a specified set of queries.
+     *
+     * @return bool
+     */
     public function execute()
     {
         try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+            $opts = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
             $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
 
             foreach ($this->queries as $query) {
-                if (!is_array($query)) {
+                if (! is_array($query)) {
                     // Simple query
                     $pdo->query($this->phpci->interpolate($query));
                 } elseif (isset($query['import'])) {
@@ -113,31 +113,35 @@ class Mysql implements \PHPCI\Plugin
             }
         } catch (\Exception $ex) {
             $this->phpci->logFailure($ex->getMessage());
+
             return false;
         }
+
         return true;
     }
 
     /**
      * @param string $query
-     * @return boolean
+     *
      * @throws \Exception
+     *
+     * @return bool
      */
     protected function executeFile($query)
     {
-        if (!isset($query['file'])) {
+        if (! isset($query['file'])) {
             throw new \Exception(Lang::get('import_file_key'));
         }
 
         $import_file = $this->phpci->buildPath . $this->phpci->interpolate($query['file']);
-        if (!is_readable($import_file)) {
+        if (! is_readable($import_file)) {
             throw new \Exception(Lang::get('cannot_open_import', $import_file));
         }
 
         $database = isset($query['database']) ? $this->phpci->interpolate($query['database']) : null;
 
         $import_command = $this->getImportCommand($import_file, $database);
-        if (!$this->phpci->executeCommand($import_command)) {
+        if (! $this->phpci->executeCommand($import_command)) {
             throw new \Exception(Lang::get('unable_to_execute'));
         }
 
@@ -146,31 +150,34 @@ class Mysql implements \PHPCI\Plugin
 
     /**
      * Builds the MySQL import command required to import/execute the specified file
+     *
      * @param string $import_file Path to file, relative to the build root
-     * @param string $database If specified, this database is selected before execution
+     * @param string $database    If specified, this database is selected before execution
+     *
      * @return string
      */
     protected function getImportCommand($import_file, $database = null)
     {
-        $decompression = array(
+        $decompression = [
             'bz2' => '| bzip2 --decompress',
-            'gz' => '| gzip --decompress',
-        );
+            'gz'  => '| gzip --decompress',
+        ];
 
-        $extension = strtolower(pathinfo($import_file, PATHINFO_EXTENSION));
+        $extension  = strtolower(pathinfo($import_file, PATHINFO_EXTENSION));
         $decomp_cmd = '';
         if (array_key_exists($extension, $decompression)) {
             $decomp_cmd = $decompression[$extension];
         }
 
-        $args = array(
+        $args = [
             ':import_file' => escapeshellarg($import_file),
-            ':decomp_cmd' => $decomp_cmd,
-            ':host' => escapeshellarg($this->host),
-            ':user' => escapeshellarg($this->user),
-            ':pass' => escapeshellarg($this->pass),
-            ':database' => ($database === null)? '': escapeshellarg($database),
-        );
+            ':decomp_cmd'  => $decomp_cmd,
+            ':host'        => escapeshellarg($this->host),
+            ':user'        => escapeshellarg($this->user),
+            ':pass'        => escapeshellarg($this->pass),
+            ':database'    => ($database === null) ? '' : escapeshellarg($database),
+        ];
+
         return strtr('cat :import_file :decomp_cmd | mysql -h:host -u:user -p:pass :database', $args);
     }
 }

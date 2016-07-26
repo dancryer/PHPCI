@@ -3,13 +3,12 @@
 /**
  * User base store for table: user
  */
-
 namespace PHPCI\Store\Base;
 
 use b8\Database;
 use b8\Exception\HttpException;
-use PHPCI\Store;
 use PHPCI\Model\User;
+use PHPCI\Store;
 
 /**
  * User Base Store
@@ -30,6 +29,7 @@ class UserStoreBase extends Store
 
     /**
      * Get a single User by Id.
+     *
      * @return null|User
      */
     public function getById($value, $useConnection = 'read')
@@ -39,7 +39,7 @@ class UserStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `user` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -48,11 +48,12 @@ class UserStoreBase extends Store
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Get a single User by Email.
+     *
      * @return null|User
      */
     public function getByEmail($value, $useConnection = 'read')
@@ -62,7 +63,7 @@ class UserStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `user` WHERE `email` = :email LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':email', $value);
 
         if ($stmt->execute()) {
@@ -71,11 +72,12 @@ class UserStoreBase extends Store
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Get multiple User by Name.
+     *
      * @return array
      */
     public function getByName($value, $limit = 1000, $useConnection = 'read')
@@ -84,11 +86,10 @@ class UserStoreBase extends Store
             throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-
         $query = 'SELECT * FROM `user` WHERE `name` = :name LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':name', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -100,9 +101,9 @@ class UserStoreBase extends Store
 
             $count = count($rtn);
 
-            return array('items' => $rtn, 'count' => $count);
+            return ['items' => $rtn, 'count' => $count];
         } else {
-            return array('items' => array(), 'count' => 0);
+            return ['items' => [], 'count' => 0];
         }
     }
 }

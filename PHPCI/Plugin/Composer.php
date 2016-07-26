@@ -4,22 +4,20 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
-use PHPCI\Helper\Lang;
 
 /**
-* Composer Plugin - Provides access to Composer functionality.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Composer Plugin - Provides access to Composer functionality.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $directory;
@@ -31,9 +29,11 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Check if this plugin can be executed.
+     *
      * @param $stage
      * @param Builder $builder
-     * @param Build $build
+     * @param Build   $build
+     *
      * @return bool
      */
     public static function canExecute($stage, Builder $builder, Build $build)
@@ -49,20 +49,21 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $path             = $phpci->buildPath;
-        $this->phpci      = $phpci;
-        $this->build      = $build;
-        $this->directory  = $path;
-        $this->action     = 'install';
-        $this->preferDist = false;
+        $path               = $phpci->buildPath;
+        $this->phpci        = $phpci;
+        $this->build        = $build;
+        $this->directory    = $path;
+        $this->action       = 'install';
+        $this->preferDist   = false;
         $this->preferSource = false;
-        $this->nodev      = false;
+        $this->nodev        = false;
 
         if (array_key_exists('directory', $options)) {
             $this->directory = $path . DIRECTORY_SEPARATOR . $options['directory'];
@@ -73,25 +74,25 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (array_key_exists('prefer_dist', $options)) {
-            $this->preferDist = (bool)$options['prefer_dist'];
+            $this->preferDist = (bool) $options['prefer_dist'];
         }
 
         if (array_key_exists('prefer_source', $options)) {
-            $this->preferDist = false;
-            $this->preferSource = (bool)$options['prefer_source'];
+            $this->preferDist   = false;
+            $this->preferSource = (bool) $options['prefer_source'];
         }
 
         if (array_key_exists('no_dev', $options)) {
-            $this->nodev = (bool)$options['no_dev'];
+            $this->nodev = (bool) $options['no_dev'];
         }
     }
 
     /**
-    * Executes Composer and runs a specified command (e.g. install / update)
-    */
+     * Executes Composer and runs a specified command (e.g. install / update)
+     */
     public function execute()
     {
-        $composerLocation = $this->phpci->findBinary(array('composer', 'composer.phar'));
+        $composerLocation = $this->phpci->findBinary(['composer', 'composer.phar']);
 
         $cmd = '';
 

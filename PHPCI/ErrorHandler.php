@@ -4,22 +4,20 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI;
 
 /**
  * Error Handler
- *
- * @package PHPCI\Logging
  */
 class ErrorHandler
 {
     /**
-     * @var array
+     * @type array
      */
-    protected $levels = array(
+    protected $levels = [
         E_WARNING           => 'Warning',
         E_NOTICE            => 'Notice',
         E_USER_ERROR        => 'User Error',
@@ -29,7 +27,7 @@ class ErrorHandler
         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
         E_DEPRECATED        => 'Deprecated',
         E_USER_DEPRECATED   => 'User Deprecated',
-    );
+    ];
 
     /**
      * Registers an instance of the error handler to throw ErrorException.
@@ -37,14 +35,14 @@ class ErrorHandler
     public static function register()
     {
         $handler = new static();
-        set_error_handler(array($handler, 'handleError'));
+        set_error_handler([$handler, 'handleError']);
     }
 
     /**
-     * @param integer $level
-     * @param string  $message
-     * @param string  $file
-     * @param integer $line
+     * @param int    $level
+     * @param string $message
+     * @param string $file
+     * @param int    $line
      *
      * @throws \ErrorException
      *

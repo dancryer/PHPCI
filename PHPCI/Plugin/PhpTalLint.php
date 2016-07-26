@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI;
@@ -15,9 +15,8 @@ use PHPCI\Model\Build;
 
 /**
  * PHPTAL Lint Plugin - Provides access to PHPTAL lint functionality.
+ *
  * @author       Stephen Ball <phpci@stephen.rebelinblue.com>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class PhpTalLint implements PHPCI\Plugin
 {
@@ -27,34 +26,34 @@ class PhpTalLint implements PHPCI\Plugin
     protected $ignore;
 
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
 
     /**
-     * @var \PHPCI\Model\Build
+     * @type \PHPCI\Model\Build
      */
     protected $build;
 
     /**
-     * @var string The path to a file contain custom phptal_tales_ functions
+     * @type string The path to a file contain custom phptal_tales_ functions
      */
     protected $tales;
 
     /**
-     * @var int
+     * @type int
      */
     protected $allowed_warnings;
 
     /**
-     * @var int
+     * @type int
      */
     protected $allowed_errors;
 
     /**
-     * @var array The results of the lint scan
+     * @type array The results of the lint scan
      */
-    protected $failedPaths = array();
+    protected $failedPaths = [];
 
     /**
      * Standard Constructor
@@ -63,23 +62,23 @@ class PhpTalLint implements PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-        $this->directories = array('');
-        $this->suffixes = array('zpt');
-        $this->ignore = $phpci->ignore;
+        $this->phpci       = $phpci;
+        $this->build       = $build;
+        $this->directories = [''];
+        $this->suffixes    = ['zpt'];
+        $this->ignore      = $phpci->ignore;
 
         $this->allowed_warnings = 0;
-        $this->allowed_errors = 0;
+        $this->allowed_errors   = 0;
 
-        if (!empty($options['directory'])) {
-            $this->directories = array($options['directory']);
+        if (! empty($options['directory'])) {
+            $this->directories = [$options['directory']];
         }
 
         if (isset($options['suffixes'])) {
-            $this->suffixes = (array)$options['suffixes'];
+            $this->suffixes = (array) $options['suffixes'];
         }
 
         $this->setOptions($options);
@@ -87,11 +86,12 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Handle this plugin's options.
+     *
      * @param $options
      */
     protected function setOptions($options)
     {
-        foreach (array('directories', 'tales', 'allowed_warnings', 'allowed_errors') as $key) {
+        foreach (['directories', 'tales', 'allowed_warnings', 'allowed_errors'] as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
             }
@@ -113,14 +113,14 @@ class PhpTalLint implements PHPCI\Plugin
         $this->phpci->quiet = false;
         $this->phpci->logExecOutput(true);
 
-        $errors = 0;
+        $errors   = 0;
         $warnings = 0;
 
         foreach ($this->failedPaths as $path) {
             if ($path['type'] == 'error') {
-                $errors++;
+                ++$errors;
             } else {
-                $warnings++;
+                ++$warnings;
             }
         }
 
@@ -143,8 +143,10 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Lint an item (file or directory) by calling the appropriate method.
+     *
      * @param $item
      * @param $itemPath
+     *
      * @return bool
      */
     protected function lintItem($item, $itemPath)
@@ -152,10 +154,10 @@ class PhpTalLint implements PHPCI\Plugin
         $success = true;
 
         if ($item->isFile() && in_array(strtolower($item->getExtension()), $this->suffixes)) {
-            if (!$this->lintFile($itemPath)) {
+            if (! $this->lintFile($itemPath)) {
                 $success = false;
             }
-        } elseif ($item->isDir() && $this->recursive && !$this->lintDirectory($itemPath . DIRECTORY_SEPARATOR)) {
+        } elseif ($item->isDir() && $this->recursive && ! $this->lintDirectory($itemPath . DIRECTORY_SEPARATOR)) {
             $success = false;
         }
 
@@ -164,12 +166,14 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Run phptal lint against a directory of files.
+     *
      * @param $path
+     *
      * @return bool
      */
     protected function lintDirectory($path)
     {
-        $success = true;
+        $success   = true;
         $directory = new \DirectoryIterator($this->phpci->buildPath . $path);
 
         foreach ($directory as $item) {
@@ -183,7 +187,7 @@ class PhpTalLint implements PHPCI\Plugin
                 continue;
             }
 
-            if (!$this->lintItem($item, $itemPath)) {
+            if (! $this->lintItem($item, $itemPath)) {
                 $success = false;
             }
         }
@@ -193,7 +197,9 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Run phptal lint against a specific file.
+     *
      * @param $path
+     *
      * @return bool
      */
     protected function lintFile($path)
@@ -222,20 +228,20 @@ class PhpTalLint implements PHPCI\Plugin
             foreach ($rows as $row) {
                 $name = basename($path);
 
-                $row = str_replace('(use -i to include your custom modifier functions)', '', $row);
+                $row     = str_replace('(use -i to include your custom modifier functions)', '', $row);
                 $message = str_replace($name . ': ', '', $row);
 
                 $parts = explode(' (line ', $message);
 
                 $message = trim($parts[0]);
-                $line = str_replace(')', '', $parts[1]);
+                $line    = str_replace(')', '', $parts[1]);
 
-                $this->failedPaths[] = array(
-                    'file' => $path,
-                    'line' => $line,
-                    'type' => $matches[2],
-                    'message' => $message
-                );
+                $this->failedPaths[] = [
+                    'file'    => $path,
+                    'line'    => $line,
+                    'type'    => $matches[2],
+                    'message' => $message,
+                ];
             }
 
             $success = false;
@@ -246,12 +252,13 @@ class PhpTalLint implements PHPCI\Plugin
 
     /**
      * Process options and produce an arguments string for PHPTAL Lint.
+     *
      * @return array
      */
     protected function getFlags()
     {
         $tales = '';
-        if (!empty($this->tales)) {
+        if (! empty($this->tales)) {
             $tales = ' -i ' . $this->phpci->buildPath . $this->tales;
         }
 
@@ -260,6 +267,6 @@ class PhpTalLint implements PHPCI\Plugin
             $suffixes = ' -e ' . implode(',', $this->suffixes);
         }
 
-        return array($suffixes, $tales);
+        return [$suffixes, $tales];
     }
 }

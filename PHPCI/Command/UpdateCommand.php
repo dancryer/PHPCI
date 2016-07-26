@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
 use b8\Config;
@@ -18,14 +18,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Generate console command - Reads the database and generates models and stores.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Console
  */
 class UpdateCommand extends Command
 {
     /**
-     * @var \Monolog\Logger
+     * @type \Monolog\Logger
      */
     protected $logger;
 
@@ -47,7 +46,7 @@ class UpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->verifyInstalled($output)) {
+        if (! $this->verifyInstalled($output)) {
             return;
         }
 
@@ -55,14 +54,14 @@ class UpdateCommand extends Command
 
         shell_exec(PHPCI_DIR . 'vendor/bin/phinx migrate -c "' . PHPCI_DIR . 'phinx.php"');
 
-        $output->writeln('<info>'.Lang::get('ok').'</info>');
+        $output->writeln('<info>' . Lang::get('ok') . '</info>');
     }
 
     protected function verifyInstalled(OutputInterface $output)
     {
-        $config = Config::getInstance();
+        $config   = Config::getInstance();
         $phpciUrl = $config->get('phpci.url');
 
-        return !empty($phpciUrl);
+        return ! empty($phpciUrl);
     }
 }

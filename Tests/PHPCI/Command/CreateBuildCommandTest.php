@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license        https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link            http://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Command;
 
 use Symfony\Component\Console\Application;
@@ -15,12 +15,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPCI\Command\CreateAdminCommand|\PHPUnit_Framework_MockObject_MockObject
+     * @type \PHPCI\Command\CreateAdminCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $command;
 
     /**
-     * @var \Symfony\Component\Console\Application|\PHPUnit_Framework_MockObject_MockObject
+     * @type \Symfony\Component\Console\Application|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $application;
 
@@ -33,24 +33,24 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
         $projectStoreMock = $this->getMockBuilder('PHPCI\\Store\\ProjectStore')
             ->getMock();
         $projectStoreMock->method('getById')
-            ->will($this->returnValueMap(array(
-                array(1, 'read', $projectMock),
-                array(2, 'read', null),
-            )));
+            ->will($this->returnValueMap([
+                [1, 'read', $projectMock],
+                [2, 'read', null],
+            ]));
 
         $buildServiceMock = $this->getMockBuilder('PHPCI\\Service\\BuildService')
             ->disableOriginalConstructor()
             ->getMock();
         $buildServiceMock->method('createBuild')
             ->withConsecutive(
-                array($projectMock, null, null, null, null, null),
-                array($projectMock, '92c8c6e', null, null, null, null),
-                array($projectMock, null, 'master', null, null, null)
+                [$projectMock, null, null, null, null, null],
+                [$projectMock, '92c8c6e', null, null, null, null],
+                [$projectMock, null, 'master', null, null, null]
             );
 
         $this->command = $this->getMockBuilder('PHPCI\\Command\\CreateBuildCommand')
-            ->setConstructorArgs(array($projectStoreMock, $buildServiceMock))
-            ->setMethods(array('reloadConfig'))
+            ->setConstructorArgs([$projectStoreMock, $buildServiceMock])
+            ->setMethods(['reloadConfig'])
             ->getMock();
 
         $this->application = new Application();
@@ -60,7 +60,7 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->application->add($this->command);
 
-        $command = $this->application->find('phpci:create-build');
+        $command       = $this->application->find('phpci:create-build');
         $commandTester = new CommandTester($command);
 
         return $commandTester;
@@ -70,9 +70,9 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     {
         $commandTester = $this->getCommandTester();
 
-        $commandTester->execute(array('projectId' => 1));
-        $commandTester->execute(array('projectId' => 1, '--commit' => '92c8c6e'));
-        $commandTester->execute(array('projectId' => 1, '--branch' => 'master'));
+        $commandTester->execute(['projectId' => 1]);
+        $commandTester->execute(['projectId' => 1, '--commit' => '92c8c6e']);
+        $commandTester->execute(['projectId' => 1, '--branch' => 'master']);
     }
 
     /**
@@ -81,6 +81,6 @@ class CreateBuildCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecuteWithUnknownProjectId()
     {
         $commandTester = $this->getCommandTester();
-        $commandTester->execute(array('projectId' => 2));
+        $commandTester->execute(['projectId' => 2]);
     }
 }

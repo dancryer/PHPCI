@@ -4,21 +4,19 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Helper;
 
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 /**
  * Converts ANSI output to HTML.
- *
- * @package PHPCI\Helper
  */
 final class AnsiConverter
 {
-    static private $converter = null;
+    private static $converter = null;
 
     /**
      * Initialize the singleton.

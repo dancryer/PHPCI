@@ -4,25 +4,24 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Model\Build;
 
-use PHPCI\Model\Build;
 use PHPCI\Builder;
+use PHPCI\Model\Build;
 
 /**
-* Local Build Model
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Core
-*/
+ * Local Build Model
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class LocalBuild extends Build
 {
     /**
-    * Create a working copy by cloning, copying, or similar.
-    */
+     * Create a working copy by cloning, copying, or similar.
+     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
         $reference  = $this->getProject()->getReference();
@@ -31,7 +30,7 @@ class LocalBuild extends Build
 
         // If there's a /config file in the reference directory, it is probably a bare repository
         // which we'll extract into our build path directly.
-        if (is_file($reference.'/config') && $this->handleBareRepository($builder, $reference, $buildPath) === true) {
+        if (is_file($reference . '/config') && $this->handleBareRepository($builder, $reference, $buildPath) === true) {
             return $this->handleConfig($builder, $buildPath) !== false;
         }
 
@@ -58,19 +57,22 @@ class LocalBuild extends Build
 
     /**
      * Check if this is a "bare" git repository, and if so, unarchive it.
+     *
      * @param Builder $builder
      * @param $reference
      * @param $buildPath
+     *
      * @return bool
      */
     protected function handleBareRepository(Builder $builder, $reference, $buildPath)
     {
-        $gitConfig = parse_ini_file($reference.'/config', true);
+        $gitConfig = parse_ini_file($reference . '/config', true);
 
         // If it is indeed a bare repository, then extract it into our build path:
         if ($gitConfig['core']['bare']) {
             $cmd = 'mkdir %2$s; git --git-dir="%1$s" archive %3$s | tar -x -C "%2$s"';
             $builder->executeCommand($cmd, $reference, $buildPath, $this->getBranch());
+
             return true;
         }
 
@@ -79,9 +81,11 @@ class LocalBuild extends Build
 
     /**
      * Create a symlink if required.
+     *
      * @param Builder $builder
      * @param $reference
      * @param $buildPath
+     *
      * @return bool
      */
     protected function handleSymlink(Builder $builder, $reference, $buildPath)
@@ -92,8 +96,9 @@ class LocalBuild extends Build
 
         $builder->log(sprintf('Symlinking: %s to %s', $reference, $buildPath));
 
-        if (!symlink($reference, $buildPath)) {
+        if (! symlink($reference, $buildPath)) {
             $builder->logFailure('Failed to symlink.');
+
             return false;
         }
 

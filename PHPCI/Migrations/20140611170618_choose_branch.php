@@ -11,22 +11,18 @@ class ChooseBranch extends AbstractMigration
      * http://docs.phinx.org/en/latest/migrations.html#the-change-method
      *
      * Uncomment this method if you would like to use it.
-     *
-    public function change()
-    {
-    }
-    */
-    
+     */
+
     /**
      * Migrate Up.
      */
     public function up()
     {
         $project = $this->table('project');
-        $project->addColumn('branch', 'string', array(
+        $project->addColumn('branch', 'string', [
             'after' => 'reference',
-            'limit' => 250
-        ))->save();
+            'limit' => 250,
+        ])->save();
     }
 
     /**

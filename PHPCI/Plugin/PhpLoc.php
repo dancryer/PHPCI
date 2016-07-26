@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI;
@@ -15,26 +15,27 @@ use PHPCI\Model\Build;
 
 /**
  * PHP Loc - Allows PHP Copy / Lines of Code testing.
+ *
  * @author       Johan van der Heide <info@japaveh.nl>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
-     * @var string
+     * @type string
      */
     protected $directory;
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
 
     /**
      * Check if this plugin can be executed.
+     *
      * @param $stage
      * @param Builder $builder
-     * @param Build $build
+     * @param Build   $build
+     *
      * @return bool
      */
     public static function canExecute($stage, Builder $builder, Build $build)
@@ -48,11 +49,12 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci     = $phpci;
         $this->build     = $build;
@@ -85,9 +87,9 @@ class PhpLoc implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         $output  = $this->phpci->getLastOutput();
 
         if (preg_match_all('/\((LOC|CLOC|NCLOC|LLOC)\)\s+([0-9]+)/', $output, $matches)) {
-            $data = array();
+            $data = [];
             foreach ($matches[1] as $k => $v) {
-                $data[$v] = (int)$matches[2][$k];
+                $data[$v] = (int) $matches[2][$k];
             }
 
             $this->build->storeMeta('phploc', $data);

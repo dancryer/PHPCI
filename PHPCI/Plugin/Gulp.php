@@ -4,20 +4,19 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* Gulp Plugin - Provides access to gulp functionality.
-* @author       Dirk Heilig <dirk@heilig-online.com>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Gulp Plugin - Provides access to gulp functionality.
+ *
+ * @author       Dirk Heilig <dirk@heilig-online.com>
+ */
 class Gulp implements \PHPCI\Plugin
 {
     protected $directory;
@@ -40,15 +39,15 @@ class Gulp implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $path = $phpci->buildPath;
-        $this->build = $build;
-        $this->phpci = $phpci;
+        $path            = $phpci->buildPath;
+        $this->build     = $build;
+        $this->phpci     = $phpci;
         $this->directory = $path;
-        $this->task = null;
-        $this->gulp = $this->phpci->findBinary('gulp');
-        $this->gulpfile = 'gulpfile.js';
+        $this->task      = null;
+        $this->gulp      = $this->phpci->findBinary('gulp');
+        $this->gulpfile  = 'gulpfile.js';
 
         // Handle options:
         if (isset($options['directory'])) {
@@ -69,8 +68,8 @@ class Gulp implements \PHPCI\Plugin
     }
 
     /**
-    * Executes gulp and runs a specified command (e.g. install / update)
-    */
+     * Executes gulp and runs a specified command (e.g. install / update)
+     */
     public function execute()
     {
         // if npm does not work, we cannot use gulp, so we return false
@@ -78,7 +77,7 @@ class Gulp implements \PHPCI\Plugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (! $this->phpci->executeCommand($cmd, $this->directory)) {
             return false;
         }
 

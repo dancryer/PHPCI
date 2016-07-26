@@ -4,28 +4,27 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Helper;
 
 use b8\Config;
 
 /**
  * Languages Helper Class - Handles loading strings files and the strings within them.
- *
- * @package PHPCI\Helper
  */
 class Lang
 {
-    protected static $language = null;
-    protected static $strings = array();
-    protected static $languages = array();
+    protected static $language  = null;
+    protected static $strings   = [];
+    protected static $languages = [];
 
     /**
      * Get a specific string from the language file.
      *
      * @param $string
+     *
      * @return mixed|string
      */
     public static function get($string)
@@ -34,6 +33,7 @@ class Lang
 
         if (array_key_exists($string, self::$strings)) {
             $vars[0] = self::$strings[$string];
+
             return call_user_func_array('sprintf', $vars);
         }
 
@@ -45,7 +45,7 @@ class Lang
      */
     public static function out()
     {
-        print call_user_func_array(array('PHPCI\Helper\Lang', 'get'), func_get_args());
+        echo call_user_func_array(['PHPCI\Helper\Lang', 'get'], func_get_args());
     }
 
     /**
@@ -69,7 +69,8 @@ class Lang
     {
         if (in_array($language, self::$languages)) {
             self::$language = $language;
-            self::$strings = self::loadLanguage();
+            self::$strings  = self::loadLanguage();
+
             return true;
         }
 
@@ -83,11 +84,11 @@ class Lang
      */
     public static function getLanguageOptions()
     {
-        $languages = array();
+        $languages = [];
 
         foreach (self::$languages as $language) {
-            $strings = array();
-            require(PHPCI_DIR . 'PHPCI/Languages/lang.' . $language . '.php');
+            $strings = [];
+            require PHPCI_DIR . 'PHPCI/Languages/lang.' . $language . '.php';
             $languages[$language] = $strings['language_name'];
         }
 
@@ -123,7 +124,7 @@ class Lang
             $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
             foreach ($langs as $lang) {
-                $parts = explode(';', $lang);
+                $parts    = explode(';', $lang);
                 $language = strtolower($parts[0]);
 
                 if (self::setLanguage($language)) {
@@ -140,7 +141,7 @@ class Lang
 
         // Fall back to English:
         self::$language = 'en';
-        self::$strings = self::loadLanguage();
+        self::$strings  = self::loadLanguage();
     }
 
     /**
@@ -152,14 +153,14 @@ class Lang
     {
         $langFile = PHPCI_DIR . 'PHPCI/Languages/lang.' . self::$language . '.php';
 
-        if (!file_exists($langFile)) {
-            return null;
+        if (! file_exists($langFile)) {
+            return;
         }
 
-        require($langFile);
+        require $langFile;
 
-        if (is_null($strings) || !is_array($strings) || !count($strings)) {
-            return null;
+        if (is_null($strings) || ! is_array($strings) || ! count($strings)) {
+            return;
         }
 
         return $strings;
@@ -170,7 +171,7 @@ class Lang
      */
     protected static function loadAvailableLanguages()
     {
-        $matches = array();
+        $matches = [];
         foreach (glob(PHPCI_DIR . 'PHPCI/Languages/lang.*.php') as $file) {
             if (preg_match('/lang\.([a-z]{2}\-?[a-z]*)\.php/', $file, $matches)) {
                 self::$languages[] = $matches[1];
@@ -184,7 +185,7 @@ class Lang
      * See http://momentjs.com/docs/#/displaying/format/ for a list of supported formats.
      *
      * @param \DateTime $dateTime The dateTime to represent.
-     * @param string $format The moment.js format to use.
+     * @param string    $format   The moment.js format to use.
      *
      * @return string The formatted tag.
      */

@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\ProcessControl;
 
 /**
@@ -19,7 +19,7 @@ class Factory
     /**
      * ProcessControl singleton.
      *
-     * @var ProcessControlInterface
+     * @type ProcessControlInterface
      */
     protected static $instance = null;
 
@@ -33,6 +33,7 @@ class Factory
         if (static::$instance === null) {
             static::$instance = static::createProcessControl();
         }
+
         return static::$instance;
     }
 
@@ -58,6 +59,6 @@ class Factory
                 return new UnixProcessControl();
         }
 
-        throw new \Exception("No ProcessControl implementation available.");
+        throw new \Exception('No ProcessControl implementation available.');
     }
 }

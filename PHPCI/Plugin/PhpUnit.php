@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI;
@@ -15,11 +15,10 @@ use PHPCI\Model\Build;
 use PHPCI\Plugin\Util\TapParser;
 
 /**
-* PHP Unit Plugin - Allows PHP Unit testing.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * PHP Unit Plugin - Allows PHP Unit testing.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $args;
@@ -27,38 +26,40 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $build;
 
     /**
-     * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
+     * @type string|string[] $directory The directory (or array of dirs) to run PHPUnit on
      */
     protected $directory;
 
     /**
-     * @var string $runFrom When running PHPUnit with an XML config, the command is run from this directory
+     * @type string $runFrom When running PHPUnit with an XML config, the command is run from this directory
      */
     protected $runFrom;
 
     /**
-     * @var string, in cases where tests files are in a sub path of the /tests path,
-     * allows this path to be set in the config.
+     * @type string, in cases where tests files are in a sub path of the /tests path,
+     *               allows this path to be set in the config.
      */
     protected $path;
 
-    protected $coverage = "";
+    protected $coverage = '';
 
     /**
-     * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
+     * @type string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
      */
     protected $xmlConfigFile;
 
     /**
      * Check if this plugin can be executed.
+     *
      * @param $stage
      * @param Builder $builder
-     * @param Build $build
+     * @param Build   $build
+     *
      * @return bool
      */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
-        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
+        if ($stage == 'test' && ! is_null(self::findConfigFile($builder->buildPath))) {
             return true;
         }
 
@@ -67,7 +68,9 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Try and find the phpunit XML config file.
+     *
      * @param $buildPath
+     *
      * @return null|string
      */
     public static function findConfigFile($buildPath)
@@ -88,7 +91,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             return 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml.dist';
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -103,7 +106,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
@@ -138,12 +141,13 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-    * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
-    */
+     * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
+     */
     public function execute()
     {
         if (empty($this->xmlConfigFile) && empty($this->directory)) {
             $this->phpci->logFailure('Neither configuration file nor test directory found.');
+
             return false;
         }
 
@@ -162,11 +166,11 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         $tapString = $this->phpci->getLastOutput();
-        $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
+        $tapString = mb_convert_encoding($tapString, 'UTF-8', 'ISO-8859-1');
 
         try {
             $tapParser = new TapParser($tapString);
-            $output = $tapParser->parse();
+            $output    = $tapParser->parse();
         } catch (\Exception $ex) {
             $this->phpci->logFailure($tapString);
             throw $ex;
@@ -184,13 +188,15 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Run the tests defined in a PHPUnit config file.
+     *
      * @param $configPath
+     *
      * @return bool|mixed
      */
     protected function runConfigFile($configPath)
     {
         if (is_array($configPath)) {
-            return $this->recurseArg($configPath, array($this, "runConfigFile"));
+            return $this->recurseArg($configPath, [$this, 'runConfigFile']);
         } else {
             if ($this->runFrom) {
                 $curdir = getcwd();
@@ -199,7 +205,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
             $phpunit = $this->phpci->findBinary('phpunit');
 
-            $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
+            $cmd     = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
 
             if ($this->runFrom) {
@@ -212,22 +218,25 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Run the PHPUnit tests in a specific directory or array of directories.
+     *
      * @param $directory
+     *
      * @return bool|mixed
      */
     protected function runDir($directory)
     {
         if (is_array($directory)) {
-            return $this->recurseArg($directory, array($this, "runDir"));
+            return $this->recurseArg($directory, [$this, 'runDir']);
         } else {
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
 
             $phpunit = $this->phpci->findBinary('phpunit');
 
-            $cmd = $phpunit . ' --tap %s "%s"';
+            $cmd     = $phpunit . ' --tap %s "%s"';
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
             chdir($curdir);
+
             return $success;
         }
     }
@@ -235,6 +244,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     /**
      * @param $array
      * @param $callable
+     *
      * @return bool|mixed
      */
     protected function recurseArg($array, $callable)
@@ -243,6 +253,7 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         foreach ($array as $subItem) {
             $success &= call_user_func($callable, $subItem);
         }
+
         return $success;
     }
 }

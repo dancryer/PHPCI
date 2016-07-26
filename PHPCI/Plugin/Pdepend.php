@@ -4,64 +4,63 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
-use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
 
 /**
  * Pdepend Plugin - Allows Pdepend report
+ *
  * @author       Johan van der Heide <info@japaveh.nl>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class Pdepend implements \PHPCI\Plugin
 {
     protected $args;
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
     /**
-     * @var string Directory which needs to be scanned
+     * @type string Directory which needs to be scanned
      */
     protected $directory;
     /**
-     * @var string File where the summary.xml is stored
+     * @type string File where the summary.xml is stored
      */
     protected $summary;
     /**
-     * @var string File where the chart.svg is stored
+     * @type string File where the chart.svg is stored
      */
     protected $chart;
     /**
-     * @var string File where the pyramid.svg is stored
+     * @type string File where the pyramid.svg is stored
      */
     protected $pyramid;
     /**
-     * @var string Location on the server where the files are stored. Preferably in the webroot for inclusion
-     *             in the readme.md of the repository
+     * @type string Location on the server where the files are stored. Preferably in the webroot for inclusion
+     *              in the readme.md of the repository
      */
     protected $location;
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
 
         $this->directory = isset($options['directory']) ? $options['directory'] : $phpci->buildPath;
 
-        $title = $phpci->getBuildProjectTitle();
+        $title          = $phpci->getBuildProjectTitle();
         $this->summary  = $title . '-summary.xml';
         $this->pyramid  = $title . '-pyramid.svg';
         $this->chart    = $title . '-chart.svg';
@@ -73,10 +72,10 @@ class Pdepend implements \PHPCI\Plugin
      */
     public function execute()
     {
-        if (!file_exists($this->location)) {
+        if (! file_exists($this->location)) {
             mkdir($this->location);
         }
-        if (!is_writable($this->location)) {
+        if (! is_writable($this->location)) {
             throw new \Exception(sprintf('The location %s is not writable or does not exist.', $this->location));
         }
 
@@ -126,7 +125,7 @@ class Pdepend implements \PHPCI\Plugin
     protected function removeBuildArtifacts()
     {
         //Remove the created files first
-        foreach (array($this->summary, $this->chart, $this->pyramid) as $file) {
+        foreach ([$this->summary, $this->chart, $this->pyramid] as $file) {
             if (file_exists($this->location . DIRECTORY_SEPARATOR . $file)) {
                 unlink($this->location . DIRECTORY_SEPARATOR . $file);
             }

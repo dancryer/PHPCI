@@ -3,13 +3,12 @@
 /**
  * ProjectGroup base store for table: project_group
  */
-
 namespace PHPCI\Store\Base;
 
 use b8\Database;
 use b8\Exception\HttpException;
-use PHPCI\Store;
 use PHPCI\Model\ProjectGroup;
+use PHPCI\Store;
 
 /**
  * ProjectGroup Base Store
@@ -30,6 +29,7 @@ class ProjectGroupStoreBase extends Store
 
     /**
      * Get a single ProjectGroup by Id.
+     *
      * @return null|ProjectGroup
      */
     public function getById($value, $useConnection = 'read')
@@ -39,7 +39,7 @@ class ProjectGroupStoreBase extends Store
         }
 
         $query = 'SELECT * FROM `project_group` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':id', $value);
 
         if ($stmt->execute()) {
@@ -48,6 +48,6 @@ class ProjectGroupStoreBase extends Store
             }
         }
 
-        return null;
+        return;
     }
 }

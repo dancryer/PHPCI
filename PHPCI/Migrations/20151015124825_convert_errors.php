@@ -1,18 +1,18 @@
 <?php
 
 use Phinx\Migration\AbstractMigration;
-use PHPCI\Model\BuildMeta;
 use PHPCI\Model\BuildError;
+use PHPCI\Model\BuildMeta;
 
 class ConvertErrors extends AbstractMigration
 {
     /**
-     * @var \PHPCI\Store\BuildMetaStore
+     * @type \PHPCI\Store\BuildMetaStore
      */
     protected $metaStore;
 
     /**
-     * @var \PHPCI\Store\BuildErrorStore
+     * @type \PHPCI\Store\BuildErrorStore
      */
     protected $errorStore;
 
@@ -20,14 +20,14 @@ class ConvertErrors extends AbstractMigration
     {
         $count = 100;
 
-        $this->metaStore = \b8\Store\Factory::getStore('BuildMeta');
+        $this->metaStore  = \b8\Store\Factory::getStore('BuildMeta');
         $this->errorStore = \b8\Store\Factory::getStore('BuildError');
 
         while ($count == 100) {
-            $data = $this->metaStore->getErrorsForUpgrade(100);
+            $data  = $this->metaStore->getErrorsForUpgrade(100);
             $count = count($data);
 
-            /** @var \PHPCI\Model\BuildMeta $meta */
+            /** @type \PHPCI\Model\BuildMeta $meta */
             foreach ($data as $meta) {
                 try {
                     switch ($meta->getMetaKey()) {

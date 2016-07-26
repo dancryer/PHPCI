@@ -4,68 +4,66 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* XMPP Notification - Send notification for successful or failure build
-* @author       Alexandre Russo <dev.github@ange7.com>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
-class XMPP implements \PHPCI\Plugin
+ * XMPP Notification - Send notification for successful or failure build
+ *
+ * @author       Alexandre Russo <dev.github@ange7.com>
+ */
+class Xmpp implements \PHPCI\Plugin
 {
     protected $directory;
     protected $phpci;
     protected $build;
 
     /**
-     * @var string, username of sender account xmpp
+     * @type string, username of sender account xmpp
      */
     protected $username;
 
     /**
-     * @var string, alias server of sender account xmpp
+     * @type string, alias server of sender account xmpp
      */
     protected $server;
 
     /**
-     * @var string, password of sender account xmpp
+     * @type string, password of sender account xmpp
      */
     protected $password;
 
     /**
-     * @var string, alias for sender
+     * @type string, alias for sender
      */
     protected $alias;
 
     /**
-     * @var string, use tls
+     * @type string, use tls
      */
     protected $tls;
 
     /**
-     * @var array, list of recipients xmpp accounts
+     * @type array, list of recipients xmpp accounts
      */
     protected $recipients;
 
     /**
-     * @var string, mask to format date
+     * @type string, mask to format date
      */
     protected $date_format;
 
     /**
-     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
@@ -74,16 +72,16 @@ class XMPP implements \PHPCI\Plugin
         $this->password    = '';
         $this->server      = '';
         $this->alias       = '';
-        $this->recipients  = array();
+        $this->recipients  = [];
         $this->tls         = false;
         $this->date_format = '%c';
 
         /*
          * Set recipients list
          */
-        if (!empty($options['recipients'])) {
+        if (! empty($options['recipients'])) {
             if (is_string($options['recipients'])) {
-                $this->recipients = array($options['recipients']);
+                $this->recipients = [$options['recipients']];
             } elseif (is_array($options['recipients'])) {
                 $this->recipients = $options['recipients'];
             }
@@ -99,7 +97,7 @@ class XMPP implements \PHPCI\Plugin
      */
     protected function setOptions($options)
     {
-        foreach (array('username', 'password', 'alias', 'tls', 'server', 'date_format') as $key) {
+        foreach (['username', 'password', 'alias', 'tls', 'server', 'date_format'] as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
             }
@@ -114,14 +112,14 @@ class XMPP implements \PHPCI\Plugin
     protected function getConfigFormat()
     {
         $conf = $this->username;
-        if (!empty($this->server)) {
-            $conf .= ';'.$this->server;
+        if (! empty($this->server)) {
+            $conf .= ';' . $this->server;
         }
 
-        $conf .= ' '.$this->password;
+        $conf .= ' ' . $this->password;
 
-        if (!empty($this->alias)) {
-            $conf .= ' '.$this->alias;
+        if (! empty($this->alias)) {
+            $conf .= ' ' . $this->alias;
         }
 
         return $conf;
@@ -135,18 +133,18 @@ class XMPP implements \PHPCI\Plugin
         if (file_exists($this->phpci->buildPath . DIRECTORY_SEPARATOR . '.sendxmpprc')) {
             if (md5(file_get_contents($this->phpci->buildPath . DIRECTORY_SEPARATOR . '.sendxmpprc'))
                 !== md5($this->getConfigFormat())) {
-                return null;
+                return;
             }
 
             return true;
         }
 
-        return null;
+        return;
     }
 
     /**
-    * Send notification message.
-    */
+     * Send notification message.
+     */
     public function execute()
     {
         $sendxmpp = $this->phpci->findBinary('sendxmpp');
@@ -183,34 +181,35 @@ class XMPP implements \PHPCI\Plugin
         /*
          * Send XMPP notification for all recipients
          */
-        $cmd = $sendxmpp . "%s -f %s -m %s %s";
+        $cmd        = $sendxmpp . '%s -f %s -m %s %s';
         $recipients = implode(' ', $this->recipients);
 
         $success = $this->phpci->executeCommand($cmd, $tls, $config_file, $message_file, $recipients);
 
-        print $this->phpci->getLastOutput();
+        echo $this->phpci->getLastOutput();
 
         /*
          * Remove temp message file
          */
-        $this->phpci->executeCommand("rm -rf ".$message_file);
+        $this->phpci->executeCommand('rm -rf ' . $message_file);
 
         return $success;
     }
 
     /**
      * @param $message_file
+     *
      * @return int
      */
     protected function buildMessage($message_file)
     {
         if ($this->build->isSuccessful()) {
-            $message = "✔ [".$this->build->getProjectTitle()."] Build #" . $this->build->getId()." successful";
+            $message = '✔ [' . $this->build->getProjectTitle() . '] Build #' . $this->build->getId() . ' successful';
         } else {
-            $message = "✘ [".$this->build->getProjectTitle()."] Build #" . $this->build->getId()." failure";
+            $message = '✘ [' . $this->build->getProjectTitle() . '] Build #' . $this->build->getId() . ' failure';
         }
 
-        $message .= ' ('.strftime($this->date_format).')';
+        $message .= ' (' . strftime($this->date_format) . ')';
 
         return file_put_contents($message_file, $message);
     }

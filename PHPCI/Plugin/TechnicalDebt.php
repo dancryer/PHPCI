@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI;
@@ -14,57 +14,55 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* Technical Debt Plugin - Checks for existence of "TODO", "FIXME", etc.
-*
-* @author       James Inman <james@jamesinman.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Technical Debt Plugin - Checks for existence of "TODO", "FIXME", etc.
+ *
+ * @author       James Inman <james@jamesinman.co.uk>
+ */
 class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     /**
-     * @var \PHPCI\Builder
+     * @type \PHPCI\Builder
      */
     protected $phpci;
 
     /**
-     * @var array
+     * @type array
      */
     protected $suffixes;
 
     /**
-     * @var string
+     * @type string
      */
     protected $directory;
 
     /**
-     * @var int
+     * @type int
      */
     protected $allowed_errors;
 
     /**
-     * @var string, based on the assumption the root may not hold the code to be
-     * tested, extends the base path
+     * @type string, based on the assumption the root may not hold the code to be
+     *               tested, extends the base path
      */
     protected $path;
 
     /**
-     * @var array - paths to ignore
+     * @type array - paths to ignore
      */
     protected $ignore;
 
     /**
-     * @var array - terms to search for
+     * @type array - terms to search for
      */
     protected $searches;
-
 
     /**
      * Check if this plugin can be executed.
      *
      * @param $stage
      * @param Builder $builder
-     * @param Build $build
+     * @param Build   $build
+     *
      * @return bool
      */
     public static function canExecute($stage, Builder $builder, Build $build)
@@ -81,16 +79,16 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @param \PHPCI\Model\Build $build
      * @param array              $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
-        $this->suffixes = array('php');
-        $this->directory = $phpci->buildPath;
-        $this->path = '';
-        $this->ignore = $this->phpci->ignore;
+        $this->phpci          = $phpci;
+        $this->build          = $build;
+        $this->suffixes       = ['php'];
+        $this->directory      = $phpci->buildPath;
+        $this->path           = '';
+        $this->ignore         = $this->phpci->ignore;
         $this->allowed_errors = 0;
-        $this->searches = array('TODO', 'FIXME', 'TO DO', 'FIX ME');
+        $this->searches       = ['TODO', 'FIXME', 'TO DO', 'FIX ME'];
 
         if (isset($options['searches']) && is_array($options['searches'])) {
             $this->searches = $options['searches'];
@@ -105,11 +103,12 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 
     /**
      * Handle this plugin's options.
+     *
      * @param $options
      */
     protected function setOptions($options)
     {
-        foreach (array('directory', 'path', 'ignore', 'allowed_errors') as $key) {
+        foreach (['directory', 'path', 'ignore', 'allowed_errors'] as $key) {
             if (array_key_exists($key, $options)) {
                 $this->{$key} = $options[$key];
             }
@@ -117,8 +116,8 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-    * Runs the plugin
-    */
+     * Runs the plugin
+     */
     public function execute()
     {
         $success = true;
@@ -145,10 +144,10 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     public function getErrorList()
     {
         $dirIterator = new \RecursiveDirectoryIterator($this->directory);
-        $iterator = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
-        $files = array();
+        $iterator    = new \RecursiveIteratorIterator($dirIterator, \RecursiveIteratorIterator::SELF_FIRST);
+        $files       = [];
 
-        $ignores = $this->ignore;
+        $ignores   = $this->ignore;
         $ignores[] = 'phpci.yml';
         $ignores[] = '.phpci.yml';
 
@@ -172,21 +171,21 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
             }
         }
 
-        $files = array_filter(array_unique($files));
+        $files      = array_filter(array_unique($files));
         $errorCount = 0;
 
         foreach ($files as $file) {
             foreach ($this->searches as $search) {
-                $fileContent = file_get_contents($file);
-                $allLines = explode(PHP_EOL, $fileContent);
+                $fileContent  = file_get_contents($file);
+                $allLines     = explode(PHP_EOL, $fileContent);
                 $beforeString = strstr($fileContent, $search, true);
 
                 if (false !== $beforeString) {
-                    $lines = explode(PHP_EOL, $beforeString);
+                    $lines      = explode(PHP_EOL, $beforeString);
                     $lineNumber = count($lines);
-                    $content = trim($allLines[$lineNumber - 1]);
+                    $content    = trim($allLines[$lineNumber - 1]);
 
-                    $errorCount++;
+                    ++$errorCount;
 
                     $fileName = str_replace($this->directory, '', $file);
 

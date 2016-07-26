@@ -3,13 +3,13 @@
 /**
  * ProjectGroup store for table: project_group
  */
-
 namespace PHPCI\Store;
 
 use PHPCI\Store\Base\ProjectGroupStoreBase;
 
 /**
  * ProjectGroup Store
+ *
  * @uses PHPCI\Store\Base\ProjectGroupStoreBase
  */
 class ProjectGroupStore extends ProjectGroupStoreBase

@@ -1,5 +1,4 @@
 <?php
-
 namespace PHPCI\Plugin\Util;
 
 use Exception;
@@ -8,7 +7,6 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Processes TAP format strings into usable test result data.
- * @package PHPCI\Plugin\Util
  */
 class TapParser
 {
@@ -19,37 +17,38 @@ class TapParser
     const TEST_COVERAGE       = '/^Generating/';
 
     /**
-     * @var string
+     * @type string
      */
     protected $tapString;
 
     /**
-     * @var int
+     * @type int
      */
     protected $failures = 0;
 
     /**
-     * @var array
+     * @type array
      */
     protected $lines;
 
     /**
-     * @var integer
+     * @type int
      */
     protected $lineNumber;
 
     /**
-     * @var integer
+     * @type int
      */
     protected $testCount;
 
     /**
-     * @var array
+     * @type array
      */
     protected $results;
 
     /**
      * Create a new TAP parser for a given string.
+     *
      * @param string $tapString The TAP format string to be parsed.
      */
     public function __construct($tapString)
@@ -64,17 +63,17 @@ class TapParser
     {
         // Split up the TAP string into an array of lines, then
         // trim all of the lines so there's no leading or trailing whitespace.
-        $this->lines = array_map('rtrim', explode("\n", $this->tapString));
+        $this->lines      = array_map('rtrim', explode("\n", $this->tapString));
         $this->lineNumber = 0;
 
         $this->testCount = false;
-        $this->results = array();
+        $this->results   = [];
 
         $header = $this->findTapLog();
 
         $line = $this->nextLine();
         if ($line === $header) {
-            throw new Exception("Duplicated TAP log, please check the configuration.");
+            throw new Exception('Duplicated TAP log, please check the configuration.');
         }
 
         while ($line !== false && ($this->testCount === false || count($this->results) < $this->testCount)) {
@@ -90,10 +89,9 @@ class TapParser
     }
 
     /** Looks for the start of the TAP log in the string.
+     * @throws Exception if no TAP log is found or versions mismatch.
      *
      * @return string The TAP header line.
-     *
-     * @throws Exception if no TAP log is found or versions mismatch.
      */
     protected function findTapLog()
     {
@@ -113,7 +111,6 @@ class TapParser
     }
 
     /** Fetch the next line.
-     *
      * @return string|false The next line or false if the end has been reached.
      */
     protected function nextLine()
@@ -121,13 +118,14 @@ class TapParser
         if ($this->lineNumber < count($this->lines)) {
             return $this->lines[$this->lineNumber++];
         }
+
         return false;
     }
 
     /**
      * @param string $line
      *
-     * @return boolean
+     * @return bool
      */
     protected function testLine($line)
     {
@@ -148,7 +146,7 @@ class TapParser
     /**
      * @param string $line
      *
-     * @return boolean
+     * @return bool
      */
     protected function yamlLine($line)
     {
@@ -168,14 +166,13 @@ class TapParser
     }
 
     /** Parse a single line.
-     *
      * @param string $line
      *
      * @throws Exception
      */
     protected function parseLine($line)
     {
-        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || !$line) {
+        if (preg_match(self::TEST_DIAGNOSTIC, $line) || preg_match(self::TEST_COVERAGE, $line) || ! $line) {
             return;
         }
 
@@ -208,16 +205,16 @@ class TapParser
      */
     protected function processTestLine($result, $message, $directive, $reason)
     {
-        $test = array(
+        $test = [
             'pass'     => true,
             'message'  => $message,
             'severity' => 'success',
-        );
+        ];
 
         if ($result !== 'ok') {
-            $test['pass'] = false;
+            $test['pass']     = false;
             $test['severity'] = substr($message, 0, 6) === 'Error:' ? 'error' : 'fail';
-            $this->failures++;
+            ++$this->failures;
         }
 
         if ($directive) {
@@ -228,7 +225,6 @@ class TapParser
     }
 
     /** Process an indented Yaml block.
-     *
      * @param string $indent The block indentation to ignore.
      *
      * @return array The processed Yaml content.
@@ -237,7 +233,7 @@ class TapParser
     {
         $startLine = $this->lineNumber + 1;
         $endLine   = $indent . '...';
-        $yamlLines = array();
+        $yamlLines = [];
 
         do {
             $line = $this->nextLine();
@@ -251,23 +247,23 @@ class TapParser
             $yamlLines[] = substr($line, strlen($indent));
         } while (true);
 
-        return Yaml::parse(join("\n", $yamlLines));
+        return Yaml::parse(implode("\n", $yamlLines));
     }
 
     /** Process a TAP directive
-     *
-     * @param array $test
+     * @param array  $test
      * @param string $directive
      * @param string $reason
+     *
      * @return array
      */
     protected function processDirective($test, $directive, $reason)
     {
         $test['severity'] = strtolower($directive) === 'skip' ? 'skipped' : 'todo';
 
-        if (!empty($reason)) {
-            if (!empty($test['message'])) {
-                $test['message'] .= ', '.$test['severity'].': ';
+        if (! empty($reason)) {
+            if (! empty($test['message'])) {
+                $test['message'] .= ', ' . $test['severity'] . ': ';
             }
             $test['message'] .= $reason;
         }
@@ -277,6 +273,7 @@ class TapParser
 
     /**
      * Get the total number of failures from the current TAP file.
+     *
      * @return int
      */
     public function getTotalFailures()

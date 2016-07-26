@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Plugin\Util\Executor;
@@ -16,7 +16,7 @@ use Prophecy\Argument;
 class ExecutorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Executor
+     * @type Executor
      */
     protected $testedExecutor;
 
@@ -30,9 +30,9 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->mockBuildLogger = $this->prophesize('\PHPCI\Logging\BuildLogger');
-        $this->mockFactory = $this->prophesize('\PHPCI\Plugin\Util\Factory');
-        $this->mockStore = $this->prophesize('\PHPCI\Store\BuildStore');
-        $this->testedExecutor = new Executor(
+        $this->mockFactory     = $this->prophesize('\PHPCI\Plugin\Util\Factory');
+        $this->mockStore       = $this->prophesize('\PHPCI\Store\BuildStore');
+        $this->testedExecutor  = new Executor(
             $this->mockFactory->reveal(),
             $this->mockBuildLogger->reveal(),
             $this->mockStore->reveal()
@@ -41,8 +41,8 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugin_AssumesPHPCINamespaceIfNoneGiven()
     {
-        $options = array();
-        $pluginName = 'PhpUnit';
+        $options         = [];
+        $pluginName      = 'PhpUnit';
         $pluginNamespace = 'PHPCI\\Plugin\\';
 
         $this->mockFactory->buildPlugin($pluginNamespace . $pluginName, $options)
@@ -54,7 +54,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugin_KeepsCalledNameSpace()
     {
-        $options = array();
+        $options     = [];
         $pluginClass = $this->getFakePluginClassName('ExamplePluginFull');
 
         $this->mockFactory->buildPlugin($pluginClass, $options)
@@ -66,9 +66,9 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugin_CallsExecuteOnFactoryBuildPlugin()
     {
-        $options = array();
+        $options    = [];
         $pluginName = 'PhpUnit';
-        $build = new \PHPCI\Model\Build();
+        $build      = new \PHPCI\Model\Build();
 
         $mockPlugin = $this->prophesize('PHPCI\Plugin');
         $mockPlugin->execute()->shouldBeCalledTimes(1);
@@ -81,7 +81,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugin_ReturnsPluginSuccess()
     {
-        $options = array();
+        $options    = [];
         $pluginName = 'PhpUnit';
 
         $expectedReturnValue = true;
@@ -93,12 +93,12 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $returnValue = $this->testedExecutor->executePlugin($pluginName, $options);
 
-        $this->assertEquals($expectedReturnValue, $returnValue);
+        $this->assertSame($expectedReturnValue, $returnValue);
     }
 
     public function testExecutePlugin_LogsFailureForNonExistentClasses()
     {
-        $options = array();
+        $options    = [];
         $pluginName = 'DOESNTEXIST';
 
         $this->mockBuildLogger->logFailure('Plugin does not exist: ' . $pluginName)->shouldBeCalledTimes(1);
@@ -108,10 +108,10 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugin_LogsFailureWhenExceptionsAreThrownByPlugin()
     {
-        $options = array();
+        $options    = [];
         $pluginName = 'PhpUnit';
 
-        $expectedException = new \RuntimeException("Generic Error");
+        $expectedException = new \RuntimeException('Generic Error');
 
         $mockPlugin = $this->prophesize('PHPCI\Plugin');
         $mockPlugin->execute()->willThrow($expectedException);
@@ -126,16 +126,16 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
     public function testExecutePlugins_CallsEachPluginForStage()
     {
-        $phpUnitPluginOptions = array();
-        $behatPluginOptions = array();
-        $build = new \PHPCI\Model\Build();
+        $phpUnitPluginOptions = [];
+        $behatPluginOptions   = [];
+        $build                = new \PHPCI\Model\Build();
 
-        $config = array(
-           'stageOne' => array(
+        $config = [
+           'stageOne' => [
                'PhpUnit' => $phpUnitPluginOptions,
-               'Behat' => $behatPluginOptions,
-           )
-        );
+               'Behat'   => $behatPluginOptions,
+           ],
+        ];
 
         $pluginNamespace = 'PHPCI\\Plugin\\';
 
@@ -162,4 +162,3 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         return $pluginNamespace . $pluginName;
     }
 }
-

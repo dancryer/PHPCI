@@ -3,11 +3,10 @@
 /**
  * Project base model for table: project
  */
-
 namespace PHPCI\Model\Base;
 
-use PHPCI\Model;
 use b8\Store\Factory;
+use PHPCI\Model;
 
 /**
  * Project Base Model
@@ -15,186 +14,186 @@ use b8\Store\Factory;
 class ProjectBase extends Model
 {
     /**
-    * @var array
-    */
-    public static $sleepable = array();
+     * @type array
+     */
+    public static $sleepable = [];
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $tableName = 'project';
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $modelName = 'Project';
 
     /**
-    * @var array
-    */
-    protected $data = array(
-        'id' => null,
-        'title' => null,
-        'reference' => null,
-        'branch' => null,
-        'ssh_private_key' => null,
-        'type' => null,
-        'access_information' => null,
-        'last_commit' => null,
-        'build_config' => null,
-        'ssh_public_key' => null,
+     * @type array
+     */
+    protected $data = [
+        'id'                  => null,
+        'title'               => null,
+        'reference'           => null,
+        'branch'              => null,
+        'ssh_private_key'     => null,
+        'type'                => null,
+        'access_information'  => null,
+        'last_commit'         => null,
+        'build_config'        => null,
+        'ssh_public_key'      => null,
         'allow_public_status' => null,
-        'archived' => null,
-        'group_id' => null,
-    );
+        'archived'            => null,
+        'group_id'            => null,
+    ];
 
     /**
-    * @var array
-    */
-    protected $getters = array(
+     * @type array
+     */
+    protected $getters = [
         // Direct property getters:
-        'id' => 'getId',
-        'title' => 'getTitle',
-        'reference' => 'getReference',
-        'branch' => 'getBranch',
-        'ssh_private_key' => 'getSshPrivateKey',
-        'type' => 'getType',
-        'access_information' => 'getAccessInformation',
-        'last_commit' => 'getLastCommit',
-        'build_config' => 'getBuildConfig',
-        'ssh_public_key' => 'getSshPublicKey',
+        'id'                  => 'getId',
+        'title'               => 'getTitle',
+        'reference'           => 'getReference',
+        'branch'              => 'getBranch',
+        'ssh_private_key'     => 'getSshPrivateKey',
+        'type'                => 'getType',
+        'access_information'  => 'getAccessInformation',
+        'last_commit'         => 'getLastCommit',
+        'build_config'        => 'getBuildConfig',
+        'ssh_public_key'      => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
-        'archived' => 'getArchived',
-        'group_id' => 'getGroupId',
+        'archived'            => 'getArchived',
+        'group_id'            => 'getGroupId',
 
         // Foreign key getters:
         'Group' => 'getGroup',
-    );
+    ];
 
     /**
-    * @var array
-    */
-    protected $setters = array(
+     * @type array
+     */
+    protected $setters = [
         // Direct property setters:
-        'id' => 'setId',
-        'title' => 'setTitle',
-        'reference' => 'setReference',
-        'branch' => 'setBranch',
-        'ssh_private_key' => 'setSshPrivateKey',
-        'type' => 'setType',
-        'access_information' => 'setAccessInformation',
-        'last_commit' => 'setLastCommit',
-        'build_config' => 'setBuildConfig',
-        'ssh_public_key' => 'setSshPublicKey',
+        'id'                  => 'setId',
+        'title'               => 'setTitle',
+        'reference'           => 'setReference',
+        'branch'              => 'setBranch',
+        'ssh_private_key'     => 'setSshPrivateKey',
+        'type'                => 'setType',
+        'access_information'  => 'setAccessInformation',
+        'last_commit'         => 'setLastCommit',
+        'build_config'        => 'setBuildConfig',
+        'ssh_public_key'      => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
-        'archived' => 'setArchived',
-        'group_id' => 'setGroupId',
+        'archived'            => 'setArchived',
+        'group_id'            => 'setGroupId',
 
         // Foreign key setters:
         'Group' => 'setGroup',
-    );
+    ];
 
     /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
+     * @type array
+     */
+    public $columns = [
+        'id' => [
+            'type'           => 'int',
+            'length'         => 11,
+            'primary_key'    => true,
             'auto_increment' => true,
+            'default'        => null,
+        ],
+        'title' => [
+            'type'    => 'varchar',
+            'length'  => 250,
             'default' => null,
-        ),
-        'title' => array(
-            'type' => 'varchar',
-            'length' => 250,
+        ],
+        'reference' => [
+            'type'    => 'varchar',
+            'length'  => 250,
             'default' => null,
-        ),
-        'reference' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
-        ),
-        'branch' => array(
-            'type' => 'varchar',
-            'length' => 50,
+        ],
+        'branch' => [
+            'type'    => 'varchar',
+            'length'  => 50,
             'default' => 'master',
-        ),
-        'ssh_private_key' => array(
-            'type' => 'text',
+        ],
+        'ssh_private_key' => [
+            'type'     => 'text',
             'nullable' => true,
+            'default'  => null,
+        ],
+        'type' => [
+            'type'    => 'varchar',
+            'length'  => 50,
             'default' => null,
-        ),
-        'type' => array(
-            'type' => 'varchar',
-            'length' => 50,
-            'default' => null,
-        ),
-        'access_information' => array(
-            'type' => 'varchar',
-            'length' => 250,
+        ],
+        'access_information' => [
+            'type'     => 'varchar',
+            'length'   => 250,
             'nullable' => true,
-            'default' => null,
-        ),
-        'last_commit' => array(
-            'type' => 'varchar',
-            'length' => 250,
+            'default'  => null,
+        ],
+        'last_commit' => [
+            'type'     => 'varchar',
+            'length'   => 250,
             'nullable' => true,
-            'default' => null,
-        ),
-        'build_config' => array(
-            'type' => 'text',
+            'default'  => null,
+        ],
+        'build_config' => [
+            'type'     => 'text',
             'nullable' => true,
-            'default' => null,
-        ),
-        'ssh_public_key' => array(
-            'type' => 'text',
+            'default'  => null,
+        ],
+        'ssh_public_key' => [
+            'type'     => 'text',
             'nullable' => true,
-            'default' => null,
-        ),
-        'allow_public_status' => array(
-            'type' => 'int',
+            'default'  => null,
+        ],
+        'allow_public_status' => [
+            'type'   => 'int',
             'length' => 11,
-        ),
-        'archived' => array(
-            'type' => 'tinyint',
-            'length' => 1,
+        ],
+        'archived' => [
+            'type'    => 'tinyint',
+            'length'  => 1,
             'default' => null,
-        ),
-        'group_id' => array(
-            'type' => 'int',
-            'length' => 11,
+        ],
+        'group_id' => [
+            'type'    => 'int',
+            'length'  => 11,
             'default' => 1,
-        ),
-    );
+        ],
+    ];
 
     /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_project_title' => array('columns' => 'title'),
-            'group_id' => array('columns' => 'group_id'),
-    );
+     * @type array
+     */
+    public $indexes = [
+            'PRIMARY'           => ['unique' => true, 'columns' => 'id'],
+            'idx_project_title' => ['columns' => 'title'],
+            'group_id'          => ['columns' => 'group_id'],
+    ];
 
     /**
-    * @var array
-    */
-    public $foreignKeys = array(
-            'project_ibfk_1' => array(
+     * @type array
+     */
+    public $foreignKeys = [
+            'project_ibfk_1' => [
                 'local_col' => 'group_id',
-                'update' => 'CASCADE',
-                'delete' => '',
-                'table' => 'project_group',
-                'col' => 'id'
-                ),
-    );
+                'update'    => 'CASCADE',
+                'delete'    => '',
+                'table'     => 'project_group',
+                'col'       => 'id',
+                ],
+    ];
 
     /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
+     * Get the value of Id / id.
+     *
+     * @return int
+     */
     public function getId()
     {
         $rtn    = $this->data['id'];
@@ -203,10 +202,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of Title / title.
-    *
-    * @return string
-    */
+     * Get the value of Title / title.
+     *
+     * @return string
+     */
     public function getTitle()
     {
         $rtn    = $this->data['title'];
@@ -215,10 +214,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of Reference / reference.
-    *
-    * @return string
-    */
+     * Get the value of Reference / reference.
+     *
+     * @return string
+     */
     public function getReference()
     {
         $rtn    = $this->data['reference'];
@@ -227,10 +226,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of Branch / branch.
-    *
-    * @return string
-    */
+     * Get the value of Branch / branch.
+     *
+     * @return string
+     */
     public function getBranch()
     {
         $rtn    = $this->data['branch'];
@@ -239,10 +238,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of SshPrivateKey / ssh_private_key.
-    *
-    * @return string
-    */
+     * Get the value of SshPrivateKey / ssh_private_key.
+     *
+     * @return string
+     */
     public function getSshPrivateKey()
     {
         $rtn    = $this->data['ssh_private_key'];
@@ -251,10 +250,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of Type / type.
-    *
-    * @return string
-    */
+     * Get the value of Type / type.
+     *
+     * @return string
+     */
     public function getType()
     {
         $rtn    = $this->data['type'];
@@ -263,10 +262,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of AccessInformation / access_information.
-    *
-    * @return string
-    */
+     * Get the value of AccessInformation / access_information.
+     *
+     * @return string
+     */
     public function getAccessInformation()
     {
         $rtn    = $this->data['access_information'];
@@ -275,10 +274,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of LastCommit / last_commit.
-    *
-    * @return string
-    */
+     * Get the value of LastCommit / last_commit.
+     *
+     * @return string
+     */
     public function getLastCommit()
     {
         $rtn    = $this->data['last_commit'];
@@ -287,10 +286,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of BuildConfig / build_config.
-    *
-    * @return string
-    */
+     * Get the value of BuildConfig / build_config.
+     *
+     * @return string
+     */
     public function getBuildConfig()
     {
         $rtn    = $this->data['build_config'];
@@ -299,10 +298,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of SshPublicKey / ssh_public_key.
-    *
-    * @return string
-    */
+     * Get the value of SshPublicKey / ssh_public_key.
+     *
+     * @return string
+     */
     public function getSshPublicKey()
     {
         $rtn    = $this->data['ssh_public_key'];
@@ -311,10 +310,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of AllowPublicStatus / allow_public_status.
-    *
-    * @return int
-    */
+     * Get the value of AllowPublicStatus / allow_public_status.
+     *
+     * @return int
+     */
     public function getAllowPublicStatus()
     {
         $rtn    = $this->data['allow_public_status'];
@@ -323,10 +322,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of Archived / archived.
-    *
-    * @return int
-    */
+     * Get the value of Archived / archived.
+     *
+     * @return int
+     */
     public function getArchived()
     {
         $rtn    = $this->data['archived'];
@@ -335,10 +334,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Get the value of GroupId / group_id.
-    *
-    * @return int
-    */
+     * Get the value of GroupId / group_id.
+     *
+     * @return int
+     */
     public function getGroupId()
     {
         $rtn    = $this->data['group_id'];
@@ -347,11 +346,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of Id / id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setId($value)
     {
         $this->_validateNotNull('Id', $value);
@@ -367,11 +367,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Title / title.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Title / title.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setTitle($value)
     {
         $this->_validateNotNull('Title', $value);
@@ -387,11 +388,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Reference / reference.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Reference / reference.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setReference($value)
     {
         $this->_validateNotNull('Reference', $value);
@@ -407,11 +409,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Branch / branch.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Branch / branch.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setBranch($value)
     {
         $this->_validateNotNull('Branch', $value);
@@ -427,10 +430,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of SshPrivateKey / ssh_private_key.
-    *
-    * @param $value string
-    */
+     * Set the value of SshPrivateKey / ssh_private_key.
+     *
+     * @param $value string
+     */
     public function setSshPrivateKey($value)
     {
         $this->_validateString('SshPrivateKey', $value);
@@ -445,11 +448,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Type / type.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Type / type.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setType($value)
     {
         $this->_validateNotNull('Type', $value);
@@ -465,10 +469,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of AccessInformation / access_information.
-    *
-    * @param $value string
-    */
+     * Set the value of AccessInformation / access_information.
+     *
+     * @param $value string
+     */
     public function setAccessInformation($value)
     {
         $this->_validateString('AccessInformation', $value);
@@ -483,10 +487,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of LastCommit / last_commit.
-    *
-    * @param $value string
-    */
+     * Set the value of LastCommit / last_commit.
+     *
+     * @param $value string
+     */
     public function setLastCommit($value)
     {
         $this->_validateString('LastCommit', $value);
@@ -501,10 +505,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of BuildConfig / build_config.
-    *
-    * @param $value string
-    */
+     * Set the value of BuildConfig / build_config.
+     *
+     * @param $value string
+     */
     public function setBuildConfig($value)
     {
         $this->_validateString('BuildConfig', $value);
@@ -519,10 +523,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of SshPublicKey / ssh_public_key.
-    *
-    * @param $value string
-    */
+     * Set the value of SshPublicKey / ssh_public_key.
+     *
+     * @param $value string
+     */
     public function setSshPublicKey($value)
     {
         $this->_validateString('SshPublicKey', $value);
@@ -537,11 +541,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of AllowPublicStatus / allow_public_status.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of AllowPublicStatus / allow_public_status.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setAllowPublicStatus($value)
     {
         $this->_validateNotNull('AllowPublicStatus', $value);
@@ -557,11 +562,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of Archived / archived.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of Archived / archived.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setArchived($value)
     {
         $this->_validateNotNull('Archived', $value);
@@ -577,11 +583,12 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set the value of GroupId / group_id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of GroupId / group_id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setGroupId($value)
     {
         $this->_validateNotNull('GroupId', $value);
@@ -601,6 +608,7 @@ class ProjectBase extends Model
      *
      * @uses \PHPCI\Store\ProjectGroupStore::getById()
      * @uses \PHPCI\Model\ProjectGroup
+     *
      * @return \PHPCI\Model\ProjectGroup
      */
     public function getGroup()
@@ -608,7 +616,7 @@ class ProjectBase extends Model
         $key = $this->getGroupId();
 
         if (empty($key)) {
-            return null;
+            return;
         }
 
         $cacheKey   = 'Cache.ProjectGroup.' . $key;
@@ -623,10 +631,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set Group - Accepts an ID, an array representing a ProjectGroup or a ProjectGroup model.
-    *
-    * @param $value mixed
-    */
+     * Set Group - Accepts an ID, an array representing a ProjectGroup or a ProjectGroup model.
+     *
+     * @param $value mixed
+     */
     public function setGroup($value)
     {
         // Is this an instance of ProjectGroup?
@@ -635,7 +643,7 @@ class ProjectBase extends Model
         }
 
         // Is this an array representing a ProjectGroup item?
-        if (is_array($value) && !empty($value['id'])) {
+        if (is_array($value) && ! empty($value['id'])) {
             return $this->setGroupId($value['id']);
         }
 
@@ -644,10 +652,10 @@ class ProjectBase extends Model
     }
 
     /**
-    * Set Group - Accepts a ProjectGroup model.
-    * 
-    * @param $value \PHPCI\Model\ProjectGroup
-    */
+     * Set Group - Accepts a ProjectGroup model.
+     * 
+     * @param $value \PHPCI\Model\ProjectGroup
+     */
     public function setGroupObject(\PHPCI\Model\ProjectGroup $value)
     {
         return $this->setGroupId($value->getId());
@@ -658,6 +666,7 @@ class ProjectBase extends Model
      *
      * @uses \PHPCI\Store\BuildStore::getByProjectId()
      * @uses \PHPCI\Model\Build
+     *
      * @return \PHPCI\Model\Build[]
      */
     public function getProjectBuilds()
@@ -670,6 +679,7 @@ class ProjectBase extends Model
      *
      * @uses \PHPCI\Store\BuildMetaStore::getByProjectId()
      * @uses \PHPCI\Model\BuildMeta
+     *
      * @return \PHPCI\Model\BuildMeta[]
      */
     public function getProjectBuildMetas()

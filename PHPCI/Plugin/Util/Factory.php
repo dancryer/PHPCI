@@ -1,21 +1,19 @@
 <?php
-
 namespace PHPCI\Plugin\Util;
 
 /**
  * Plugin Factory - Loads Plugins and passes required dependencies.
- * @package PHPCI\Plugin\Util
  */
 class Factory
 {
-    const TYPE_ARRAY             = "array";
-    const TYPE_CALLABLE          = "callable";
+    const TYPE_ARRAY             = 'array';
+    const TYPE_CALLABLE          = 'callable';
     const INTERFACE_PHPCI_PLUGIN = '\PHPCI\Plugin';
 
     private $currentPluginOptions;
 
     /**
-     * @var \Pimple
+     * @type \Pimple
      */
     private $container;
 
@@ -46,6 +44,7 @@ class Factory
      * This enables the config file to call any public methods.
      *
      * @param $configPath
+     *
      * @return bool - true if the function exists else false.
      */
     public function addConfigFromFile($configPath)
@@ -53,17 +52,20 @@ class Factory
         // The file is expected to return a function which can
         // act on the pluginFactory to register any resources needed.
         if (file_exists($configPath)) {
-            $configFunction = require($configPath);
+            $configFunction = require $configPath;
             if (is_callable($configFunction)) {
                 $configFunction($this);
+
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Get most recently used factory options.
+     *
      * @return mixed
      */
     public function getLastOptions()
@@ -77,25 +79,27 @@ class Factory
      *
      * @param $className
      * @param array|null $options
+     *
      * @throws \InvalidArgumentException if $className doesn't represent a valid plugin
+     *
      * @return \PHPCI\Plugin
      */
-    public function buildPlugin($className, $options = array())
+    public function buildPlugin($className, $options = [])
     {
         $this->currentPluginOptions = $options;
 
         $reflectedPlugin = new \ReflectionClass($className);
 
-        if (!$reflectedPlugin->implementsInterface(self::INTERFACE_PHPCI_PLUGIN)) {
+        if (! $reflectedPlugin->implementsInterface(self::INTERFACE_PHPCI_PLUGIN)) {
             throw new \InvalidArgumentException(
-                "Requested class must implement " . self:: INTERFACE_PHPCI_PLUGIN
+                'Requested class must implement ' . self:: INTERFACE_PHPCI_PLUGIN
             );
         }
 
         $constructor = $reflectedPlugin->getConstructor();
 
         if ($constructor) {
-            $argsToUse = array();
+            $argsToUse = [];
             foreach ($constructor->getParameters() as $param) {
                 $argsToUse = $this->addArgFromParam($argsToUse, $param);
             }
@@ -108,10 +112,12 @@ class Factory
     }
 
     /**
-     * @param callable $loader
+     * @param callable    $loader
      * @param string|null $name
      * @param string|null $type
+     *
      * @throws \InvalidArgumentException
+     *
      * @internal param mixed $resource
      */
     public function registerResource(
@@ -121,11 +127,11 @@ class Factory
     ) {
         if ($name === null && $type === null) {
             throw new \InvalidArgumentException(
-                "Type or Name must be specified"
+                'Type or Name must be specified'
             );
         }
 
-        if (!($loader instanceof \Closure)) {
+        if (! ($loader instanceof \Closure)) {
             throw new \InvalidArgumentException(
                 '$loader is expected to be a function'
             );
@@ -138,20 +144,24 @@ class Factory
 
     /**
      * Get an internal resource ID.
+     *
      * @param null $type
      * @param null $name
+     *
      * @return string
      */
     private function getInternalID($type = null, $name = null)
     {
-        $type = $type ? : "";
-        $name = $name ? : "";
-        return $type . "-" . $name;
+        $type = $type ?: '';
+        $name = $name ?: '';
+
+        return $type . '-' . $name;
     }
 
     /**
      * @param string $type
      * @param string $name
+     *
      * @return mixed
      */
     public function getResourceFor($type = null, $name = null)
@@ -171,11 +181,12 @@ class Factory
             return $this->container[$nameOnlyID];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param \ReflectionParameter $param
+     *
      * @return null|string
      */
     private function getParamType(\ReflectionParameter $param)
@@ -188,21 +199,23 @@ class Factory
         } elseif (is_callable($param)) {
             return self::TYPE_CALLABLE;
         } else {
-            return null;
+            return;
         }
     }
 
     /**
      * @param $existingArgs
      * @param \ReflectionParameter $param
-     * @return array
+     *
      * @throws \DomainException
+     *
+     * @return array
      */
     private function addArgFromParam($existingArgs, \ReflectionParameter $param)
     {
         $name = $param->getName();
         $type = $this->getParamType($param);
-        $arg = $this->getResourceFor($type, $name);
+        $arg  = $this->getResourceFor($type, $name);
 
         if ($arg !== null) {
             $existingArgs[] = $arg;
@@ -210,7 +223,7 @@ class Factory
             $existingArgs[] = $param->getDefaultValue();
         } else {
             throw new \DomainException(
-                "Unsatisfied dependency: " . $param->getName()
+                'Unsatisfied dependency: ' . $param->getName()
             );
         }
 

@@ -5,17 +5,17 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
-
 namespace Tests\PHPCI\Model;
 
-use PHPCI\Model\Project;
 use PHPCI\Model;
+use PHPCI\Model\Project;
 
 /**
  * Unit tests for the Project model class.
+ *
  * @author Dan Cryer <dan@block8.co.uk>
  */
 class ProjectTest extends \PHPUnit_Framework_TestCase
@@ -43,7 +43,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setType('git');
 
-        $this->assertEquals('master', $project->getBranch());
+        $this->assertSame('master', $project->getBranch());
     }
 
     /**
@@ -54,7 +54,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setType('github');
 
-        $this->assertEquals('master', $project->getBranch());
+        $this->assertSame('master', $project->getBranch());
     }
 
     /**
@@ -65,7 +65,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setType('gitlab');
 
-        $this->assertEquals('master', $project->getBranch());
+        $this->assertSame('master', $project->getBranch());
     }
 
     /**
@@ -76,7 +76,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setType('bitbucket');
 
-        $this->assertEquals('master', $project->getBranch());
+        $this->assertSame('master', $project->getBranch());
     }
 
     /**
@@ -87,7 +87,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setType('hg');
 
-        $this->assertEquals('default', $project->getBranch());
+        $this->assertSame('default', $project->getBranch());
     }
 
     /**
@@ -95,17 +95,17 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_TestProjectAccessInformation()
     {
-        $info = array(
+        $info = [
             'item1' => 'Item One',
             'item2' => 2,
-        );
+        ];
 
         $project = new Project();
         $project->setAccessInformation($info);
 
-        $this->assertEquals('Item One', $project->getAccessInformation('item1'));
-        $this->assertEquals(2, $project->getAccessInformation('item2'));
+        $this->assertSame('Item One', $project->getAccessInformation('item1'));
+        $this->assertSame(2, $project->getAccessInformation('item2'));
         $this->assertNull($project->getAccessInformation('item3'));
-        $this->assertEquals($info, $project->getAccessInformation());
+        $this->assertSame($info, $project->getAccessInformation());
     }
 }

@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Controller;
 
 use PHPCI\Controller\WebhookController;
@@ -27,11 +27,11 @@ class WebhookControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('b8\Http\Response\JsonResponse', $error);
 
         $responseData = $error->getData();
-        $this->assertEquals(500, $responseData['code']);
+        $this->assertSame(500, $responseData['code']);
 
-        $this->assertEquals('failed', $responseData['body']['status']);
+        $this->assertSame('failed', $responseData['body']['status']);
 
-        $this->assertEquals('application/json', $responseData['headers']['Content-Type']);
+        $this->assertSame('application/json', $responseData['headers']['Content-Type']);
 
         // @todo: we can't text the result is JSON file with
         //   $this->assertJson((string) $error);

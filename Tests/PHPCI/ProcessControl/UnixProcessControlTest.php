@@ -12,11 +12,11 @@ class UnixProcessControlTest extends ProcessControlTest
 
     public function getTestCommand()
     {
-        return "read SOMETHING";
+        return 'read SOMETHING';
     }
 
     public function testIsAvailable()
     {
-        $this->assertEquals(DIRECTORY_SEPARATOR === '/', UnixProcessControl::isAvailable());
+        $this->assertSame(DIRECTORY_SEPARATOR === '/', UnixProcessControl::isAvailable());
     }
 }

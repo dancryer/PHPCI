@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Logging;
 
 use PHPCI\Model\Build;
@@ -16,46 +16,47 @@ use Psr\Log\LogLevel;
 
 /**
  * Class BuildLogger
- * @package PHPCI\Logging
  */
 class BuildLogger implements LoggerAwareInterface
 {
     /**
-     * @var LoggerInterface
+     * @type LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var Build
+     * @type Build
      */
     protected $build;
 
     /**
      * Set up the BuildLogger class.
+     *
      * @param LoggerInterface $logger
-     * @param Build $build
+     * @param Build           $build
      */
     public function __construct(LoggerInterface $logger, Build $build)
     {
         $this->logger = $logger;
-        $this->build = $build;
+        $this->build  = $build;
     }
 
     /**
      * Add an entry to the build log.
+     *
      * @param string|string[] $message
-     * @param string $level
-     * @param mixed[] $context
+     * @param string          $level
+     * @param mixed[]         $context
      */
-    public function log($message, $level = LogLevel::INFO, $context = array())
+    public function log($message, $level = LogLevel::INFO, $context = [])
     {
         // Skip if no logger has been loaded.
-        if (!$this->logger) {
+        if (! $this->logger) {
             return;
         }
 
-        if (!is_array($message)) {
-            $message = array($message);
+        if (! is_array($message)) {
+            $message = [$message];
         }
 
         // The build is added to the context so the logger can use
@@ -69,6 +70,7 @@ class BuildLogger implements LoggerAwareInterface
 
     /**
      * Add a success-coloured message to the log.
+     *
      * @param string
      */
     public function logSuccess($message)
@@ -78,12 +80,13 @@ class BuildLogger implements LoggerAwareInterface
 
     /**
      * Add a failure-coloured message to the log.
-     * @param string $message
+     *
+     * @param string     $message
      * @param \Exception $exception The exception that caused the error.
      */
     public function logFailure($message, \Exception $exception = null)
     {
-        $context = array();
+        $context = [];
 
         // The psr3 log interface stipulates that exceptions should be passed
         // as the exception key in the context array.
@@ -100,6 +103,7 @@ class BuildLogger implements LoggerAwareInterface
 
     /**
      * Add a debug message to the log.
+     *
      * @param string
      */
     public function logDebug($message)
@@ -113,7 +117,6 @@ class BuildLogger implements LoggerAwareInterface
      * Sets a logger instance on the object
      *
      * @param LoggerInterface $logger
-     * @return null
      */
     public function setLogger(LoggerInterface $logger)
     {

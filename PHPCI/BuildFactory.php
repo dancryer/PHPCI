@@ -4,24 +4,27 @@
 *
 * @copyright    Copyright 2014, Block 8 Limited.
 * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+*
 * @link         https://www.phptesting.org/
 */
-
 namespace PHPCI;
 
 use b8\Store\Factory;
 use PHPCI\Model\Build;
 
 /**
-* PHPCI Build Factory - Takes in a generic "Build" and returns a type-specific build model.
-* @author   Dan Cryer <dan@block8.co.uk>
-*/
+ * PHPCI Build Factory - Takes in a generic "Build" and returns a type-specific build model.
+ *
+ * @author   Dan Cryer <dan@block8.co.uk>
+ */
 class BuildFactory
 {
     /**
      * @param $buildId
-     * @return Build
+     *
      * @throws \Exception
+     *
+     * @return Build
      */
     public static function getBuildById($buildId)
     {
@@ -35,15 +38,17 @@ class BuildFactory
     }
 
     /**
-    * Takes a generic build and returns a type-specific build model.
-    * @param Build $build The build from which to get a more specific build type.
-    * @return Build
-    */
+     * Takes a generic build and returns a type-specific build model.
+     *
+     * @param Build $build The build from which to get a more specific build type.
+     *
+     * @return Build
+     */
     public static function getBuild(Build $build)
     {
         $project = $build->getProject();
 
-        if (!empty($project)) {
+        if (! empty($project)) {
             switch ($project->getType()) {
                 case 'remote':
                     $type = 'RemoteGitBuild';

@@ -1,5 +1,4 @@
 <?php
-
 namespace PHPCI\Worker;
 
 use b8\Config;
@@ -15,48 +14,52 @@ use PHPCI\Model\Build;
 
 /**
  * Class BuildWorker
- * @package PHPCI\Worker
  */
 class BuildWorker
 {
     /**
      * If this variable changes to false, the worker will stop after the current build.
-     * @var bool
+     *
+     * @type bool
      */
     protected $run = true;
 
     /**
      * The maximum number of jobs this worker should run before exiting.
      * Use -1 for no limit.
-     * @var int
+     *
+     * @type int
      */
     protected $maxJobs = -1;
 
     /**
      * The logger for builds to use.
-     * @var \Monolog\Logger
+     *
+     * @type \Monolog\Logger
      */
     protected $logger;
 
     /**
      * beanstalkd host
-     * @var string
+     *
+     * @type string
      */
     protected $host;
 
     /**
      * beanstalkd queue to watch
-     * @var string
+     *
+     * @type string
      */
     protected $queue;
 
     /**
-     * @var \Pheanstalk\Pheanstalk
+     * @type \Pheanstalk\Pheanstalk
      */
     protected $pheanstalk;
 
     /**
-     * @var int
+     * @type int
      */
     protected $totalJobs = 0;
 
@@ -66,8 +69,8 @@ class BuildWorker
      */
     public function __construct($host, $queue)
     {
-        $this->host = $host;
-        $this->queue = $queue;
+        $this->host       = $host;
+        $this->queue      = $queue;
         $this->pheanstalk = new Pheanstalk($this->host);
     }
 
@@ -105,18 +108,18 @@ class BuildWorker
             // Get the job data and run the job:
             $jobData = json_decode($job->getData(), true);
 
-            if (!$this->verifyJob($job, $jobData)) {
+            if (! $this->verifyJob($job, $jobData)) {
                 continue;
             }
 
-            $this->logger->addInfo('Received build #'.$jobData['build_id'].' from Beanstalkd');
+            $this->logger->addInfo('Received build #' . $jobData['build_id'] . ' from Beanstalkd');
 
             // If the job comes with config data, reset our config and database connections
             // and then make sure we kill the worker afterwards:
-            if (!empty($jobData['config'])) {
+            if (! empty($jobData['config'])) {
                 $this->logger->addDebug('Using job-specific config.');
                 $currentConfig = Config::getInstance()->getArray();
-                $config = new Config($jobData['config']);
+                $config        = new Config($jobData['config']);
                 Database::reset($config);
             }
 
@@ -153,7 +156,7 @@ class BuildWorker
             }
 
             // Reset the config back to how it was prior to running this job:
-            if (!empty($currentConfig)) {
+            if (! empty($currentConfig)) {
                 $config = new Config($currentConfig);
                 Database::reset($config);
             }
@@ -178,7 +181,7 @@ class BuildWorker
     protected function checkJobLimit()
     {
         // Make sure we don't run more than maxJobs jobs on this worker:
-        $this->totalJobs++;
+        ++$this->totalJobs;
 
         if ($this->maxJobs != -1 && $this->maxJobs <= $this->totalJobs) {
             $this->stopWorker();
@@ -187,21 +190,25 @@ class BuildWorker
 
     /**
      * Checks that the job received is actually from PHPCI, and has a valid type.
+     *
      * @param Job $job
      * @param $jobData
+     *
      * @return bool
      */
     protected function verifyJob(Job $job, $jobData)
     {
-        if (empty($jobData) || !is_array($jobData)) {
+        if (empty($jobData) || ! is_array($jobData)) {
             // Probably not from PHPCI.
             $this->pheanstalk->delete($job);
+
             return false;
         }
 
-        if (!array_key_exists('type', $jobData) || $jobData['type'] !== 'phpci.build') {
+        if (! array_key_exists('type', $jobData) || $jobData['type'] !== 'phpci.build') {
             // Probably not from PHPCI.
             $this->pheanstalk->delete($job);
+
             return false;
         }
 

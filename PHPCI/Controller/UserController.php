@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Controller;
 
 use b8;
@@ -17,20 +17,19 @@ use PHPCI\Helper\Lang;
 use PHPCI\Service\UserService;
 
 /**
-* User Controller - Allows an administrator to view, add, edit and delete users.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Web
-*/
+ * User Controller - Allows an administrator to view, add, edit and delete users.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class UserController extends Controller
 {
     /**
-     * @var \PHPCI\Store\UserStore
+     * @type \PHPCI\Store\UserStore
      */
     protected $userStore;
 
     /**
-     * @var \PHPCI\Service\UserService
+     * @type \PHPCI\Service\UserService
      */
     protected $userService;
 
@@ -39,16 +38,16 @@ class UserController extends Controller
      */
     public function init()
     {
-        $this->userStore = b8\Store\Factory::getStore('User');
+        $this->userStore   = b8\Store\Factory::getStore('User');
         $this->userService = new UserService($this->userStore);
     }
 
     /**
-    * View user list.
-    */
+     * View user list.
+     */
     public function index()
     {
-        $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
+        $users                = $this->userStore->getWhere([], 1000, 0, [], ['email' => 'ASC']);
         $this->view->users    = $users;
 
         $this->layout->title = Lang::get('manage_users');
@@ -58,6 +57,7 @@ class UserController extends Controller
 
     /**
      * Allows the user to edit their profile.
+     *
      * @return string
      */
     public function profile()
@@ -65,12 +65,12 @@ class UserController extends Controller
         $user = $_SESSION['phpci_user'];
 
         if ($this->request->getMethod() == 'POST') {
-            $name = $this->getParam('name', null);
-            $email = $this->getParam('email', null);
+            $name     = $this->getParam('name', null);
+            $email    = $this->getParam('email', null);
             $password = $this->getParam('password', null);
 
             $currentLang = Lang::getLanguage();
-            $chosenLang = $this->getParam('language', $currentLang);
+            $chosenLang  = $this->getParam('language', $currentLang);
 
             if ($chosenLang !== $currentLang) {
                 setcookie('phpcilang', $chosenLang, time() + (10 * 365 * 24 * 60 * 60), '/');
@@ -78,12 +78,12 @@ class UserController extends Controller
             }
 
             $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
-            $user = $_SESSION['phpci_user'];
+            $user                   = $_SESSION['phpci_user'];
 
             $this->view->updated = 1;
         }
 
-        $this->layout->title = $user->getName();
+        $this->layout->title    = $user->getName();
         $this->layout->subtitle = Lang::get('edit_profile');
 
         $values = $user->getDataArray();
@@ -93,7 +93,7 @@ class UserController extends Controller
         }
 
         $form = new Form();
-        $form->setAction(PHPCI_URL.'user/profile');
+        $form->setAction(PHPCI_URL . 'user/profile');
         $form->setMethod('POST');
 
         $name = new Form\Element\Text('name');
@@ -139,8 +139,8 @@ class UserController extends Controller
     }
 
     /**
-    * Add a user - handles both form and processing.
-    */
+     * Add a user - handles both form and processing.
+     */
     public function add()
     {
         $this->requireAdmin();
@@ -152,12 +152,12 @@ class UserController extends Controller
         if ($method == 'POST') {
             $values = $this->getParams();
         } else {
-            $values = array();
+            $values = [];
         }
 
         $form   = $this->userForm($values);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
+        if ($method != 'POST' || ($method == 'POST' && ! $form->validate())) {
             $view           = new b8\View('UserForm');
             $view->type     = 'add';
             $view->user     = null;
@@ -166,41 +166,41 @@ class UserController extends Controller
             return $view->render();
         }
 
-
-        $name = $this->getParam('name', null);
-        $email = $this->getParam('email', null);
+        $name     = $this->getParam('name', null);
+        $email    = $this->getParam('email', null);
         $password = $this->getParam('password', null);
-        $isAdmin = (int)$this->getParam('is_admin', 0);
+        $isAdmin  = (int) $this->getParam('is_admin', 0);
 
         $this->userService->createUser($name, $email, $password, $isAdmin);
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
+
         return $response;
     }
 
     /**
-    * Edit a user - handles both form and processing.
-    */
+     * Edit a user - handles both form and processing.
+     */
     public function edit($userId)
     {
         $this->requireAdmin();
 
         $method = $this->request->getMethod();
-        $user = $this->userStore->getById($userId);
+        $user   = $this->userStore->getById($userId);
 
         if (empty($user)) {
             throw new NotFoundException(Lang::get('user_n_not_found', $userId));
         }
 
-        $this->layout->title = $user->getName();
+        $this->layout->title    = $user->getName();
         $this->layout->subtitle = Lang::get('edit_user');
 
         $values = array_merge($user->getDataArray(), $this->getParams());
-        $form = $this->userForm($values, 'edit/' . $userId);
+        $form   = $this->userForm($values, 'edit/' . $userId);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view = new b8\View('UserForm');
+        if ($method != 'POST' || ($method == 'POST' && ! $form->validate())) {
+            $view       = new b8\View('UserForm');
             $view->type = 'edit';
             $view->user = $user;
             $view->form = $form;
@@ -208,26 +208,27 @@ class UserController extends Controller
             return $view->render();
         }
 
-        $name = $this->getParam('name', null);
-        $email = $this->getParam('email', null);
+        $name     = $this->getParam('name', null);
+        $email    = $this->getParam('email', null);
         $password = $this->getParam('password', null);
-        $isAdmin = (int)$this->getParam('is_admin', 0);
+        $isAdmin  = (int) $this->getParam('is_admin', 0);
 
         $this->userService->updateUser($user, $name, $email, $password, $isAdmin);
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
+
         return $response;
     }
 
     /**
-    * Create user add / edit form.
-    */
+     * Create user add / edit form.
+     */
     protected function userForm($values, $type = 'add')
     {
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL.'user/' . $type);
+        $form->setAction(PHPCI_URL . 'user/' . $type);
         $form->addField(new Form\Element\Csrf('csrf'));
 
         $field = new Form\Element\Email('email');
@@ -271,12 +272,13 @@ class UserController extends Controller
         $form->addField($field);
 
         $form->setValues($values);
+
         return $form;
     }
 
     /**
-    * Delete a user.
-    */
+     * Delete a user.
+     */
     public function delete($userId)
     {
         $this->requireAdmin();
@@ -291,6 +293,7 @@ class UserController extends Controller
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
+
         return $response;
     }
 }

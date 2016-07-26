@@ -4,23 +4,22 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Logging;
 
 use Psr\Log\LoggerInterface;
 
 /**
  * Base Log Handler
- * @package PHPCI\Logging
  */
 class Handler
 {
     /**
-     * @var array
+     * @type array
      */
-    protected $levels = array(
+    protected $levels = [
         E_WARNING           => 'Warning',
         E_NOTICE            => 'Notice',
         E_USER_ERROR        => 'User Error',
@@ -30,10 +29,10 @@ class Handler
         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
         E_DEPRECATED        => 'Deprecated',
         E_USER_DEPRECATED   => 'User Deprecated',
-    );
+    ];
 
     /**
-     * @var LoggerInterface
+     * @type LoggerInterface
      */
     protected $logger;
 
@@ -47,23 +46,24 @@ class Handler
 
     /**
      * Register a new log handler.
+     *
      * @param LoggerInterface $logger
      */
     public static function register(LoggerInterface $logger = null)
     {
         $handler = new static($logger);
 
-        set_error_handler(array($handler, 'handleError'));
-        register_shutdown_function(array($handler, 'handleFatalError'));
+        set_error_handler([$handler, 'handleError']);
+        register_shutdown_function([$handler, 'handleFatalError']);
 
-        set_exception_handler(array($handler, 'handleException'));
+        set_exception_handler([$handler, 'handleException']);
     }
 
     /**
-     * @param integer $level
-     * @param string  $message
-     * @param string  $file
-     * @param integer $line
+     * @param int    $level
+     * @param string $message
+     * @param string $file
+     * @param int    $line
      *
      * @throws \ErrorException
      */
@@ -134,6 +134,7 @@ class Handler
 
     /**
      * Write to the build log.
+     *
      * @param \Exception $exception
      */
     protected function log(\Exception $exception)
@@ -147,7 +148,7 @@ class Handler
                 $exception->getLine()
             );
 
-            $this->logger->error($message, array('exception' => $exception));
+            $this->logger->error($message, ['exception' => $exception]);
         }
     }
 }

@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Store;
 
 use b8\Database;
@@ -14,22 +14,23 @@ use PHPCI\Model\Project;
 use PHPCI\Store\Base\ProjectStoreBase;
 
 /**
-* Project Store
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Core
-*/
+ * Project Store
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class ProjectStore extends ProjectStoreBase
 {
     /**
      * Returns a list of all branch names PHPCI has run builds against.
+     *
      * @param $projectId
+     *
      * @return array
      */
     public function getKnownBranches($projectId)
     {
         $query = 'SELECT DISTINCT branch from build WHERE project_id = :pid';
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt  = Database::getConnection('read')->prepare($query);
         $stmt->bindValue(':pid', $projectId);
 
         if ($stmt->execute()) {
@@ -42,18 +43,19 @@ class ProjectStore extends ProjectStoreBase
 
             return $rtn;
         } else {
-            return array();
+            return [];
         }
     }
 
     /**
      * Get a list of all projects, ordered by their title.
+     *
      * @return array
      */
     public function getAll()
     {
         $query = 'SELECT * FROM `project` ORDER BY `title` ASC';
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt  = Database::getConnection('read')->prepare($query);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -65,20 +67,22 @@ class ProjectStore extends ProjectStoreBase
 
             $count = count($rtn);
 
-
-            return array('items' => $rtn, 'count' => $count);
+            return ['items' => $rtn, 'count' => $count];
         } else {
-            return array('items' => array(), 'count' => 0);
+            return ['items' => [], 'count' => 0];
         }
     }
 
     /**
      * Get multiple Project by GroupId.
-     * @param int $value
-     * @param int $limit
+     *
+     * @param int    $value
+     * @param int    $limit
      * @param string $useConnection
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     public function getByGroupId($value, $limit = 1000, $useConnection = 'read')
     {
@@ -87,9 +91,9 @@ class ProjectStore extends ProjectStoreBase
         }
 
         $query = 'SELECT * FROM `project` WHERE `group_id` = :group_id ORDER BY title LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
+        $stmt  = Database::getConnection($useConnection)->prepare($query);
         $stmt->bindValue(':group_id', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -101,9 +105,9 @@ class ProjectStore extends ProjectStoreBase
 
             $count = count($rtn);
 
-            return array('items' => $rtn, 'count' => $count);
+            return ['items' => $rtn, 'count' => $count];
         } else {
-            return array('items' => array(), 'count' => 0);
+            return ['items' => [], 'count' => 0];
         }
     }
 }

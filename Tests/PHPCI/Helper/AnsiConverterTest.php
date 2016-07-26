@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Helper;
 
 use PHPCI\Helper\AnsiConverter;
@@ -30,6 +30,6 @@ class AnsiConverterTest extends PHPUnit_Framework_TestCase
 
         $actualOutput = AnsiConverter::convert($input);
 
-        $this->assertEquals($expectedOutput, $actualOutput);
+        $this->assertSame($expectedOutput, $actualOutput);
     }
 }

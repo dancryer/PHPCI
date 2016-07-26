@@ -1,20 +1,19 @@
 <?php
-
 namespace PHPCI\Plugin\Util;
 
 /**
  * Class PluginInformationCollection
- * @package PHPCI\Plugin\Util
  */
 class PluginInformationCollection implements InstalledPluginInformation
 {
     /**
-     * @var InstalledPluginInformation[]
+     * @type InstalledPluginInformation[]
      */
-    protected $pluginInformations = array();
+    protected $pluginInformations = [];
 
     /**
      * Add a plugin to the collection.
+     *
      * @param InstalledPluginInformation $information
      */
     public function add(InstalledPluginInformation $information)
@@ -27,11 +26,12 @@ class PluginInformationCollection implements InstalledPluginInformation
      * and will have the following properties:
      *      name  - The friendly name of the plugin (may be an empty string)
      *      class - The class of the plugin (will include namespace)
+     *
      * @return \stdClass[]
      */
     public function getInstalledPlugins()
     {
-        $arr = array();
+        $arr = [];
 
         foreach ($this->pluginInformations as $single) {
             $arr = array_merge($arr, $single->getInstalledPlugins());
@@ -48,7 +48,7 @@ class PluginInformationCollection implements InstalledPluginInformation
      */
     public function getPluginClasses()
     {
-        $arr = array();
+        $arr = [];
 
         foreach ($this->pluginInformations as $single) {
             $arr = array_merge($arr, $single->getPluginClasses());

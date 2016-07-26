@@ -4,43 +4,43 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Model;
 
 use b8\Store\Factory;
-use PHPCI\Model\Base\BuildBase;
 use PHPCI\Builder;
+use PHPCI\Model\Base\BuildBase;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
-* Build Model
-* @uses         PHPCI\Model\Base\BuildBase
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Core
-*/
+ * Build Model
+ *
+ * @uses         PHPCI\Model\Base\BuildBase
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class Build extends BuildBase
 {
-    const STATUS_NEW = 0;
+    const STATUS_NEW     = 0;
     const STATUS_RUNNING = 1;
     const STATUS_SUCCESS = 2;
-    const STATUS_FAILED = 3;
+    const STATUS_FAILED  = 3;
 
     public $currentBuildPath;
 
     /**
-    * Get link to commit from another source (i.e. Github)
-    */
+     * Get link to commit from another source (i.e. Github)
+     */
     public function getCommitLink()
     {
         return '#';
     }
 
     /**
-    * Get link to branch from another source (i.e. Github)
-    */
+     * Get link to branch from another source (i.e. Github)
+     */
     public function getBranchLink()
     {
         return '#';
@@ -48,16 +48,15 @@ class Build extends BuildBase
 
     /**
      * Return a template to use to generate a link to a specific file.
-     * @return null
      */
     public function getFileLinkTemplate()
     {
-        return null;
+        return;
     }
 
     /**
-    * Send status updates to any relevant third parties (i.e. Github)
-    */
+     * Send status updates to any relevant third parties (i.e. Github)
+     */
     public function sendStatusPostback()
     {
         return;
@@ -69,7 +68,8 @@ class Build extends BuildBase
     public function getProjectTitle()
     {
         $project = $this->getProject();
-        return $project ? $project->getTitle() : "";
+
+        return $project ? $project->getTitle() : '';
     }
 
     /**
@@ -86,7 +86,7 @@ class Build extends BuildBase
      */
     public function isSuccessful()
     {
-        return ($this->getStatus() === self::STATUS_SUCCESS);
+        return $this->getStatus() === self::STATUS_SUCCESS;
     }
 
     /**
@@ -120,38 +120,41 @@ class Build extends BuildBase
         }
 
         if (is_string($build_config)) {
-            $yamlParser = new YamlParser();
+            $yamlParser   = new YamlParser();
             $build_config = $yamlParser->parse($build_config);
         }
 
         $builder->setConfigArray($build_config);
+
         return true;
     }
 
     /**
      * Get an array of plugins to run if there's no phpci.yml file.
+     *
      * @param Builder $builder
+     *
      * @return array
      */
     protected function getZeroConfigPlugins(Builder $builder)
     {
         $pluginDir = PHPCI_DIR . 'PHPCI/Plugin/';
-        $dir = new \DirectoryIterator($pluginDir);
+        $dir       = new \DirectoryIterator($pluginDir);
 
-        $config = array(
-            'build_settings' => array(
-                'ignore' => array(
+        $config = [
+            'build_settings' => [
+                'ignore' => [
                     'vendor',
-                )
-            )
-        );
+                ],
+            ],
+        ];
 
         foreach ($dir as $item) {
             if ($item->isDot()) {
                 continue;
             }
 
-            if (!$item->isFile()) {
+            if (! $item->isFile()) {
                 continue;
             }
 
@@ -159,19 +162,19 @@ class Build extends BuildBase
                 continue;
             }
 
-            $className = '\PHPCI\Plugin\\'.$item->getBasename('.php');
+            $className = '\PHPCI\Plugin\\' . $item->getBasename('.php');
 
             $reflectedPlugin = new \ReflectionClass($className);
 
-            if (!$reflectedPlugin->implementsInterface('\PHPCI\ZeroConfigPlugin')) {
+            if (! $reflectedPlugin->implementsInterface('\PHPCI\ZeroConfigPlugin')) {
                 continue;
             }
 
-            foreach (array('setup', 'test', 'complete', 'success', 'failure') as $stage) {
+            foreach (['setup', 'test', 'complete', 'success', 'failure'] as $stage) {
                 if ($className::canExecute($stage, $builder, $this)) {
-                    $config[$stage][$className] = array(
-                        'zero_config' => true
-                    );
+                    $config[$stage][$className] = [
+                        'zero_config' => true,
+                    ];
                 }
             }
         }
@@ -181,7 +184,9 @@ class Build extends BuildBase
 
     /**
      * Return a value from the build's "extra" JSON array.
+     *
      * @param null $key
+     *
      * @return mixed|null|string
      */
     public function getExtra($key = null)
@@ -201,6 +206,7 @@ class Build extends BuildBase
 
     /**
      * Returns the commit message for this build.
+     *
      * @return string
      */
     public function getCommitMessage()
@@ -212,13 +218,15 @@ class Build extends BuildBase
 
     /**
      * Allows specific build types (e.g. Github) to report violations back to their respective services.
+     *
      * @param Builder $builder
      * @param $plugin
      * @param $message
-     * @param int $severity
+     * @param int  $severity
      * @param null $file
      * @param null $lineStart
      * @param null $lineEnd
+     *
      * @return BuildError
      */
     public function reportError(
@@ -252,12 +260,12 @@ class Build extends BuildBase
      */
     public function getBuildPath()
     {
-        if (!$this->getId()) {
-            return null;
+        if (! $this->getId()) {
+            return;
         }
 
         if (empty($this->currentBuildPath)) {
-            $buildDirectory = $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
+            $buildDirectory         = $this->getId() . '_' . substr(md5(microtime(true)), 0, 5);
             $this->currentBuildPath = PHPCI_BUILD_ROOT_DIR . $buildDirectory . DIRECTORY_SEPARATOR;
         }
 
@@ -271,7 +279,7 @@ class Build extends BuildBase
     {
         $buildPath = $this->getBuildPath();
 
-        if (!$buildPath || !is_dir($buildPath)) {
+        if (! $buildPath || ! is_dir($buildPath)) {
             return;
         }
 
@@ -280,6 +288,7 @@ class Build extends BuildBase
 
     /**
      * Get the number of seconds a build has been running for.
+     *
      * @return int
      */
     public function getDuration()

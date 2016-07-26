@@ -1,27 +1,26 @@
 <?php
-
 namespace PHPCI\Plugin\Util;
 
 use PHPCI\Plugin;
 
 /**
  * Class ComposerPluginInformation
- * @package PHPCI\Plugin\Util
  */
 class ComposerPluginInformation implements InstalledPluginInformation
 {
     /**
-     * @var array
+     * @type array
      */
     protected $composerPackages;
 
     /**
-     * @var array
+     * @type array
      */
     protected $pluginInfo = null;
 
     /**
      * @param string $filePath The path of installed.json created by composer.
+     *
      * @return ComposerPluginInformation
      */
     public static function buildFromYaml($filePath)
@@ -29,14 +28,15 @@ class ComposerPluginInformation implements InstalledPluginInformation
         if (file_exists($filePath)) {
             $installed = json_decode(file_get_contents($filePath));
         } else {
-            $installed = array();
+            $installed = [];
         }
+
         return new self($installed);
     }
 
     /**
      * @param \stdClass[] $composerPackages This should be the contents of the
-     *                                   installed.json file created by composer
+     *                                      installed.json file created by composer
      */
     public function __construct(array $composerPackages)
     {
@@ -48,11 +48,13 @@ class ComposerPluginInformation implements InstalledPluginInformation
      * and will have the following properties:
      *      name  - The friendly name of the plugin (may be an empty string)
      *      class - The class of the plugin (will include namespace)
+     *
      * @return \stdClass[]
      */
     public function getInstalledPlugins()
     {
         $this->loadPluginInfo();
+
         return $this->pluginInfo;
     }
 
@@ -80,7 +82,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
         if ($this->pluginInfo !== null) {
             return;
         }
-        $this->pluginInfo = array();
+        $this->pluginInfo = [];
         foreach ($this->composerPackages as $package) {
             $this->addPluginsFromPackage($package);
         }
@@ -97,7 +99,7 @@ class ComposerPluginInformation implements InstalledPluginInformation
             if (isset($phpciData->pluginNamespace)) {
                 $rootNamespace = $phpciData->pluginNamespace;
             } else {
-                $rootNamespace = "";
+                $rootNamespace = '';
             }
 
             if (is_array($phpciData->suppliedPlugins)) {
@@ -112,16 +114,16 @@ class ComposerPluginInformation implements InstalledPluginInformation
 
     /**
      * @param \stdClass[] $plugins
-     * @param string $sourcePackageName
-     * @param string $rootNamespace
+     * @param string      $sourcePackageName
+     * @param string      $rootNamespace
      */
     protected function addPlugins(
         array $plugins,
         $sourcePackageName,
-        $rootNamespace = ""
+        $rootNamespace = ''
     ) {
         foreach ($plugins as $plugin) {
-            if (!isset($plugin->class)) {
+            if (! isset($plugin->class)) {
                 continue;
             }
             $this->addPlugin($plugin, $sourcePackageName, $rootNamespace);
@@ -130,20 +132,20 @@ class ComposerPluginInformation implements InstalledPluginInformation
 
     /**
      * @param \stdClass $plugin
-     * @param string $sourcePackageName
-     * @param string $rootNamespace
+     * @param string    $sourcePackageName
+     * @param string    $rootNamespace
      */
     protected function addPlugin(
         $plugin,
         $sourcePackageName,
-        $rootNamespace = ""
+        $rootNamespace = ''
     ) {
         $newPlugin = clone $plugin;
 
         $newPlugin->class = $rootNamespace . $newPlugin->class;
 
-        if (!isset($newPlugin->name)) {
-            $newPlugin->name = "";
+        if (! isset($newPlugin->name)) {
+            $newPlugin->name = '';
         }
 
         $newPlugin->source = $sourcePackageName;

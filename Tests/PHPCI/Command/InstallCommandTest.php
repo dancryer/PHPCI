@@ -5,14 +5,14 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin\Command;
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,13 +35,13 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         // We check that there's no interaction with user.
         $dialog = $this->getMockBuilder('Symfony\\Component\\Console\\Helper\\DialogHelper')
-                       ->setMethods(array(
+                       ->setMethods([
                            'ask',
                            'askConfirmation',
                            'askAndValidate',
                            'askHiddenResponse',
                            'askHiddenResponseAndValidate',
-                       ))
+                       ])
                        ->getMock();
 
         return $dialog;
@@ -55,7 +55,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         // Current command, we need to mock all method that interact with
         // Database & File system.
         $command = $this->getMockBuilder('PHPCI\\Command\\InstallCommand')
-            ->setMethods(array(
+            ->setMethods([
                 'reloadConfig',
                 'verifyNotInstalled',
                 'verifyDatabaseDetails',
@@ -63,7 +63,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 'createAdminUser',
                 'writeConfigFile',
                 'checkRequirements',
-            ))
+            ])
             ->getMock();
 
         $self = $this;
@@ -90,7 +90,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->application->getHelperSet()->set($dialog, 'dialog');
         $this->application->add($this->getInstallCommandMock());
-        $command = $this->application->find('phpci:install');
+        $command       = $this->application->find('phpci:install');
         $commandTester = new CommandTester($command);
 
         return $commandTester;
@@ -98,19 +98,19 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
     protected function getConfig($exclude = null)
     {
-        $config = array(
-            '--db-host' => 'localhost',
-            '--db-name' => 'phpci1',
-            '--db-user' => 'phpci2',
-            '--db-pass' => 'phpci3',
-            '--admin-mail' => 'phpci@phpci.test',
-            '--admin-name' => 'phpci4',
-            '--admin-pass' => 'phpci5',
-            '--url' => 'http://test.phpci.org',
+        $config = [
+            '--db-host'        => 'localhost',
+            '--db-name'        => 'phpci1',
+            '--db-user'        => 'phpci2',
+            '--db-pass'        => 'phpci3',
+            '--admin-mail'     => 'phpci@phpci.test',
+            '--admin-name'     => 'phpci4',
+            '--admin-pass'     => 'phpci5',
+            '--url'            => 'http://test.phpci.org',
             '--queue-disabled' => null,
-        );
+        ];
 
-        if (!is_null($exclude)) {
+        if (! is_null($exclude)) {
           unset($config[$exclude]);
         }
 
@@ -120,12 +120,12 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     protected function executeWithoutParam($param = null, $dialog)
     {
         // Clean result variables.
-        $this->admin = array();
-        $this->config = array();
+        $this->admin  = [];
+        $this->config = [];
 
         // Get tester and execute with extracted parameters.
         $commandTester = $this->getCommandTester($dialog);
-        $parameters = $this->getConfig($param);
+        $parameters    = $this->getConfig($param);
         $commandTester->execute($parameters);
     }
 
@@ -155,8 +155,8 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--db-host', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->config['b8']['database']['servers']['read']);
-        $this->assertEquals('testedvalue', $this->config['b8']['database']['servers']['write']);
+        $this->assertSame('testedvalue', $this->config['b8']['database']['servers']['read']);
+        $this->assertSame('testedvalue', $this->config['b8']['database']['servers']['write']);
     }
 
     public function testDatabaseNameConfig()
@@ -173,7 +173,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--db-name', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->config['b8']['database']['name']);
+        $this->assertSame('testedvalue', $this->config['b8']['database']['name']);
     }
 
     public function testDatabaseUserConfig()
@@ -190,7 +190,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--db-user', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->config['b8']['database']['username']);
+        $this->assertSame('testedvalue', $this->config['b8']['database']['username']);
     }
 
     public function testDatabasePasswordConfig()
@@ -207,7 +207,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--db-pass', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->config['b8']['database']['password']);
+        $this->assertSame('testedvalue', $this->config['b8']['database']['password']);
     }
 
     public function testPhpciUrlConfig()
@@ -224,7 +224,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--url', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('http://testedvalue.com', $this->config['phpci']['url']);
+        $this->assertSame('http://testedvalue.com', $this->config['phpci']['url']);
     }
 
     public function testAdminEmailConfig()
@@ -241,7 +241,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--admin-mail', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('test@phpci.com', $this->admin['mail']);
+        $this->assertSame('test@phpci.com', $this->admin['mail']);
     }
 
     public function testAdminNameConfig()
@@ -258,7 +258,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--admin-name', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->admin['name']);
+        $this->assertSame('testedvalue', $this->admin['name']);
     }
 
     public function testAdminPasswordConfig()
@@ -275,6 +275,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeWithoutParam('--admin-pass', $dialog);
 
         // Check that specified arguments are correctly loaded.
-        $this->assertEquals('testedvalue', $this->admin['pass']);
+        $this->assertSame('testedvalue', $this->admin['pass']);
     }
 }

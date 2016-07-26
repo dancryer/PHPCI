@@ -12,11 +12,11 @@ class WindowsProcessControlTest extends ProcessControlTest
 
     public function getTestCommand()
     {
-        return "pause";
+        return 'pause';
     }
 
     public function testIsAvailable()
     {
-        $this->assertEquals(DIRECTORY_SEPARATOR === '\\', WindowsProcessControl::isAvailable());
+        $this->assertSame(DIRECTORY_SEPARATOR === '\\', WindowsProcessControl::isAvailable());
     }
 }

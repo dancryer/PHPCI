@@ -3,11 +3,10 @@
 /**
  * ProjectGroup base model for table: project_group
  */
-
 namespace PHPCI\Model\Base;
 
-use PHPCI\Model;
 use b8\Store\Factory;
+use PHPCI\Model;
 
 /**
  * ProjectGroup Base Model
@@ -15,86 +14,86 @@ use b8\Store\Factory;
 class ProjectGroupBase extends Model
 {
     /**
-    * @var array
-    */
-    public static $sleepable = array();
+     * @type array
+     */
+    public static $sleepable = [];
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $tableName = 'project_group';
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $modelName = 'ProjectGroup';
 
     /**
-    * @var array
-    */
-    protected $data = array(
-        'id' => null,
+     * @type array
+     */
+    protected $data = [
+        'id'    => null,
         'title' => null,
-    );
+    ];
 
     /**
-    * @var array
-    */
-    protected $getters = array(
+     * @type array
+     */
+    protected $getters = [
         // Direct property getters:
-        'id' => 'getId',
+        'id'    => 'getId',
         'title' => 'getTitle',
 
         // Foreign key getters:
-    );
+    ];
 
     /**
-    * @var array
-    */
-    protected $setters = array(
+     * @type array
+     */
+    protected $setters = [
         // Direct property setters:
-        'id' => 'setId',
+        'id'    => 'setId',
         'title' => 'setTitle',
 
         // Foreign key setters:
-    );
+    ];
 
     /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
+     * @type array
+     */
+    public $columns = [
+        'id' => [
+            'type'           => 'int',
+            'length'         => 11,
+            'primary_key'    => true,
             'auto_increment' => true,
+            'default'        => null,
+        ],
+        'title' => [
+            'type'    => 'varchar',
+            'length'  => 100,
             'default' => null,
-        ),
-        'title' => array(
-            'type' => 'varchar',
-            'length' => 100,
-            'default' => null,
-        ),
-    );
+        ],
+    ];
 
     /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-    );
+     * @type array
+     */
+    public $indexes = [
+            'PRIMARY' => ['unique' => true, 'columns' => 'id'],
+    ];
 
     /**
-    * @var array
-    */
-    public $foreignKeys = array(
-    );
+     * @type array
+     */
+    public $foreignKeys = [
+    ];
 
     /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
+     * Get the value of Id / id.
+     *
+     * @return int
+     */
     public function getId()
     {
         $rtn    = $this->data['id'];
@@ -103,10 +102,10 @@ class ProjectGroupBase extends Model
     }
 
     /**
-    * Get the value of Title / title.
-    *
-    * @return string
-    */
+     * Get the value of Title / title.
+     *
+     * @return string
+     */
     public function getTitle()
     {
         $rtn    = $this->data['title'];
@@ -115,11 +114,12 @@ class ProjectGroupBase extends Model
     }
 
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of Id / id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setId($value)
     {
         $this->_validateNotNull('Id', $value);
@@ -135,11 +135,12 @@ class ProjectGroupBase extends Model
     }
 
     /**
-    * Set the value of Title / title.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Title / title.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setTitle($value)
     {
         $this->_validateNotNull('Title', $value);
@@ -159,6 +160,7 @@ class ProjectGroupBase extends Model
      *
      * @uses \PHPCI\Store\ProjectStore::getByGroupId()
      * @uses \PHPCI\Model\Project
+     *
      * @return \PHPCI\Model\Project[]
      */
     public function getGroupProjects()

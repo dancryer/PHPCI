@@ -4,27 +4,25 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Controller;
 
 use b8;
 use b8\Form;
-use b8\Store;
 use PHPCI\Controller;
 use PHPCI\Model\ProjectGroup;
 
 /**
  * Project Controller - Allows users to create, edit and view projects.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Web
  */
 class GroupController extends Controller
 {
     /**
-     * @var \PHPCI\Store\ProjectGroupStore
+     * @type \PHPCI\Store\ProjectGroupStore
      */
     protected $groupStore;
 
@@ -43,17 +41,17 @@ class GroupController extends Controller
     {
         $this->requireAdmin();
 
-        $groups = array();
-        $groupList = $this->groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groups    = [];
+        $groupList = $this->groupStore->getWhere([], 100, 0, [], ['title' => 'ASC']);
 
         foreach ($groupList['items'] as $group) {
-            $thisGroup = array(
+            $thisGroup = [
                 'title' => $group->getTitle(),
-                'id' => $group->getId(),
-            );
-            $projects = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
+                'id'    => $group->getId(),
+            ];
+            $projects              = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
             $thisGroup['projects'] = $projects['items'];
-            $groups[] = $thisGroup;
+            $groups[]              = $thisGroup;
         }
 
         $this->view->groups = $groups;
@@ -61,14 +59,16 @@ class GroupController extends Controller
 
     /**
      * Add or edit a project group.
+     *
      * @param null $groupId
+     *
      * @return void|b8\Http\Response\RedirectResponse
      */
     public function edit($groupId = null)
     {
         $this->requireAdmin();
 
-        if (!is_null($groupId)) {
+        if (! is_null($groupId)) {
             $group = $this->groupStore->getById($groupId);
         } else {
             $group = new ProjectGroup();
@@ -79,13 +79,14 @@ class GroupController extends Controller
             $this->groupStore->save($group);
 
             $response = new b8\Http\Response\RedirectResponse();
-            $response->setHeader('Location', PHPCI_URL.'group');
+            $response->setHeader('Location', PHPCI_URL . 'group');
+
             return $response;
         }
 
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL . 'group/edit' . (!is_null($groupId) ? '/' . $groupId : ''));
+        $form->setAction(PHPCI_URL . 'group/edit' . (! is_null($groupId) ? '/' . $groupId : ''));
 
         $title = new Form\Element\Text('title');
         $title->setContainerClass('form-group');
@@ -104,7 +105,9 @@ class GroupController extends Controller
 
     /**
      * Delete a project group.
+     *
      * @param $groupId
+     *
      * @return b8\Http\Response\RedirectResponse
      */
     public function delete($groupId)
@@ -114,7 +117,8 @@ class GroupController extends Controller
 
         $this->groupStore->delete($group);
         $response = new b8\Http\Response\RedirectResponse();
-        $response->setHeader('Location', PHPCI_URL.'group');
+        $response->setHeader('Location', PHPCI_URL . 'group');
+
         return $response;
     }
 }

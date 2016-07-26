@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Controller;
 
 use b8;
@@ -21,14 +21,11 @@ use Symfony\Component\Yaml\Parser;
  * Settings Controller
  *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Web
  */
 class SettingsController extends Controller
 {
-
     /**
-     * @var array
+     * @type array
      */
     protected $settings;
 
@@ -46,6 +43,7 @@ class SettingsController extends Controller
 
     /**
      * Display settings forms.
+     *
      * @return string
      */
     public function index()
@@ -56,35 +54,35 @@ class SettingsController extends Controller
 
         $this->view->settings = $this->settings;
 
-        $basicSettings = array();
+        $basicSettings = [];
         if (isset($this->settings['phpci']['basic'])) {
             $basicSettings = $this->settings['phpci']['basic'];
         }
 
-        $buildSettings = array();
+        $buildSettings = [];
         if (isset($this->settings['phpci']['build'])) {
             $buildSettings = $this->settings['phpci']['build'];
         }
 
-        $emailSettings = array();
+        $emailSettings = [];
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
         }
 
-        $authSettings = array();
+        $authSettings = [];
         if (isset($this->settings['phpci']['authentication_settings'])) {
             $authSettings = $this->settings['phpci']['authentication_settings'];
         }
 
-        $this->view->configFile = PHPCI_CONFIG_FILE;
-        $this->view->basicSettings = $this->getBasicForm($basicSettings);
-        $this->view->buildSettings = $this->getBuildForm($buildSettings);
-        $this->view->github = $this->getGithubForm();
-        $this->view->emailSettings = $this->getEmailForm($emailSettings);
+        $this->view->configFile             = PHPCI_CONFIG_FILE;
+        $this->view->basicSettings          = $this->getBasicForm($basicSettings);
+        $this->view->buildSettings          = $this->getBuildForm($buildSettings);
+        $this->view->github                 = $this->getGithubForm();
+        $this->view->emailSettings          = $this->getEmailForm($emailSettings);
         $this->view->authenticationSettings = $this->getAuthenticationForm($authSettings);
-        $this->view->isWriteable = $this->canWriteConfig();
+        $this->view->isWriteable            = $this->canWriteConfig();
 
-        if (!empty($this->settings['phpci']['github']['token'])) {
+        if (! empty($this->settings['phpci']['github']['token'])) {
             $this->view->githubUser = $this->getGithubUser($this->settings['phpci']['github']['token']);
         }
 
@@ -166,7 +164,7 @@ class SettingsController extends Controller
         $this->requireAdmin();
 
         $this->settings['phpci']['basic'] = $this->getParams();
-        $error = $this->storeSettings();
+        $error                            = $this->storeSettings();
 
         $response = new b8\Http\Response\RedirectResponse();
 
@@ -210,10 +208,10 @@ class SettingsController extends Controller
         $code   = $this->getParam('code', null);
         $github = $this->settings['phpci']['github'];
 
-        if (!is_null($code)) {
+        if (! is_null($code)) {
             $http   = new HttpClient();
             $url    = 'https://github.com/login/oauth/access_token';
-            $params = array('client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code);
+            $params = ['client_id' => $github['id'], 'client_secret' => $github['secret'], 'code' => $code];
             $resp   = $http->post($url, $params);
 
             if ($resp['success']) {
@@ -224,12 +222,14 @@ class SettingsController extends Controller
 
                 $response = new b8\Http\Response\RedirectResponse();
                 $response->setHeader('Location', PHPCI_URL . 'settings?linked=1');
+
                 return $response;
             }
         }
 
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'settings?linked=2');
+
         return $response;
     }
 
@@ -246,12 +246,14 @@ class SettingsController extends Controller
 
         if (error_get_last()) {
             $error_get_last = error_get_last();
+
             return $error_get_last['message'];
         }
     }
 
     /**
      * Get the Github settings form.
+     *
      * @return Form
      */
     protected function getGithubForm()
@@ -295,10 +297,12 @@ class SettingsController extends Controller
 
     /**
      * Get the email settings form.
+     *
      * @param array $values
+     *
      * @return Form
      */
-    protected function getEmailForm($values = array())
+    protected function getEmailForm($values = [])
     {
         $form = new Form();
         $form->setMethod('POST');
@@ -351,7 +355,7 @@ class SettingsController extends Controller
         $form->addField($field);
 
         $field = new Form\Element\Select('smtp_encryption');
-        $field->setOptions(array('' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')));
+        $field->setOptions(['' => Lang::get('none'), 'tls' => Lang::get('tls'), 'ssl' => Lang::get('ssl')]);
         $field->setRequired(false);
         $field->setLabel(Lang::get('use_smtp_encryption'));
         $field->setContainerClass('form-group');
@@ -370,19 +374,22 @@ class SettingsController extends Controller
 
     /**
      * Call Github API for our Github user object.
+     *
      * @param $token
+     *
      * @return mixed
      */
     protected function getGithubUser($token)
     {
         $http = new HttpClient('https://api.github.com');
-        $user = $http->get('/user', array('access_token' => $token));
+        $user = $http->get('/user', ['access_token' => $token]);
 
         return $user['body'];
     }
 
     /**
      * Check if we can write the PHPCI config file.
+     *
      * @return bool
      */
     protected function canWriteConfig()
@@ -392,10 +399,12 @@ class SettingsController extends Controller
 
     /**
      * Get the Build settings form.
+     *
      * @param array $values
+     *
      * @return Form
      */
-    protected function getBuildForm($values = array())
+    protected function getBuildForm($values = [])
     {
         $form = new Form();
         $form->setMethod('POST');
@@ -406,16 +415,15 @@ class SettingsController extends Controller
         $field->setLabel(Lang::get('failed_after'));
         $field->setClass('form-control');
         $field->setContainerClass('form-group');
-        $field->setOptions(array(
-            300 => Lang::get('5_mins'),
-            900 => Lang::get('15_mins'),
-            1800 => Lang::get('30_mins'),
-            3600 => Lang::get('1_hour'),
+        $field->setOptions([
+            300   => Lang::get('5_mins'),
+            900   => Lang::get('15_mins'),
+            1800  => Lang::get('30_mins'),
+            3600  => Lang::get('1_hour'),
             10800 => Lang::get('3_hours'),
-        ));
+        ]);
         $field->setValue(1800);
         $form->addField($field);
-
 
         $field = new Form\Element\Submit();
         $field->setValue(Lang::get('save'));
@@ -429,10 +437,12 @@ class SettingsController extends Controller
 
     /**
      * Get the Basic settings form.
+     *
      * @param array $values
+     *
      * @return Form
      */
-    protected function getBasicForm($values = array())
+    protected function getBasicForm($values = [])
     {
         $form = new Form();
         $form->setMethod('POST');
@@ -446,7 +456,6 @@ class SettingsController extends Controller
         $field->setOptions(Lang::getLanguageOptions());
         $field->setValue(Lang::getLanguage());
         $form->addField($field);
-
 
         $field = new Form\Element\Submit();
         $field->setValue(Lang::get('save'));
@@ -462,9 +471,10 @@ class SettingsController extends Controller
      * Form for disabling user authentication while using a default user
      *
      * @param array $values
+     *
      * @return Form
      */
-    protected function getAuthenticationForm($values = array())
+    protected function getAuthenticationForm($values = [])
     {
         $form = new Form();
         $form->setMethod('POST');
@@ -479,7 +489,7 @@ class SettingsController extends Controller
         $field->setValue(0);
 
         if (isset($values['state'])) {
-            $field->setValue((int)$values['state']);
+            $field->setValue((int) $values['state']);
         }
 
         $form->addField($field);

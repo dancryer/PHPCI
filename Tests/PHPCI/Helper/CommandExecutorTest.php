@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin\Helper;
 
 use PHPCI\Helper\UnixCommandExecutor;
@@ -15,54 +15,55 @@ use PHPCI\Helper\UnixCommandExecutor;
 class CommandExecutorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var UnixCommandExecutor
+     * @type UnixCommandExecutor
      */
     protected $testedExecutor;
 
     protected function setUp()
     {
         if (IS_WIN) {
-            $this->markTestSkipped("Cannot test UnixCommandExecutor on ".PHP_OS);
+            $this->markTestSkipped('Cannot test UnixCommandExecutor on ' . PHP_OS);
+
             return;
         }
         parent::setUp();
-        $mockBuildLogger = $this->prophesize('PHPCI\Logging\BuildLogger');
-        $class = IS_WIN ? 'PHPCI\Helper\WindowsCommandExecutor' : 'PHPCI\Helper\UnixCommandExecutor';
-        $this->testedExecutor = new $class($mockBuildLogger->reveal(), __DIR__ . "/");
+        $mockBuildLogger      = $this->prophesize('PHPCI\Logging\BuildLogger');
+        $class                = IS_WIN ? 'PHPCI\Helper\WindowsCommandExecutor' : 'PHPCI\Helper\UnixCommandExecutor';
+        $this->testedExecutor = new $class($mockBuildLogger->reveal(), __DIR__ . '/');
     }
 
     public function testGetLastOutput_ReturnsOutputOfCommand()
     {
-        $this->testedExecutor->executeCommand(array('echo "%s"', 'Hello World'));
+        $this->testedExecutor->executeCommand(['echo "%s"', 'Hello World']);
         $output = $this->testedExecutor->getLastOutput();
-        $this->assertEquals("Hello World", $output);
+        $this->assertSame('Hello World', $output);
     }
 
     public function testGetLastOutput_ForgetsPreviousCommandOutput()
     {
-        $this->testedExecutor->executeCommand(array('echo "%s"', 'Hello World'));
-        $this->testedExecutor->executeCommand(array('echo "%s"', 'Hello Tester'));
+        $this->testedExecutor->executeCommand(['echo "%s"', 'Hello World']);
+        $this->testedExecutor->executeCommand(['echo "%s"', 'Hello Tester']);
         $output = $this->testedExecutor->getLastOutput();
-        $this->assertEquals("Hello Tester", $output);
+        $this->assertSame('Hello Tester', $output);
     }
 
     public function testExecuteCommand_ReturnsTrueForValidCommands()
     {
-        $returnValue = $this->testedExecutor->executeCommand(array('echo "%s"', 'Hello World'));
+        $returnValue = $this->testedExecutor->executeCommand(['echo "%s"', 'Hello World']);
         $this->assertTrue($returnValue);
     }
 
     public function testExecuteCommand_ReturnsFalseForInvalidCommands()
     {
-        $returnValue = $this->testedExecutor->executeCommand(array('eerfdcvcho "%s" > /dev/null 2>&1', 'Hello World'));
+        $returnValue = $this->testedExecutor->executeCommand(['eerfdcvcho "%s" > /dev/null 2>&1', 'Hello World']);
         $this->assertFalse($returnValue);
     }
 
     public function testFindBinary_ReturnsPathInSpecifiedRoot()
     {
-        $thisFileName = "CommandExecutorTest.php";
-        $returnValue = $this->testedExecutor->findBinary($thisFileName);
-        $this->assertEquals(__DIR__ . "/" . $thisFileName, $returnValue);
+        $thisFileName = 'CommandExecutorTest.php';
+        $returnValue  = $this->testedExecutor->findBinary($thisFileName);
+        $this->assertSame(__DIR__ . '/' . $thisFileName, $returnValue);
     }
 
     /**
@@ -71,13 +72,13 @@ class CommandExecutorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindBinary_ThrowsWhenNotFound()
     {
-        $thisFileName = "WorldWidePeace";
+        $thisFileName = 'WorldWidePeace';
         $this->testedExecutor->findBinary($thisFileName);
     }
 
     public function testFindBinary_ReturnsNullWihQuietArgument()
     {
-        $thisFileName = "WorldWidePeace";
+        $thisFileName = 'WorldWidePeace';
         $this->assertNull($this->testedExecutor->findBinary($thisFileName, true));
     }
 }

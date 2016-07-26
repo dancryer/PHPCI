@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -16,9 +16,8 @@ use PHPCI\Model\Build;
 /**
  * Campfire Plugin - Allows Campfire API actions.
  * strongly based on icecube (http://labs.mimmin.com/icecube)
+ *
  * @author       André Cianfarani <acianfa@gmail.com>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class Campfire implements \PHPCI\Plugin
 {
@@ -31,18 +30,20 @@ class Campfire implements \PHPCI\Plugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
+     *
      * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci     = $phpci;
         $this->build     = $build;
         $this->message   = $options['message'];
-        $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
-        $this->cookie    = "phpcicookie";
+        $this->userAgent = 'PHPCI/1.0 (+http://www.phptesting.org/)';
+        $this->cookie    = 'phpcicookie';
 
         $buildSettings = $phpci->getConfig('build_settings');
 
@@ -59,12 +60,13 @@ class Campfire implements \PHPCI\Plugin
 
     /**
      * Run the Campfire plugin.
+     *
      * @return bool|mixed
      */
     public function execute()
     {
-        $url = PHPCI_URL . "build/view/" . $this->build->getId();
-        $message = str_replace("%buildurl%", $url, $this->message);
+        $url     = PHPCI_URL . 'build/view/' . $this->build->getId();
+        $message = str_replace('%buildurl%', $url, $this->message);
         $this->joinRoom($this->roomId);
         $status = $this->speak($message, $this->roomId);
         $this->leaveRoom($this->roomId);
@@ -75,32 +77,36 @@ class Campfire implements \PHPCI\Plugin
 
     /**
      * Join a Campfire room.
+     *
      * @param $roomId
      */
     public function joinRoom($roomId)
     {
-        $this->getPageByPost('/room/'.$roomId.'/join.json');
+        $this->getPageByPost('/room/' . $roomId . '/join.json');
     }
 
     /**
      * Leave a Campfire room.
+     *
      * @param $roomId
      */
     public function leaveRoom($roomId)
     {
-        $this->getPageByPost('/room/'.$roomId.'/leave.json');
+        $this->getPageByPost('/room/' . $roomId . '/leave.json');
     }
 
     /**
      * Send a message to a campfire room.
+     *
      * @param $message
      * @param $roomId
      * @param bool $isPaste
+     *
      * @return bool|mixed
      */
     public function speak($message, $roomId, $isPaste = false)
     {
-        $page = '/room/'.$roomId.'/speak.json';
+        $page = '/room/' . $roomId . '/speak.json';
 
         if ($isPaste) {
             $type = 'PasteMessage';
@@ -108,14 +114,16 @@ class Campfire implements \PHPCI\Plugin
             $type = 'TextMessage';
         }
 
-        return $this->getPageByPost($page, array('message' => array('type' => $type, 'body' => $message)));
+        return $this->getPageByPost($page, ['message' => ['type' => $type, 'body' => $message]]);
 
     }
 
     /**
      * Make a request to Campfire.
+     *
      * @param $page
      * @param null $data
+     *
      * @return bool|mixed
      */
     private function getPageByPost($page, $data = null)
@@ -134,7 +142,7 @@ class Campfire implements \PHPCI\Plugin
         curl_setopt($handle, CURLOPT_VERBOSE, $this->verbose);
         curl_setopt($handle, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($handle, CURLOPT_USERPWD, $this->authToken . ':x');
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-type: application/json"));
+        curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
         curl_setopt($handle, CURLOPT_COOKIEFILE, $this->cookie);
 
         curl_setopt($handle, CURLOPT_POSTFIELDS, $json);

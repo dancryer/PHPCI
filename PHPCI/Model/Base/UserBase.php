@@ -3,11 +3,9 @@
 /**
  * User base model for table: user
  */
-
 namespace PHPCI\Model\Base;
 
 use PHPCI\Model;
-use b8\Store\Factory;
 
 /**
  * User Base Model
@@ -15,112 +13,112 @@ use b8\Store\Factory;
 class UserBase extends Model
 {
     /**
-    * @var array
-    */
-    public static $sleepable = array();
+     * @type array
+     */
+    public static $sleepable = [];
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $tableName = 'user';
 
     /**
-    * @var string
-    */
+     * @type string
+     */
     protected $modelName = 'User';
 
     /**
-    * @var array
-    */
-    protected $data = array(
-        'id' => null,
-        'email' => null,
-        'hash' => null,
+     * @type array
+     */
+    protected $data = [
+        'id'       => null,
+        'email'    => null,
+        'hash'     => null,
         'is_admin' => null,
-        'name' => null,
-    );
+        'name'     => null,
+    ];
 
     /**
-    * @var array
-    */
-    protected $getters = array(
+     * @type array
+     */
+    protected $getters = [
         // Direct property getters:
-        'id' => 'getId',
-        'email' => 'getEmail',
-        'hash' => 'getHash',
+        'id'       => 'getId',
+        'email'    => 'getEmail',
+        'hash'     => 'getHash',
         'is_admin' => 'getIsAdmin',
-        'name' => 'getName',
+        'name'     => 'getName',
 
         // Foreign key getters:
-    );
+    ];
 
     /**
-    * @var array
-    */
-    protected $setters = array(
+     * @type array
+     */
+    protected $setters = [
         // Direct property setters:
-        'id' => 'setId',
-        'email' => 'setEmail',
-        'hash' => 'setHash',
+        'id'       => 'setId',
+        'email'    => 'setEmail',
+        'hash'     => 'setHash',
         'is_admin' => 'setIsAdmin',
-        'name' => 'setName',
+        'name'     => 'setName',
 
         // Foreign key setters:
-    );
+    ];
 
     /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
+     * @type array
+     */
+    public $columns = [
+        'id' => [
+            'type'           => 'int',
+            'length'         => 11,
+            'primary_key'    => true,
             'auto_increment' => true,
+            'default'        => null,
+        ],
+        'email' => [
+            'type'    => 'varchar',
+            'length'  => 250,
             'default' => null,
-        ),
-        'email' => array(
-            'type' => 'varchar',
-            'length' => 250,
+        ],
+        'hash' => [
+            'type'    => 'varchar',
+            'length'  => 250,
             'default' => null,
-        ),
-        'hash' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
-        ),
-        'is_admin' => array(
-            'type' => 'int',
+        ],
+        'is_admin' => [
+            'type'   => 'int',
             'length' => 11,
-        ),
-        'name' => array(
-            'type' => 'varchar',
-            'length' => 250,
+        ],
+        'name' => [
+            'type'    => 'varchar',
+            'length'  => 250,
             'default' => null,
-        ),
-    );
+        ],
+    ];
 
     /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_email' => array('unique' => true, 'columns' => 'email'),
-            'email' => array('unique' => true, 'columns' => 'email'),
-            'name' => array('columns' => 'name'),
-    );
+     * @type array
+     */
+    public $indexes = [
+            'PRIMARY'   => ['unique' => true, 'columns' => 'id'],
+            'idx_email' => ['unique' => true, 'columns' => 'email'],
+            'email'     => ['unique' => true, 'columns' => 'email'],
+            'name'      => ['columns' => 'name'],
+    ];
 
     /**
-    * @var array
-    */
-    public $foreignKeys = array(
-    );
+     * @type array
+     */
+    public $foreignKeys = [
+    ];
 
     /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
+     * Get the value of Id / id.
+     *
+     * @return int
+     */
     public function getId()
     {
         $rtn    = $this->data['id'];
@@ -129,10 +127,10 @@ class UserBase extends Model
     }
 
     /**
-    * Get the value of Email / email.
-    *
-    * @return string
-    */
+     * Get the value of Email / email.
+     *
+     * @return string
+     */
     public function getEmail()
     {
         $rtn    = $this->data['email'];
@@ -141,10 +139,10 @@ class UserBase extends Model
     }
 
     /**
-    * Get the value of Hash / hash.
-    *
-    * @return string
-    */
+     * Get the value of Hash / hash.
+     *
+     * @return string
+     */
     public function getHash()
     {
         $rtn    = $this->data['hash'];
@@ -153,10 +151,10 @@ class UserBase extends Model
     }
 
     /**
-    * Get the value of IsAdmin / is_admin.
-    *
-    * @return int
-    */
+     * Get the value of IsAdmin / is_admin.
+     *
+     * @return int
+     */
     public function getIsAdmin()
     {
         $rtn    = $this->data['is_admin'];
@@ -165,10 +163,10 @@ class UserBase extends Model
     }
 
     /**
-    * Get the value of Name / name.
-    *
-    * @return string
-    */
+     * Get the value of Name / name.
+     *
+     * @return string
+     */
     public function getName()
     {
         $rtn    = $this->data['name'];
@@ -177,11 +175,12 @@ class UserBase extends Model
     }
 
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of Id / id.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setId($value)
     {
         $this->_validateNotNull('Id', $value);
@@ -197,11 +196,12 @@ class UserBase extends Model
     }
 
     /**
-    * Set the value of Email / email.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Email / email.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setEmail($value)
     {
         $this->_validateNotNull('Email', $value);
@@ -217,11 +217,12 @@ class UserBase extends Model
     }
 
     /**
-    * Set the value of Hash / hash.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Hash / hash.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setHash($value)
     {
         $this->_validateNotNull('Hash', $value);
@@ -237,11 +238,12 @@ class UserBase extends Model
     }
 
     /**
-    * Set the value of IsAdmin / is_admin.
-    *
-    * Must not be null.
-    * @param $value int
-    */
+     * Set the value of IsAdmin / is_admin.
+     *
+     * Must not be null.
+     *
+     * @param $value int
+     */
     public function setIsAdmin($value)
     {
         $this->_validateNotNull('IsAdmin', $value);
@@ -257,11 +259,12 @@ class UserBase extends Model
     }
 
     /**
-    * Set the value of Name / name.
-    *
-    * Must not be null.
-    * @param $value string
-    */
+     * Set the value of Name / name.
+     *
+     * Must not be null.
+     *
+     * @param $value string
+     */
     public function setName($value)
     {
         $this->_validateNotNull('Name', $value);

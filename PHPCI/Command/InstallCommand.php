@@ -4,30 +4,28 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
-
-use Exception;
-use PDO;
 
 use b8\Config;
 use b8\Store\Factory;
+use Exception;
+use PDO;
 use PHPCI\Helper\Lang;
+use PHPCI\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use PHPCI\Service\UserService;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Install console command - Installs PHPCI.
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Console
  */
 class InstallCommand extends Command
 {
@@ -36,7 +34,7 @@ class InstallCommand extends Command
     protected function configure()
     {
         $defaultPath = PHPCI_DIR . 'PHPCI/config.yml';
-        
+
         $this
             ->setName('phpci:install')
             ->addOption('url', null, InputOption::VALUE_OPTIONAL, Lang::get('installation_url'))
@@ -61,13 +59,13 @@ class InstallCommand extends Command
     {
         $this->configFilePath = $input->getOption('config-path');
 
-        if (!$this->verifyNotInstalled($output)) {
+        if (! $this->verifyNotInstalled($output)) {
             return;
         }
 
         $output->writeln('');
         $output->writeln('<info>******************</info>');
-        $output->writeln('<info> '.Lang::get('welcome_to_phpci').'</info>');
+        $output->writeln('<info> ' . Lang::get('welcome_to_phpci') . '</info>');
         $output->writeln('<info>******************</info>');
         $output->writeln('');
 
@@ -82,7 +80,7 @@ class InstallCommand extends Command
         // ----
         $connectionVerified = false;
 
-        while (!$connectionVerified) {
+        while (! $connectionVerified) {
             $db = $this->getDatabaseInformation($input, $output);
 
             $connectionVerified = $this->verifyDatabaseDetails($db, $output);
@@ -90,7 +88,7 @@ class InstallCommand extends Command
 
         $output->writeln('');
 
-        $conf = array();
+        $conf                   = [];
         $conf['b8']['database'] = $db;
 
         // ----
@@ -107,7 +105,8 @@ class InstallCommand extends Command
     /**
      * Check PHP version, required modules and for disabled functions.
      *
-     * @param  OutputInterface $output
+     * @param OutputInterface $output
+     *
      * @throws \Exception
      */
     protected function checkRequirements(OutputInterface $output)
@@ -116,37 +115,37 @@ class InstallCommand extends Command
         $errors = false;
 
         // Check PHP version:
-        if (!(version_compare(PHP_VERSION, '5.3.8') >= 0)) {
+        if (! (version_compare(PHP_VERSION, '5.3.8') >= 0)) {
             $output->writeln('');
-            $output->writeln('<error>'.Lang::get('phpci_php_req').'</error>');
+            $output->writeln('<error>' . Lang::get('phpci_php_req') . '</error>');
             $errors = true;
         }
 
         // Check required extensions are present:
-        $requiredExtensions = array('PDO', 'pdo_mysql');
+        $requiredExtensions = ['PDO', 'pdo_mysql'];
 
         foreach ($requiredExtensions as $extension) {
-            if (!extension_loaded($extension)) {
+            if (! extension_loaded($extension)) {
                 $output->writeln('');
-                $output->writeln('<error>'.Lang::get('extension_required', $extension).'</error>');
+                $output->writeln('<error>' . Lang::get('extension_required', $extension) . '</error>');
                 $errors = true;
             }
         }
 
         // Check required functions are callable:
-        $requiredFunctions = array('exec', 'shell_exec');
+        $requiredFunctions = ['exec', 'shell_exec'];
 
         foreach ($requiredFunctions as $function) {
-            if (!function_exists($function)) {
+            if (! function_exists($function)) {
                 $output->writeln('');
-                $output->writeln('<error>'.Lang::get('function_required', $function).'</error>');
+                $output->writeln('<error>' . Lang::get('function_required', $function) . '</error>');
                 $errors = true;
             }
         }
 
-        if (!function_exists('password_hash')) {
+        if (! function_exists('password_hash')) {
             $output->writeln('');
-            $output->writeln('<error>'.Lang::get('function_required', $function).'</error>');
+            $output->writeln('<error>' . Lang::get('function_required', $function) . '</error>');
             $errors = true;
         }
 
@@ -154,29 +153,30 @@ class InstallCommand extends Command
             throw new Exception(Lang::get('requirements_not_met'));
         }
 
-        $output->writeln(' <info>'.Lang::get('ok').'</info>');
+        $output->writeln(' <info>' . Lang::get('ok') . '</info>');
         $output->writeln('');
     }
 
     /**
      * Load information for admin user form CLI options or ask info to user.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return array
      */
     protected function getAdminInformation(InputInterface $input, OutputInterface $output)
     {
-        $admin = array();
+        $admin = [];
 
         /**
-         * @var \Symfony\Component\Console\Helper\DialogHelper
+         * @type \Symfony\Component\Console\Helper\DialogHelper
          */
         $dialog = $this->getHelperSet()->get('dialog');
 
         // Function to validate mail address.
         $mailValidator = function ($answer) {
-            if (!filter_var($answer, FILTER_VALIDATE_EMAIL)) {
+            if (! filter_var($answer, FILTER_VALIDATE_EMAIL)) {
                 throw new \InvalidArgumentException(Lang::get('must_be_valid_email'));
             }
 
@@ -188,10 +188,10 @@ class InstallCommand extends Command
         } else {
             $adminEmail = $dialog->askAndValidate($output, Lang::get('enter_email'), $mailValidator, false);
         }
-        if (!$adminName = $input->getOption('admin-name')) {
+        if (! $adminName = $input->getOption('admin-name')) {
             $adminName = $dialog->ask($output, Lang::get('enter_name'));
         }
-        if (!$adminPass = $input->getOption('admin-pass')) {
+        if (! $adminPass = $input->getOption('admin-pass')) {
             $adminPass = $dialog->askHiddenResponse($output, Lang::get('enter_password'));
         }
 
@@ -205,22 +205,23 @@ class InstallCommand extends Command
     /**
      * Load configuration for PHPCI form CLI options or ask info to user.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return array
      */
     protected function getPhpciConfigInformation(InputInterface $input, OutputInterface $output)
     {
-        $phpci = array();
+        $phpci = [];
 
         /**
-         * @var \Symfony\Component\Console\Helper\DialogHelper
+         * @type \Symfony\Component\Console\Helper\DialogHelper
          */
         $dialog = $this->getHelperSet()->get('dialog');
 
         // FUnction do validate URL.
         $urlValidator = function ($answer) {
-            if (!filter_var($answer, FILTER_VALIDATE_URL)) {
+            if (! filter_var($answer, FILTER_VALIDATE_URL)) {
                 throw new Exception(Lang::get('must_be_valid_url'));
             }
 
@@ -233,7 +234,7 @@ class InstallCommand extends Command
             $url = $dialog->askAndValidate($output, Lang::get('enter_phpci_url'), $urlValidator, false);
         }
 
-        $phpci['url'] = $url;
+        $phpci['url']    = $url;
         $phpci['worker'] = $this->getQueueInformation($input, $output, $dialog);
 
         return $phpci;
@@ -241,32 +242,35 @@ class InstallCommand extends Command
 
     /**
      * If the user wants to use a queue, get the necessary details.
-     * @param InputInterface $input
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param DialogHelper $dialog
+     * @param DialogHelper    $dialog
+     *
      * @return array
      */
     protected function getQueueInformation(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
         if ($input->getOption('queue-disabled')) {
-            return null;
+            return;
         }
 
         $rtn = [];
 
-        $helper = $this->getHelper('question');
+        $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion('Use beanstalkd to manage build queue? ', true);
 
-        if (!$helper->ask($input, $output, $question)) {
+        if (! $helper->ask($input, $output, $question)) {
             $output->writeln('<error>Skipping beanstalkd configuration.</error>');
-            return null;
+
+            return;
         }
 
-        if (!$rtn['host'] = $input->getOption('queue-server')) {
+        if (! $rtn['host'] = $input->getOption('queue-server')) {
             $rtn['host'] = $dialog->ask($output, 'Enter your beanstalkd hostname [localhost]: ', 'localhost');
         }
 
-        if (!$rtn['queue'] = $input->getOption('queue-name')) {
+        if (! $rtn['queue'] = $input->getOption('queue-name')) {
             $rtn['queue'] = $dialog->ask($output, 'Enter the queue (tube) name to use [phpci]: ', 'phpci');
         }
 
@@ -276,63 +280,66 @@ class InstallCommand extends Command
     /**
      * Load configuration for DB form CLI options or ask info to user.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return array
      */
     protected function getDatabaseInformation(InputInterface $input, OutputInterface $output)
     {
-        $db = array();
+        $db = [];
 
         /**
-         * @var \Symfony\Component\Console\Helper\DialogHelper
+         * @type \Symfony\Component\Console\Helper\DialogHelper
          */
         $dialog = $this->getHelperSet()->get('dialog');
 
-        if (!$dbHost = $input->getOption('db-host')) {
+        if (! $dbHost = $input->getOption('db-host')) {
             $dbHost = $dialog->ask($output, Lang::get('enter_db_host'), 'localhost');
         }
 
-        if (!$dbName = $input->getOption('db-name')) {
+        if (! $dbName = $input->getOption('db-name')) {
             $dbName = $dialog->ask($output, Lang::get('enter_db_name'), 'phpci');
         }
 
-        if (!$dbUser = $input->getOption('db-user')) {
+        if (! $dbUser = $input->getOption('db-user')) {
             $dbUser = $dialog->ask($output, Lang::get('enter_db_user'), 'phpci');
         }
 
-        if (!$dbPass = $input->getOption('db-pass')) {
+        if (! $dbPass = $input->getOption('db-pass')) {
             $dbPass = $dialog->askHiddenResponse($output, Lang::get('enter_db_pass'));
         }
 
-        $db['servers']['read'] = $dbHost;
+        $db['servers']['read']  = $dbHost;
         $db['servers']['write'] = $dbHost;
-        $db['name'] = $dbName;
-        $db['username'] = $dbUser;
-        $db['password'] = $dbPass;
+        $db['name']             = $dbName;
+        $db['username']         = $dbUser;
+        $db['password']         = $dbPass;
 
         return $db;
     }
 
     /**
      * Try and connect to MySQL using the details provided.
-     * @param  array           $db
-     * @param  OutputInterface $output
+     *
+     * @param array           $db
+     * @param OutputInterface $output
+     *
      * @return bool
      */
     protected function verifyDatabaseDetails(array $db, OutputInterface $output)
     {
         try {
             $pdo = new PDO(
-                'mysql:host='.$db['servers']['write'].';dbname='.$db['name'],
+                'mysql:host=' . $db['servers']['write'] . ';dbname=' . $db['name'],
                 $db['username'],
                 $db['password'],
-                array(
-                    \PDO::ATTR_PERSISTENT => false,
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    \PDO::ATTR_TIMEOUT => 2,
+                [
+                    \PDO::ATTR_PERSISTENT         => false,
+                    \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_TIMEOUT            => 2,
                     \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
-                )
+                ]
             );
 
             unset($pdo);
@@ -340,7 +347,7 @@ class InstallCommand extends Command
             return true;
 
         } catch (Exception $ex) {
-            $output->writeln('<error>'.Lang::get('could_not_connect').'</error>');
+            $output->writeln('<error>' . Lang::get('could_not_connect') . '</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
         }
 
@@ -349,12 +356,13 @@ class InstallCommand extends Command
 
     /**
      * Write the PHPCI config.yml file.
+     *
      * @param array $config
      */
     protected function writeConfigFile(array $config)
     {
         $dumper = new \Symfony\Component\Yaml\Dumper();
-        $yaml = $dumper->dump($config, 4);
+        $yaml   = $dumper->dump($config, 4);
 
         file_put_contents($this->configFilePath, $yaml);
     }
@@ -367,13 +375,13 @@ class InstallCommand extends Command
         $phinxScript = escapeshellarg(PHPCI_DIR . 'phinx.php');
         shell_exec($phinxBinary . ' migrate -c ' . $phinxScript);
 
-        $output->writeln('<info>'.Lang::get('ok').'</info>');
+        $output->writeln('<info>' . Lang::get('ok') . '</info>');
     }
 
     /**
      * Create admin user using information loaded before.
      *
-     * @param array $admin
+     * @param array           $admin
      * @param OutputInterface $output
      */
     protected function createAdminUser($admin, $output)
@@ -381,13 +389,13 @@ class InstallCommand extends Command
         try {
             $this->reloadConfig();
 
-            $userStore = Factory::getStore('User');
+            $userStore   = Factory::getStore('User');
             $userService = new UserService($userStore);
             $userService->createUser($admin['name'], $admin['mail'], $admin['pass'], 1);
 
-            $output->writeln('<info>'.Lang::get('user_created').'</info>');
+            $output->writeln('<info>' . Lang::get('user_created') . '</info>');
         } catch (\Exception $ex) {
-            $output->writeln('<error>'.Lang::get('failed_to_create').'</error>');
+            $output->writeln('<error>' . Lang::get('failed_to_create') . '</error>');
             $output->writeln('<error>' . $ex->getMessage() . '</error>');
         }
     }
@@ -403,6 +411,7 @@ class InstallCommand extends Command
 
     /**
      * @param OutputInterface $output
+     *
      * @return bool
      */
     protected function verifyNotInstalled(OutputInterface $output)
@@ -410,9 +419,10 @@ class InstallCommand extends Command
         if (file_exists($this->configFilePath)) {
             $content = file_get_contents($this->configFilePath);
 
-            if (!empty($content)) {
-                $output->writeln('<error>'.Lang::get('config_exists').'</error>');
-                $output->writeln('<error>'.Lang::get('update_instead').'</error>');
+            if (! empty($content)) {
+                $output->writeln('<error>' . Lang::get('config_exists') . '</error>');
+                $output->writeln('<error>' . Lang::get('update_instead') . '</error>');
+
                 return false;
             }
         }

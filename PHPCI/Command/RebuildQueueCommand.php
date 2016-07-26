@@ -4,12 +4,11 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
-use b8\Config;
 use b8\Store\Factory;
 use Monolog\Logger;
 use PHPCI\BuildFactory;
@@ -20,27 +19,24 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Console
-*/
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class RebuildQueueCommand extends Command
 {
     /**
-     * @var OutputInterface
+     * @type OutputInterface
      */
     protected $output;
 
     /**
-     * @var Logger
+     * @type Logger
      */
     protected $logger;
 
     /**
      * @param \Monolog\Logger $logger
-     * @param string $name
+     * @param string          $name
      */
     public function __construct(Logger $logger, $name = null)
     {
@@ -67,7 +63,7 @@ class RebuildQueueCommand extends Command
             );
         }
 
-        $store = Factory::getStore('Build');
+        $store  = Factory::getStore('Build');
         $result = $store->getByStatus(0);
 
         $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));

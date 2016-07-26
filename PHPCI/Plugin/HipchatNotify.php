@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -15,9 +15,8 @@ use PHPCI\Model\Build;
 
 /**
  * Hipchat Plugin
+ *
  * @author       James Inman <james@jamesinman.co.uk>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class HipchatNotify implements \PHPCI\Plugin
 {
@@ -27,22 +26,24 @@ class HipchatNotify implements \PHPCI\Plugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
+     *
      * @throws \Exception
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
 
-        $this->userAgent = "PHPCI/1.0 (+http://www.phptesting.org/)";
-        $this->cookie = "phpcicookie";
+        $this->userAgent = 'PHPCI/1.0 (+http://www.phptesting.org/)';
+        $this->cookie    = 'phpcicookie';
 
         if (is_array($options) && isset($options['authToken']) && isset($options['room'])) {
             $this->authToken = $options['authToken'];
-            $this->room = $options['room'];
+            $this->room      = $options['room'];
 
             if (isset($options['message'])) {
                 $this->message = $options['message'];
@@ -69,6 +70,7 @@ class HipchatNotify implements \PHPCI\Plugin
 
     /**
      * Run the HipChat plugin.
+     *
      * @return bool
      */
     public function execute()
@@ -79,12 +81,12 @@ class HipchatNotify implements \PHPCI\Plugin
         $result = true;
         if (is_array($this->room)) {
             foreach ($this->room as $room) {
-                if (!$hipChat->message_room($room, 'PHPCI', $message, $this->notify, $this->color)) {
+                if (! $hipChat->message_room($room, 'PHPCI', $message, $this->notify, $this->color)) {
                     $result = false;
                 }
             }
         } else {
-            if (!$hipChat->message_room($this->room, 'PHPCI', $message, $this->notify, $this->color)) {
+            if (! $hipChat->message_room($this->room, 'PHPCI', $message, $this->notify, $this->color)) {
                 $result = false;
             }
         }

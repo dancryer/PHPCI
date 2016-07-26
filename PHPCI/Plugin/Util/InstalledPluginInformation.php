@@ -3,7 +3,6 @@ namespace PHPCI\Plugin\Util;
 
 /**
  * Interface InstalledPluginInformation
- * @package PHPCI\Plugin\Util
  */
 interface InstalledPluginInformation
 {
@@ -12,6 +11,7 @@ interface InstalledPluginInformation
      * and will have the following properties:
      *      name  - The friendly name of the plugin (may be an empty string)
      *      class - The class of the plugin (will include namespace)
+     *
      * @return \stdClass[]
      */
     public function getInstalledPlugins();

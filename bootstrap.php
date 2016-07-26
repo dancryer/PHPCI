@@ -4,6 +4,7 @@
 *
 * @copyright    Copyright 2013, Block 8 Limited.
 * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+*
 * @link         http://www.phptesting.org/
 */
 
@@ -15,17 +16,17 @@ if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-$configFile = dirname(__FILE__) . '/PHPCI/config.yml';
-$configEnv = getenv('phpci_config_file');
+$configFile            = dirname(__FILE__) . '/PHPCI/config.yml';
+$configEnv             = getenv('phpci_config_file');
 $usingCustomConfigFile = false;
 
-if (!empty($configEnv) && file_exists($configEnv)) {
-    $configFile = $configEnv;
+if (! empty($configEnv) && file_exists($configEnv)) {
+    $configFile            = $configEnv;
     $usingCustomConfigFile = true;
 }
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
-if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
+if (! file_exists($configFile) && (! defined('PHPCI_IS_CONSOLE') || ! PHPCI_IS_CONSOLE)) {
     $message = 'PHPCI has not yet been installed - Please use the command "./console phpci:install" ';
     $message .= '(or "php ./console phpci:install" for Windows) to install it.';
 
@@ -33,29 +34,29 @@ if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONS
 }
 
 // If composer has not been run, fail at this point and tell the user to install:
-if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
+if (! file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
     $message = 'Please install PHPCI with "composer install" (or "php composer.phar install"';
     $message .= ' for Windows) before using console';
-    
+
     file_put_contents('php://stderr', $message);
     exit(1);
 }
 
 // Load Composer autoloader:
-require_once(dirname(__FILE__) . '/vendor/autoload.php');
+require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 \PHPCI\ErrorHandler::register();
 
 if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-    $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+    $loggerConfig = LoggerConfig::newFromFile(__DIR__ . '/loggerconfig.php');
 }
 
 // Load configuration if present:
-$conf = array();
-$conf['b8']['app']['namespace'] = 'PHPCI';
+$conf                                    = [];
+$conf['b8']['app']['namespace']          = 'PHPCI';
 $conf['b8']['app']['default_controller'] = 'Home';
-$conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
-$conf['using_custom_file'] = $usingCustomConfigFile;
+$conf['b8']['view']['path']              = dirname(__FILE__) . '/PHPCI/View/';
+$conf['using_custom_file']               = $usingCustomConfigFile;
 
 $config = new b8\Config($conf);
 
@@ -74,6 +75,6 @@ if (is_readable($localVarsFile)) {
     require_once $localVarsFile;
 }
 
-require_once(dirname(__FILE__) . '/vars.php');
+require_once dirname(__FILE__) . '/vars.php';
 
 \PHPCI\Helper\Lang::init($config);

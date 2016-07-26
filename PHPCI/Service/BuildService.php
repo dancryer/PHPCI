@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Service;
 
 use b8\Config;
@@ -21,17 +21,16 @@ use PHPCI\Store\BuildStore;
 /**
  * The build service handles the creation, duplication and deletion of builds.
  * Class BuildService
- * @package PHPCI\Service
  */
 class BuildService
 {
     /**
-     * @var \PHPCI\Store\BuildStore
+     * @type \PHPCI\Store\BuildStore
      */
     protected $buildStore;
 
     /**
-     * @var bool
+     * @type bool
      */
     public $queueError = false;
 
@@ -44,12 +43,13 @@ class BuildService
     }
 
     /**
-     * @param Project $project
+     * @param Project     $project
      * @param string|null $commitId
      * @param string|null $branch
      * @param string|null $committerEmail
      * @param string|null $commitMessage
      * @param string|null $extra
+     *
      * @return \PHPCI\Model\Build
      */
     public function createBuild(
@@ -65,28 +65,28 @@ class BuildService
         $build->setProject($project);
         $build->setStatus(0);
 
-        if (!is_null($commitId)) {
+        if (! is_null($commitId)) {
             $build->setCommitId($commitId);
         } else {
             $build->setCommitId('Manual');
             $build->setCommitMessage(Lang::get('manual_build'));
         }
 
-        if (!is_null($branch)) {
+        if (! is_null($branch)) {
             $build->setBranch($branch);
         } else {
             $build->setBranch($project->getBranch());
         }
 
-        if (!is_null($committerEmail)) {
+        if (! is_null($committerEmail)) {
             $build->setCommitterEmail($committerEmail);
         }
 
-        if (!is_null($commitMessage)) {
+        if (! is_null($commitMessage)) {
             $build->setCommitMessage($commitMessage);
         }
 
-        if (!is_null($extra)) {
+        if (! is_null($extra)) {
             $build->setExtra(json_encode($extra));
         }
 
@@ -94,7 +94,7 @@ class BuildService
 
         $buildId = $build->getId();
 
-        if (!empty($buildId)) {
+        if (! empty($buildId)) {
             $build = BuildFactory::getBuild($build);
             $build->sendStatusPostback();
             $this->addBuildToQueue($build);
@@ -105,6 +105,7 @@ class BuildService
 
     /**
      * @param Build $copyFrom
+     *
      * @return \PHPCI\Model\Build
      */
     public function createDuplicateBuild(Build $copyFrom)
@@ -127,7 +128,7 @@ class BuildService
 
         $buildId = $build->getId();
 
-        if (!empty($buildId)) {
+        if (! empty($buildId)) {
             $build = BuildFactory::getBuild($build);
             $build->sendStatusPostback();
             $this->addBuildToQueue($build);
@@ -138,17 +139,21 @@ class BuildService
 
     /**
      * Delete a given build.
+     *
      * @param Build $build
+     *
      * @return bool
      */
     public function deleteBuild(Build $build)
     {
         $build->removeBuildDirectory();
+
         return $this->buildStore->delete($build);
     }
 
     /**
      * Takes a build and puts it into the queue to be run (if using a queue)
+     *
      * @param Build $build
      */
     public function addBuildToQueue(Build $build)
@@ -159,15 +164,15 @@ class BuildService
             return;
         }
 
-        $config = Config::getInstance();
+        $config   = Config::getInstance();
         $settings = $config->get('phpci.worker', []);
 
-        if (!empty($settings['host']) && !empty($settings['queue'])) {
+        if (! empty($settings['host']) && ! empty($settings['queue'])) {
             try {
-                $jobData = array(
-                    'type' => 'phpci.build',
+                $jobData = [
+                    'type'     => 'phpci.build',
                     'build_id' => $build->getId(),
-                );
+                ];
 
                 if ($config->get('using_custom_file')) {
                     $jobData['config'] = $config->getArray();

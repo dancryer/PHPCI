@@ -3,24 +3,25 @@
 /**
  * BuildError model for table: build_error
  */
-
 namespace PHPCI\Model;
 
 use PHPCI\Model\Base\BuildErrorBase;
 
 /**
  * BuildError Model
+ *
  * @uses PHPCI\Model\Base\BuildErrorBase
  */
 class BuildError extends BuildErrorBase
 {
     const SEVERITY_CRITICAL = 0;
-    const SEVERITY_HIGH = 1;
-    const SEVERITY_NORMAL = 2;
-    const SEVERITY_LOW = 3;
+    const SEVERITY_HIGH     = 1;
+    const SEVERITY_NORMAL   = 2;
+    const SEVERITY_LOW      = 3;
 
     /**
      * Get the language string key for this error's severity level.
+     *
      * @return string
      */
     public function getSeverityString()
@@ -42,6 +43,7 @@ class BuildError extends BuildErrorBase
 
     /**
      * Get the class to apply to HTML elements representing this error.
+     *
      * @return string
      */
     public function getSeverityClass()

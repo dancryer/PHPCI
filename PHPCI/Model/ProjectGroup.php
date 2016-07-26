@@ -3,13 +3,13 @@
 /**
  * ProjectGroup model for table: project_group
  */
-
 namespace PHPCI\Model;
 
 use PHPCI\Model\Base\ProjectGroupBase;
 
 /**
  * ProjectGroup Model
+ *
  * @uses PHPCI\Model\Base\ProjectGroupBase
  */
 class ProjectGroup extends ProjectGroupBase

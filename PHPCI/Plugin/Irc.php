@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -15,9 +15,8 @@ use PHPCI\Model\Build;
 
 /**
  * IRC Plugin - Sends a notification to an IRC channel
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class Irc implements \PHPCI\Plugin
 {
@@ -41,27 +40,27 @@ class Irc implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $this->phpci = $phpci;
-        $this->build = $build;
+        $this->phpci   = $phpci;
+        $this->build   = $build;
         $this->message = $options['message'];
 
         $buildSettings = $phpci->getConfig('build_settings');
-
 
         if (isset($buildSettings['irc'])) {
             $irc = $buildSettings['irc'];
 
             $this->server = $irc['server'];
-            $this->port = $irc['port'];
-            $this->room = $irc['room'];
-            $this->nick = $irc['nick'];
+            $this->port   = $irc['port'];
+            $this->room   = $irc['room'];
+            $this->nick   = $irc['nick'];
         }
     }
 
     /**
      * Run IRC plugin.
+     *
      * @return bool
      */
     public function execute()
@@ -79,10 +78,10 @@ class Irc implements \PHPCI\Plugin
         $sock = fsockopen($this->server, $this->port);
         stream_set_timeout($sock, 1);
 
-        $connectCommands = array(
+        $connectCommands = [
             'USER ' . $this->nick . ' 0 * :' . $this->nick,
             'NICK ' . $this->nick,
-        );
+        ];
         $this->executeIrcCommands($sock, $connectCommands);
         $this->executeIrcCommand($sock, 'JOIN ' . $this->room);
         $this->executeIrcCommand($sock, 'PRIVMSG ' . $this->room . ' :' . $msg);
@@ -94,7 +93,8 @@ class Irc implements \PHPCI\Plugin
 
     /**
      * @param resource $socket
-     * @param array $commands
+     * @param array    $commands
+     *
      * @return bool
      */
     private function executeIrcCommands($socket, array $commands)
@@ -107,7 +107,7 @@ class Irc implements \PHPCI\Plugin
 
         // almost all servers expect pingback!
         while ($response = fgets($socket)) {
-            $matches = array();
+            $matches = [];
             if (preg_match('/^PING \\:([A-Z0-9]+)/', $response, $matches)) {
                 $pingBack = $matches[1];
             }
@@ -120,13 +120,13 @@ class Irc implements \PHPCI\Plugin
     }
 
     /**
-     *
      * @param resource $socket
-     * @param string $command
+     * @param string   $command
+     *
      * @return bool
      */
     private function executeIrcCommand($socket, $command)
     {
-        return $this->executeIrcCommands($socket, array($command));
+        return $this->executeIrcCommands($socket, [$command]);
     }
 }

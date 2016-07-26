@@ -5,14 +5,13 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin;
 
-use PHPCI\Plugin\Phar as PharPlugin;
 use Phar as PHPPhar;
-use RuntimeException;
+use PHPCI\Plugin\Phar as PharPlugin;
 
 class PharTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,7 +22,7 @@ class PharTest extends \PHPUnit_Framework_TestCase
         $this->cleanSource();
     }
 
-    protected function getPlugin(array $options = array())
+    protected function getPlugin(array $options = [])
     {
         $build = $this
             ->getMockBuilder('PHPCI\Model\Build')
@@ -42,6 +41,7 @@ class PharTest extends \PHPUnit_Framework_TestCase
     {
         $directory = tempnam(APPLICATION_PATH . '/Tests/temp', 'source');
         unlink($directory);
+
         return $directory;
     }
 
@@ -56,13 +56,14 @@ class PharTest extends \PHPUnit_Framework_TestCase
         mkdir($directory . '/views');
         file_put_contents($directory . '/views/index.phtml', '<?php echo "hello";');
         $this->directory = $directory;
+
         return $directory;
     }
 
     protected function cleanSource()
     {
         if ($this->directory) {
-            $filenames = array(
+            $filenames = [
                 '/build.phar',
                 '/stub.php',
                 '/views/index.phtml',
@@ -71,11 +72,11 @@ class PharTest extends \PHPUnit_Framework_TestCase
                 '/config',
                 '/two.php',
                 '/one.php',
-            );
+            ];
             foreach ($filenames as $filename) {
                 if (is_dir($this->directory . $filename)) {
                     rmdir($this->directory . $filename);
-                } else if (is_file($this->directory . $filename)) {
+                } elseif (is_file($this->directory . $filename)) {
                     unlink($this->directory . $filename);
                 }
             }
@@ -101,30 +102,30 @@ class PharTest extends \PHPUnit_Framework_TestCase
 
     public function testDirectory()
     {
-        $plugin = $this->getPlugin();
+        $plugin                        = $this->getPlugin();
         $plugin->getPHPCI()->buildPath = 'foo';
-        $this->assertEquals('foo', $plugin->getDirectory());
+        $this->assertSame('foo', $plugin->getDirectory());
 
-        $plugin = $this->getPlugin(array('directory' => 'dirname'));
-        $this->assertEquals('dirname', $plugin->getDirectory());
+        $plugin = $this->getPlugin(['directory' => 'dirname']);
+        $this->assertSame('dirname', $plugin->getDirectory());
     }
 
     public function testFilename()
     {
         $plugin = $this->getPlugin();
-        $this->assertEquals('build.phar', $plugin->getFilename());
+        $this->assertSame('build.phar', $plugin->getFilename());
 
-        $plugin = $this->getPlugin(array('filename' => 'another.phar'));
-        $this->assertEquals('another.phar', $plugin->getFilename());
+        $plugin = $this->getPlugin(['filename' => 'another.phar']);
+        $this->assertSame('another.phar', $plugin->getFilename());
     }
 
     public function testRegExp()
     {
         $plugin = $this->getPlugin();
-        $this->assertEquals('/\.php$/', $plugin->getRegExp());
+        $this->assertSame('/\.php$/', $plugin->getRegExp());
 
-        $plugin = $this->getPlugin(array('regexp' => '/\.(php|phtml)$/'));
-        $this->assertEquals('/\.(php|phtml)$/', $plugin->getRegExp());
+        $plugin = $this->getPlugin(['regexp' => '/\.(php|phtml)$/']);
+        $this->assertSame('/\.(php|phtml)$/', $plugin->getRegExp());
     }
 
     public function testStub()
@@ -132,16 +133,16 @@ class PharTest extends \PHPUnit_Framework_TestCase
         $plugin = $this->getPlugin();
         $this->assertNull($plugin->getStub());
 
-        $plugin = $this->getPlugin(array('stub' => 'stub.php'));
-        $this->assertEquals('stub.php', $plugin->getStub());
+        $plugin = $this->getPlugin(['stub' => 'stub.php']);
+        $this->assertSame('stub.php', $plugin->getStub());
     }
 
     public function testExecute()
     {
         $this->checkReadonly();
 
-        $plugin = $this->getPlugin();
-        $path   = $this->buildSource();
+        $plugin                        = $this->getPlugin();
+        $path                          = $this->buildSource();
         $plugin->getPHPCI()->buildPath = $path;
 
         $this->assertTrue($plugin->execute());
@@ -158,8 +159,8 @@ class PharTest extends \PHPUnit_Framework_TestCase
     {
         $this->checkReadonly();
 
-        $plugin = $this->getPlugin(array('regexp' => '/\.(php|phtml)$/'));
-        $path   = $this->buildSource();
+        $plugin                        = $this->getPlugin(['regexp' => '/\.(php|phtml)$/']);
+        $path                          = $this->buildSource();
         $plugin->getPHPCI()->buildPath = $path;
 
         $this->assertTrue($plugin->execute());
@@ -185,14 +186,14 @@ STUB;
         $path = $this->buildSource();
         file_put_contents($path . '/stub.php', $content);
 
-        $plugin = $this->getPlugin(array('stub' => 'stub.php'));
+        $plugin                        = $this->getPlugin(['stub' => 'stub.php']);
         $plugin->getPHPCI()->buildPath = $path;
 
         $this->assertTrue($plugin->execute());
 
         $this->assertFileExists($path . '/build.phar');
         $phar = new PHPPhar($path . '/build.phar');
-        $this->assertEquals($content, trim($phar->getStub())); // + trim because PHP adds newline char
+        $this->assertSame($content, trim($phar->getStub())); // + trim because PHP adds newline char
     }
 
     public function testExecuteUnknownDirectory()
@@ -201,7 +202,7 @@ STUB;
 
         $directory = $this->buildTemp();
 
-        $plugin = $this->getPlugin(array('directory' => $directory));
+        $plugin                        = $this->getPlugin(['directory' => $directory]);
         $plugin->getPHPCI()->buildPath = $this->buildSource();
 
         $this->assertFalse($plugin->execute());

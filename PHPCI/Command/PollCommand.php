@@ -4,31 +4,30 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
-use b8\Store\Factory;
 use b8\HttpClient;
+use b8\Store\Factory;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
+use PHPCI\Model\Build;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
-use PHPCI\Model\Build;
 
 /**
  * Run console command - Poll github for latest commit id
+ *
  * @author       Jimmy Cleuren <jimmy.cleuren@gmail.com>
- * @package      PHPCI
- * @subpackage   Console
  */
 class PollCommand extends Command
 {
     /**
-     * @var \Monolog\Logger
+     * @type \Monolog\Logger
      */
     protected $logger;
 
@@ -50,14 +49,15 @@ class PollCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $parser = new Parser();
-        $yaml = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
+        $parser         = new Parser();
+        $yaml           = file_get_contents(APPLICATION_PATH . 'PHPCI/config.yml');
         $this->settings = $parser->parse($yaml);
 
         $token = $this->settings['phpci']['github']['token'];
 
-        if (!$token) {
+        if (! $token) {
             $this->logger->error(Lang::get('no_token'));
+
             return;
         }
 
@@ -65,20 +65,20 @@ class PollCommand extends Command
 
         $this->logger->addInfo(Lang::get('finding_projects'));
         $projectStore = Factory::getStore('Project');
-        $result = $projectStore->getWhere();
+        $result       = $projectStore->getWhere();
         $this->logger->addInfo(Lang::get('found_n_projects', count($result['items'])));
 
         foreach ($result['items'] as $project) {
-            $http = new HttpClient('https://api.github.com');
-            $commits = $http->get('/repos/' . $project->getReference() . '/commits', array('access_token' => $token));
+            $http    = new HttpClient('https://api.github.com');
+            $commits = $http->get('/repos/' . $project->getReference() . '/commits', ['access_token' => $token]);
 
-            $last_commit = $commits['body'][0]['sha'];
+            $last_commit    = $commits['body'][0]['sha'];
             $last_committer = $commits['body'][0]['commit']['committer']['email'];
-            $message = $commits['body'][0]['commit']['message'];
+            $message        = $commits['body'][0]['commit']['message'];
 
             $this->logger->info(Lang::get('last_commit_is', $project->getTitle(), $last_commit));
 
-            if ($project->getLastCommit() != $last_commit && $last_commit != "") {
+            if ($project->getLastCommit() != $last_commit && $last_commit != '') {
                 $this->logger->info(
                     Lang::get('adding_new_build')
                 );
@@ -89,8 +89,8 @@ class PollCommand extends Command
                 $build->setStatus(Build::STATUS_NEW);
                 $build->setBranch($project->getBranch());
                 $build->setCreated(new \DateTime());
-		$build->setCommitMessage($message);
-                if (!empty($last_committer)) {
+        $build->setCommitMessage($message);
+                if (! empty($last_committer)) {
                     $build->setCommitterEmail($last_committer);
                 }
                 $buildStore->save($build);

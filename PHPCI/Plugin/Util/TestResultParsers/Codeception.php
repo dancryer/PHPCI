@@ -1,5 +1,4 @@
 <?php
-
 namespace PHPCI\Plugin\Util\TestResultParsers;
 
 use PHPCI\Builder;
@@ -8,7 +7,6 @@ use PHPCI\Builder;
  * Class Codeception
  *
  * @author  Adam Cooper <adam@networkpie.co.uk>
- * @package PHPCI\Plugin\Util\TestResultParsers
  */
 class Codeception implements ParserInterface
 {
@@ -28,7 +26,7 @@ class Codeception implements ParserInterface
      */
     public function __construct(Builder $phpci, $resultsXml)
     {
-        $this->phpci = $phpci;
+        $this->phpci      = $phpci;
         $this->resultsXml = $resultsXml;
         $this->totalTests = 0;
     }
@@ -38,7 +36,7 @@ class Codeception implements ParserInterface
      */
     public function parse()
     {
-        $rtn = array();
+        $rtn = [];
 
         $this->results = new \SimpleXMLElement($this->resultsXml);
 
@@ -50,27 +48,27 @@ class Codeception implements ParserInterface
             $this->totalErrors += (int) $testsuite['errors'];
 
             foreach ($testsuite->testcase as $testcase) {
-                $testresult = array(
-                    'suite' => (string) $testsuite['name'],
-                    'file' => str_replace($this->phpci->buildPath, '/', (string) $testcase['file']),
-                    'name' => (string) $testcase['name'],
-                    'feature' => (string) $testcase['feature'],
+                $testresult = [
+                    'suite'      => (string) $testsuite['name'],
+                    'file'       => str_replace($this->phpci->buildPath, '/', (string) $testcase['file']),
+                    'name'       => (string) $testcase['name'],
+                    'feature'    => (string) $testcase['feature'],
                     'assertions' => (int) $testcase['assertions'],
-                    'time' => (float) $testcase['time']
-                );
+                    'time'       => (float) $testcase['time'],
+                ];
 
                 if (isset($testcase['class'])) {
                     $testresult['class'] = (string) $testcase['class'];
                 }
 
                 // PHPUnit testcases does not have feature field. Use class::method instead
-                if (!$testresult['feature']) {
+                if (! $testresult['feature']) {
                     $testresult['feature'] = sprintf('%s::%s', $testresult['class'], $testresult['name']);
                 }
 
                 if (isset($testcase->failure) || isset($testcase->error)) {
-                    $testresult['pass'] = false;
-                    $testresult['message'] =  (string)$testcase->failure . (string)$testcase->error;
+                    $testresult['pass']    = false;
+                    $testresult['message'] =  (string) $testcase->failure . (string) $testcase->error;
                 } else {
                     $testresult['pass'] = true;
                 }

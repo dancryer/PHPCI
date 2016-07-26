@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -15,7 +15,6 @@ use PHPCI\Model\Build;
 
 /**
  * Atoum plugin, runs Atoum tests within a project.
- * @package PHPCI\Plugin
  */
 class Atoum implements \PHPCI\Plugin
 {
@@ -25,17 +24,18 @@ class Atoum implements \PHPCI\Plugin
 
     /**
      * Set up the plugin, configure options, etc.
+     *
      * @param Builder $phpci
-     * @param Build $build
-     * @param array $options
+     * @param Build   $build
+     * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
 
         if (isset($options['executable'])) {
-            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR.$options['executable'];
+            $this->executable = $this->phpci->buildPath . DIRECTORY_SEPARATOR . $options['executable'];
         } else {
             $this->executable = $this->phpci->findBinary('atoum');
         }
@@ -55,6 +55,7 @@ class Atoum implements \PHPCI\Plugin
 
     /**
      * Run the Atoum plugin.
+     *
      * @return bool
      */
     public function execute()
@@ -84,7 +85,7 @@ class Atoum implements \PHPCI\Plugin
             $status = false;
             $this->phpci->log(Lang::get('no_tests_performed'));
         }
-        
+
         return $status;
     }
 }

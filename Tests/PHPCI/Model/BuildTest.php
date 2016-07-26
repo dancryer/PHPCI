@@ -5,17 +5,17 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
-
 namespace Tests\PHPCI\Model;
 
-use PHPCI\Model\Build;
 use PHPCI\Model;
+use PHPCI\Model\Build;
 
 /**
  * Unit tests for the Build model class.
+ *
  * @author Dan Cryer <dan@block8.co.uk>
  */
 class BuildTest extends \PHPUnit_Framework_TestCase
@@ -41,9 +41,9 @@ class BuildTest extends \PHPUnit_Framework_TestCase
     public function testExecute_TestBaseBuildDefaults()
     {
         $build = new Build();
-        $this->assertEquals('#', $build->getCommitLink());
-        $this->assertEquals('#', $build->getBranchLink());
-        $this->assertEquals(null, $build->getFileLinkTemplate());
+        $this->assertSame('#', $build->getCommitLink());
+        $this->assertSame('#', $build->getBranchLink());
+        $this->assertSame(null, $build->getFileLinkTemplate());
     }
 
     /**
@@ -70,17 +70,17 @@ class BuildTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_TestBuildExtra()
     {
-        $info = array(
+        $info = [
             'item1' => 'Item One',
             'item2' => 2,
-        );
+        ];
 
         $build = new Build();
         $build->setExtra(json_encode($info));
 
-        $this->assertEquals('Item One', $build->getExtra('item1'));
-        $this->assertEquals(2, $build->getExtra('item2'));
+        $this->assertSame('Item One', $build->getExtra('item1'));
+        $this->assertSame(2, $build->getExtra('item2'));
         $this->assertNull($build->getExtra('item3'));
-        $this->assertEquals($info, $build->getExtra());
+        $this->assertSame($info, $build->getExtra());
     }
 }

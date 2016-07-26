@@ -4,56 +4,55 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Command;
 
 use b8\Config;
+use b8\Store\Factory;
 use Monolog\Logger;
+use PHPCI\Builder;
+use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
 use PHPCI\Logging\OutputLogHandler;
+use PHPCI\Model\Build;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Store\Factory;
-use PHPCI\Builder;
-use PHPCI\BuildFactory;
-use PHPCI\Model\Build;
 
 /**
-* Run console command - Runs any pending builds.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Console
-*/
+ * Run console command - Runs any pending builds.
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ */
 class RunCommand extends Command
 {
     /**
-     * @var OutputInterface
+     * @type OutputInterface
      */
     protected $output;
 
     /**
-     * @var Logger
+     * @type Logger
      */
     protected $logger;
 
     /**
-     * @var int
+     * @type int
      */
     protected $maxBuilds = 100;
 
     /**
-     * @var bool
+     * @type bool
      */
     protected $isFromDaemon = false;
 
     /**
      * @param \Monolog\Logger $logger
-     * @param string $name
+     * @param string          $name
      */
     public function __construct(Logger $logger, $name = null)
     {
@@ -87,7 +86,7 @@ class RunCommand extends Command
 
         $this->logger->pushProcessor(new LoggedBuildContextTidier());
         $this->logger->addInfo(Lang::get('finding_builds'));
-        $store = Factory::getStore('Build');
+        $store  = Factory::getStore('Build');
         $result = $store->getByStatus(0, $this->maxBuilds);
         $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));
 
@@ -98,7 +97,7 @@ class RunCommand extends Command
             $build = BuildFactory::getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
-            if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
+            if (! $this->isFromDaemon && in_array($build->getProjectId(), $running)) {
                 $this->logger->addInfo(Lang::get('skipping_build', $build->getId()));
                 $result['items'][] = $build;
 
@@ -107,7 +106,7 @@ class RunCommand extends Command
                 continue;
             }
 
-            $builds++;
+            ++$builds;
 
             try {
                 // Logging relevant to this build should be stored
@@ -137,28 +136,28 @@ class RunCommand extends Command
 
     public function setMaxBuilds($numBuilds)
     {
-        $this->maxBuilds = (int)$numBuilds;
+        $this->maxBuilds = (int) $numBuilds;
     }
 
     public function setDaemon($fromDaemon)
     {
-        $this->isFromDaemon = (bool)$fromDaemon;
+        $this->isFromDaemon = (bool) $fromDaemon;
     }
 
     protected function validateRunningBuilds()
     {
-        /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
+        /** @type \PHPCI\Store\BuildStore $store */
+        $store   = Factory::getStore('Build');
         $running = $store->getByStatus(1);
-        $rtn = array();
+        $rtn     = [];
 
         $timeout = Config::getInstance()->get('phpci.build.failed_after', 1800);
 
         foreach ($running['items'] as $build) {
-            /** @var \PHPCI\Model\Build $build */
+            /** @type \PHPCI\Model\Build $build */
             $build = BuildFactory::getBuild($build);
 
-            $now = time();
+            $now   = time();
             $start = $build->getStarted()->getTimestamp();
 
             if (($now - $start) > $timeout) {

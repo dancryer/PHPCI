@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2015, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Plugin\Util;
 
 use PHPCI\Plugin\Util\ComposerPluginInformation;
@@ -15,7 +15,7 @@ use PHPCI\Plugin\Util\ComposerPluginInformation;
 class ComposerPluginInformationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ComposerPluginInformation
+     * @type ComposerPluginInformation
      */
     protected $testedInformation;
 
@@ -27,7 +27,7 @@ class ComposerPluginInformationTest extends \PHPUnit_Framework_TestCase
     protected function phpciSetup()
     {
         $this->setUpFromFile(
-            __DIR__ . "/../../../../vendor/composer/installed.json"
+            __DIR__ . '/../../../../vendor/composer/installed.json'
         );
     }
 
@@ -44,16 +44,15 @@ class ComposerPluginInformationTest extends \PHPUnit_Framework_TestCase
     {
         $this->phpciSetup();
         $plugins = $this->testedInformation->getInstalledPlugins();
-        $this->assertInternalType("array", $plugins);
-        $this->assertContainsOnly("stdClass", $plugins);
+        $this->assertInternalType('array', $plugins);
+        $this->assertContainsOnly('stdClass', $plugins);
     }
 
     public function testGetPluginClasses_ReturnsStringArray()
     {
         $this->phpciSetup();
         $classes = $this->testedInformation->getPluginClasses();
-        $this->assertInternalType("array", $classes);
-        $this->assertContainsOnly("string", $classes);
+        $this->assertInternalType('array', $classes);
+        $this->assertContainsOnly('string', $classes);
     }
 }
-

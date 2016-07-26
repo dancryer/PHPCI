@@ -11,8 +11,8 @@ class UniqueEmailAndNameUserFields extends AbstractMigration
     {
         $user_table = $this->table('user');
         $user_table
-            ->addIndex('email', array('unique' => true))
-            ->addIndex('name', array('unique' => true))
+            ->addIndex('email', ['unique' => true])
+            ->addIndex('name', ['unique' => true])
             ->save();
     }
 
@@ -23,8 +23,8 @@ class UniqueEmailAndNameUserFields extends AbstractMigration
     {
         $user_table = $this->table('user');
         $user_table
-            ->removeIndex('email', array('unique' => true))
-            ->removeIndex('name', array('unique' => true))
+            ->removeIndex('email', ['unique' => true])
+            ->removeIndex('name', ['unique' => true])
             ->save();
     }
 }

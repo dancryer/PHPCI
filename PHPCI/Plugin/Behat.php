@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
@@ -16,9 +16,8 @@ use PHPCI\Model\BuildError;
 
 /**
  * Behat BDD Plugin
+ *
  * @author       Dan Cryer <dan@block8.co.uk>
- * @package      PHPCI
- * @subpackage   Plugins
  */
 class Behat implements \PHPCI\Plugin
 {
@@ -38,7 +37,7 @@ class Behat implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci    = $phpci;
         $this->build    = $build;
@@ -50,7 +49,7 @@ class Behat implements \PHPCI\Plugin
             $this->executable = $this->phpci->findBinary('behat');
         }
 
-        if (!empty($options['features'])) {
+        if (! empty($options['features'])) {
             $this->features = $options['features'];
         }
     }
@@ -65,7 +64,7 @@ class Behat implements \PHPCI\Plugin
 
         $behat = $this->executable;
 
-        if (!$behat) {
+        if (! $behat) {
             $this->phpci->logFailure(Lang::get('could_not_find', 'behat'));
 
             return false;
@@ -94,13 +93,13 @@ class Behat implements \PHPCI\Plugin
         $parts = explode('---', $output);
 
         if (count($parts) <= 1) {
-            return array(0, array());
+            return [0, []];
         }
 
         $lines = explode(PHP_EOL, $parts[1]);
 
         $storeFailures = false;
-        $data = array();
+        $data          = [];
 
         foreach ($lines as $line) {
             $line = trim($line);
@@ -115,10 +114,10 @@ class Behat implements \PHPCI\Plugin
 
             if ($storeFailures) {
                 $lineParts = explode(':', $line);
-                $data[] = array(
+                $data[]    = [
                     'file' => $lineParts[0],
-                    'line' => $lineParts[1]
-                );
+                    'line' => $lineParts[1],
+                ];
 
                 $this->build->reportError(
                     $this->phpci,
@@ -133,6 +132,6 @@ class Behat implements \PHPCI\Plugin
 
         $errorCount = count($data);
 
-        return array($errorCount, $data);
+        return [$errorCount, $data];
     }
 }

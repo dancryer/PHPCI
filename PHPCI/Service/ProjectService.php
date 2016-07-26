@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Service;
 
 use PHPCI\Model\Project;
@@ -15,12 +15,11 @@ use PHPCI\Store\ProjectStore;
 /**
  * The project service handles the creation, modification and deletion of projects.
  * Class ProjectService
- * @package PHPCI\Service
  */
 class ProjectService
 {
     /**
-     * @var \PHPCI\Store\ProjectStore
+     * @type \PHPCI\Store\ProjectStore
      */
     protected $projectStore;
 
@@ -34,29 +33,34 @@ class ProjectService
 
     /**
      * Create a new project model and use the project store to save it.
+     *
      * @param string $title
      * @param string $type
      * @param string $reference
-     * @param array $options
+     * @param array  $options
+     *
      * @return \PHPCI\Model\Project
      */
-    public function createProject($title, $type, $reference, $options = array())
+    public function createProject($title, $type, $reference, $options = [])
     {
         // Create base project and use updateProject() to set its properties:
         $project = new Project();
+
         return $this->updateProject($project, $title, $type, $reference, $options);
     }
 
     /**
      * Update the properties of a given project.
+     *
      * @param Project $project
-     * @param string $title
-     * @param string $type
-     * @param string $reference
-     * @param array $options
+     * @param string  $title
+     * @param string  $type
+     * @param string  $reference
+     * @param array   $options
+     *
      * @return \PHPCI\Model\Project
      */
-    public function updateProject(Project $project, $title, $type, $reference, $options = array())
+    public function updateProject(Project $project, $title, $type, $reference, $options = [])
     {
         // Set basic properties:
         $project->setTitle($title);
@@ -78,11 +82,11 @@ class ProjectService
         }
 
         if (array_key_exists('allow_public_status', $options)) {
-            $project->setAllowPublicStatus((int)$options['allow_public_status']);
+            $project->setAllowPublicStatus((int) $options['allow_public_status']);
         }
 
         if (array_key_exists('archived', $options)) {
-            $project->setArchived((bool)$options['archived']);
+            $project->setArchived((bool) $options['archived']);
         }
 
         if (array_key_exists('branch', $options)) {
@@ -102,7 +106,9 @@ class ProjectService
 
     /**
      * Delete a given project.
+     *
      * @param Project $project
+     *
      * @return bool
      */
     public function deleteProject(Project $project)
@@ -112,21 +118,23 @@ class ProjectService
 
     /**
      * In circumstances where it is necessary, populate access information based on other project properties.
+     *
      * @see ProjectService::createProject()
+     *
      * @param Project $project
      */
     protected function processAccessInformation(Project &$project)
     {
-        $matches = array();
+        $matches   = [];
         $reference = $project->getReference();
 
         if ($project->getType() == 'gitlab') {
-            $info = array();
+            $info = [];
 
             if (preg_match('`^(.+)@(.+):([0-9]*)\/?(.+)\.git`', $reference, $matches)) {
-                $info['user'] = $matches[1];
+                $info['user']   = $matches[1];
                 $info['domain'] = $matches[2];
-                $info['port'] = $matches[3];
+                $info['port']   = $matches[3];
 
                 $project->setReference($matches[4]);
             }

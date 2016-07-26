@@ -5,9 +5,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace Tests\PHPCI\Service;
 
 use PHPCI\Model\User;
@@ -15,18 +15,18 @@ use PHPCI\Service\UserService;
 
 /**
  * Unit tests for the ProjectService class.
+ *
  * @author Dan Cryer <dan@block8.co.uk>
  */
 class UserServiceTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
-     * @var UserService $testedService
+     * @type UserService $testedService
      */
     protected $testedService;
 
     /**
-     * @var \ $mockBuildStore
+     * @type \ $mockBuildStore
      */
     protected $mockUserStore;
 
@@ -47,9 +47,9 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
     {
         $user = $this->testedService->createUser('Test', 'test@example.com', 'testing', 0);
 
-        $this->assertEquals('Test', $user->getName());
-        $this->assertEquals('test@example.com', $user->getEmail());
-        $this->assertEquals(0, $user->getIsAdmin());
+        $this->assertSame('Test', $user->getName());
+        $this->assertSame('test@example.com', $user->getEmail());
+        $this->assertSame(0, $user->getIsAdmin());
         $this->assertTrue(password_verify('testing', $user->getHash()));
     }
 
@@ -59,7 +59,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
     public function testExecute_CreateAdminUser()
     {
         $user = $this->testedService->createUser('Test', 'test@example.com', 'testing', 1);
-        $this->assertEquals(1, $user->getIsAdmin());
+        $this->assertSame(1, $user->getIsAdmin());
     }
 
     /**
@@ -73,7 +73,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $user->setIsAdmin(1);
 
         $user = $this->testedService->updateUser($user, 'Test', 'test@example.com', 'testing', 0);
-        $this->assertEquals(0, $user->getIsAdmin());
+        $this->assertSame(0, $user->getIsAdmin());
     }
 
     /**
@@ -87,7 +87,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $user->setIsAdmin(0);
 
         $user = $this->testedService->updateUser($user, 'Test', 'test@example.com', 'testing', 1);
-        $this->assertEquals(1, $user->getIsAdmin());
+        $this->assertSame(1, $user->getIsAdmin());
     }
 
     /**

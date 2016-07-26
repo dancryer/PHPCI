@@ -2,10 +2,10 @@
 namespace PHPCI\Plugin;
 
 use Exception;
+use Phar as PHPPhar;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
-use Phar as PHPPhar;
 
 /**
  * Phar Plugin
@@ -14,37 +14,43 @@ class Phar implements \PHPCI\Plugin
 {
     /**
      * PHPCI
-     * @var Builder
+     *
+     * @type Builder
      */
     protected $phpci;
 
     /**
      * Build
-     * @var Build
+     *
+     * @type Build
      */
     protected $build;
 
     /**
      * Output Directory
-     * @var string
+     *
+     * @type string
      */
     protected $directory;
 
     /**
      * Phar Filename
-     * @var string
+     *
+     * @type string
      */
     protected $filename;
 
     /**
      * Regular Expression Filename Capture
-     * @var string
+     *
+     * @type string
      */
     protected $regexp;
 
     /**
      * Stub Filename
-     * @var string
+     *
+     * @type string
      */
     protected $stub;
 
@@ -60,7 +66,7 @@ class Phar implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         // Basic
         $this->phpci = $phpci;
@@ -110,12 +116,14 @@ class Phar implements \PHPCI\Plugin
     /**
      * Directory Setter
      *
-     * @param  string $directory Configuration Value
-     * @return Phar   Fluent Interface
+     * @param string $directory Configuration Value
+     *
+     * @return Phar Fluent Interface
      */
     public function setDirectory($directory)
     {
         $this->directory = $directory;
+
         return $this;
     }
 
@@ -126,21 +134,24 @@ class Phar implements \PHPCI\Plugin
      */
     public function getDirectory()
     {
-        if (!isset($this->directory)) {
+        if (! isset($this->directory)) {
             $this->setDirectory($this->getPHPCI()->buildPath);
         }
+
         return $this->directory;
     }
 
     /**
      * Filename Setter
      *
-     * @param  string $filename Configuration Value
-     * @return Phar   Fluent Interface
+     * @param string $filename Configuration Value
+     *
+     * @return Phar Fluent Interface
      */
     public function setFilename($filename)
     {
         $this->filename = $filename;
+
         return $this;
     }
 
@@ -151,21 +162,24 @@ class Phar implements \PHPCI\Plugin
      */
     public function getFilename()
     {
-        if (!isset($this->filename)) {
+        if (! isset($this->filename)) {
             $this->setFilename('build.phar');
         }
+
         return $this->filename;
     }
 
     /**
      * Regular Expression Setter
      *
-     * @param  string $regexp Configuration Value
-     * @return Phar   Fluent Interface
+     * @param string $regexp Configuration Value
+     *
+     * @return Phar Fluent Interface
      */
     public function setRegExp($regexp)
     {
         $this->regexp = $regexp;
+
         return $this;
     }
 
@@ -176,21 +190,24 @@ class Phar implements \PHPCI\Plugin
      */
     public function getRegExp()
     {
-        if (!isset($this->regexp)) {
+        if (! isset($this->regexp)) {
             $this->setRegExp('/\.php$/');
         }
+
         return $this->regexp;
     }
 
     /**
      * Stub Filename Setter
      *
-     * @param  string $stub Configuration Value
-     * @return Phar   Fluent Interface
+     * @param string $stub Configuration Value
+     *
+     * @return Phar Fluent Interface
      */
     public function setStub($stub)
     {
         $this->stub = $stub;
+
         return $this;
     }
 
@@ -206,6 +223,7 @@ class Phar implements \PHPCI\Plugin
 
     /**
      * Get stub content for the Phar file.
+     *
      * @return string
      */
     public function getStubContent()
@@ -215,11 +233,13 @@ class Phar implements \PHPCI\Plugin
         if ($filename) {
             $content = file_get_contents($this->getPHPCI()->buildPath . DIRECTORY_SEPARATOR . $this->getStub());
         }
+
         return $content;
     }
 
     /**
      * Run the phar plugin.
+     *
      * @return bool
      */
     public function execute()

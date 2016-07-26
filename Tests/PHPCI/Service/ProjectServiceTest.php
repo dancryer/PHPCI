@@ -5,10 +5,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
-
 namespace Tests\PHPCI\Service;
 
 use PHPCI\Model\Project;
@@ -16,18 +15,18 @@ use PHPCI\Service\ProjectService;
 
 /**
  * Unit tests for the ProjectService class.
+ *
  * @author Dan Cryer <dan@block8.co.uk>
  */
 class ProjectServiceTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
-     * @var ProjectService $testedService
+     * @type ProjectService $testedService
      */
     protected $testedService;
 
     /**
-     * @var \ $mockProjectStore
+     * @type \ $mockProjectStore
      */
     protected $mockProjectStore;
 
@@ -48,10 +47,10 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
     {
         $returnValue = $this->testedService->createProject('Test Project', 'github', 'block8/phpci');
 
-        $this->assertEquals('Test Project', $returnValue->getTitle());
-        $this->assertEquals('github', $returnValue->getType());
-        $this->assertEquals('block8/phpci', $returnValue->getReference());
-        $this->assertEquals('master', $returnValue->getBranch());
+        $this->assertSame('Test Project', $returnValue->getTitle());
+        $this->assertSame('github', $returnValue->getType());
+        $this->assertSame('block8/phpci', $returnValue->getReference());
+        $this->assertSame('master', $returnValue->getBranch());
     }
 
     /**
@@ -59,21 +58,21 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_CreateProjectWithOptions()
     {
-        $options = array(
-            'ssh_private_key' => 'private',
-            'ssh_public_key' => 'public',
+        $options = [
+            'ssh_private_key'     => 'private',
+            'ssh_public_key'      => 'public',
             'allow_public_status' => 1,
-            'build_config' => 'config',
-            'branch' => 'testbranch',
-        );
+            'build_config'        => 'config',
+            'branch'              => 'testbranch',
+        ];
 
         $returnValue = $this->testedService->createProject('Test Project', 'github', 'block8/phpci', $options);
 
-        $this->assertEquals('private', $returnValue->getSshPrivateKey());
-        $this->assertEquals('public', $returnValue->getSshPublicKey());
-        $this->assertEquals('config', $returnValue->getBuildConfig());
-        $this->assertEquals('testbranch', $returnValue->getBranch());
-        $this->assertEquals(1, $returnValue->getAllowPublicStatus());
+        $this->assertSame('private', $returnValue->getSshPrivateKey());
+        $this->assertSame('public', $returnValue->getSshPublicKey());
+        $this->assertSame('config', $returnValue->getBuildConfig());
+        $this->assertSame('testbranch', $returnValue->getBranch());
+        $this->assertSame(1, $returnValue->getAllowPublicStatus());
     }
 
     /**
@@ -82,12 +81,12 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_CreateGitlabProjectWithoutPort()
     {
-        $reference = 'git@gitlab.block8.net:block8/phpci.git';
+        $reference   = 'git@gitlab.block8.net:block8/phpci.git';
         $returnValue = $this->testedService->createProject('Gitlab', 'gitlab', $reference);
 
-        $this->assertEquals('git', $returnValue->getAccessInformation('user'));
-        $this->assertEquals('gitlab.block8.net', $returnValue->getAccessInformation('domain'));
-        $this->assertEquals('block8/phpci', $returnValue->getReference());
+        $this->assertSame('git', $returnValue->getAccessInformation('user'));
+        $this->assertSame('gitlab.block8.net', $returnValue->getAccessInformation('domain'));
+        $this->assertSame('block8/phpci', $returnValue->getReference());
     }
 
     /**
@@ -102,9 +101,9 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
 
         $returnValue = $this->testedService->updateProject($project, 'After Title', 'bitbucket', 'After Reference');
 
-        $this->assertEquals('After Title', $returnValue->getTitle());
-        $this->assertEquals('After Reference', $returnValue->getReference());
-        $this->assertEquals('bitbucket', $returnValue->getType());
+        $this->assertSame('After Title', $returnValue->getTitle());
+        $this->assertSame('After Reference', $returnValue->getReference());
+        $this->assertSame('bitbucket', $returnValue->getType());
     }
 
     /**
@@ -115,15 +114,15 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $project = new Project();
         $project->setAllowPublicStatus(1);
 
-        $options = array(
+        $options = [
             'ssh_private_key' => 'private',
-            'ssh_public_key' => 'public',
-            'build_config' => 'config',
-        );
+            'ssh_public_key'  => 'public',
+            'build_config'    => 'config',
+        ];
 
         $returnValue = $this->testedService->updateProject($project, 'Test Project', 'github', 'block8/phpci', $options);
 
-        $this->assertEquals(0, $returnValue->getAllowPublicStatus());
+        $this->assertSame(0, $returnValue->getAllowPublicStatus());
     }
 
     /**
@@ -139,6 +138,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $service = new ProjectService($store);
         $project = new Project();
 
-        $this->assertEquals(true, $service->deleteProject($project));
+        $this->assertSame(true, $service->deleteProject($project));
     }
 }

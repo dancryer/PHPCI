@@ -4,20 +4,19 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI\Plugin;
 
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
-* Grunt Plugin - Provides access to grunt functionality.
-* @author       Tobias Tom <t.tom@succont.de>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * Grunt Plugin - Provides access to grunt functionality.
+ *
+ * @author       Tobias Tom <t.tom@succont.de>
+ */
 class Grunt implements \PHPCI\Plugin
 {
     protected $directory;
@@ -40,14 +39,14 @@ class Grunt implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
-        $path = $phpci->buildPath;
-        $this->build = $build;
-        $this->phpci = $phpci;
+        $path            = $phpci->buildPath;
+        $this->build     = $build;
+        $this->phpci     = $phpci;
         $this->directory = $path;
-        $this->task = null;
-        $this->grunt = $this->phpci->findBinary('grunt');
+        $this->task      = null;
+        $this->grunt     = $this->phpci->findBinary('grunt');
         $this->gruntfile = 'Gruntfile.js';
 
         // Handle options:
@@ -69,8 +68,8 @@ class Grunt implements \PHPCI\Plugin
     }
 
     /**
-    * Executes grunt and runs a specified command (e.g. install / update)
-    */
+     * Executes grunt and runs a specified command (e.g. install / update)
+     */
     public function execute()
     {
         // if npm does not work, we cannot use grunt, so we return false
@@ -78,7 +77,7 @@ class Grunt implements \PHPCI\Plugin
         if (IS_WIN) {
             $cmd = 'cd /d %s && npm install';
         }
-        if (!$this->phpci->executeCommand($cmd, $this->directory)) {
+        if (! $this->phpci->executeCommand($cmd, $this->directory)) {
             return false;
         }
 

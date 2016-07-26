@@ -4,9 +4,9 @@
  *
  * @copyright    Copyright 2014, Block 8 Limited.
  * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ *
  * @link         https://www.phptesting.org/
  */
-
 namespace PHPCI;
 
 use b8\Config;
@@ -17,22 +17,21 @@ use b8\View;
 
 /**
  * PHPCI Base Controller
- * @package PHPCI
  */
 class Controller extends \b8\Controller
 {
     /**
-    * @var \b8\View
-    */
+     * @type \b8\View
+     */
     protected $controllerView;
 
     /**
-     * @var \b8\View
+     * @type \b8\View
      */
     protected $view;
 
     /**
-     * @var \b8\View
+     * @type \b8\View
      */
     public $layout;
 
@@ -45,15 +44,15 @@ class Controller extends \b8\Controller
     }
 
     /**
-     * @param Config $config
-     * @param Request $request
+     * @param Config   $config
+     * @param Request  $request
      * @param Response $response
      */
     public function __construct(Config $config, Request $request, Response $response)
     {
         parent::__construct($config, $request, $response);
 
-        $class = explode('\\', get_class($this));
+        $class           = explode('\\', get_class($this));
         $this->className = substr(array_pop($class), 0, -10);
         $this->setControllerView();
     }
@@ -72,6 +71,7 @@ class Controller extends \b8\Controller
 
     /**
      * Set the view that this controller action should use.
+     *
      * @param $action
      */
     protected function setView($action)
@@ -83,8 +83,10 @@ class Controller extends \b8\Controller
 
     /**
      * Handle the incoming request.
+     *
      * @param $action
      * @param $actionParams
+     *
      * @return \b8\b8\Http\Response|Response
      */
     public function handleAction($action, $actionParams)
@@ -109,17 +111,19 @@ class Controller extends \b8\Controller
 
     /**
      * Require that the currently logged in user is an administrator.
+     *
      * @throws ForbiddenException
      */
     protected function requireAdmin()
     {
-        if (!$this->currentUserIsAdmin()) {
+        if (! $this->currentUserIsAdmin()) {
             throw new ForbiddenException('You do not have permission to do that.');
         }
     }
 
     /**
      * Check if the currently logged in user is an administrator.
+     *
      * @return bool
      */
     protected function currentUserIsAdmin()

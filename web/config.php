@@ -74,7 +74,9 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                             <p>Major problems have been detected and <strong>must</strong> be fixed before continuing:</p>
                             <ol>
                                 <?php foreach ($majorProblems as $problem): ?>
-                                    <li><?php echo $problem->getHelpHtml() ?></li>
+                                    <li><?php echo $problem->getTestMessage() ?>
+                                        <p class="help"><em><?php echo $problem->getHelpHtml() ?></em></p>
+                                    </li>
                                 <?php endforeach; ?>
                             </ol>
                         <?php endif; ?>
@@ -87,7 +89,9 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                             </p>
                             <ol>
                                 <?php foreach ($minorProblems as $problem): ?>
-                                    <li><?php echo $problem->getHelpHtml() ?></li>
+                                    <li><?php echo $problem->getTestMessage() ?>
+                                        <p class="help"><em><?php echo $problem->getHelpHtml() ?></em></p>
+                                    </li>
                                 <?php endforeach; ?>
                             </ol>
                         <?php endif; ?>

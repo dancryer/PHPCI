@@ -51,6 +51,10 @@ PHPCI',
     'branch_x' => 'Ветка: %s',
     'created_x' => 'Создан: %s',
     'started_x' => 'Запущен: %s',
+    
+    // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
 
     // Sidebar
     'hello_name' => 'Привет, %s',
@@ -384,6 +388,12 @@ PHPCI',
     'plugin_missing' => 'Плагина не существует: %s',
     'tap_version' => 'TapParser поддерживает только TAP версии 13',
     'tap_error' => 'Некорректная TAP-строка, количество тестов не совпадает с заявленным.',
+    
+     // Error Levels:
+    'critical' => 'Критичный',
+    'high' => 'Высокий',
+    'normal' => 'Нормальный',
+    'low' => 'Низкий',
 
     // Build Plugins:
     'no_tests_performed' => 'Никакие тесты не были запущены.',
@@ -408,5 +418,14 @@ PHPCI',
     'build_file_missing' => 'Указанного файла сборки не существует.',
     'property_file_missing' => 'Указанного файла сборки не существует.',
     'could_not_process_report' => 'Невозможно обработать отчет этой утилиты.',
-    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.'
+    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.',
+    
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt'
 );

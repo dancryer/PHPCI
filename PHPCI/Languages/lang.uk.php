@@ -42,6 +42,10 @@ PHPCI',
     'login' => 'Логин / Email адреса',
     'password' => 'Пароль',
     'log_in' => 'Увійти',
+    
+    // View Build
+    'errors' => 'Помилки',
+    'information' => 'Інформація',
 
 
     // Top Nav
@@ -371,6 +375,13 @@ PHPCI',
     'plugin_missing' => 'Плагін не існує: %s',
     'tap_version' => 'TapParser підтримує тільки TAP версії 13',
     'tap_error' => 'Некоректний TAP-рядок, кількість тестів не співпадає із вказаними.',
+    
+    // Error Levels:
+     // Error Levels:
+    'critical' => 'Критичний',
+    'high' => 'Високий',
+    'normal' => 'Нормальний',
+    'low' => 'Низький',
 
     // Build Plugins:
     'no_tests_performed' => 'Жодних тестів не було запущено.',
@@ -395,5 +406,14 @@ PHPCI',
     'build_file_missing' => 'Вказаний файл збірки не існує.',
     'property_file_missing' => 'Вказаний файл властивості не існує.',
     'could_not_process_report' => 'Неможливо обробити звіт, згенерований цією утилітою.',
-    'shell_not_enabled' => 'Плагін shell не увімкнений. Будь ласка, увімкніть його через config.yml.'
+    'shell_not_enabled' => 'Плагін shell не увімкнений. Будь ласка, увімкніть його через config.yml.',
+    
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt'
 );

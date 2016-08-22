@@ -148,6 +148,9 @@ PHPCI',
                                   Services</a> вашего Bitbucket репозитория.',
 
     // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
+
     'build_x_not_found' => 'Сборки с ID %d не существует.',
     'build_n' => 'Сборка %d',
     'rebuild_now' => 'Пересобрать сейчас',
@@ -408,5 +411,20 @@ PHPCI',
     'build_file_missing' => 'Указанного файла сборки не существует.',
     'property_file_missing' => 'Указанного файла сборки не существует.',
     'could_not_process_report' => 'Невозможно обработать отчет этой утилиты.',
-    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.'
+    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.',
+
+    // Error Levels:
+    'critical' => 'Критичный',
+    'high' => 'Высокий',
+    'normal' => 'Нормальный',
+    'low' => 'Низкий',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt',
 );

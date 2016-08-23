@@ -31,6 +31,11 @@ class BuildService
     protected $buildStore;
 
     /**
+     * @var bool
+     */
+    public $queueError = false;
+
+    /**
      * @param BuildStore $buildStore
      */
     public function __construct(BuildStore $buildStore)
@@ -155,27 +160,30 @@ class BuildService
         }
 
         $config = Config::getInstance();
-
         $settings = $config->get('phpci.worker', []);
 
         if (!empty($settings['host']) && !empty($settings['queue'])) {
-            $jobData = array(
-                'type' => 'phpci.build',
-                'build_id' => $build->getId(),
-            );
+            try {
+                $jobData = array(
+                    'type' => 'phpci.build',
+                    'build_id' => $build->getId(),
+                );
 
-            if ($config->get('using_custom_file')) {
-                $jobData['config'] = $config->getArray();
+                if ($config->get('using_custom_file')) {
+                    $jobData['config'] = $config->getArray();
+                }
+
+                $pheanstalk = new Pheanstalk($settings['host']);
+                $pheanstalk->useTube($settings['queue']);
+                $pheanstalk->put(
+                    json_encode($jobData),
+                    PheanstalkInterface::DEFAULT_PRIORITY,
+                    PheanstalkInterface::DEFAULT_DELAY,
+                    $config->get('phpci.worker.job_timeout', 600)
+                );
+            } catch (\Exception $ex) {
+                $this->queueError = true;
             }
-
-            $pheanstalk = new Pheanstalk($settings['host']);
-            $pheanstalk->useTube($settings['queue']);
-            $pheanstalk->put(
-                json_encode($jobData),
-                PheanstalkInterface::DEFAULT_PRIORITY,
-                PheanstalkInterface::DEFAULT_DELAY,
-                $config->get('phpci.worker.job_timeout', 600)
-            );
         }
     }
 }

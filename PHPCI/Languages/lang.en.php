@@ -372,6 +372,9 @@ PHPCI',
     'project_id_argument' => 'A project ID',
     'commit_id_option' => 'Commit ID to build',
     'branch_name_option' => 'Branch to build',
+    'add_to_queue_failed' => 'Build created successfully, but failed to add to build queue. This usually happens
+                                when PHPCI is set to use a beanstalkd server that does not exist, 
+                                or your beanstalkd server has stopped.',
 
     // Run Command
     'run_all_pending' => 'Run all pending PHPCI builds.',

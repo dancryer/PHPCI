@@ -200,6 +200,10 @@ class BuildController extends \PHPCI\Controller
 
         $build = $this->buildService->createDuplicateBuild($copy);
 
+        if ($this->buildService->queueError) {
+            $_SESSION['global_error'] = Lang::get('add_to_queue_failed');
+        }
+
         $response = new b8\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
         return $response;

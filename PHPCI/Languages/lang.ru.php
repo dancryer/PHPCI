@@ -148,10 +148,12 @@ PHPCI',
                                   Services</a> вашего Bitbucket репозитория.',
 
     // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
+
     'build_x_not_found' => 'Сборки с ID %d не существует.',
     'build_n' => 'Сборка %d',
     'rebuild_now' => 'Пересобрать сейчас',
-
 
     'committed_by_x' => 'Отправил %s',
     'commit_id_x' => 'Коммит: %s',
@@ -205,8 +207,8 @@ PHPCI',
     'build_created' => 'Сборка создана',
     'build_started' => 'Сборка запущена',
     'build_finished' => 'Сборка окончена',
-    'test_message' => 'Message',
-    'test_no_message' => 'No message',
+    'test_message' => 'Сообщение',
+    'test_no_message' => 'Нет сообщений',
     'test_success' => 'Успешно: %d',
     'test_fail' => 'Провалено: %d',
     'test_skipped' => 'Пропущено: %d',
@@ -268,8 +270,8 @@ PHPCI',
     '5_mins' => '5 минут',
     '15_mins' => '15 минут',
     '30_mins' => '30 минут',
-    '1_hour' => '1 часа',
-    '3_hours' => '3 часов',
+    '1_hour' => '1 час',
+    '3_hours' => '3 часа',
 
     // Plugins
     'cannot_update_composer' => 'PHPCI не может обновить composer.json, если он недоступен на запись.',
@@ -293,10 +295,10 @@ PHPCI',
     'duration' => 'Продолжительность',
     'plugin' => 'Плагин',
     'stage_setup' => 'Установка',
-    'stage_test' => 'тестирование',
-    'stage_complete' => 'Завершение',
-    'stage_success' => 'Успешное завершение',
-    'stage_failure' => 'Провал',
+    'stage_test' => 'Тестирование',
+    'stage_complete' => 'Завершено',
+    'stage_success' => 'Успешно',
+    'stage_failure' => 'Провалено',
     'stage_broken'  => 'Поломка',
     'stage_fixed' => 'Исправление',
 
@@ -408,5 +410,20 @@ PHPCI',
     'build_file_missing' => 'Указанного файла сборки не существует.',
     'property_file_missing' => 'Указанного файла сборки не существует.',
     'could_not_process_report' => 'Невозможно обработать отчет этой утилиты.',
-    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.'
+    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.',
+
+    // Error Levels:
+    'critical' => 'Критическая',
+    'high' => 'Высокий',
+    'normal' => 'Обычный',
+    'low' => 'Низкий',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt',
 );

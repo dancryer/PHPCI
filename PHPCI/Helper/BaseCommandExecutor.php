@@ -92,14 +92,14 @@ abstract class BaseCommandExecutor implements CommandExecutor
         $pipes = array();
         $process = proc_open($command, $descriptorSpec, $pipes, $this->buildPath, null);
 
+        $this->lastOutput = '';
+        $this->lastError = '';
+
         if (is_resource($process)) {
             fclose($pipes[0]);
 
-            $this->lastOutput = stream_get_contents($pipes[1]);
-            $this->lastError = stream_get_contents($pipes[2]);
-
-            fclose($pipes[1]);
-            fclose($pipes[2]);
+            list($this->lastOutput, $this->lastError) =
+                $this->readAlternating([$pipes[1], $pipes[2]]);
 
             $status = proc_close($process);
         }
@@ -123,6 +123,41 @@ abstract class BaseCommandExecutor implements CommandExecutor
         }
 
         return $rtn;
+    }
+
+    /**
+     * Reads from array of streams as data becomes available.
+     * @param array     $descriptors
+     * @return string[] data read from each descriptor
+     */
+    private function readAlternating(array $descriptors)
+    {
+        $outputs = [];
+        foreach ($descriptors as $key => $descriptor) {
+            stream_set_blocking($descriptor, false);
+            $outputs[$key] = '';
+        }
+
+        do {
+            $read = $descriptors;
+            $write = null;
+            $except = null;
+
+            stream_select($read, $write, $except, null);
+
+            foreach ($read as $descriptor) {
+                $key = array_search($descriptor, $descriptors);
+
+                if (feof($descriptor)) {
+                    fclose($descriptor);
+                    unset($descriptors[$key]);
+                } else {
+                    $outputs[$key] .= fgets($descriptor);
+                }
+            }
+        } while (count($descriptors) > 0);
+
+        return $outputs;
     }
 
     /**

@@ -58,6 +58,27 @@ class CommandExecutorTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($returnValue);
     }
 
+    /**
+     * Runs a script that generates an output that fills the standard error
+     * buffer first, followed by the standard output buffer. The function
+     * should be able to read from both streams, thereby preventing the child
+     * process from blocking because one of its buffers is full.
+     */
+    public function testExecuteCommand_AlternatesBothBuffers()
+    {
+        $length = 80000;
+        $script = <<<EOD
+/bin/sh -c 'data="$(printf %%${length}s | tr " " "-")"; >&2 echo "\$data"; >&1 echo "\$data"'
+EOD;
+        $data = str_repeat("-", $length);
+
+        $returnValue = $this->testedExecutor->executeCommand(array($script));
+        $this->assertTrue($returnValue);
+
+        $this->assertEquals($data, trim($this->testedExecutor->getLastOutput()));
+        $this->assertEquals($data, trim($this->testedExecutor->getLastError()));
+    }
+
     public function testFindBinary_ReturnsPathInSpecifiedRoot()
     {
         $thisFileName = "CommandExecutorTest.php";

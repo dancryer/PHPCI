@@ -52,6 +52,7 @@
         "maknz/slack": "~1.7",
         "hipchat/hipchat-php": "~1.4",
         "mremi/flowdock": "~1.0"
+        "fulldecent/web-puc": "0.1"
     },
 
     "require-dev": {

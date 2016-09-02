@@ -56,7 +56,8 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('master', $project->getBranch());
     }
 
-    public function testExecute_TestBitbucketDefaultBranch() {
+    public function testExecute_TestBitbucketDefaultBranch() 
+    {
         $project = new Project();
         $project->setType('bitbucket');
 

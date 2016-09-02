@@ -24,9 +24,6 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
     {
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestIsAValidModel()
     {
         $project = new Project();
@@ -35,9 +32,6 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($project instanceof Model\Base\ProjectBase);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestGitDefaultBranch()
     {
         $project = new Project();
@@ -46,9 +40,6 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('master', $project->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestGithubDefaultBranch()
     {
         $project = new Project();
@@ -57,9 +48,6 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('master', $project->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestGitlabDefaultBranch()
     {
         $project = new Project();
@@ -68,20 +56,13 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('master', $project->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
-    public function testExecute_TestBitbucketDefaultBranch()
-    {
+    public function testExecute_TestBitbucketDefaultBranch() {
         $project = new Project();
         $project->setType('bitbucket');
 
         $this->assertEquals('master', $project->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestMercurialDefaultBranch()
     {
         $project = new Project();
@@ -90,9 +71,6 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('default', $project->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_TestProjectAccessInformation()
     {
         $info = array(

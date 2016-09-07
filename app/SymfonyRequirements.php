@@ -689,7 +689,7 @@ class SymfonyRequirements extends RequirementCollection
                     $this->addRecommendation(
                         \Symfony\Component\Intl\Intl::getIcuDataVersion() === \Symfony\Component\Intl\Intl::getIcuVersion(),
                         sprintf('intl ICU version installed on your system (%s) does not match the ICU data bundled with Symfony (%s)', \Symfony\Component\Intl\Intl::getIcuVersion(), \Symfony\Component\Intl\Intl::getIcuDataVersion()),
-                        'To avoid internationalization data incosistencies upgrade the symfony/intl component.'
+                        'To avoid internationalization data inconsistencies upgrade the symfony/intl component.'
                     );
                 }
             }

@@ -51,7 +51,7 @@
         "pda/pheanstalk": "~3.1",
         "maknz/slack": "~1.7",
         "hipchat/hipchat-php": "~1.4",
-        "mremi/flowdock": "~1.0"
+        "mremi/flowdock": "~1.0",
         "fulldecent/web-puc": "0.1"
     },
 

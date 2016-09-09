@@ -14,7 +14,7 @@ use PHPCI\Builder;
 use PHPCI\Model\Build;
 
 /**
- * PHP Mess Detector Plugin - Allows PHP Mess Detector testing.
+ * Web Package Update Checker validates web projects to ensure they use the latest available versions of web packages.
  * @author       Ilia Grabko <ilya4041@yandex.ru>
  * @package      PHPCI
  * @subpackage   Plugins

@@ -148,6 +148,9 @@ PHPCI',
                                   Services</a> вашего Bitbucket репозитория.',
 
     // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
+
     'build_x_not_found' => 'Сборки с ID %d не существует.',
     'build_n' => 'Сборка %d',
     'rebuild_now' => 'Пересобрать сейчас',

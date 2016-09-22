@@ -148,6 +148,9 @@ PHPCI',
                                   Services</a> вашего Bitbucket репозитория.',
 
     // View Build
+    'errors' => 'Ошибки',
+    'information' => 'Информация',
+
     'build_x_not_found' => 'Сборки с ID %d не существует.',
     'build_n' => 'Сборка %d',
     'rebuild_now' => 'Пересобрать сейчас',
@@ -360,6 +363,7 @@ PHPCI',
     'project_id_argument' => 'ID проекта',
     'commit_id_option' => 'ID коммита для сборки',
     'branch_name_option' => 'Ветка для сборки',
+    'add_to_queue_failed' => 'Не удалось поставить задачу в очередь на сборку',
 
     // Run Command
     'run_all_pending' => 'Запустить все ожидающие PHPCI сборки.',
@@ -408,5 +412,18 @@ PHPCI',
     'build_file_missing' => 'Указанного файла сборки не существует.',
     'property_file_missing' => 'Указанного файла сборки не существует.',
     'could_not_process_report' => 'Невозможно обработать отчет этой утилиты.',
-    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.'
+    'shell_not_enabled' => 'Плагин shell не включен. Пожалуйста, включите его в файле config.yml.',
+
+    // Error Levels:
+    'critical' => 'Критический',
+    'high' => 'Высокий',
+    'normal' => 'Приемлемый',
+    'low' => 'Низкий',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
 );

@@ -3,7 +3,7 @@ use PHPCI\Helper\Lang;
 
 $linkTemplate = $build->getFileLinkTemplate();
 
-/** @var \PHPCI\Model\BuildError $error */
+/** @var \PHPCI\Model\BuildError[] $errors */
 foreach ($errors as $error):
 
     $link = str_replace('{FILE}', $error->getFile(), $linkTemplate);
@@ -30,7 +30,7 @@ foreach ($errors as $error):
            ?>
            </a>
        </td>
-       <td><?php print $error->getMessage(); ?></td>
+       <td class="visible-line-breaks"><?php print $error->getMessage(); ?></td>
 
    </tr>
 

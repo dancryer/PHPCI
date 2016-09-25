@@ -33,6 +33,11 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
             var input = $(ev.target);
             $('#phpunit-data tbody ' + input.data('target')).toggle(input.prop('checked'));
         });
+
+        $(document).on('click', '#phpunit-data button.trace', function() {
+            var $btn = $(this);
+            $($btn).replaceWith(self.buildTrace($btn.data('trace')));
+        });
     },
 
     render: function() {
@@ -69,7 +74,7 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
 
         for (var i in tests) {
             var content = $('<td colspan="3"></td>'),
-                message = $('<div></div>').appendTo(content),
+                message = $('<div class="visible-line-breaks"></div>').appendTo(content),
                 severity = tests[i].severity || (tests[i].pass ? 'success' : 'failed');
 
             if (tests[i].message) {
@@ -82,6 +87,13 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
 
             if (tests[i].data) {
                 content.append('<div>' + this.repr(tests[i].data) + '</div>');
+            }
+
+            if (tests[i].trace && tests[i].trace.length) {
+                var $traceBtn = $('<button class="btn btn-default btn-xs trace" type="button" title="Expand Trace">...</button>');
+                $traceBtn.data('trace', tests[i].trace);
+                content.append('Trace: ');
+                content.append($traceBtn);
             }
 
             $('<tr class="'+  severity + '"></tr>').append(content).appendTo(tbody);
@@ -141,6 +153,17 @@ var phpunitPlugin = ActiveBuild.UiPlugin.extend({
                     '</table>';
         }
         return '???';
+    },
+
+    buildTrace: function(trace){
+        var list = '<ol reversed>';
+
+        trace.forEach(function(line){
+            list += '<li>' + line + '</li>';
+        });
+        list += '</ol>';
+
+        return list;
     }
 });
 

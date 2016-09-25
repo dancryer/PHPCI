@@ -1,0 +1,10 @@
+{
+    "event": "suiteStart",
+    "suite": "Money Test Suite",
+    "tests": 61
+}
+{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "tests": 15
+}

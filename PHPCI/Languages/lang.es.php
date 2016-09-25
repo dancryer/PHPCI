@@ -176,6 +176,7 @@ PHPCI',
     'phpcs_errors' => 'PHPCS Errors',
     'phplint_errors' => 'Lint Errors',
     'phpunit_errors' => 'PHPUnit Errors',
+    'phpunit_fail_init' => 'No se encontro archivo o folder de pruevas.',
     'phpdoccheck_warnings' => 'Docblocks faltantes',
     'issues' => 'Incidencias',
 

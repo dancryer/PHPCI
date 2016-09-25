@@ -18,7 +18,11 @@
     <link href="<?php print PHPCI_URL; ?>assets/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <link href="<?php print PHPCI_URL; ?>assets/css/AdminLTE-skins.min.css" rel="stylesheet" type="text/css" />
     <link href="<?php print PHPCI_URL; ?>assets/css/AdminLTE-custom.css" rel="stylesheet" type="text/css" />
-
+    <style type="text/css">
+        .visible-line-breaks {
+            white-space: pre-wrap;
+        }
+    </style>
     <script>
         var PHPCI_URL = '<?php print PHPCI_URL; ?>';
         var PHPCI_LANGUAGE = <?php print json_encode(Lang::getLanguage()); ?>;

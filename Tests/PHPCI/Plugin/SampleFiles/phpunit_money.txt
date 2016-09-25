@@ -1,0 +1,355 @@
+{
+    "event": "suiteStart",
+    "suite": "Money Test Suite",
+    "tests": 61
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "tests": 15
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFactoryMethods"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFactoryMethods",
+    "status": "pass",
+    "time": 0.051446914672852,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testJsonEncoding"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testJsonEncoding",
+    "status": "pass",
+    "time": 0.00051498413085938,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testMaxInit"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testMaxInit",
+    "status": "pass",
+    "time": 0.0023708343505859,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure",
+    "status": "error",
+    "time": 0.0025370121002197,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/src\/Money.php",
+            "line": 335
+        },
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 43,
+            "function": "divide",
+            "class": "Money\\Money",
+            "type": "->"
+        }
+    ],
+    "message": "Division by zero",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure2"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure2",
+    "status": "fail",
+    "time": 0.008944034576416,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 61,
+            "function": "assertEquals",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that two objects are equal.",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure3"
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testMaxInit"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testMaxInit",
+    "status": "error",
+    "time": 0.0074319839477539,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 36,
+            "function": "markTestIncomplete",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Incomplete Test: No yet finished...",
+    "output": ""
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure3",
+    "status": "fail",
+    "time": 0.0014960765838623,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 66,
+            "function": "assertEquals",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that two arrays are equal.",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure4"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFailure4",
+    "status": "fail",
+    "time": 0.0023319721221924,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 71,
+            "function": "assertTrue",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Really? It should have been true\nFailed asserting that false is true.",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "tests": 3
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #0 (1, 2, 3, 4, 5, 6)"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #0 (1, 2, 3, 4, 5, 6)",
+    "status": "fail",
+    "time": 0.0025498867034912,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 82,
+            "function": "assertSame",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that 3 is identical to 1.",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #1 ('one', 'two', 'three', 'four', 'five', 'six')"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #1 ('one', 'two', 'three', 'four', 'five', 'six')",
+    "status": "fail",
+    "time": 0.00087904930114746,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 82,
+            "function": "assertSame",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that two strings are identical.",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #2 (array(1, 'one'), array(2, 'two'), array(3, 'three'), array(4, 'four'))"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testFailure5",
+    "test": "Tests\\Money\\MoneyTest::testFailure5 with data set #2 (array(1, 'one'), array(2, 'two'), array(3, 'three'), array(4, 'four'))",
+    "status": "fail",
+    "time": 0.0010340213775635,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 82,
+            "function": "assertSame",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that Array &0 (\n    0 => 3\n    1 => 'three'\n) is identical to Array &0 (\n    0 => 1\n    1 => 'one'\n).",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "tests": 3
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #0 (1, 2, 3, 4, 5, 6)"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #0 (1, 2, 3, 4, 5, 6)",
+    "status": "error",
+    "time": 0.0041179656982422,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 99,
+            "function": "markTestSkipped",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Skipped Test: This test is currently failing",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #1 ('one', 'two', 'three', 'four', 'five', 'six')"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #1 ('one', 'two', 'three', 'four', 'five', 'six')",
+    "status": "error",
+    "time": 0.00082302093505859,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 99,
+            "function": "markTestSkipped",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Skipped Test: This test is currently failing",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #2 (array(1, 'one'), array(2, 'two'), array(3, 'three'), array(4, 'four'))"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest::testSkipped",
+    "test": "Tests\\Money\\MoneyTest::testSkipped with data set #2 (array(1, 'one'), array(2, 'two'), array(3, 'three'), array(4, 'four'))",
+    "status": "error",
+    "time": 0.00070905685424805,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 99,
+            "function": "markTestSkipped",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Skipped Test: This test is currently failing",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "",
+    "test": "Tests\\Money\\MoneyTest::testDepends1"
+}{
+    "event": "test",
+    "suite": "",
+    "test": "Tests\\Money\\MoneyTest::testDepends1",
+    "status": "fail",
+    "time": 0.00078010559082031,
+    "trace": [
+        {
+            "file": "\/path\/to\/build\/tests\/MoneyTest.php",
+            "line": 105,
+            "function": "assertTrue",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        }
+    ],
+    "message": "Failed asserting that false is true.",
+    "output": ""
+}{
+    "event": "test",
+    "suite": "",
+    "test": "Tests\\Money\\MoneyTest::testDepends1",
+    "status": "error",
+    "time": 0,
+    "trace": [],
+    "message": "Skipped Test: This test depends on \"Tests\\Money\\MoneyTest::testDepends1\" to pass.",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest",
+    "tests": 23
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
+    "tests": 18
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
+    "test": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser with data set #0 ('$1000.50', 100050)"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
+    "test": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser with data set #0 ('$1000.50', 100050)",
+    "status": "pass",
+    "time": 0.0069050788879395,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
+    "test": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser with data set #1 ('$1000.00', 100000)"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
+    "test": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser with data set #1 ('$1000.00', 100000)",
+    "status": "pass",
+    "time": 0.00067996978759766,
+    "trace": [],
+    "message": "",
+    "output": ""
+}

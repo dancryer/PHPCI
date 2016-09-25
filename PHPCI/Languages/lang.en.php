@@ -181,6 +181,7 @@ PHPCI',
     'phpcs_errors' => 'PHPCS Errors',
     'phplint_errors' => 'Lint Errors',
     'phpunit_errors' => 'PHPUnit Errors',
+    'phpunit_fail_init' => 'Neither a configuration file nor a test directory found.',
     'phpdoccheck_warnings' => 'Missing Docblocks',
     'issues' => 'Issues',
 

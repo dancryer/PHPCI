@@ -13,7 +13,10 @@ use PHPCI\Plugin\Util\JUnitParser;
  */
 class Paratest extends PhpUnit
 {
+    //TODO make these configurable
     protected $log_file = "junit.log";
+    protected $phpunit_config_file = "phpunit-parallel.xml";
+    protected $number_processes = 4;
 
     /**
      * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
@@ -75,9 +78,8 @@ class Paratest extends PhpUnit
                 chdir($this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->runFrom);
             }
 
-            $paratest = $this->phpci->findBinary('paratest');
+            $cmd = $this->getParatestCommand();
 
-            $cmd = $paratest . ' -c phpunit-parallel.xml -p 4 --stop-on-failure --log-junit ' . $this->log_file;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
 
             if ($this->runFrom) {
@@ -101,12 +103,18 @@ class Paratest extends PhpUnit
             $curdir = getcwd();
             chdir($this->phpci->buildPath);
 
-            $paratest = $this->phpci->findBinary('paratest');
+            $cmd = $this->getParatestCommand();
 
-            $cmd = $paratest . ' -c phpunit-parallel.xml -p 4 --stop-on-failure --log-junit ' . $this->log_file;
             $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
             chdir($curdir);
             return $success;
         }
+    }
+
+    protected function getParatestCommand(){
+        $paratest = $this->phpci->findBinary('paratest');
+        $cmd = $paratest . ' -c ' . $this->phpunit_config_file . ' -p ' . $this->number_processes . ' --stop-on-failure --log-junit ' . $this->log_file;
+
+        return $cmd;
     }
 }

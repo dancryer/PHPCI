@@ -18,6 +18,8 @@ $symfonyRequirements = new SymfonyRequirements();
 
 $majorProblems = $symfonyRequirements->getFailedRequirements();
 $minorProblems = $symfonyRequirements->getFailedRecommendations();
+$hasMajorProblems = (bool) count($majorProblems);
+$hasMinorProblems = (bool) count($minorProblems);
 
 ?>
 <!DOCTYPE html>
@@ -69,7 +71,7 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                             You can also do the same by editing the ‘<strong>app/config/parameters.yml</strong>’ file directly.
                         </p>
 
-                        <?php if (count($majorProblems)): ?>
+                        <?php if ($hasMajorProblems): ?>
                             <h2 class="ko">Major problems</h2>
                             <p>Major problems have been detected and <strong>must</strong> be fixed before continuing:</p>
                             <ol>
@@ -81,10 +83,10 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                             </ol>
                         <?php endif; ?>
 
-                        <?php if (count($minorProblems)): ?>
+                        <?php if ($hasMinorProblems): ?>
                             <h2>Recommendations</h2>
                             <p>
-                                <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience,
+                                <?php if ($hasMajorProblems): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience,
                                 it’s recommended that you fix the following:
                             </p>
                             <ol>
@@ -106,16 +108,16 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
                             </p>
                         <?php endif; ?>
 
-                        <?php if (!count($majorProblems) && !count($minorProblems)): ?>
+                        <?php if (!$hasMajorProblems && !$hasMinorProblems): ?>
                             <p class="ok">Your configuration looks good to run Symfony.</p>
                         <?php endif; ?>
 
                         <ul class="symfony-install-continue">
-                            <?php if (!count($majorProblems)): ?>
+                            <?php if (!$hasMajorProblems): ?>
                                 <li><a href="app_dev.php/_configurator/">Configure your Symfony Application online</a></li>
                                 <li><a href="app_dev.php/">Bypass configuration and go to the Welcome page</a></li>
                             <?php endif; ?>
-                            <?php if (count($majorProblems) || count($minorProblems)): ?>
+                            <?php if ($hasMajorProblems || $hasMinorProblems): ?>
                                 <li><a href="config.php">Re-check configuration</a></li>
                             <?php endif; ?>
                         </ul>

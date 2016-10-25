@@ -126,12 +126,20 @@ class BuildStatusController extends \PHPCI\Controller
     }
 
     /**
-    * Returns the appropriate build status image in SVG format for a given project.
-    */
+     * Returns the appropriate build status image in SVG format for a given project.
+     */
     public function image($projectId)
     {
+        // plastic|flat|flat-squared|social
         $style = $this->getParam('style', 'plastic');
         $label = $this->getParam('label', 'build');
+
+        $optionalParams = [
+            'logo'      => $this->getParam('logo'),
+            'logoWidth' => $this->getParam('logoWidth'),
+            'link'      => $this->getParam('link'),
+            'maxAge'    => $this->getParam('maxAge'),
+        ];
 
         $status = $this->getStatus($projectId);
 
@@ -150,9 +158,16 @@ class BuildStatusController extends \PHPCI\Controller
             $style
         ));
 
+        foreach ($optionalParams as $paramName => $param) {
+            if ($param) {
+                $image .= '&' . $paramName . '=' . $param;
+            }
+        }
+
         $this->response->disableLayout();
         $this->response->setHeader('Content-Type', 'image/svg+xml');
         $this->response->setContent($image);
+
         return $this->response;
     }
 

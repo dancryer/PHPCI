@@ -58,12 +58,12 @@ released under the MIT or BSD license.
 
 Enjoy!
 
-[1]:  https://symfony.com/doc/3.1/setup.html
+[1]:  https://symfony.com/doc/3.2/setup.html
 [6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.1/doctrine.html
-[8]:  https://symfony.com/doc/3.1/templating.html
-[9]:  https://symfony.com/doc/3.1/security.html
-[10]: https://symfony.com/doc/3.1/email.html
-[11]: https://symfony.com/doc/3.1/logging.html
-[12]: https://symfony.com/doc/3.1/assetic/asset_management.html
+[7]:  https://symfony.com/doc/3.2/doctrine.html
+[8]:  https://symfony.com/doc/3.2/templating.html
+[9]:  https://symfony.com/doc/3.2/security.html
+[10]: https://symfony.com/doc/3.2/email.html
+[11]: https://symfony.com/doc/3.2/logging.html
+[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
 [13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html

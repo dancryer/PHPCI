@@ -96,13 +96,13 @@ class PhpUnitOptions
                     $this->arguments = $rawArgs;
                 } else {
                     /*
-                     * Try to parse old argument in a single string
+                     * Try to parse old arguments in a single string
                      */
-                    preg_match_all('/--([a-z\-]+)\s?("?[^-]{2}[^"]*"?)?/', (string)$rawArgs, $argsMatch);
+                    preg_match_all('@--([a-z\-]+)([\s=]+)?[\'"]?((?!--)[-\w/.,\\\]+)?[\'"]?@', (string)$rawArgs, $argsMatch);
 
                     if (!empty($argsMatch) && sizeof($argsMatch) > 2) {
                         foreach ($argsMatch[1] as $index => $argName) {
-                            $this->addArgument($argName, $argsMatch[2][$index]);
+                            $this->addArgument($argName, $argsMatch[3][$index]);
                         }
                     }
                 }

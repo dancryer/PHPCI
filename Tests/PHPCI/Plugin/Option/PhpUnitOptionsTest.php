@@ -61,6 +61,39 @@ class PhpUnitOptionsTest extends \PHPUnit_Framework_TestCase
                     'coverage-html' => '/path/to/coverage1/',
                 ),
             ),
+            array(
+                array(
+                    'config' => array('tests/phpunit.xml'),
+                    'args'   => "--testsuite=unit --bootstrap=vendor/autoload.php",
+                ),
+                array(
+                    'testsuite'     => 'unit',
+                    'bootstrap'     => 'vendor/autoload.php',
+                    'configuration' => array('tests/phpunit.xml'),
+                ),
+            ),
+            array(
+                array(
+                    'config' => array('tests/phpunit.xml'),
+                    'args'   => "--testsuite='unit' --bootstrap 'vendor/autoload.php'",
+                ),
+                array(
+                    'testsuite'     => 'unit',
+                    'bootstrap'     => 'vendor/autoload.php',
+                    'configuration' => array('tests/phpunit.xml'),
+                ),
+            ),
+            array(
+                array(
+                    'config' => array('tests/phpunit.xml'),
+                    'args'   => '--testsuite="unit" --bootstrap "vendor/autoload.php"',
+                ),
+                array(
+                    'testsuite'     => 'unit',
+                    'bootstrap'     => 'vendor/autoload.php',
+                    'configuration' => array('tests/phpunit.xml'),
+                ),
+            ),
         );
     }
 

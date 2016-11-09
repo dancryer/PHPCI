@@ -48,6 +48,9 @@ class PhpUnitResult
     public function parse()
     {
         $rawResults = file_get_contents($this->outputFile);
+        if (empty($rawResults)) {
+            throw new \Exception('No test executed.');
+        }
         if ($rawResults[0] == '{') {
             $fixedJson = '[' . str_replace('}{', '},{', $rawResults) . ']';
             $events    = json_decode($fixedJson, true);

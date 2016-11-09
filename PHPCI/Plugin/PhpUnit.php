@@ -11,54 +11,59 @@ namespace PHPCI\Plugin;
 
 use PHPCI;
 use PHPCI\Builder;
+use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
-use PHPCI\Plugin\Util\TapParser;
+use PHPCI\Model\BuildError;
+use PHPCI\Plugin\Option\PhpUnitOptions;
+use PHPCI\Plugin\Util\PhpUnitResult;
 
 /**
-* PHP Unit Plugin - Allows PHP Unit testing.
-* @author       Dan Cryer <dan@block8.co.uk>
-* @package      PHPCI
-* @subpackage   Plugins
-*/
+ * PHP Unit Plugin - A rewrite of the original PHP Unit plugin
+ *
+ * @author       Dan Cryer <dan@block8.co.uk>
+ * @author       Pablo Tejada <pablo@ptejada.com>
+ * @package      PHPCI
+ * @subpackage   Plugins
+ */
 class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
-    protected $args;
     protected $phpci;
     protected $build;
 
+    /** @var string[] Raw options from the PHPCI config file */
+    protected $options = array();
+
     /**
-     * @var string|string[] $directory The directory (or array of dirs) to run PHPUnit on
+     * Standard Constructor
+     * $options['config']    Path to a PHPUnit XML configuration file.
+     * $options['run_from']  The directory where the phpunit command will run from when using 'config'.
+     * $options['coverage']  Value for the --coverage-html command line flag.
+     * $options['directory'] Optional directory or list of directories to run PHPUnit on.
+     * $options['args']      Command line args (in string format) to pass to PHP Unit
+     *
+     * @param Builder  $phpci
+     * @param Build    $build
+     * @param string[] $options
      */
-    protected $directory;
+    public function __construct(Builder $phpci, Build $build, array $options = array())
+    {
+        $this->phpci   = $phpci;
+        $this->build   = $build;
+        $this->options = new PhpUnitOptions($options);
+    }
 
     /**
-     * @var string $runFrom When running PHPUnit with an XML config, the command is run from this directory
-     */
-    protected $runFrom;
-
-    /**
-     * @var string, in cases where tests files are in a sub path of the /tests path,
-     * allows this path to be set in the config.
-     */
-    protected $path;
-
-    protected $coverage = "";
-
-    /**
-     * @var string|string[] $xmlConfigFile The path (or array of paths) of an xml config for PHPUnit
-     */
-    protected $xmlConfigFile;
-
-    /**
-     * Check if this plugin can be executed.
-     * @param $stage
+     * Check if the plugin can be executed without any configurations
+     *
+     * @param         $stage
      * @param Builder $builder
-     * @param Build $build
+     * @param Build   $build
+     *
      * @return bool
      */
     public static function canExecute($stage, Builder $builder, Build $build)
     {
-        if ($stage == 'test' && !is_null(self::findConfigFile($builder->buildPath))) {
+        if ($stage == 'test' && !is_null(PhpUnitOptions::findConfigFile($build->getBuildPath()))) {
             return true;
         }
 
@@ -66,183 +71,138 @@ class PhpUnit implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     }
 
     /**
-     * Try and find the phpunit XML config file.
-     * @param $buildPath
-     * @return null|string
+     * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
      */
-    public static function findConfigFile($buildPath)
-    {
-        if (file_exists($buildPath . 'phpunit.xml')) {
-            return 'phpunit.xml';
-        }
-
-        if (file_exists($buildPath . 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml')) {
-            return 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml';
-        }
-
-        if (file_exists($buildPath . 'phpunit.xml.dist')) {
-            return 'phpunit.xml.dist';
-        }
-
-        if (file_exists($buildPath . 'tests/phpunit.xml.dist')) {
-            return 'tests' . DIRECTORY_SEPARATOR . 'phpunit.xml.dist';
-        }
-
-        return null;
-    }
-
-    /**
-     * Standard Constructor
-     *
-     * $options['directory'] Output Directory. Default: %BUILDPATH%
-     * $options['filename']  Phar Filename. Default: build.phar
-     * $options['regexp']    Regular Expression Filename Capture. Default: /\.php$/
-     * $options['stub']      Stub Content. No Default Value
-     *
-     * @param Builder $phpci
-     * @param Build   $build
-     * @param array   $options
-     */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
-    {
-        $this->phpci = $phpci;
-        $this->build = $build;
-
-        if (empty($options['config']) && empty($options['directory'])) {
-            $this->xmlConfigFile = self::findConfigFile($phpci->buildPath);
-        }
-
-        if (isset($options['directory'])) {
-            $this->directory = $options['directory'];
-        }
-
-        if (isset($options['config'])) {
-            $this->xmlConfigFile = $options['config'];
-        }
-
-        if (isset($options['run_from'])) {
-            $this->runFrom = $options['run_from'];
-        }
-
-        if (isset($options['args'])) {
-            $this->args = $this->phpci->interpolate($options['args']);
-        }
-
-        if (isset($options['path'])) {
-            $this->path = $options['path'];
-        }
-
-        if (isset($options['coverage'])) {
-            $this->coverage = ' --coverage-html ' . $this->phpci->interpolate($options['coverage']) . ' ';
-        }
-    }
-
-    /**
-    * Runs PHP Unit tests in a specified directory, optionally using specified config file(s).
-    */
     public function execute()
     {
-        if (empty($this->xmlConfigFile) && empty($this->directory)) {
-            $this->phpci->logFailure('Neither configuration file nor test directory found.');
+        $xmlConfigFiles = $this->options->getConfigFiles($this->build->getBuildPath());
+        $directories    = $this->options->getDirectories();
+        if (empty($xmlConfigFiles) && empty($directories)) {
+            $this->phpci->logFailure(Lang::get('phpunit_fail_init'));
             return false;
         }
 
-        $success = true;
+        $success = array();
 
-        $this->phpci->logExecOutput(false);
-
-        // Run any config files first. This can be either a single value or an array.
-        if ($this->xmlConfigFile !== null) {
-            $success &= $this->runConfigFile($this->xmlConfigFile);
+        // Run any directories
+        if (!empty($directories)) {
+            foreach ($directories as $directory) {
+                $success[] = $this->runDir($directory);
+            }
+        } else {
+            // Run any config files
+            if (!empty($xmlConfigFiles)) {
+                foreach ($xmlConfigFiles as $configFile) {
+                    $success[] = $this->runConfigFile($configFile);
+                }
+            }
         }
 
-        // Run any dirs next. Again this can be either a single value or an array.
-        if ($this->directory !== null) {
-            $success &= $this->runDir($this->directory);
-        }
+        return !in_array(false, $success);
+    }
 
-        $tapString = $this->phpci->getLastOutput();
-        $tapString = mb_convert_encoding($tapString, "UTF-8", "ISO-8859-1");
+    /**
+     * Run the PHPUnit tests in a specific directory or array of directories.
+     *
+     * @param $directory
+     *
+     * @return bool|mixed
+     */
+    protected function runDir($directory)
+    {
+        $options = clone $this->options;
 
-        try {
-            $tapParser = new TapParser($tapString);
-            $output = $tapParser->parse();
-        } catch (\Exception $ex) {
-            $this->phpci->logFailure($tapString);
-            throw $ex;
-        }
+        $buildPath = $this->build->getBuildPath() . DIRECTORY_SEPARATOR;
 
-        $failures = $tapParser->getTotalFailures();
+        $currentPath = getcwd();
+        // Change the directory
+        chdir($buildPath);
 
-        $this->build->storeMeta('phpunit-errors', $failures);
-        $this->build->storeMeta('phpunit-data', $output);
+        // Save the results into a json file
+        $jsonFile = tempnam(dirname($buildPath), 'jLog_');
+        $options->addArgument('log-json', $jsonFile);
 
-        $this->phpci->logExecOutput(true);
+        // Removes any current configurations files
+        $options->removeArgument('configuration');
+
+        $arguments = $this->phpci->interpolate($options->buildArgumentString());
+        $cmd       = $this->phpci->findBinary('phpunit') . ' %s "%s"';
+        $success   = $this->phpci->executeCommand($cmd, $arguments, $directory);
+
+        // Change to che original path
+        chdir($currentPath);
+
+        $this->processResults($jsonFile);
 
         return $success;
     }
 
     /**
      * Run the tests defined in a PHPUnit config file.
-     * @param $configPath
+     *
+     * @param $configFile
+     *
      * @return bool|mixed
      */
-    protected function runConfigFile($configPath)
+    protected function runConfigFile($configFile)
     {
-        if (is_array($configPath)) {
-            return $this->recurseArg($configPath, array($this, "runConfigFile"));
-        } else {
-            if ($this->runFrom) {
-                $curdir = getcwd();
-                chdir($this->phpci->buildPath . DIRECTORY_SEPARATOR . $this->runFrom);
-            }
+        $options = clone $this->options;
+        $runFrom = $options->getRunFrom();
 
-            $phpunit = $this->phpci->findBinary('phpunit');
-
-            $cmd = $phpunit . ' --tap %s -c "%s" ' . $this->coverage . $this->path;
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $configPath);
-
-            if ($this->runFrom) {
-                chdir($curdir);
-            }
-
-            return $success;
+        $buildPath = $this->build->getBuildPath() . DIRECTORY_SEPARATOR;
+        if ($runFrom) {
+            $originalPath = getcwd();
+            // Change the directory
+            chdir($buildPath . $runFrom);
         }
-    }
 
-    /**
-     * Run the PHPUnit tests in a specific directory or array of directories.
-     * @param $directory
-     * @return bool|mixed
-     */
-    protected function runDir($directory)
-    {
-        if (is_array($directory)) {
-            return $this->recurseArg($directory, array($this, "runDir"));
-        } else {
-            $curdir = getcwd();
-            chdir($this->phpci->buildPath);
+        // Save the results into a json file
+        $jsonFile = tempnam($this->phpci->buildPath, 'jLog_');
+        $options->addArgument('log-json', $jsonFile);
 
-            $phpunit = $this->phpci->findBinary('phpunit');
+        // Removes any current configurations files
+        $options->removeArgument('configuration');
+        // Only the add the configuration file been passed
+        $options->addArgument('configuration', $buildPath . $configFile);
 
-            $cmd = $phpunit . ' --tap %s "%s"';
-            $success = $this->phpci->executeCommand($cmd, $this->args, $this->phpci->buildPath . $directory);
-            chdir($curdir);
-            return $success;
+        $arguments = $this->phpci->interpolate($options->buildArgumentString());
+        $cmd       = $this->phpci->findBinary('phpunit') . ' %s %s';
+        $success   = $this->phpci->executeCommand($cmd, $arguments, $options->getTestsPath());
+
+        if (!empty($originalPath)) {
+            // Change to che original path
+            chdir($originalPath);
         }
-    }
 
-    /**
-     * @param $array
-     * @param $callable
-     * @return bool|mixed
-     */
-    protected function recurseArg($array, $callable)
-    {
-        $success = true;
-        foreach ($array as $subItem) {
-            $success &= call_user_func($callable, $subItem);
-        }
+        $this->processResults($jsonFile);
+
         return $success;
+    }
+
+    /**
+     * Saves the test results
+     *
+     * @param string $jsonFile
+     *
+     * @throws \Exception If the failed to parse the JSON file
+     */
+    protected function processResults($jsonFile)
+    {
+        if (is_file($jsonFile)) {
+            $parser = new PhpUnitResult($jsonFile, $this->build->getBuildPath());
+
+            $this->build->storeMeta('phpunit-data', $parser->parse()->getResults());
+            $this->build->storeMeta('phpunit-errors', $parser->getFailures());
+
+            foreach ($parser->getErrors() as $error) {
+                $severity = $error['severity'] == $parser::SEVERITY_ERROR ? BuildError::SEVERITY_CRITICAL : BuildError::SEVERITY_HIGH;
+                $this->build->reportError(
+                    $this->phpci, 'php_unit', $error['message'], $severity, $error['file'], $error['line']
+                );
+            }
+
+        } else {
+            throw new \Exception('JSON output file does not exist: ' . $jsonFile);
+        }
     }
 }

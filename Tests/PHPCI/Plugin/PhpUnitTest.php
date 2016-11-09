@@ -11,11 +11,11 @@
 namespace Tests\PHPCI\Plugin;
 
 /**
- * Unit test for the PHPUnit V2 plugin.
+ * Unit test for the PHPUnit plugin.
  *
  * @author Pablo Tejada <pablo@ptejada.com>
  */
-class PhpUnitV2Test extends \PHPUnit_Framework_TestCase
+class PhpUnitTest extends \PHPUnit_Framework_TestCase
 {
     public function testSingleConfigFile()
     {

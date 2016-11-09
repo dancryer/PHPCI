@@ -4,7 +4,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
 
 // If you don't want to setup permissions the proper way, just uncomment the following PHP line
-// read http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup
+// read http://symfony.com/doc/current/setup.html#checking-symfony-application-configuration-and-setup
 // for more information
 //umask(0000);
 

@@ -6,6 +6,9 @@
     "autoload": {
         "psr-4": { "": "src/" }
     },
+    "autoload-dev": {
+        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
+    },
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "49fcfcfd4a1bccbba9c4429067bd8e37",
+    "content-hash": "1aee15554216624ff2f6951e5296f662",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1763,16 +1763,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "dev-master",
+            "version": "3.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "7d00e4f006da51fe190ae88441f52b82c6174675"
+                "reference": "2094715152d6419c4f95ce3caeba3075d646f9ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/7d00e4f006da51fe190ae88441f52b82c6174675",
-                "reference": "7d00e4f006da51fe190ae88441f52b82c6174675",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2094715152d6419c4f95ce3caeba3075d646f9ea",
+                "reference": "2094715152d6419c4f95ce3caeba3075d646f9ea",
                 "shasum": ""
             },
             "require": {
@@ -1901,20 +1901,20 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-11-17 20:27:40"
+            "time": "2016-11-18 21:58:27"
         },
         {
             "name": "twig/twig",
-            "version": "v1.28.0",
+            "version": "v1.28.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "60ae30368f7ac50a95de032f16c1e882b0f69813"
+                "reference": "fff80c4a7ae1d47a81dfec10c76cbcb939170b45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/60ae30368f7ac50a95de032f16c1e882b0f69813",
-                "reference": "60ae30368f7ac50a95de032f16c1e882b0f69813",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/fff80c4a7ae1d47a81dfec10c76cbcb939170b45",
+                "reference": "fff80c4a7ae1d47a81dfec10c76cbcb939170b45",
                 "shasum": ""
             },
             "require": {
@@ -1962,7 +1962,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-11-17T17:46:53+00:00"
+            "time": "2016-11-19T05:52:49+00:00"
         }
     ],
     "packages-dev": [

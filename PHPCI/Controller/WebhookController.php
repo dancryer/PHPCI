@@ -12,7 +12,6 @@ namespace PHPCI\Controller;
 use b8;
 use b8\Store;
 use Exception;
-use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
 use PHPCI\Store\BuildStore;
@@ -60,7 +59,7 @@ class WebhookController extends \b8\Controller
     /** Handle the action, Ensuring to return a JsonResponse.
      *
      * @param string $action
-     * @param mixed $actionParams
+     * @param mixed  $actionParams
      *
      * @return \b8\Http\Response
      */
@@ -78,6 +77,7 @@ class WebhookController extends \b8\Controller
             $response->setResponseCode(500);
             $response->setContent(array('status' => 'failed', 'error' => $ex->getMessage()));
         }
+
         return $response;
     }
 
@@ -216,8 +216,8 @@ class WebhookController extends \b8\Controller
     /**
      * Handle the payload when Github sends a commit webhook.
      *
-     * @param Project $project
-     * @param array $payload
+     * @param Project                       $project
+     * @param array                         $payload
      * @param b8\Http\Response\JsonResponse $response
      *
      * @return b8\Http\Response\JsonResponse
@@ -256,6 +256,7 @@ class WebhookController extends \b8\Controller
                     $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
             }
+
             return array('status' => $status, 'commits' => $results);
         }
 
@@ -264,6 +265,7 @@ class WebhookController extends \b8\Controller
             $branch = str_replace('refs/tags/', 'Tag: ', $payload['ref']);
             $committer = $payload['pusher']['email'];
             $message = $payload['head_commit']['message'];
+
             return $this->createBuild($project, $payload['after'], $branch, $committer, $message);
         }
 
@@ -274,7 +276,7 @@ class WebhookController extends \b8\Controller
      * Handle the payload when Github sends a Pull Request webhook.
      *
      * @param Project $project
-     * @param array $payload
+     * @param array   $payload
      */
     protected function githubPullRequest(Project $project, array $payload)
     {
@@ -290,10 +292,17 @@ class WebhookController extends \b8\Controller
             $headers[] = 'Authorization: token ' . $token;
         }
 
-        $url    = $payload['pull_request']['commits_url'];
-        $http   = new \b8\HttpClient();
+        $url = $payload['pull_request']['commits_url'];
+        $http = new \b8\HttpClient();
         $http->setHeaders($headers);
-        $response = $http->get($url);
+        //for large pull requests, allow grabbing more then the default number of commits
+        $custom_per_page = \b8\Config::getInstance()->get('phpci.github.per_page');
+        $params = [];
+        if ($custom_per_page) {
+            $params["per_page"] = $custom_per_page;
+        }
+
+        $response = $http->get($url, $params);
 
         // Check we got a success response:
         if (!$response['success']) {
@@ -379,6 +388,7 @@ class WebhookController extends \b8\Controller
                     $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
             }
+
             return array('status' => $status, 'commits' => $results);
         }
 
@@ -389,11 +399,11 @@ class WebhookController extends \b8\Controller
      * Wrapper for creating a new build.
      *
      * @param Project $project
-     * @param string $commitId
-     * @param string $branch
-     * @param string $committer
-     * @param string $commitMessage
-     * @param array $extra
+     * @param string  $commitId
+     * @param string  $branch
+     * @param string  $committer
+     * @param string  $commitMessage
+     * @param array   $extra
      *
      * @return array
      *
@@ -406,7 +416,8 @@ class WebhookController extends \b8\Controller
         $committer,
         $commitMessage,
         array $extra = null
-    ) {
+    )
+    {
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
@@ -426,7 +437,7 @@ class WebhookController extends \b8\Controller
     /**
      * Fetch a project and check its type.
      *
-     * @param int $projectId
+     * @param int          $projectId
      * @param array|string $expectedType
      *
      * @return Project

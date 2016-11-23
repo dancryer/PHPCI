@@ -438,7 +438,6 @@ PHPCI',
     'php_unit' => 'PHP Unit',
     'php_cpd' => 'PHP Copy/Paste Detector',
     'php_docblock_checker' => 'PHP Docblock Checker',
-    'behat' => 'Behat',
-    'technical_debt' => 'Technical Debt',
+    'php_lint' => 'PHP Lint',
 
 );

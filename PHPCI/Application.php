@@ -104,7 +104,7 @@ class Application extends b8\Application
             $this->response->setContent($view->render());
         }
 
-        if ($this->response->hasLayout() && $this->controller->layout) {
+        if (!empty($this->response->hasLayout()) && isset($this->controller->layout)) {
             $this->setLayoutVariables($this->controller->layout);
 
             $this->controller->layout->content  = $this->response->getContent();

@@ -1,5 +1,7 @@
+/composer.lock
 .idea
 vendor/
+.gitignore
 composer.phar
 config.php
 .DS_Store
@@ -9,7 +11,6 @@ config.php
 .htaccess
 PHPCI/config.yml
 cache
-/loggerconfig.php
 /pluginconfig.php
 PHPCI/Model/Migration.php
 PHPCI/Model/Base/MigrationBase.php

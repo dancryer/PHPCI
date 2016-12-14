@@ -40,9 +40,6 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->testedService = new UserService($this->mockUserStore);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_CreateNonAdminUser()
     {
         $user = $this->testedService->createUser('Test', 'test@example.com', 'testing', 0);
@@ -53,18 +50,12 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(password_verify('testing', $user->getHash()));
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_CreateAdminUser()
     {
         $user = $this->testedService->createUser('Test', 'test@example.com', 'testing', 1);
         $this->assertEquals(1, $user->getIsAdmin());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_RevokeAdminStatus()
     {
         $user = new User();
@@ -76,9 +67,6 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $user->getIsAdmin());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_GrantAdminStatus()
     {
         $user = new User();
@@ -90,9 +78,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $user->getIsAdmin());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
+
     public function testExecute_ChangesPasswordIfNotEmpty()
     {
         $user = new User();
@@ -103,9 +89,6 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(password_verify('newpassword', $user->getHash()));
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_DoesNotChangePasswordIfEmpty()
     {
         $user = new User();

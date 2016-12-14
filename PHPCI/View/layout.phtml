@@ -138,7 +138,7 @@
 
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
-                <li<?php print (array_key_exists('archived', $_GET) ? '' : ' class="active"'); ?>>
+                <li>
                     <a href="<?php print PHPCI_URL; ?>">
                         <i class="fa fa-dashboard"></i> <span><?php Lang::out('dashboard'); ?></span>
                     </a>
@@ -260,7 +260,7 @@
                     </li>
                 <?php endif; ?>
 
-                <li class="archive<?php print (array_key_exists('archived', $_GET) ? ' active' : ''); ?>">
+                <li class="archive">
                     <a href="<?php print PHPCI_URL . (array_key_exists('archived', $_GET) ? '' : '?archived'); ?>">
                         <i class="fa fa-archive"></i> <span><?php Lang::out('archived_menu'); ?></span>
                     </a>

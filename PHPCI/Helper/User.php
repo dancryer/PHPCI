@@ -25,6 +25,10 @@ class User
      */
     public function __call($method, $params = array())
     {
+        if (empty($_SESSION['phpci_user'])) {
+            return null;
+        }
+
         $user = $_SESSION['phpci_user'];
 
         if (!is_object($user)) {

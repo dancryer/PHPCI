@@ -164,9 +164,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
             }));
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testReturnsFalseWithoutArgs()
     {
         $this->loadEmailPluginWithOptions();
@@ -179,9 +176,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedReturn, $returnValue);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testBuildsBasicEmails()
     {
         $this->loadEmailPluginWithOptions(
@@ -196,9 +190,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('test-receiver@example.com', $this->message['to']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testBuildsDefaultEmails()
     {
         $this->loadEmailPluginWithOptions(
@@ -213,9 +204,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('default-mailto-address@example.com', $this->message['to']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_UniqueRecipientsFromWithCommitter()
     {
         $this->loadEmailPluginWithOptions(
@@ -233,9 +221,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('test-receiver2@example.com', $this->message['to']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_UniqueRecipientsWithCommitter()
     {
         $this->loadEmailPluginWithOptions(
@@ -252,9 +237,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('committer@test.com', $this->message['to']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testCcDefaultEmails()
     {
         $this->loadEmailPluginWithOptions(
@@ -281,9 +263,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testBuildsCommitterEmails()
     {
         $this->loadEmailPluginWithOptions(
@@ -298,9 +277,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('committer-email@example.com', $this->message['to']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailSuccessfulBuildHaveProjectName()
     {
         $this->loadEmailPluginWithOptions(
@@ -316,9 +292,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('Test-Project', $this->message['body']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailFailingBuildHaveProjectName()
     {
         $this->loadEmailPluginWithOptions(
@@ -334,9 +307,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('Test-Project', $this->message['body']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailSuccessfulBuildHaveStatus()
     {
         $this->loadEmailPluginWithOptions(
@@ -352,9 +322,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('successful', $this->message['body']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailFailingBuildHaveStatus()
     {
         $this->loadEmailPluginWithOptions(
@@ -370,9 +337,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('failed', $this->message['body']);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailDeliverySuccess()
     {
         $this->loadEmailPluginWithOptions(
@@ -388,9 +352,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $returnValue);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testMailDeliveryFail()
     {
         $this->loadEmailPluginWithOptions(

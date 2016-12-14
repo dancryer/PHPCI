@@ -41,9 +41,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->testedService = new ProjectService($this->mockProjectStore);
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_CreateBasicProject()
     {
         $returnValue = $this->testedService->createProject('Test Project', 'github', 'block8/phpci');
@@ -54,9 +51,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('master', $returnValue->getBranch());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_CreateProjectWithOptions()
     {
         $options = array(
@@ -78,7 +72,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @link https://github.com/Block8/PHPCI/issues/484
-     * @covers PHPUnit::execute
      */
     public function testExecute_CreateGitlabProjectWithoutPort()
     {
@@ -90,9 +83,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('block8/phpci', $returnValue->getReference());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_UpdateExistingProject()
     {
         $project = new Project();
@@ -107,9 +97,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bitbucket', $returnValue->getType());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_EmptyPublicStatus()
     {
         $project = new Project();
@@ -126,9 +113,6 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $returnValue->getAllowPublicStatus());
     }
 
-    /**
-     * @covers PHPUnit::execute
-     */
     public function testExecute_DeleteProject()
     {
         $store = $this->getMock('PHPCI\Store\ProjectStore');

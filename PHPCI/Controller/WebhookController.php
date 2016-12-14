@@ -437,7 +437,7 @@ class WebhookController extends \b8\Controller
     {
         $project = $this->projectStore->getById($projectId);
 
-        if (empty($projectId)) {
+        if (empty($project)) {
             throw new Exception('Project does not exist: ' . $projectId);
         }
 

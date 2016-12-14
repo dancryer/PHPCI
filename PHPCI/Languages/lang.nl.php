@@ -102,6 +102,7 @@ van je gekozen source code hosting platform',
     'remote' => 'Externe URL',
     'local' => 'Lokaal pad',
     'hg'    => 'Mercurial',
+    'svn'   => 'Subversion',
 
     'where_hosted' => 'Waar wordt je project gehost?',
     'choose_github' => 'Selecteer een GitHub repository:',
@@ -153,10 +154,11 @@ als "POST" service in de in de
 Services</a> sectie van je Bitbucket repository toegevoegd worden.',
 
     // View Build
+    'errors' => 'Errors',
+    'information' => 'Information',
     'build_x_not_found' => 'Build met ID %d bestaat niet.',
     'build_n' => 'Build %d',
     'rebuild_now' => 'Rebuild nu',
-
 
     'committed_by_x' => 'Committed door %s',
     'commit_id_x' => 'Commit: %s',
@@ -187,6 +189,14 @@ Services</a> sectie van je Bitbucket repository toegevoegd worden.',
     'phpmd' => 'PHP Mess Detector',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHPUnit',
+    'technical_debt' => 'Technical Debt',
+    'behat' => 'Behat',
+
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Tijd',
+    'codeception_synopsis' => '<strong>%1$d</strong> tests gedaan in <strong>%2$f</strong> secondes.
+                               <strong>%3$d</strong> gefaald.',
 
     'file' => 'Bestand',
     'line' => 'Lijn',
@@ -287,6 +297,19 @@ keer je composer update uitvoert.',
     'search_packagist_for_more' => 'Doorzoek Packagist naar meer packages',
     'search' => 'Zoek &raquo;',
 
+    // Summary plugin
+    'build-summary' => 'Samenvatting',
+    'stage' => 'Stap',
+    'duration' => 'Duur',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Setup',
+    'stage_test' => 'Test',
+    'stage_complete' => 'Klaar',
+    'stage_success' => 'Succes',
+    'stage_failure' => 'Gefaald',
+    'stage_broken'  => 'Gebroken',
+    'stage_fixed' => 'Opgelost',
+
     // Installer
     'installation_url' => 'PHPCI installatie URL',
     'db_host' => 'Database host',
@@ -354,6 +377,9 @@ Gelieve de fouten na te kijken vooraleer verder te gaan.',
     'found_n_builds' => '%d builds gevonden',
     'skipping_build' => 'Build %d overslaan - Project build reeds aan de gang.',
     'marked_as_failed' => 'Build %d gemarkeerd als falende door timeout.',
+    'add_to_queue_failed' => 'Build succesvol gemaakt, maar toevoegen aan build queue is mislukt. Dit gebeurt doorgaans
+                                wanneer PHPCI is ingesteld om een Beanstalkd server te gebruiken die niet bestaat,
+                                of je Beanstalkd server is gestopt.',
 
     // Builder
     'missing_phpci_yml' => 'Dit project bevat geen phpci.yml bestand, of het is leeg.',
@@ -395,5 +421,20 @@ Gelieve de fouten na te kijken vooraleer verder te gaan.',
     'build_file_missing' => 'Opgegeven build bestand bestaat niet.',
     'property_file_missing' => 'Opgegeven bestand bestaat niet',
     'could_not_process_report' => 'Het is niet mogelijk om het gegenereerde rapport van deze tool te verwerken.',
-    'shell_not_enabled' => 'De shell plugin is niet ingeschakeld, schakel deze a.u.b. in via het config.yml bestand.'
+    'shell_not_enabled' => 'De shell plugin is niet ingeschakeld, schakel deze a.u.b. in via het config.yml bestand.',
+
+    // Error Levels:
+    'critical' => 'Kritiek',
+    'high' => 'Hoog',
+    'normal' => 'Middel',
+    'low' => 'Laag',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt',
 );

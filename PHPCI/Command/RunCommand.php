@@ -65,7 +65,8 @@ class RunCommand extends Command
     {
         $this
             ->setName('phpci:run-builds')
-            ->setDescription(Lang::get('run_all_pending'));
+            ->setDescription(Lang::get('run_all_pending'))
+            ->addOption('debug', null, null, 'Run PHPCI in Debug Mode');
     }
 
     /**
@@ -81,6 +82,12 @@ class RunCommand extends Command
             $this->logger->pushHandler(
                 new OutputLogHandler($this->output, Logger::INFO)
             );
+        }
+
+        // Allow PHPCI to run in "debug mode"
+        if ($input->hasOption('debug') && $input->getOption('debug')) {
+            $output->writeln('<comment>Debug mode enabled.</comment>');
+            define('PHPCI_DEBUG_MODE', true);
         }
 
         $running = $this->validateRunningBuilds();

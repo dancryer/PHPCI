@@ -340,6 +340,19 @@
     "message": "",
     "output": ""
 }{
+   "event": "testStart",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFactoryMethods"
+}{
+    "event": "test",
+    "suite": "Tests\\Money\\MoneyTest",
+    "test": "Tests\\Money\\MoneyTest::testFactoryMethods",
+    "status": "warning",
+    "time": 0.06482195854187,
+    "trace": [],
+    "message": "Trying to @cover or @use not existing method \"Monies::test\".",
+    "output": ""
+}{
     "event": "testStart",
     "suite": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser",
     "test": "Tests\\Money\\Parser\\IntlMoneyParserTest::testIntlParser with data set #1 ('$1000.00', 100000)"

@@ -132,6 +132,10 @@ class PhpUnitResult
                 $pass     = true;
                 $severity = self::SEVERITY_PASS;
                 break;
+            case 'warning':
+                $pass     = true;
+                $severity = self::SEVERITY_PASS;
+                break;
             default:
                 throw new \Exception("Unexpected PHPUnit test status: {$status}");
                 break;

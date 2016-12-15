@@ -385,6 +385,24 @@ class WebhookController extends \b8\Controller
         return array('status' => 'ignored', 'message' => 'Unusable payload.');
     }
 
+
+    /**
+     * Called by POSTing to /webhook/svn/<project_id>?branch=<branch>&commit=<commit>
+     *
+     * @author Sylvain Lévesque <slevesque@gezere.com>
+     * @param string $projectId
+     */
+    public function svn($projectId)
+    {
+        $project = $this->fetchProject($projectId, 'svn');
+        $branch = $this->getParam('branch', $project->getBranch());
+        $commit = $this->getParam('commit');
+        $commitMessage = $this->getParam('message');
+        $committer = $this->getParam('committer');
+
+        return $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
+    }
+
     /**
      * Wrapper for creating a new build.
      *
@@ -437,7 +455,7 @@ class WebhookController extends \b8\Controller
     {
         $project = $this->projectStore->getById($projectId);
 
-        if (empty($projectId)) {
+        if (empty($project)) {
             throw new Exception('Project does not exist: ' . $projectId);
         }
 

@@ -24,6 +24,12 @@ var PHPCI = {
             }
 
             PHPCI.uiUpdated();
+            
+            // Set menu is active
+			$('a[href="'+document.URL+'"]').parent().addClass('active');
+			$('a[href="'+document.URL+'"]').parent().parent().addClass('menu-open');
+			$('a[href="'+document.URL+'"]').parent().parent().parent().addClass('active');
+			
         });
 
         $(window).on('builds-updated', function (e, data) {

@@ -99,8 +99,8 @@ class Email implements \PHPCI\Plugin
         );
 
         // This is a success if we've not failed to send anything.
-        $this->phpci->log(sprintf("%d emails sent", (count($addresses) - $sendFailures)));
-        $this->phpci->log(sprintf("%d emails failed to send", $sendFailures));
+        $this->phpci->log(Lang::get('n_emails_sent', (count($addresses) - $sendFailures)));
+        $this->phpci->log(Lang::get('n_emails_failed', $sendFailures));
 
         return ($sendFailures === 0);
     }

@@ -269,13 +269,20 @@ class Build extends BuildBase
      */
     public function removeBuildDirectory()
     {
-        $buildPath = $this->getBuildPath();
+        // Get the path and remove the trailing slash as this may prompt PHP
+        // to see this as a directory even if it's a link.
+        $buildPath = rtrim($this->getBuildPath(), '/');
 
         if (!$buildPath || !is_dir($buildPath)) {
             return;
         }
 
-        exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
+        if (is_link($buildPath)) {
+            // Remove the symlink without using recursive.
+            exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm "%s"', $buildPath));
+        } else {
+            exec(sprintf(IS_WIN ? 'rmdir /S /Q "%s"' : 'rm -Rf "%s"', $buildPath));
+        }
     }
 
     /**

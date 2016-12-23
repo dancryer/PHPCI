@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use Psr\Log\LogLevel;
 
 /**
  * Shell Plugin - Allows execute shell commands.
@@ -85,11 +86,51 @@ class Shell implements \PHPCI\Plugin
 
         $success = true;
 
-        foreach ($this->commands as $command) {
-            $command = $this->phpci->interpolate($command);
+        foreach ($this->commands as $key => $command) {
 
-            if (!$this->phpci->executeCommand($command)) {
-                $success = false;
+            if(is_string($key) && is_array($command)) {
+                /*
+                 * shell:
+                 *    master:
+                 *       - "cd /www"
+                 *       - "rm -f file.txt"
+                 */
+                $branch = $key;
+
+                if($branch !== $this->build->getBranch()) {
+                    $this->phpci->log(
+                        "Shell requires $branch found ".$this->build->getBranch()." bypassing",
+                        Loglevel::DEBUG
+                    );
+                    continue;
+                }
+
+                foreach ($command as $branchCommand) {
+                    $this->phpci->log(
+                        "Executing $branchCommand",
+                        Loglevel::DEBUG
+                    );
+                    $branchCommand = $this->phpci->interpolate($branchCommand);
+
+                    if(!$this->phpci->executeCommand($branchCommand))
+                    {
+                        $success = FALSE;
+                    }
+                }
+            }
+            elseif(is_int($key) && is_string($command))
+            {
+                /*
+                 * shell:
+                 *     - "cd /www"
+                 *     - "rm -f file.txt"
+                 */
+                $command = $this->phpci->interpolate($command);
+
+                if(!$this->phpci->executeCommand($command))
+                {
+                    $success = FALSE;
+                }
             }
         }
 

@@ -33,9 +33,7 @@ class RemoteGitBuild extends Build
     */
     public function createWorkingCopy(Builder $builder, $buildPath)
     {
-        $key = trim($this->getProject()->getSshPrivateKey());
-
-        if (!empty($key)) {
+        if ($this->canRunSsh()) {
             $success = $this->cloneBySsh($builder, $buildPath);
         } else {
             $success = $this->cloneByHttp($builder, $buildPath);
@@ -93,6 +91,11 @@ class RemoteGitBuild extends Build
         }
 
         return $success;
+    }
+
+    protected function canRunSsh() {
+        $key = trim($this->getProject()->getSshPrivateKey());
+        return !empty($key);
     }
 
     protected function runBySsh(Builder $builder, $cloneTo, $runCommand, $runArguments) {

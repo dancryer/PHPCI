@@ -77,32 +77,37 @@ class RemoteGitBuild extends Build
     */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        $keyFile = $this->writeSshKey($cloneTo);
-
-        if (!IS_WIN) {
-            $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
-        }
-
         // Do the git clone:
-        $cmd = 'git clone --recursive ';
-
+        $cmd   = 'git clone --recursive ';
         $depth = $builder->getConfig('clone_depth');
-
         if (!is_null($depth)) {
             $cmd .= ' --depth ' . intval($depth) . ' ';
         }
 
         $cmd .= ' -b %s %s "%s"';
 
-        if (!IS_WIN) {
-            $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
-        }
-
-        $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
+        $success = $this->runBySsh($builder, $cloneTo, $cmd, [$this->getBranch(), $this->getCloneUrl(), $cloneTo]);
 
         if ($success) {
             $success = $this->postCloneSetup($builder, $cloneTo);
         }
+
+        return $success;
+    }
+
+    protected function runBySsh(Builder $builder, $cloneTo, $runCommand, $runArguments) {
+        $keyFile = $this->writeSshKey($cloneTo);
+
+        $cmd = $runCommand;
+
+        if (!IS_WIN) {
+            $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
+            $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
+        }
+
+        array_unshift($runArguments, $cmd);
+
+        $success = call_user_func_array([$builder, 'executeCommand'], $runArguments);
 
         // Remove the key file and git wrapper:
         unlink($keyFile);

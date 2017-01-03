@@ -75,7 +75,12 @@ class PhpParallelLint implements \PHPCI\Plugin
         }
 
         if (isset($options['extensions'])) {
-            $this->extensions = $options['extensions'];
+            // Only use if this is a comma delimited list
+            $pattern = '/^[a-z]*,\\ *[a-z]*$/';
+
+            if (preg_match($pattern, $options['extensions'])) {
+                $this->extensions = $options['extensions'];
+            }
         }
     }
 

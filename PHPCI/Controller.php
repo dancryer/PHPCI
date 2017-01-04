@@ -9,11 +9,11 @@
 
 namespace PHPCI;
 
-use PHPCI\Config;
 use PHPCI\Framework\Exception\HttpException\ForbiddenException;
 use PHPCI\Framework\Http\Request;
 use PHPCI\Framework\Http\Response;
 use PHPCI\Framework\View;
+use PHPCI\Model\User;
 
 /**
  * PHPCI Base Controller
@@ -192,6 +192,9 @@ abstract class Controller
      */
     protected function currentUserIsAdmin()
     {
-        return $_SESSION['phpci_user']->getIsAdmin();
+        /** @var User $user */
+        $user = $_SESSION['phpci_user'];
+
+        return $user->getIsAdmin();
     }
 }

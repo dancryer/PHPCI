@@ -65,7 +65,8 @@ class Deployer implements \PHPCI\Plugin
             'source' => 'PHPCI',
             'url' => $this->phpci->interpolate('%BUILD_URI%'),
             'branch' => $this->phpci->interpolate('%BRANCH%'),
-            'update_only' => $this->updateOnly
+            'commit' =>  $this->phpci->interpolate('%COMMIT%'),
+            'update_only' => $this->updateOnly,
         ));
 
         return $response['success'];

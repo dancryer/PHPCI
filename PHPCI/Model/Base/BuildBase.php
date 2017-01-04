@@ -124,7 +124,7 @@ class BuildBase extends Model
         ),
         'branch' => array(
             'type' => 'varchar',
-            'length' => 50,
+            'length' => 250,
             'default' => 'master',
         ),
         'created' => array(

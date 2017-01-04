@@ -12,11 +12,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class TapParser
 {
-    const TEST_COUNTS_PATTERN = '/^\d+\.\.(\d+)/';
-    const TEST_LINE_PATTERN   = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
-    const TEST_YAML_START     = '/^(\s*)---/';
-    const TEST_DIAGNOSTIC     = '/^#/';
-    const TEST_COVERAGE       = '/^Generating/';
+    const TEST_COUNTS_PATTERN  = '/^\d+\.\.(\d+)/';
+    const TEST_LINE_PATTERN    = '/^(ok|not ok)(?:\s+\d+)?(?:\s+\-)?\s*(.*?)(?:\s*#\s*(skip|todo)\s*(.*))?\s*$/i';
+    const TEST_DEPENDS_PATTERN = '/^(ok|not ok)(?:\s+\d+\s-)?(?:\s*#\s*(SKIP This test depends on)\s*)"(.*)"(.*)$$/i';
+    const TEST_YAML_START      = '/^(\s*)---/';
+    const TEST_DIAGNOSTIC      = '/^#/';
+    const TEST_COVERAGE        = '/^Generating/';
 
     /**
      * @var string
@@ -47,6 +48,9 @@ class TapParser
      * @var array
      */
     protected $results;
+
+    /** @var int  */
+    protected $skippedTests = 0;
 
     /**
      * Create a new TAP parser for a given string.
@@ -145,6 +149,16 @@ class TapParser
         return false;
     }
 
+    protected function testDepends($line) {
+        if (preg_match(self::TEST_DEPENDS_PATTERN, $line)) {
+            $this->skippedTests++;
+
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
     /**
      * @param string $line
      *
@@ -182,6 +196,10 @@ class TapParser
         if (preg_match(self::TEST_COUNTS_PATTERN, $line, $matches)) {
             $this->testCount = intval($matches[1]);
 
+            return;
+        }
+
+        if ($this->testDepends($line)) {
             return;
         }
 

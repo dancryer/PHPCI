@@ -2,9 +2,8 @@
 
 namespace PHPCI\Framework\Http;
 
-use PHPCI\Framework\Application;
+use PHPCI\Application;
 use PHPCI\Config;
-use PHPCI\Framework\Http\Request;
 
 class Router
 {
@@ -19,14 +18,20 @@ class Router
     protected $config;
 
     /**
-     * @var \PHPCI\Framework\Application
+     * @var \PHPCI\Application
      */
     protected $application;
 
     /**
      * @var array
      */
-    protected $routes = array(array('route' => '/:controller/:action', 'callback' => null, 'defaults' => array()));
+    protected $routes = [
+        [
+            'route' => '/:controller/:action',
+            'callback' => null,
+            'defaults' => []
+        ]
+    ];
 
     public function __construct(Application $application, Request $request, Config $config)
     {
@@ -37,7 +42,7 @@ class Router
 
     public function clearRoutes()
     {
-        $this->routes = array();
+        $this->routes = [];
     }
 
     /**

@@ -19,11 +19,26 @@ use PHPCI\Framework\View;
  * PHPCI Base Controller
  * @package PHPCI
  */
-class Controller extends Framework\Controller
+abstract class Controller
 {
     /**
-    * @var \PHPCI\Framework\View
-    */
+     * @var \PHPCI\Framework\Http\Request
+     */
+    protected $request;
+
+    /**
+     * @var \PHPCI\Framework\Http\Response
+     */
+    protected $response;
+
+    /**
+     * @var \PHPCI\Config
+     */
+    protected $config;
+
+    /**
+     * @var \PHPCI\Framework\View
+     */
     protected $controllerView;
 
     /**
@@ -37,26 +52,105 @@ class Controller extends Framework\Controller
     public $layout;
 
     /**
-     * Initialise the controller.
+     * @var string
      */
-    public function init()
-    {
-        // Extended by actual controllers.
-    }
+    protected $className;
 
-    /**
-     * @param Config $config
-     * @param Request $request
-     * @param Response $response
-     */
     public function __construct(Config $config, Request $request, Response $response)
     {
-        parent::__construct($config, $request, $response);
+        $this->config = $config;
+        $this->request = $request;
+        $this->response = $response;
 
         $class = explode('\\', get_class($this));
         $this->className = substr(array_pop($class), 0, -10);
         $this->setControllerView();
     }
+
+    public function hasAction($name)
+    {
+        if (method_exists($this, $name)) {
+            return true;
+        }
+
+        if (method_exists($this, '__call')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Handles an action on this controller and returns a Response object.
+     * @return \PHPCI\Framework\Http\Response
+     */
+    public function handleAction($action, $actionParams)
+    {
+        $this->setView($action);
+        $response = call_user_func_array([$this, $action], $actionParams);
+
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        if (is_string($response)) {
+            $this->controllerView->content = $response;
+        } elseif (isset($this->view)) {
+            $this->controllerView->content = $this->view->render();
+        }
+
+        $this->response->setContent($this->controllerView->render());
+
+        return $this->response;
+    }
+
+    /**
+     * Initialise the controller.
+     */
+    abstract public function init();
+
+    /**
+     * Get a hash of incoming request parameters ($_GET, $_POST)
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->request->getParams();
+    }
+
+    /**
+     * Get a specific incoming request parameter.
+     *
+     * @param      $key
+     * @param mixed $default    Default return value (if key does not exist)
+     *
+     * @return mixed
+     */
+    public function getParam($key, $default = null)
+    {
+        return $this->request->getParam($key, $default);
+    }
+
+    /**
+     * Change the value of an incoming request parameter.
+     * @param $key
+     * @param $value
+     */
+    public function setParam($key, $value)
+    {
+        $this->request->setParam($key, $value);
+    }
+
+    /**
+     * Remove an incoming request parameter.
+     * @param $key
+     */
+    public function unsetParam($key)
+    {
+        $this->request->unsetParam($key);
+    }
+
 
     /**
      * Set the view that this controller should use.
@@ -79,32 +173,6 @@ class Controller extends Framework\Controller
         if (View::exists($this->className . '/' . $action)) {
             $this->view = new View($this->className . '/' . $action);
         }
-    }
-
-    /**
-     * Handle the incoming request.
-     * @param $action
-     * @param $actionParams
-     * @return \PHPCI\Framework\Http\Response|Response
-     */
-    public function handleAction($action, $actionParams)
-    {
-        $this->setView($action);
-        $response = parent::handleAction($action, $actionParams);
-
-        if ($response instanceof Response) {
-            return $response;
-        }
-
-        if (is_string($response)) {
-            $this->controllerView->content = $response;
-        } elseif (isset($this->view)) {
-            $this->controllerView->content = $this->view->render();
-        }
-
-        $this->response->setContent($this->controllerView->render());
-
-        return $this->response;
     }
 
     /**

@@ -79,7 +79,7 @@ class PhpParallelLint implements \PHPCI\Plugin
             $pattern = '/^[a-z]*,\ *[a-z]*$/';
 
             if (preg_match($pattern, $options['extensions'])) {
-                $this->extensions = $options['extensions'];
+                $this->extensions = str_replace(' ', '', $options['extensions']);
             }
         }
     }

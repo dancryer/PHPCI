@@ -9,10 +9,6 @@
 
 namespace PHPCI\Helper;
 
-use PHPCI\Framework\Cache;
-use PHPCI\Config;
-use PHPCI\Framework\HttpClient;
-
 /**
  * Provides some basic diff processing functionality.
  * @package PHPCI\Helper
@@ -30,7 +26,7 @@ class Diff
             return null;
         }
 
-        $rtn = array();
+        $rtn = [];
 
         $diffLines = explode(PHP_EOL, $diff);
 

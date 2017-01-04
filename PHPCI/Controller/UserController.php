@@ -9,9 +9,9 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Form;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Form;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
 use PHPCI\Service\UserService;
@@ -39,7 +39,7 @@ class UserController extends Controller
      */
     public function init()
     {
-        $this->userStore = b8\Store\Factory::getStore('User');
+        $this->userStore = Framework\Store\Factory::getStore('User');
         $this->userService = new UserService($this->userStore);
     }
 
@@ -158,7 +158,7 @@ class UserController extends Controller
         $form   = $this->userForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view           = new b8\View('UserForm');
+            $view           = new Framework\View('UserForm');
             $view->type     = 'add';
             $view->user     = null;
             $view->form     = $form;
@@ -174,7 +174,7 @@ class UserController extends Controller
 
         $this->userService->createUser($name, $email, $password, $isAdmin);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
         return $response;
     }
@@ -200,7 +200,7 @@ class UserController extends Controller
         $form = $this->userForm($values, 'edit/' . $userId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view = new b8\View('UserForm');
+            $view = new Framework\View('UserForm');
             $view->type = 'edit';
             $view->user = $user;
             $view->form = $form;
@@ -215,7 +215,7 @@ class UserController extends Controller
 
         $this->userService->updateUser($user, $name, $email, $password, $isAdmin);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
         return $response;
     }
@@ -289,7 +289,7 @@ class UserController extends Controller
 
         $this->userService->deleteUser($user);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'user');
         return $response;
     }

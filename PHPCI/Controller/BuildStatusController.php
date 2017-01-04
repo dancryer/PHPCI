@@ -9,9 +9,9 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
@@ -76,7 +76,7 @@ class BuildStatusController extends \PHPCI\Controller
      * @param $projectId
      * @return bool
      * @throws \Exception
-     * @throws b8\Exception\HttpException
+     * @throws \PHPCI\Framework\Exception\HttpException
      */
     public function ccxml($projectId)
     {
@@ -144,7 +144,7 @@ class BuildStatusController extends \PHPCI\Controller
         $status = $this->getStatus($projectId);
 
         if (is_null($status)) {
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', '/');
             return $response;
         }
@@ -175,7 +175,7 @@ class BuildStatusController extends \PHPCI\Controller
      * View the public status page of a given project, if enabled.
      * @param $projectId
      * @return string
-     * @throws \b8\Exception\HttpException\NotFoundException
+     * @throws \PHPCI\Framework\Exception\HttpException\NotFoundException
      */
     public function view($projectId)
     {

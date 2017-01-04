@@ -9,7 +9,7 @@
 
 namespace PHPCI\Service;
 
-use b8\Config;
+use PHPCI\Config;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use PHPCI\BuildFactory;

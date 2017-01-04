@@ -9,9 +9,9 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Http\Response\JsonResponse;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\AnsiConverter;
 use PHPCI\Helper\Lang;
@@ -42,7 +42,7 @@ class BuildController extends \PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore = b8\Store\Factory::getStore('Build');
+        $this->buildStore = Framework\Store\Factory::getStore('Build');
         $this->buildService = new BuildService($this->buildStore);
     }
 
@@ -173,10 +173,10 @@ class BuildController extends \PHPCI\Controller
         $data['duration']   = $build->getDuration();
 
         /** @var \PHPCI\Store\BuildErrorStore $errorStore */
-        $errorStore = b8\Store\Factory::getStore('BuildError');
+        $errorStore = Framework\Store\Factory::getStore('BuildError');
         $errors = $errorStore->getErrorsForBuild($build->getId(), $this->getParam('since', null));
 
-        $errorView = new b8\View('Build/errors');
+        $errorView = new Framework\View('Build/errors');
         $errorView->build = $build;
         $errorView->errors = $errors;
 
@@ -204,7 +204,7 @@ class BuildController extends \PHPCI\Controller
             $_SESSION['global_error'] = Lang::get('add_to_queue_failed');
         }
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
         return $response;
     }
@@ -224,7 +224,7 @@ class BuildController extends \PHPCI\Controller
 
         $this->buildService->deleteBuild($build);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'project/view/' . $build->getProjectId());
         return $response;
     }
@@ -266,7 +266,7 @@ class BuildController extends \PHPCI\Controller
         foreach ($builds['items'] as $build) {
             $item = $build->toArray(1);
 
-            $header = new b8\View('Build/header-row');
+            $header = new Framework\View('Build/header-row');
             $header->build = $build;
 
             $item['header_row'] = $header->render();

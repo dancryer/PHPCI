@@ -9,7 +9,7 @@
 
 namespace PHPCI\Command;
 
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 use Monolog\Logger;
 use PHPCI\Service\BuildService;
 use Symfony\Component\Console\Command\Command;

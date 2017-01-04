@@ -31,7 +31,7 @@
 window.return_url = <?php print json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>;
 
 <?php
-$gh = \b8\Config::getInstance()->get('phpci.github', null);
+$gh = \PHPCI\Config::getInstance()->get('phpci.github', null);
 
 if($gh) {
 	print 'window.github_app_id = ' . json_encode($gh['id']) . ';' . PHP_EOL;

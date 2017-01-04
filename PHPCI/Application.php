@@ -9,17 +9,17 @@
 
 namespace PHPCI;
 
-use b8;
-use b8\Exception\HttpException;
-use b8\Http\Response;
-use b8\Http\Response\RedirectResponse;
-use b8\View;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException;
+use PHPCI\Framework\Http\Response;
+use PHPCI\Framework\Http\Response\RedirectResponse;
+use PHPCI\Framework\View;
 
 /**
 * PHPCI Front Controller
 * @author   Dan Cryer <dan@block8.co.uk>
 */
-class Application extends b8\Application
+class Application extends Framework\Application
 {
     /**
      * @var \PHPCI\Controller
@@ -38,7 +38,7 @@ class Application extends b8\Application
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
             if (!empty($_SESSION['phpci_user_id'])) {
-                $user = b8\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
+                $user = Framework\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
 
                 if ($user) {
                     $_SESSION['phpci_user'] = $user;
@@ -80,7 +80,7 @@ class Application extends b8\Application
     /**
      * Handle an incoming web request.
      *
-     * @return b8\b8\Http\Response|Response
+     * @return \PHPCI\Framework\Http\Response|Response
      */
     public function handleRequest()
     {
@@ -136,12 +136,12 @@ class Application extends b8\Application
     protected function setLayoutVariables(View &$layout)
     {
         $groups = array();
-        $groupStore = b8\Store\Factory::getStore('ProjectGroup');
+        $groupStore = Framework\Store\Factory::getStore('ProjectGroup');
         $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
 
         foreach ($groupList['items'] as $group) {
             $thisGroup = array('title' => $group->getTitle());
-            $projects = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
+            $projects = Framework\Store\Factory::getStore('Project')->getByGroupId($group->getId());
             $thisGroup['projects'] = $projects['items'];
             $groups[] = $thisGroup;
         }
@@ -155,12 +155,12 @@ class Application extends b8\Application
      */
     protected function shouldSkipAuth()
     {
-        $config = b8\Config::getInstance();
+        $config = Config::getInstance();
         $state = (bool)$config->get('phpci.authentication_settings.state', false);
         $userId    = $config->get('phpci.authentication_settings.user_id', 0);
 
         if (false !== $state && 0 != (int)$userId) {
-            $user = b8\Store\Factory::getStore('User')
+            $user = Framework\Store\Factory::getStore('User')
                 ->getByPrimaryKey($userId);
 
             if ($user) {

@@ -9,9 +9,9 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Form;
-use b8\HttpClient;
+use PHPCI\Framework;
+use PHPCI\Framework\Form;
+use PHPCI\Framework\HttpClient;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Yaml\Dumper;
@@ -102,7 +102,7 @@ class SettingsController extends Controller
         $this->settings['phpci']['github']['secret'] = $this->getParam('githubsecret', '');
         $error                                       = $this->storeSettings();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
 
         if ($error) {
             $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
@@ -125,7 +125,7 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
 
         if ($error) {
             $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
@@ -147,7 +147,7 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
 
         if ($error) {
             $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
@@ -168,7 +168,7 @@ class SettingsController extends Controller
         $this->settings['phpci']['basic'] = $this->getParams();
         $error = $this->storeSettings();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
 
         if ($error) {
             $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
@@ -191,7 +191,7 @@ class SettingsController extends Controller
 
         $error = $this->storeSettings();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
 
         if ($error) {
             $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
@@ -222,13 +222,13 @@ class SettingsController extends Controller
                 $this->settings['phpci']['github']['token'] = $resp['access_token'];
                 $this->storeSettings();
 
-                $response = new b8\Http\Response\RedirectResponse();
+                $response = new Framework\Http\Response\RedirectResponse();
                 $response->setHeader('Location', PHPCI_URL . 'settings?linked=1');
                 return $response;
             }
         }
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL . 'settings?linked=2');
         return $response;
     }

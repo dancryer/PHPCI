@@ -6,7 +6,7 @@
 
 namespace PHPCI\Store;
 
-use b8\Database;
+use PHPCI\Framework\Database;
 use PHPCI\Model\BuildError;
 use PHPCI\Store\Base\BuildErrorStoreBase;
 

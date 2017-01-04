@@ -9,8 +9,8 @@
 
 namespace PHPCI\Command;
 
-use b8\Store\Factory;
-use b8\HttpClient;
+use PHPCI\Framework\Store\Factory;
+use PHPCI\Framework\HttpClient;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;

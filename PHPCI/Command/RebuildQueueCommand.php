@@ -9,8 +9,8 @@
 
 namespace PHPCI\Command;
 
-use b8\Config;
-use b8\Store\Factory;
+use PHPCI\Config;
+use PHPCI\Framework\Store\Factory;
 use Monolog\Logger;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;

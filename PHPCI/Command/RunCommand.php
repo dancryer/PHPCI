@@ -9,7 +9,7 @@
 
 namespace PHPCI\Command;
 
-use b8\Config;
+use PHPCI\Config;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
@@ -18,7 +18,7 @@ use PHPCI\Logging\OutputLogHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 use PHPCI\Builder;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;

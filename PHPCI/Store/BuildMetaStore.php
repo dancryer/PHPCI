@@ -10,7 +10,7 @@
 namespace PHPCI\Store;
 
 use PHPCI\Store\Base\BuildMetaStoreBase;
-use b8\Database;
+use PHPCI\Framework\Database;
 use PHPCI\Model\BuildMeta;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace PHPCI\Plugin\Util;
 
-use b8\Store\Factory as StoreFactory;
+use PHPCI\Framework\Store\Factory as StoreFactory;
 use Exception;
 use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildLogger;

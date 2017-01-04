@@ -1,0 +1,11 @@
+<div class="control-group <?php print $css; ?>">
+	<?php if($label): ?>
+		<label class="control-label"><?php print $label; ?></label>
+	<?php endif; ?>
+
+	<div class="controls">
+		<?php foreach($children as $field): ?>
+			<?php print $field; ?>
+		<?php endforeach; ?>
+	</div>
+</div>

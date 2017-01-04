@@ -12,5 +12,5 @@ session_start();
 
 require_once('../bootstrap.php');
 
-$fc = new PHPCI\Application($config, new b8\Http\Request());
+$fc = new PHPCI\Application($config, new PHPCI\Framework\Http\Request());
 print $fc->handleRequest();

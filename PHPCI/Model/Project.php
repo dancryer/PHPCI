@@ -11,7 +11,7 @@ namespace PHPCI\Model;
 
 use PHPCI\Model\Base\ProjectBase;
 use PHPCI\Model\Build;
-use b8\Store;
+use PHPCI\Framework\Store;
 
 /**
 * Project Model

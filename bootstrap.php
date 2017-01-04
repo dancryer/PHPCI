@@ -57,7 +57,7 @@ $conf['b8']['app']['default_controller'] = 'Home';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
 $conf['using_custom_file'] = $usingCustomConfigFile;
 
-$config = new b8\Config($conf);
+$config = new PHPCI\Config($conf);
 
 if (file_exists($configFile)) {
     $config->loadYaml($configFile);

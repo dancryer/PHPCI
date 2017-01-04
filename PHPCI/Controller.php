@@ -9,30 +9,30 @@
 
 namespace PHPCI;
 
-use b8\Config;
-use b8\Exception\HttpException\ForbiddenException;
-use b8\Http\Request;
-use b8\Http\Response;
-use b8\View;
+use PHPCI\Config;
+use PHPCI\Framework\Exception\HttpException\ForbiddenException;
+use PHPCI\Framework\Http\Request;
+use PHPCI\Framework\Http\Response;
+use PHPCI\Framework\View;
 
 /**
  * PHPCI Base Controller
  * @package PHPCI
  */
-class Controller extends \b8\Controller
+class Controller extends Framework\Controller
 {
     /**
-    * @var \b8\View
+    * @var \PHPCI\Framework\View
     */
     protected $controllerView;
 
     /**
-     * @var \b8\View
+     * @var \PHPCI\Framework\View
      */
     protected $view;
 
     /**
-     * @var \b8\View
+     * @var \PHPCI\Framework\View
      */
     public $layout;
 
@@ -85,7 +85,7 @@ class Controller extends \b8\Controller
      * Handle the incoming request.
      * @param $action
      * @param $actionParams
-     * @return \b8\b8\Http\Response|Response
+     * @return \PHPCI\Framework\Http\Response|Response
      */
     public function handleAction($action, $actionParams)
     {

@@ -9,7 +9,7 @@
 
 namespace PHPCI\Logging;
 
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 use Monolog\Handler\AbstractProcessingHandler;
 use PHPCI\Model\Build;
 use Psr\Log\LogLevel;

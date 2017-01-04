@@ -65,7 +65,7 @@ class Mysql implements \PHPCI\Plugin
 
         $this->queries = $options;
 
-        $config = \b8\Database::getConnection('write')->getDetails();
+        $config = \PHPCI\Framework\Database::getConnection('write')->getDetails();
 
         $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
         $this->user = $config['user'];

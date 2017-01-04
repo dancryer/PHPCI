@@ -9,7 +9,7 @@
 
 namespace PHPCI\Controller;
 
-use b8;
+use PHPCI\Framework;
 use PHPCI\Helper\Lang;
 use PHPCI\Plugin\Util\ComposerPluginInformation;
 use PHPCI\Plugin\Util\FilesPluginInformation;

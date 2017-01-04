@@ -7,7 +7,7 @@
 namespace PHPCI\Model\Base;
 
 use PHPCI\Model;
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 
 /**
  * BuildMeta Base Model

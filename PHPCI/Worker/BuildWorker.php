@@ -2,9 +2,9 @@
 
 namespace PHPCI\Worker;
 
-use b8\Config;
-use b8\Database;
-use b8\Store\Factory;
+use PHPCI\Config;
+use PHPCI\Framework\Database;
+use PHPCI\Framework\Store\Factory;
 use Monolog\Logger;
 use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;

@@ -9,7 +9,7 @@
 
 namespace PHPCI\Controller;
 
-use b8;
+use PHPCI\Framework;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
@@ -42,9 +42,9 @@ class HomeController extends \PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore      = b8\Store\Factory::getStore('Build');
-        $this->projectStore    = b8\Store\Factory::getStore('Project');
-        $this->groupStore    = b8\Store\Factory::getStore('ProjectGroup');
+        $this->buildStore      = Framework\Store\Factory::getStore('Build');
+        $this->projectStore    = Framework\Store\Factory::getStore('Project');
+        $this->groupStore    = Framework\Store\Factory::getStore('ProjectGroup');
     }
 
     /**
@@ -117,7 +117,7 @@ class HomeController extends \PHPCI\Controller
             $failures[$project->getId()] = $failure;
         }
 
-        $summaryView = new b8\View('SummaryTable');
+        $summaryView = new Framework\View('SummaryTable');
         $summaryView->projects   = $projects;
         $summaryView->builds     = $summaryBuilds;
         $summaryView->successful = $successes;
@@ -133,7 +133,7 @@ class HomeController extends \PHPCI\Controller
     protected function getLatestBuildsHtml()
     {
         $builds         = $this->buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
-        $view           = new b8\View('BuildsTable');
+        $view           = new Framework\View('BuildsTable');
 
         foreach ($builds['items'] as &$build) {
             $build = BuildFactory::getBuild($build);

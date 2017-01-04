@@ -1,0 +1,18 @@
+<div id="<?php print $id; ?>" class="control-group <?php print $ccss; ?>">
+	<?php if($label): ?>
+		<label class="control-label"><?php print $label; ?></label>
+	<?php endif; ?>
+
+	<div class="controls">
+	<?php foreach($options as $val => $lbl): ?>
+	<label class="radio" for="radio-<?php print $id; ?>-<?php print $val; ?>">
+		<input type="radio" id="radio-<?php print $id; ?>-<?php print $val; ?>" class="<?php print $css; ?>" name="<?php print $name; ?>" value="<?php print $val; ?>" <?php print ($value == $val) ? ' checked="checked"' : ''; ?> <?php print $required ? 'required' : '' ?>>
+		<?php print $lbl; ?>
+	</label>
+	<?php endforeach; ?>
+
+		<?php if(isset($error)): ?>
+			<span class="help-block"><?php print $error; ?></span>
+		<?php endif; ?>
+	</div>
+</div>

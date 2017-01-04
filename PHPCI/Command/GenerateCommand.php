@@ -12,8 +12,8 @@ namespace PHPCI\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Database;
-use b8\Database\CodeGenerator;
+use PHPCI\Framework\Database;
+use PHPCI\Framework\Database\CodeGenerator;
 
 /**
 * Generate console command - Reads the database and generates models and stores.

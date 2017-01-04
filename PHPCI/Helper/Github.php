@@ -9,9 +9,9 @@
 
 namespace PHPCI\Helper;
 
-use b8\Cache;
-use b8\Config;
-use b8\HttpClient;
+use PHPCI\Framework\Cache;
+use PHPCI\Config;
+use PHPCI\Framework\HttpClient;
 
 /**
  * The Github Helper class provides some Github API call functionality.

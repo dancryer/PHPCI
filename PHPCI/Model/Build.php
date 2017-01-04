@@ -9,7 +9,7 @@
 
 namespace PHPCI\Model;
 
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
 use PHPCI\Builder;
 use Symfony\Component\Yaml\Parser as YamlParser;

@@ -9,8 +9,8 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Store;
 use Exception;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
@@ -30,7 +30,7 @@ use PHPCI\Store\ProjectStore;
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class WebhookController extends \b8\Controller
+class WebhookController extends Framework\Controller
 {
     /**
      * @var BuildStore
@@ -62,11 +62,11 @@ class WebhookController extends \b8\Controller
      * @param string $action
      * @param mixed $actionParams
      *
-     * @return \b8\Http\Response
+     * @return \PHPCI\Framework\Http\Response
      */
     public function handleAction($action, $actionParams)
     {
-        $response = new b8\Http\Response\JsonResponse();
+        $response = new Framework\Http\Response\JsonResponse();
         try {
             $data = parent::handleAction($action, $actionParams);
             if (isset($data['responseCode'])) {
@@ -218,9 +218,9 @@ class WebhookController extends \b8\Controller
      *
      * @param Project $project
      * @param array $payload
-     * @param b8\Http\Response\JsonResponse $response
+     * @param \PHPCI\Framework\Http\Response\JsonResponse $response
      *
-     * @return b8\Http\Response\JsonResponse
+     * @return \PHPCI\Framework\Http\Response\JsonResponse
      */
     protected function githubCommitRequest(Project $project, array $payload)
     {
@@ -284,14 +284,14 @@ class WebhookController extends \b8\Controller
         }
 
         $headers = array();
-        $token = \b8\Config::getInstance()->get('phpci.github.token');
+        $token = \PHPCI\Config::getInstance()->get('phpci.github.token');
 
         if (!empty($token)) {
             $headers[] = 'Authorization: token ' . $token;
         }
 
         $url    = $payload['pull_request']['commits_url'];
-        $http   = new \b8\HttpClient();
+        $http   = new Framework\HttpClient();
         $http->setHeaders($headers);
         $response = $http->get($url);
 

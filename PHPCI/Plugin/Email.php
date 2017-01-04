@@ -10,7 +10,7 @@
 namespace PHPCI\Plugin;
 
 use Exception;
-use b8\View;
+use PHPCI\Framework\View;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;

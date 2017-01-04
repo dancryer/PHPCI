@@ -43,7 +43,7 @@ class GithubBuild extends RemoteGitBuild
     */
     public function sendStatusPostback()
     {
-        $token = \b8\Config::getInstance()->get('phpci.github.token');
+        $token = \PHPCI\Config::getInstance()->get('phpci.github.token');
 
         if (empty($token) || empty($this->data['id'])) {
             return;
@@ -56,7 +56,7 @@ class GithubBuild extends RemoteGitBuild
         }
 
         $url    = 'https://api.github.com/repos/'.$project->getReference().'/statuses/'.$this->getCommitId();
-        $http   = new \b8\HttpClient();
+        $http   = new \PHPCI\Framework\HttpClient();
 
         switch ($this->getStatus()) {
             case 0:
@@ -78,7 +78,7 @@ class GithubBuild extends RemoteGitBuild
                 break;
         }
 
-        $phpciUrl = \b8\Config::getInstance()->get('phpci.url');
+        $phpciUrl = \PHPCI\Config::getInstance()->get('phpci.url');
 
         $params = array(
             'state' => $status,

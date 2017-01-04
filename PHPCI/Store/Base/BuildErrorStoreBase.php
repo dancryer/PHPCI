@@ -6,8 +6,8 @@
 
 namespace PHPCI\Store\Base;
 
-use b8\Database;
-use b8\Exception\HttpException;
+use PHPCI\Framework\Database;
+use PHPCI\Framework\Exception\HttpException;
 use PHPCI\Store;
 use PHPCI\Model\BuildError;
 

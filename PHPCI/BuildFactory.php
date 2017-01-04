@@ -9,7 +9,7 @@
 
 namespace PHPCI;
 
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 use PHPCI\Model\Build;
 
 /**

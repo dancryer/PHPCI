@@ -27,7 +27,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
     public function testExecute_TestIsAValidModel()
     {
         $project = new Project();
-        $this->assertTrue($project instanceof \b8\Model);
+        $this->assertTrue($project instanceof \PHPCI\Framework\Model);
         $this->assertTrue($project instanceof Model);
         $this->assertTrue($project instanceof Model\Base\ProjectBase);
     }

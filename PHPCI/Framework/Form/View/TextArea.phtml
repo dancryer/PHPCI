@@ -1,0 +1,13 @@
+<div class="control-group <?php print $ccss; ?> <?php print (isset($error) ? 'error' : ''); ?>">
+	<?php if($label): ?>
+		<label class="control-label" for="<?php print $id ?>"><?php print $label; ?></label>
+	<?php endif; ?>
+
+	<div class="controls">
+		<textarea rows="<?php print $rows; ?>" id="<?php print $id; ?>" class="<?php print $css; ?>" name="<?php print $name; ?>" <?php print $required ? ' required' : '' ?>><?php print isset($value) ? $value : '' ?></textarea>
+
+		<?php if(isset($error)): ?>
+			<span class="help-block"><?php print $error; ?></span>
+		<?php endif; ?>
+	</div>
+</div>

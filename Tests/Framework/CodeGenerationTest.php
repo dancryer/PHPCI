@@ -3,7 +3,6 @@
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Registry.php');
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Model.php');
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Controller.php');
-require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Controller/RestController.php');
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Store.php');
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Store/Factory.php');
 require_once(dirname(__FILE__) . '/../../PHPCI/Framework/Database.php');

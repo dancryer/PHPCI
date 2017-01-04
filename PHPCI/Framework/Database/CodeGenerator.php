@@ -103,40 +103,6 @@ class CodeGenerator
 		}
 	}
 
-	public function generateControllers()
-	{
-		print PHP_EOL . 'GENERATING CONTROLLERS' . PHP_EOL . PHP_EOL;
-
-		@mkdir($this->_path . 'Controller/Base/', 0777, true);
-
-		foreach($this->_tables as $tableName => $table)
-		{
-            $namespace = $this->getNamespace($table['php_name']);
-            $controllerPath = $this->getPath($namespace) . str_replace('\\', '/', $namespace) . '/Controller/';
-            $basePath = $controllerPath . 'Base/';
-            $controllerFile = $controllerPath . $table['php_name'] . 'Controller.php';
-            $baseFile = $basePath . $table['php_name'] . 'ControllerBase.php';
-
-            if (!is_dir($basePath)) {
-                @mkdir($basePath, 0777, true);
-            }
-
-            $model  = $this->_processTemplate($tableName, $table, 'ControllerTemplate');
-			$base   = $this->_processTemplate($tableName, $table, 'BaseControllerTemplate');
-
-			print '-- ' . $table['php_name'] . PHP_EOL;
-
-			if(!is_file($controllerFile))
-			{
-				print '-- -- Writing new Controller' . PHP_EOL;
-				file_put_contents($controllerFile, $model);
-			}
-
-			print '-- -- Writing base Controller' . PHP_EOL;
-			file_put_contents($baseFile, $base);
-		}
-	}
-
 	protected function _processTemplate($tableName, $table, $template)
 	{
         $tpl = Template::createFromFile($template, B8_PATH . 'Database/CodeGenerator/');

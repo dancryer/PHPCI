@@ -24,13 +24,13 @@ class MailerFactory
      * Set the mailer factory configuration.
      * @param array $config
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         if (!is_array($config)) {
-            $config = array();
+            $config = [];
         }
 
-        $this->emailConfig  = isset($config['email_settings']) ? $config['email_settings'] : array();
+        $this->emailConfig  = isset($config['email_settings']) ? $config['email_settings'] : [];
     }
 
     /**

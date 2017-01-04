@@ -16,7 +16,7 @@ use PHPCI\Framework\Exception\HttpException;
  * PHPCI Base Store
  * @package PHPCI
  */
-abstract class Store extends Framework\Store
+abstract class Store
 {
     protected $modelName   = null;
     protected $tableName   = null;

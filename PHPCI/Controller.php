@@ -107,7 +107,9 @@ abstract class Controller
     /**
      * Initialise the controller.
      */
-    abstract public function init();
+    public function init()
+    {
+    }
 
     /**
      * Get a hash of incoming request parameters ($_GET, $_POST)

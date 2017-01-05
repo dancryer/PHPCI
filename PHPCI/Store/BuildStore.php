@@ -9,8 +9,9 @@
 
 namespace PHPCI\Store;
 
-use PHPCI\Framework\Database;
+use Block8\Database\Connection;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildCollection;
 use PHPCI\Store\Base\BuildStoreBase;
 
 /**
@@ -25,86 +26,44 @@ class BuildStore extends BuildStoreBase
      * Return an array of the latest builds for a given project.
      * @param null $projectId
      * @param int $limit
-     * @return array
+     * @return BuildCollection
      */
-    public function getLatestBuilds($projectId = null, $limit = 5)
+    public function getLatestBuilds($projectId = null, $limit = 5) : BuildCollection
     {
-        if (!is_null($projectId)) {
-            $query = 'SELECT * FROM build WHERE `project_id` = :pid ORDER BY id DESC LIMIT :limit';
-        } else {
-            $query = 'SELECT * FROM build ORDER BY id DESC LIMIT :limit';
-        }
-
-        $stmt = Database::getConnection('read')->prepare($query);
+        $query = $this->find();
 
         if (!is_null($projectId)) {
-            $stmt->bindValue(':pid', $projectId);
+            $query->where('project_id', $projectId);
         }
 
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new \PHPCI\Model\Build($item);
-            };
-            $rtn = array_map($map, $res);
-
-            return $rtn;
-        } else {
-            return array();
-        }
+        return $query->order('id', 'DESC')->get($limit);
     }
 
     /**
      * Return the latest build for a specific project, of a specific build status.
      * @param null $projectId
      * @param int $status
-     * @return array|Build
+     * @return Build|null
      */
     public function getLastBuildByStatus($projectId = null, $status = Build::STATUS_SUCCESS)
     {
-        $query = 'SELECT * FROM build WHERE project_id = :pid AND status = :status ORDER BY id DESC LIMIT 1';
-        $stmt = Database::getConnection('read')->prepare($query);
-        $stmt->bindValue(':pid', $projectId);
-        $stmt->bindValue(':status', $status);
-
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new Build($data);
-            }
-        } else {
-            return array();
-        }
+        return $this->where('project_id', $projectId)
+            ->and('status', $status)
+            ->order('id', 'DESC')
+            ->first();
     }
 
     /**
      * Return an array of builds for a given project and commit ID.
      * @param $projectId
      * @param $commitId
-     * @return array
+     * @return BuildCollection
      */
-    public function getByProjectAndCommit($projectId, $commitId)
+    public function getByProjectAndCommit($projectId, $commitId) : BuildCollection
     {
-        $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id AND `commit_id` = :commit_id';
-        $stmt = Database::getConnection('read')->prepare($query);
-        $stmt->bindValue(':project_id', $projectId);
-        $stmt->bindValue(':commit_id', $commitId);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Build($item);
-            };
-
-            $rtn = array_map($map, $res);
-
-            return array('items' => $rtn, 'count' => count($rtn));
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+        return $this->where('project_id', $projectId)
+            ->and('commit_id', $commitId)
+            ->get();
     }
 
     /**
@@ -117,14 +76,14 @@ class BuildStore extends BuildStoreBase
     public function getBuildBranches($projectId)
     {
         $query = 'SELECT DISTINCT `branch` FROM `build` WHERE `project_id` = :project_id';
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt = Connection::get()->prepare($query);
         $stmt->bindValue(':project_id', $projectId);
 
         if ($stmt->execute()) {
             $res = $stmt->fetchAll(\PDO::FETCH_COLUMN);
             return $res;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -160,7 +119,7 @@ class BuildStore extends BuildStoreBase
 
         $query .= ' ORDER BY bm.id DESC LIMIT :numResults';
 
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt = Connection::get()->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);
@@ -202,7 +161,7 @@ class BuildStore extends BuildStoreBase
         $cols = '`project_id`, `build_id`, `meta_key`, `meta_value`';
         $query = 'REPLACE INTO build_meta ('.$cols.') VALUES (:projectId, :buildId, :key, :value)';
 
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt = Connection::get()->prepare($query);
         $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
         $stmt->bindValue(':projectId', (int)$projectId, \PDO::PARAM_INT);
         $stmt->bindValue(':buildId', (int)$buildId, \PDO::PARAM_INT);

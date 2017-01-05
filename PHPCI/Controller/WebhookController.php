@@ -52,8 +52,8 @@ class WebhookController extends Framework\Controller
      */
     public function init()
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = BuildStore::load();
+        $this->projectStore = ProjectStore::load();
         $this->buildService = new BuildService($this->buildStore);
     }
 
@@ -428,17 +428,17 @@ class WebhookController extends Framework\Controller
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
-        if ($builds['count']) {
-            return array(
+        if ($builds->count) {
+            return [
                 'status' => 'ignored',
-                'message' => sprintf('Duplicate of build #%d', $builds['items'][0]->getId())
-            );
+                'message' => sprintf('Duplicate of build #%d', $builds->first()->getId()),
+            ];
         }
 
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
 
-        return array('status' => 'ok', 'buildID' => $build->getID());
+        return ['status' => 'ok', 'buildID' => $build->getID()];
     }
 
     /**

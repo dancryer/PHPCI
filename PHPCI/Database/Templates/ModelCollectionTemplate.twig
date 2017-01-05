@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * {{ table.php_name }} model collection
+ */
+
+namespace {{ itemNamespace }}\Model;
+
+use Block8\Database\Model\Collection;
+
+/**
+ * {{ table.php_name }} Model Collection
+ */
+class {{ table.php_name }}Collection extends Collection
+{
+    /**
+     * Add a {{ table.php_name }} model to the collection.
+     * @param string $key
+     * @param {{ table.php_name }} $value
+     * @return {{ table.php_name }}Collection
+     */
+    public function add{{ table.php_name }}($key, {{ table.php_name }} $value)
+    {
+        return parent::add($key, $value);
+    }
+
+    /**
+     * @param $key
+     * @return {{ table.php_name }}|null
+     */
+    public function get($key)
+    {
+        return parent::get($key);
+    }
+}

@@ -14,7 +14,7 @@ class AddProjectGroups extends AbstractMigration
         $group->setTitle('Projects');
 
         /** @var \PHPCI\Model\ProjectGroup $group */
-        $group = \PHPCI\Framework\Store\Factory::getStore('ProjectGroup')->save($group);
+        $group = \PHPCI\Store\ProjectGroupStore::load()->save($group);
 
         $table = $this->table('project');
         $table->addColumn('group_id', 'integer', array(

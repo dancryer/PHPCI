@@ -56,11 +56,24 @@ abstract class Controller
      */
     protected $className;
 
-    public function __construct(Config $config, Request $request, Response $response)
+    /**
+     * @var User
+     */
+    protected $user;
+
+    /**
+     * Controller constructor.
+     * @param Config $config
+     * @param Request $request
+     * @param Response $response
+     * @param User $user
+     */
+    public function __construct(Config $config, Request $request, Response $response, User &$user)
     {
         $this->config = $config;
         $this->request = $request;
         $this->response = $response;
+        $this->user =& $user;
 
         $class = explode('\\', get_class($this));
         $this->className = substr(array_pop($class), 0, -10);
@@ -194,9 +207,6 @@ abstract class Controller
      */
     protected function currentUserIsAdmin()
     {
-        /** @var User $user */
-        $user = $_SESSION['phpci_user'];
-
-        return $user->getIsAdmin();
+        return $this->user->getIsAdmin();
     }
 }

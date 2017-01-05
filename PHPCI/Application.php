@@ -16,6 +16,10 @@ use PHPCI\Framework\Http;
 use PHPCI\Framework\Http\Response;
 use PHPCI\Framework\Http\Response\RedirectResponse;
 use PHPCI\Framework\View;
+use PHPCI\Model\User;
+use PHPCI\Store\ProjectGroupStore;
+use PHPCI\Store\ProjectStore;
+use PHPCI\Store\UserStore;
 
 /**
 * PHPCI Front Controller
@@ -23,6 +27,11 @@ use PHPCI\Framework\View;
 */
 class Application
 {
+    /**
+     * @var User
+     */
+    public static $user;
+
     /**
      * @var array
      */
@@ -138,12 +147,12 @@ class Application
     protected function loadController($class)
     {
         /** @var \PHPCI\Controller $controller */
-        $controller = new $class($this->config, $this->request, $this->response);
+        $controller = new $class($this->config, $this->request, $this->response, self::$user);
         $controller->init();
 
         $controller->layout = new View('layout');
         $controller->layout->title = 'PHPCI';
-        $controller->layout->breadcrumb = array();
+        $controller->layout->breadcrumb = [];
 
         return $controller;
     }
@@ -188,10 +197,11 @@ class Application
         // Inlined as a closure to fix "using $this when not in object context" on 5.3
         $validateSession = function () {
             if (!empty($_SESSION['phpci_user_id'])) {
-                $user = Framework\Store\Factory::getStore('User')->getByPrimaryKey($_SESSION['phpci_user_id']);
+
+                $user = UserStore::load()->getById($_SESSION['phpci_user_id']);
 
                 if ($user) {
-                    $_SESSION['phpci_user'] = $user;
+                    self::$user = $user;
                     return true;
                 }
 
@@ -234,13 +244,13 @@ class Application
     protected function setLayoutVariables(View &$layout)
     {
         $groups = [];
-        $groupStore = Framework\Store\Factory::getStore('ProjectGroup');
-        $groupList = $groupStore->getWhere([], 100, 0, [], ['title' => 'ASC']);
+        $groupStore = ProjectGroupStore::load();
+        $groupList = $groupStore->find()->order('title', 'ASC')->get(100);
 
-        foreach ($groupList['items'] as $group) {
+        foreach ($groupList as $group) {
             $thisGroup = ['title' => $group->getTitle()];
-            $projects = Framework\Store\Factory::getStore('Project')->getByGroupId($group->getId());
-            $thisGroup['projects'] = $projects['items'];
+            $projects = ProjectStore::load()->getByGroupId($group->getId());
+            $thisGroup['projects'] = $projects;
             $groups[] = $thisGroup;
         }
 
@@ -258,11 +268,11 @@ class Application
         $userId    = $config->get('phpci.authentication_settings.user_id', 0);
 
         if (false !== $state && 0 != (int)$userId) {
-            $user = Framework\Store\Factory::getStore('User')
-                ->getByPrimaryKey($userId);
+            $userStore = UserStore::load();
+            $user = $userStore->getById($userId);
 
             if ($user) {
-                $_SESSION['phpci_user'] = $user;
+                self::$user = $user;
                 return true;
             }
         }

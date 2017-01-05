@@ -38,6 +38,7 @@
         "php": ">=5.3.8",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "block8/database": "~1.0",
         "ircmaxell/password-compat": "~1.0",
         "swiftmailer/swiftmailer": "~5.0",
         "symfony/yaml": "~2.1",
@@ -59,7 +60,8 @@
         "squizlabs/php_codesniffer": "~2.3",
         "block8/php-docblock-checker": "~1.0",
         "phploc/phploc": "~2.0",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
+        "jakub-onderka/php-parallel-lint": "0.8.*",
+        "twig/twig": "~1.0"
     },
 
     "suggest": {

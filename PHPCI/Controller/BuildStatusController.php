@@ -16,6 +16,8 @@ use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 use PHPCI\Service\BuildStatusService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Build Status Controller - Allows external access to build status information / images.
@@ -36,8 +38,8 @@ class BuildStatusController extends \PHPCI\Controller
     public function init()
     {
         $this->response->disableLayout();
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore      = BuildStore::load();
+        $this->projectStore    = ProjectStore::load();
     }
 
     /**
@@ -206,14 +208,13 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected function getLatestBuilds($projectId)
     {
-        $criteria       = array('project_id' => $projectId);
-        $order          = array('id' => 'DESC');
-        $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
+        $builds = $this->buildStore->where('project_id', $projectId)->order('id', 'DESC')->get(10);
 
-        foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+        $rtn = [];
+        foreach ($builds as $build) {
+            $rtn[] = BuildFactory::getBuild($build);
         }
 
-        return $builds['items'];
+        return $rtn;
     }
 }

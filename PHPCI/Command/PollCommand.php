@@ -9,10 +9,11 @@
 
 namespace PHPCI\Command;
 
-use PHPCI\Framework\Store\Factory;
 use PHPCI\Framework\HttpClient;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,14 +62,14 @@ class PollCommand extends Command
             return;
         }
 
-        $buildStore = Factory::getStore('Build');
+        $buildStore = BuildStore::load();
 
         $this->logger->addInfo(Lang::get('finding_projects'));
-        $projectStore = Factory::getStore('Project');
-        $result = $projectStore->getWhere();
-        $this->logger->addInfo(Lang::get('found_n_projects', count($result['items'])));
+        $projectStore = ProjectStore::load();
+        $result = $projectStore->find()->get(1000);
+        $this->logger->addInfo(Lang::get('found_n_projects', $result->count));
 
-        foreach ($result['items'] as $project) {
+        foreach ($result as $project) {
             $http = new HttpClient('https://api.github.com');
             $commits = $http->get('/repos/' . $project->getReference() . '/commits', array('access_token' => $token));
 

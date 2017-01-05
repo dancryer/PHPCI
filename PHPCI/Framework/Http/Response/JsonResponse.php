@@ -6,25 +6,25 @@ use PHPCI\Framework\Http\Response;
 
 class JsonResponse extends Response
 {
-	public function __construct(Response $createFrom = null)
-	{
-		parent::__construct($createFrom);
+    public function __construct(Response $createFrom = null)
+    {
+        parent::__construct($createFrom);
 
-		$this->setContent(array());
-		$this->setHeader('Content-Type', 'application/json');
-	}
+        $this->setContent([]);
+        $this->setHeader('Content-Type', 'application/json');
+    }
 
-	public function hasLayout()
-	{
-		return false;
-	}
+    public function hasLayout()
+    {
+        return false;
+    }
 
-	protected function flushBody()
-	{
-		if (isset($this->data['body'])) {
-			return json_encode($this->data['body']);
-		}
+    protected function flushBody()
+    {
+        if (isset($this->data['body'])) {
+            return json_encode($this->data['body']);
+        }
 
-		return json_encode(null);
-	}
+        return json_encode(null);
+    }
 }

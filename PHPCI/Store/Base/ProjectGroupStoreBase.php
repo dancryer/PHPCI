@@ -2,52 +2,71 @@
 
 /**
  * ProjectGroup base store for table: project_group
+
  */
 
 namespace PHPCI\Store\Base;
 
-use PHPCI\Framework\Database;
-use PHPCI\Framework\Exception\HttpException;
+use Block8\Database\Connection;
 use PHPCI\Store;
+use PHPCI\Store\ProjectGroupStore;
 use PHPCI\Model\ProjectGroup;
+use PHPCI\Model\ProjectGroupCollection;
 
 /**
  * ProjectGroup Base Store
  */
 class ProjectGroupStoreBase extends Store
 {
-    protected $tableName   = 'project_group';
-    protected $modelName   = '\PHPCI\Model\ProjectGroup';
-    protected $primaryKey  = 'id';
+    /**
+     * @var ProjectGroupStore $instance
+     */
+    protected static $instance = null;
+
+    protected $table = 'project_group';
+    protected $model = 'PHPCI\Model\ProjectGroup';
+    protected $key = 'id';
 
     /**
-     * Get a ProjectGroup by primary key (Id)
+     * Return the database store for this model.
+     * @return ProjectGroupStore
      */
-    public function getByPrimaryKey($value, $useConnection = 'read')
+    public static function load() : ProjectGroupStore
     {
-        return $this->getById($value, $useConnection);
+        if (is_null(self::$instance)) {
+            self::$instance = new ProjectGroupStore(Connection::get());
+        }
+
+        return self::$instance;
     }
 
     /**
-     * Get a single ProjectGroup by Id.
-     * @return null|ProjectGroup
-     */
-    public function getById($value, $useConnection = 'read')
+    * @param $value
+    * @return ProjectGroup|null
+    */
+    public function getByPrimaryKey($value)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        return $this->getById($value);
+    }
+
+
+    /**
+     * Get a ProjectGroup object by Id.
+     * @param $value
+     * @return ProjectGroup|null
+     */
+    public function getById(int $value)
+    {
+        // This is the primary key, so try and get from cache:
+        $cacheResult = $this->cacheGet($value);
+
+        if (!empty($cacheResult)) {
+            return $cacheResult;
         }
 
-        $query = 'SELECT * FROM `project_group` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':id', $value);
+        $rtn = $this->where('id', $value)->first();
+        $this->cacheSet($value, $rtn);
 
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new ProjectGroup($data);
-            }
-        }
-
-        return null;
+        return $rtn;
     }
 }

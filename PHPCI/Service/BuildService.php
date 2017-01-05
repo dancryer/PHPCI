@@ -109,7 +109,7 @@ class BuildService
      */
     public function createDuplicateBuild(Build $copyFrom)
     {
-        $data = $copyFrom->getDataArray();
+        $data = $copyFrom->toArray();
 
         // Clean up unwanted properties from the original build:
         unset($data['id']);

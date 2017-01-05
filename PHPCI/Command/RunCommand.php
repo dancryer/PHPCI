@@ -15,10 +15,10 @@ use PHPCI\Helper\Lang;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Logging\LoggedBuildContextTidier;
 use PHPCI\Logging\OutputLogHandler;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use PHPCI\Framework\Store\Factory;
 use PHPCI\Builder;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Build;
@@ -94,20 +94,18 @@ class RunCommand extends Command
 
         $this->logger->pushProcessor(new LoggedBuildContextTidier());
         $this->logger->addInfo(Lang::get('finding_builds'));
-        $store = Factory::getStore('Build');
+        $store = BuildStore::load();
         $result = $store->getByStatus(0, $this->maxBuilds);
-        $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));
+        $this->logger->addInfo(Lang::get('found_n_builds', $result->count));
 
         $builds = 0;
 
-        while (count($result['items'])) {
-            $build = array_shift($result['items']);
+        foreach ($result as $build) {
             $build = BuildFactory::getBuild($build);
 
             // Skip build (for now) if there's already a build running in that project:
             if (!$this->isFromDaemon && in_array($build->getProjectId(), $running)) {
                 $this->logger->addInfo(Lang::get('skipping_build', $build->getId()));
-                $result['items'][] = $build;
 
                 // Re-run build validator:
                 $running = $this->validateRunningBuilds();
@@ -154,14 +152,13 @@ class RunCommand extends Command
 
     protected function validateRunningBuilds()
     {
-        /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
+        $store = BuildStore::load();
         $running = $store->getByStatus(1);
-        $rtn = array();
+        $rtn = [];
 
         $timeout = Config::getInstance()->get('phpci.build.failed_after', 1800);
 
-        foreach ($running['items'] as $build) {
+        foreach ($running as $build) {
             /** @var \PHPCI\Model\Build $build */
             $build = BuildFactory::getBuild($build);
 

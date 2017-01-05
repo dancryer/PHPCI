@@ -9,6 +9,7 @@
 
 namespace PHPCI\Plugin;
 
+use Block8\Database\Connection;
 use PDO;
 use PHPCI\Builder;
 use PHPCI\Helper\Lang;
@@ -36,7 +37,7 @@ class Mysql implements \PHPCI\Plugin
     /**
      * @var array
      */
-    protected $queries = array();
+    protected $queries = [];
 
     /**
      * @var string
@@ -58,18 +59,16 @@ class Mysql implements \PHPCI\Plugin
      * @param Build   $build
      * @param array   $options
      */
-    public function __construct(Builder $phpci, Build $build, array $options = array())
+    public function __construct(Builder $phpci, Build $build, array $options = [])
     {
         $this->phpci = $phpci;
         $this->build = $build;
 
         $this->queries = $options;
 
-        $config = \PHPCI\Framework\Database::getConnection('write')->getDetails();
-
-        $this->host =(defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
-        $this->user = $config['user'];
-        $this->pass = $config['pass'];
+        $this->host = (defined('PHPCI_DB_HOST')) ? PHPCI_DB_HOST : null;
+        $this->user = Connection::$username;
+        $this->pass = Connection::$password;
 
         $buildSettings = $phpci->getConfig('build_settings');
 
@@ -97,8 +96,9 @@ class Mysql implements \PHPCI\Plugin
     public function execute()
     {
         try {
-            $opts = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-            $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, $opts);
+            $pdo  = new PDO('mysql:host=' . $this->host, $this->user, $this->pass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ]);
 
             foreach ($this->queries as $query) {
                 if (!is_array($query)) {
@@ -152,10 +152,10 @@ class Mysql implements \PHPCI\Plugin
      */
     protected function getImportCommand($import_file, $database = null)
     {
-        $decompression = array(
+        $decompression = [
             'bz2' => '| bzip2 --decompress',
             'gz' => '| gzip --decompress',
-        );
+        ];
 
         $extension = strtolower(pathinfo($import_file, PATHINFO_EXTENSION));
         $decomp_cmd = '';
@@ -163,14 +163,13 @@ class Mysql implements \PHPCI\Plugin
             $decomp_cmd = $decompression[$extension];
         }
 
-        $args = array(
+        return strtr('cat :import_file :decomp_cmd | mysql -h:host -u:user -p:pass :database', [
             ':import_file' => escapeshellarg($import_file),
             ':decomp_cmd' => $decomp_cmd,
             ':host' => escapeshellarg($this->host),
             ':user' => escapeshellarg($this->user),
             ':pass' => escapeshellarg($this->pass),
             ':database' => ($database === null)? '': escapeshellarg($database),
-        );
-        return strtr('cat :import_file :decomp_cmd | mysql -h:host -u:user -p:pass :database', $args);
+        ]);
     }
 }

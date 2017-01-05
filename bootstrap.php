@@ -63,6 +63,21 @@ if (file_exists($configFile)) {
     $config->loadYaml($configFile);
 }
 
+
+// Set up database access:
+\PHPCI\Store::setNamespaces(['PHPCI']);
+
+$dbConfig = $config->get('database', $config->get('b8.database', []));
+
+if (!empty($dbConfig)) {
+    $host = !empty($dbConfig['host']) ? [$dbConfig['host']] : $dbConfig['servers'];
+    $user = $dbConfig['username'];
+    $pass = $dbConfig['password'];
+    $name = $dbConfig['name'];
+
+    \Block8\Database\Connection::setConfig($host, $user, $pass, $name);
+}
+
 /**
  * Allow to modify PHPCI configuration without modify versioned code.
  * Daemons should be killed to apply changes in the file.

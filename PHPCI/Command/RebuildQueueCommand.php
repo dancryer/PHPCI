@@ -10,12 +10,12 @@
 namespace PHPCI\Command;
 
 use PHPCI\Config;
-use PHPCI\Framework\Store\Factory;
 use Monolog\Logger;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Logging\OutputLogHandler;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,19 +67,16 @@ class RebuildQueueCommand extends Command
             );
         }
 
-        $store = Factory::getStore('Build');
+        $store = BuildStore::load();
         $result = $store->getByStatus(0);
 
-        $this->logger->addInfo(Lang::get('found_n_builds', count($result['items'])));
+        $this->logger->addInfo(Lang::get('found_n_builds', $result->count));
 
         $buildService = new BuildService($store);
 
-        while (count($result['items'])) {
-            $build = array_shift($result['items']);
-            $build = BuildFactory::getBuild($build);
-
+        foreach ($result as $build) {
             $this->logger->addInfo('Added build #' . $build->getId() . ' to queue.');
-            $buildService->addBuildToQueue($build);
+            $buildService->addBuildToQueue(BuildFactory::getBuild($build));
         }
     }
 }

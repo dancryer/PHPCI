@@ -13,8 +13,8 @@ use Exception;
 use PDO;
 
 use PHPCI\Config;
-use PHPCI\Framework\Store\Factory;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\UserStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -381,7 +381,7 @@ class InstallCommand extends Command
         try {
             $this->reloadConfig();
 
-            $userStore = Factory::getStore('User');
+            $userStore = UserStore::load();
             $userService = new UserService($userStore);
             $userService->createUser($admin['name'], $admin['mail'], $admin['pass'], 1);
 

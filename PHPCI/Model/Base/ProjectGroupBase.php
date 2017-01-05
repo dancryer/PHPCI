@@ -6,163 +6,106 @@
 
 namespace PHPCI\Model\Base;
 
+use DateTime;
+use Block8\Database\Query;
 use PHPCI\Model;
-use PHPCI\Framework\Store\Factory;
+use PHPCI\Model\ProjectGroup;
+use PHPCI\Store;
+use PHPCI\Store\ProjectGroupStore;
 
 /**
  * ProjectGroup Base Model
  */
-class ProjectGroupBase extends Model
+abstract class ProjectGroupBase extends Model
 {
-    /**
-    * @var array
-    */
-    public static $sleepable = array();
-
-    /**
-    * @var string
-    */
-    protected $tableName = 'project_group';
-
-    /**
-    * @var string
-    */
-    protected $modelName = 'ProjectGroup';
-
-    /**
-    * @var array
-    */
-    protected $data = array(
+    protected $table = 'project_group';
+    protected $model = 'ProjectGroup';
+    protected $data = [
         'id' => null,
         'title' => null,
-    );
+    ];
 
-    /**
-    * @var array
-    */
-    protected $getters = array(
-        // Direct property getters:
+    protected $getters = [
         'id' => 'getId',
         'title' => 'getTitle',
+    ];
 
-        // Foreign key getters:
-    );
-
-    /**
-    * @var array
-    */
-    protected $setters = array(
-        // Direct property setters:
+    protected $setters = [
         'id' => 'setId',
         'title' => 'setTitle',
-
-        // Foreign key setters:
-    );
+    ];
 
     /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
-            'auto_increment' => true,
-            'default' => null,
-        ),
-        'title' => array(
-            'type' => 'varchar',
-            'length' => 100,
-            'default' => null,
-        ),
-    );
-
-    /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-    );
-
-    /**
-    * @var array
-    */
-    public $foreignKeys = array(
-    );
-
-    /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
-    public function getId()
-    {
-        $rtn    = $this->data['id'];
-
-        return $rtn;
-    }
-
-    /**
-    * Get the value of Title / title.
-    *
-    * @return string
-    */
-    public function getTitle()
-    {
-        $rtn    = $this->data['title'];
-
-        return $rtn;
-    }
-
-    /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setId($value)
-    {
-        $this->_validateNotNull('Id', $value);
-        $this->_validateInt('Id', $value);
-
-        if ($this->data['id'] === $value) {
-            return;
-        }
-
-        $this->data['id'] = $value;
-
-        $this->_setModified('id');
-    }
-
-    /**
-    * Set the value of Title / title.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setTitle($value)
-    {
-        $this->_validateNotNull('Title', $value);
-        $this->_validateString('Title', $value);
-
-        if ($this->data['title'] === $value) {
-            return;
-        }
-
-        $this->data['title'] = $value;
-
-        $this->_setModified('title');
-    }
-
-    /**
-     * Get Project models by GroupId for this ProjectGroup.
-     *
-     * @uses \PHPCI\Store\ProjectStore::getByGroupId()
-     * @uses \PHPCI\Model\Project
-     * @return \PHPCI\Model\Project[]
+     * Return the database store for this model.
+     * @return ProjectGroupStore
      */
-    public function getGroupProjects()
+    public static function Store() : ProjectGroupStore
     {
-        return Factory::getStore('Project', 'PHPCI')->getByGroupId($this->getId());
+        return ProjectGroupStore::load();
+    }
+
+    
+    /**
+     * Get the value of Id / id
+     * @return int
+     */
+
+     public function getId() : int
+     {
+        $rtn = $this->data['id'];
+
+        return $rtn;
+     }
+    
+    /**
+     * Get the value of Title / title
+     * @return string
+     */
+
+     public function getTitle() : string
+     {
+        $rtn = $this->data['title'];
+
+        return $rtn;
+     }
+    
+    
+    /**
+     * Set the value of Id / id
+     * @param $value int
+     * @return ProjectGroup
+     */
+    public function setId(int $value) : ProjectGroup
+    {
+
+        if ($this->data['id'] !== $value) {
+            $this->data['id'] = $value;
+            $this->setModified('id');
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Set the value of Title / title
+     * @param $value string
+     * @return ProjectGroup
+     */
+    public function setTitle(string $value) : ProjectGroup
+    {
+
+        if ($this->data['title'] !== $value) {
+            $this->data['title'] = $value;
+            $this->setModified('title');
+        }
+
+        return $this;
+    }
+    
+    
+
+    public function Projects() : Query
+    {
+        return Store::get('Project')->where('group_id', $this->data['id']);
     }
 }

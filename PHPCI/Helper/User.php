@@ -9,6 +9,8 @@
 
 namespace PHPCI\Helper;
 
+use PHPCI\Application;
+
 /**
 * User Helper - Provides access to logged in user information in views.
 * @author       Dan Cryer <dan@block8.co.uk>
@@ -23,18 +25,18 @@ class User
      * @param array $params
      * @return mixed|null
      */
-    public function __call($method, $params = array())
+    public function __call($method, $params = [])
     {
-        if (empty($_SESSION['phpci_user'])) {
+        $user = Application::$user;
+
+        if (empty($user)) {
             return null;
         }
-
-        $user = $_SESSION['phpci_user'];
 
         if (!is_object($user)) {
             return null;
         }
 
-        return call_user_func_array(array($user, $method), $params);
+        return call_user_func_array([$user, $method], $params);
     }
 }

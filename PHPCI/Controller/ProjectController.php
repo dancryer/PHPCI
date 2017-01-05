@@ -54,8 +54,8 @@ class ProjectController extends PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = PHPCI\Store\BuildStore::load();
+        $this->projectStore = PHPCI\Store\ProjectStore::load();
         $this->projectService = new ProjectService($this->projectStore);
         $this->buildService = new BuildService($this->buildStore);
     }
@@ -113,7 +113,7 @@ class ProjectController extends PHPCI\Controller
             throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
 
-        $email = $_SESSION['phpci_user']->getEmail();
+        $email = $this->user->getEmail();
         $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
         if ($this->buildService->queueError) {
@@ -163,22 +163,24 @@ class ProjectController extends PHPCI\Controller
      */
     protected function getLatestBuildsHtml($projectId, $branch = '', $start = 0)
     {
-        $criteria = array('project_id' => $projectId);
+        $buildQuery = $this->buildStore->where('project_id', $projectId);
+
         if (!empty($branch)) {
-            $criteria['branch'] = $branch;
+            $buildQuery->and('branch', $branch);
         }
 
-        $order = array('id' => 'DESC');
-        $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
+        $buildResults = $buildQuery->order('id', 'DESC')->offset($start)->limit(10)->get();
+
         $view = new Framework\View('BuildsTable');
 
-        foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+        $builds = [];
+        foreach ($buildResults as $build) {
+            $builds[] = BuildFactory::getBuild($build);
         }
 
-        $view->builds   = $builds['items'];
+        $view->builds   = $builds;
 
-        return array($view->render(), $builds['count']);
+        return [$view->render(), $buildQuery->count()];
     }
 
     /**
@@ -252,7 +254,7 @@ class ProjectController extends PHPCI\Controller
         $this->layout->title = $project->getTitle();
         $this->layout->subtitle = Lang::get('edit_project');
 
-        $values = $project->getDataArray();
+        $values = $project->toArray();
         $values['key'] = $values['ssh_private_key'];
         $values['pubkey'] = $values['ssh_public_key'];
 
@@ -361,11 +363,11 @@ class ProjectController extends PHPCI\Controller
         $field = Form\Element\Select::create('group_id', 'Project Group', true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue(1);
 
-        $groups = array();
-        $groupStore = Framework\Store\Factory::getStore('ProjectGroup');
-        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groups = [];
+        $groupStore = PHPCI\Store\ProjectGroupStore::load();
+        $groupList = $groupStore->find()->order('title', 'ASC')->get(100);
 
-        foreach ($groupList['items'] as $group) {
+        foreach ($groupList as $group) {
             $groups[$group->getId()] = $group->getTitle();
         }
 

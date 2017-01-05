@@ -6,273 +6,194 @@
 
 namespace PHPCI\Model\Base;
 
+use DateTime;
+use Block8\Database\Query;
 use PHPCI\Model;
-use PHPCI\Framework\Store\Factory;
+use PHPCI\Model\User;
+use PHPCI\Store;
+use PHPCI\Store\UserStore;
 
 /**
  * User Base Model
  */
-class UserBase extends Model
+abstract class UserBase extends Model
 {
-    /**
-    * @var array
-    */
-    public static $sleepable = array();
-
-    /**
-    * @var string
-    */
-    protected $tableName = 'user';
-
-    /**
-    * @var string
-    */
-    protected $modelName = 'User';
-
-    /**
-    * @var array
-    */
-    protected $data = array(
+    protected $table = 'user';
+    protected $model = 'User';
+    protected $data = [
         'id' => null,
         'email' => null,
         'hash' => null,
-        'is_admin' => null,
         'name' => null,
-    );
+        'is_admin' => null,
+    ];
 
-    /**
-    * @var array
-    */
-    protected $getters = array(
-        // Direct property getters:
+    protected $getters = [
         'id' => 'getId',
         'email' => 'getEmail',
         'hash' => 'getHash',
-        'is_admin' => 'getIsAdmin',
         'name' => 'getName',
+        'is_admin' => 'getIsAdmin',
+    ];
 
-        // Foreign key getters:
-    );
-
-    /**
-    * @var array
-    */
-    protected $setters = array(
-        // Direct property setters:
+    protected $setters = [
         'id' => 'setId',
         'email' => 'setEmail',
         'hash' => 'setHash',
-        'is_admin' => 'setIsAdmin',
         'name' => 'setName',
-
-        // Foreign key setters:
-    );
-
-    /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
-            'auto_increment' => true,
-            'default' => null,
-        ),
-        'email' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
-        ),
-        'hash' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
-        ),
-        'is_admin' => array(
-            'type' => 'int',
-            'length' => 11,
-        ),
-        'name' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => null,
-        ),
-    );
+        'is_admin' => 'setIsAdmin',
+    ];
 
     /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'idx_email' => array('unique' => true, 'columns' => 'email'),
-            'email' => array('unique' => true, 'columns' => 'email'),
-            'name' => array('columns' => 'name'),
-    );
-
-    /**
-    * @var array
-    */
-    public $foreignKeys = array(
-    );
-
-    /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
-    public function getId()
+     * Return the database store for this model.
+     * @return UserStore
+     */
+    public static function Store() : UserStore
     {
-        $rtn    = $this->data['id'];
+        return UserStore::load();
+    }
+
+    
+    /**
+     * Get the value of Id / id
+     * @return int
+     */
+
+     public function getId() : int
+     {
+        $rtn = $this->data['id'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Email / email.
-    *
-    * @return string
-    */
-    public function getEmail()
-    {
-        $rtn    = $this->data['email'];
+     * Get the value of Email / email
+     * @return string
+     */
+
+     public function getEmail() : string
+     {
+        $rtn = $this->data['email'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Hash / hash.
-    *
-    * @return string
-    */
-    public function getHash()
-    {
-        $rtn    = $this->data['hash'];
+     * Get the value of Hash / hash
+     * @return string
+     */
+
+     public function getHash() : string
+     {
+        $rtn = $this->data['hash'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of IsAdmin / is_admin.
-    *
-    * @return int
-    */
-    public function getIsAdmin()
-    {
-        $rtn    = $this->data['is_admin'];
+     * Get the value of Name / name
+     * @return string
+     */
+
+     public function getName() : string
+     {
+        $rtn = $this->data['name'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Name / name.
-    *
-    * @return string
-    */
-    public function getName()
-    {
-        $rtn    = $this->data['name'];
+     * Get the value of IsAdmin / is_admin
+     * @return int
+     */
+
+     public function getIsAdmin() : int
+     {
+        $rtn = $this->data['is_admin'];
 
         return $rtn;
-    }
-
+     }
+    
+    
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setId($value)
+     * Set the value of Id / id
+     * @param $value int
+     * @return User
+     */
+    public function setId(int $value) : User
     {
-        $this->_validateNotNull('Id', $value);
-        $this->_validateInt('Id', $value);
 
-        if ($this->data['id'] === $value) {
-            return;
+        if ($this->data['id'] !== $value) {
+            $this->data['id'] = $value;
+            $this->setModified('id');
         }
 
-        $this->data['id'] = $value;
-
-        $this->_setModified('id');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Email / email.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setEmail($value)
+     * Set the value of Email / email
+     * @param $value string
+     * @return User
+     */
+    public function setEmail(string $value) : User
     {
-        $this->_validateNotNull('Email', $value);
-        $this->_validateString('Email', $value);
 
-        if ($this->data['email'] === $value) {
-            return;
+        if ($this->data['email'] !== $value) {
+            $this->data['email'] = $value;
+            $this->setModified('email');
         }
 
-        $this->data['email'] = $value;
-
-        $this->_setModified('email');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Hash / hash.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setHash($value)
+     * Set the value of Hash / hash
+     * @param $value string
+     * @return User
+     */
+    public function setHash(string $value) : User
     {
-        $this->_validateNotNull('Hash', $value);
-        $this->_validateString('Hash', $value);
 
-        if ($this->data['hash'] === $value) {
-            return;
+        if ($this->data['hash'] !== $value) {
+            $this->data['hash'] = $value;
+            $this->setModified('hash');
         }
 
-        $this->data['hash'] = $value;
-
-        $this->_setModified('hash');
+        return $this;
     }
-
+    
     /**
-    * Set the value of IsAdmin / is_admin.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setIsAdmin($value)
+     * Set the value of Name / name
+     * @param $value string
+     * @return User
+     */
+    public function setName(string $value) : User
     {
-        $this->_validateNotNull('IsAdmin', $value);
-        $this->_validateInt('IsAdmin', $value);
 
-        if ($this->data['is_admin'] === $value) {
-            return;
+        if ($this->data['name'] !== $value) {
+            $this->data['name'] = $value;
+            $this->setModified('name');
         }
 
-        $this->data['is_admin'] = $value;
-
-        $this->_setModified('is_admin');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Name / name.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setName($value)
+     * Set the value of IsAdmin / is_admin
+     * @param $value int
+     * @return User
+     */
+    public function setIsAdmin(int $value) : User
     {
-        $this->_validateNotNull('Name', $value);
-        $this->_validateString('Name', $value);
 
-        if ($this->data['name'] === $value) {
-            return;
+        if ($this->data['is_admin'] !== $value) {
+            $this->data['is_admin'] = $value;
+            $this->setModified('is_admin');
         }
 
-        $this->data['name'] = $value;
-
-        $this->_setModified('name');
+        return $this;
     }
+    
+    
 }

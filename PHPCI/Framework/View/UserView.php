@@ -2,8 +2,6 @@
 
 namespace PHPCI\Framework\View;
 
-use PHPCI\Framework\View\Template;
-
 class UserView extends Template
 {
     public function __construct($string)

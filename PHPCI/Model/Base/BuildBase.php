@@ -6,52 +6,36 @@
 
 namespace PHPCI\Model\Base;
 
+use DateTime;
+use Block8\Database\Query;
 use PHPCI\Model;
-use PHPCI\Framework\Store\Factory;
+use PHPCI\Model\Build;
+use PHPCI\Store;
+use PHPCI\Store\BuildStore;
 
 /**
  * Build Base Model
  */
-class BuildBase extends Model
+abstract class BuildBase extends Model
 {
-    /**
-    * @var array
-    */
-    public static $sleepable = array();
-
-    /**
-    * @var string
-    */
-    protected $tableName = 'build';
-
-    /**
-    * @var string
-    */
-    protected $modelName = 'Build';
-
-    /**
-    * @var array
-    */
-    protected $data = array(
+    protected $table = 'build';
+    protected $model = 'Build';
+    protected $data = [
         'id' => null,
         'project_id' => null,
         'commit_id' => null,
         'status' => null,
         'log' => null,
-        'branch' => null,
+        'branch' => 'master',
         'created' => null,
         'started' => null,
         'finished' => null,
         'committer_email' => null,
         'commit_message' => null,
         'extra' => null,
-    );
+    ];
 
-    /**
-    * @var array
-    */
-    protected $getters = array(
-        // Direct property getters:
+    protected $getters = [
         'id' => 'getId',
         'project_id' => 'getProjectId',
         'commit_id' => 'getCommitId',
@@ -64,16 +48,10 @@ class BuildBase extends Model
         'committer_email' => 'getCommitterEmail',
         'commit_message' => 'getCommitMessage',
         'extra' => 'getExtra',
-
-        // Foreign key getters:
         'Project' => 'getProject',
-    );
+    ];
 
-    /**
-    * @var array
-    */
-    protected $setters = array(
-        // Direct property setters:
+    protected $setters = [
         'id' => 'setId',
         'project_id' => 'setProjectId',
         'commit_id' => 'setCommitId',
@@ -86,486 +64,380 @@ class BuildBase extends Model
         'committer_email' => 'setCommitterEmail',
         'commit_message' => 'setCommitMessage',
         'extra' => 'setExtra',
-
-        // Foreign key setters:
         'Project' => 'setProject',
-    );
+    ];
 
     /**
-    * @var array
-    */
-    public $columns = array(
-        'id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'primary_key' => true,
-            'auto_increment' => true,
-            'default' => null,
-        ),
-        'project_id' => array(
-            'type' => 'int',
-            'length' => 11,
-            'default' => null,
-        ),
-        'commit_id' => array(
-            'type' => 'varchar',
-            'length' => 50,
-            'default' => null,
-        ),
-        'status' => array(
-            'type' => 'int',
-            'length' => 11,
-            'default' => null,
-        ),
-        'log' => array(
-            'type' => 'mediumtext',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'branch' => array(
-            'type' => 'varchar',
-            'length' => 250,
-            'default' => 'master',
-        ),
-        'created' => array(
-            'type' => 'datetime',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'started' => array(
-            'type' => 'datetime',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'finished' => array(
-            'type' => 'datetime',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'committer_email' => array(
-            'type' => 'varchar',
-            'length' => 512,
-            'nullable' => true,
-            'default' => null,
-        ),
-        'commit_message' => array(
-            'type' => 'text',
-            'nullable' => true,
-            'default' => null,
-        ),
-        'extra' => array(
-            'type' => 'text',
-            'nullable' => true,
-            'default' => null,
-        ),
-    );
-
-    /**
-    * @var array
-    */
-    public $indexes = array(
-            'PRIMARY' => array('unique' => true, 'columns' => 'id'),
-            'project_id' => array('columns' => 'project_id'),
-            'idx_status' => array('columns' => 'status'),
-    );
-
-    /**
-    * @var array
-    */
-    public $foreignKeys = array(
-            'build_ibfk_1' => array(
-                'local_col' => 'project_id',
-                'update' => 'CASCADE',
-                'delete' => 'CASCADE',
-                'table' => 'project',
-                'col' => 'id'
-                ),
-    );
-
-    /**
-    * Get the value of Id / id.
-    *
-    * @return int
-    */
-    public function getId()
+     * Return the database store for this model.
+     * @return BuildStore
+     */
+    public static function Store() : BuildStore
     {
-        $rtn    = $this->data['id'];
-
-        return $rtn;
+        return BuildStore::load();
     }
 
+    
     /**
-    * Get the value of ProjectId / project_id.
-    *
-    * @return int
-    */
-    public function getProjectId()
-    {
-        $rtn    = $this->data['project_id'];
+     * Get the value of Id / id
+     * @return int
+     */
+
+     public function getId() : int
+     {
+        $rtn = $this->data['id'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of CommitId / commit_id.
-    *
-    * @return string
-    */
-    public function getCommitId()
-    {
-        $rtn    = $this->data['commit_id'];
+     * Get the value of ProjectId / project_id
+     * @return int
+     */
+
+     public function getProjectId() : int
+     {
+        $rtn = $this->data['project_id'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Status / status.
-    *
-    * @return int
-    */
-    public function getStatus()
-    {
-        $rtn    = $this->data['status'];
+     * Get the value of CommitId / commit_id
+     * @return string
+     */
+
+     public function getCommitId() : string
+     {
+        $rtn = $this->data['commit_id'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Log / log.
-    *
-    * @return string
-    */
-    public function getLog()
-    {
-        $rtn    = $this->data['log'];
+     * Get the value of Status / status
+     * @return int
+     */
+
+     public function getStatus() : int
+     {
+        $rtn = $this->data['status'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Branch / branch.
-    *
-    * @return string
-    */
-    public function getBranch()
-    {
-        $rtn    = $this->data['branch'];
+     * Get the value of Log / log
+     * @return string|null
+     */
+
+     public function getLog() 
+     {
+        $rtn = $this->data['log'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Created / created.
-    *
-    * @return \DateTime
-    */
-    public function getCreated()
-    {
-        $rtn    = $this->data['created'];
+     * Get the value of Branch / branch
+     * @return string
+     */
+
+     public function getBranch() : string
+     {
+        $rtn = $this->data['branch'];
+
+        return $rtn;
+     }
+    
+    /**
+     * Get the value of Created / created
+     * @return DateTime|null
+     */
+
+     public function getCreated() 
+     {
+        $rtn = $this->data['created'];
 
         if (!empty($rtn)) {
-            $rtn    = new \DateTime($rtn);
+            $rtn = new DateTime($rtn);
         }
-        
-        return $rtn;
-    }
 
+        return $rtn;
+     }
+    
     /**
-    * Get the value of Started / started.
-    *
-    * @return \DateTime
-    */
-    public function getStarted()
-    {
-        $rtn    = $this->data['started'];
+     * Get the value of Started / started
+     * @return DateTime|null
+     */
+
+     public function getStarted() 
+     {
+        $rtn = $this->data['started'];
 
         if (!empty($rtn)) {
-            $rtn    = new \DateTime($rtn);
+            $rtn = new DateTime($rtn);
         }
-        
-        return $rtn;
-    }
 
+        return $rtn;
+     }
+    
     /**
-    * Get the value of Finished / finished.
-    *
-    * @return \DateTime
-    */
-    public function getFinished()
-    {
-        $rtn    = $this->data['finished'];
+     * Get the value of Finished / finished
+     * @return DateTime|null
+     */
+
+     public function getFinished() 
+     {
+        $rtn = $this->data['finished'];
 
         if (!empty($rtn)) {
-            $rtn    = new \DateTime($rtn);
+            $rtn = new DateTime($rtn);
         }
-        
-        return $rtn;
-    }
-
-    /**
-    * Get the value of CommitterEmail / committer_email.
-    *
-    * @return string
-    */
-    public function getCommitterEmail()
-    {
-        $rtn    = $this->data['committer_email'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of CommitMessage / commit_message.
-    *
-    * @return string
-    */
-    public function getCommitMessage()
-    {
-        $rtn    = $this->data['commit_message'];
+     * Get the value of CommitterEmail / committer_email
+     * @return string|null
+     */
+
+     public function getCommitterEmail() 
+     {
+        $rtn = $this->data['committer_email'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Get the value of Extra / extra.
-    *
-    * @return string
-    */
-    public function getExtra()
-    {
-        $rtn    = $this->data['extra'];
+     * Get the value of CommitMessage / commit_message
+     * @return string|null
+     */
+
+     public function getCommitMessage() 
+     {
+        $rtn = $this->data['commit_message'];
 
         return $rtn;
-    }
-
+     }
+    
     /**
-    * Set the value of Id / id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setId($value)
-    {
-        $this->_validateNotNull('Id', $value);
-        $this->_validateInt('Id', $value);
+     * Get the value of Extra / extra
+     * @return string|null
+     */
 
-        if ($this->data['id'] === $value) {
-            return;
+     public function getExtra() 
+     {
+        $rtn = $this->data['extra'];
+
+        return $rtn;
+     }
+    
+    
+    /**
+     * Set the value of Id / id
+     * @param $value int
+     * @return Build
+     */
+    public function setId(int $value) : Build
+    {
+
+        if ($this->data['id'] !== $value) {
+            $this->data['id'] = $value;
+            $this->setModified('id');
         }
 
-        $this->data['id'] = $value;
-
-        $this->_setModified('id');
+        return $this;
     }
-
+    
     /**
-    * Set the value of ProjectId / project_id.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setProjectId($value)
+     * Set the value of ProjectId / project_id
+     * @param $value int
+     * @return Build
+     */
+    public function setProjectId(int $value) : Build
     {
-        $this->_validateNotNull('ProjectId', $value);
-        $this->_validateInt('ProjectId', $value);
 
-        if ($this->data['project_id'] === $value) {
-            return;
+        // As this column is a foreign key, empty values should be considered null.
+        if (empty($value)) {
+            $value = null;
         }
 
-        $this->data['project_id'] = $value;
 
-        $this->_setModified('project_id');
-    }
-
-    /**
-    * Set the value of CommitId / commit_id.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setCommitId($value)
-    {
-        $this->_validateNotNull('CommitId', $value);
-        $this->_validateString('CommitId', $value);
-
-        if ($this->data['commit_id'] === $value) {
-            return;
+        if ($this->data['project_id'] !== $value) {
+            $this->data['project_id'] = $value;
+            $this->setModified('project_id');
         }
 
-        $this->data['commit_id'] = $value;
-
-        $this->_setModified('commit_id');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Status / status.
-    *
-    * Must not be null.
-    * @param $value int
-    */
-    public function setStatus($value)
+     * Set the value of CommitId / commit_id
+     * @param $value string
+     * @return Build
+     */
+    public function setCommitId(string $value) : Build
     {
-        $this->_validateNotNull('Status', $value);
-        $this->_validateInt('Status', $value);
 
-        if ($this->data['status'] === $value) {
-            return;
+        if ($this->data['commit_id'] !== $value) {
+            $this->data['commit_id'] = $value;
+            $this->setModified('commit_id');
         }
 
-        $this->data['status'] = $value;
-
-        $this->_setModified('status');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Log / log.
-    *
-    * @param $value string
-    */
-    public function setLog($value)
+     * Set the value of Status / status
+     * @param $value int
+     * @return Build
+     */
+    public function setStatus(int $value) : Build
     {
-        $this->_validateString('Log', $value);
 
-        if ($this->data['log'] === $value) {
-            return;
+        if ($this->data['status'] !== $value) {
+            $this->data['status'] = $value;
+            $this->setModified('status');
         }
 
-        $this->data['log'] = $value;
-
-        $this->_setModified('log');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Branch / branch.
-    *
-    * Must not be null.
-    * @param $value string
-    */
-    public function setBranch($value)
+     * Set the value of Log / log
+     * @param $value string|null
+     * @return Build
+     */
+    public function setLog($value) : Build
     {
-        $this->_validateNotNull('Branch', $value);
-        $this->_validateString('Branch', $value);
 
-        if ($this->data['branch'] === $value) {
-            return;
+        if ($this->data['log'] !== $value) {
+            $this->data['log'] = $value;
+            $this->setModified('log');
         }
 
-        $this->data['branch'] = $value;
-
-        $this->_setModified('branch');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Created / created.
-    *
-    * @param $value \DateTime
-    */
-    public function setCreated($value)
+     * Set the value of Branch / branch
+     * @param $value string
+     * @return Build
+     */
+    public function setBranch(string $value) : Build
     {
-        $this->_validateDate('Created', $value);
 
-        if ($this->data['created'] === $value) {
-            return;
+        if ($this->data['branch'] !== $value) {
+            $this->data['branch'] = $value;
+            $this->setModified('branch');
         }
 
-        $this->data['created'] = $value;
-
-        $this->_setModified('created');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Started / started.
-    *
-    * @param $value \DateTime
-    */
-    public function setStarted($value)
+     * Set the value of Created / created
+     * @param $value DateTime|null
+     * @return Build
+     */
+    public function setCreated($value) : Build
     {
-        $this->_validateDate('Started', $value);
+        $this->validateDate('Created', $value);
 
-        if ($this->data['started'] === $value) {
-            return;
+        if ($this->data['created'] !== $value) {
+            $this->data['created'] = $value;
+            $this->setModified('created');
         }
 
-        $this->data['started'] = $value;
-
-        $this->_setModified('started');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Finished / finished.
-    *
-    * @param $value \DateTime
-    */
-    public function setFinished($value)
+     * Set the value of Started / started
+     * @param $value DateTime|null
+     * @return Build
+     */
+    public function setStarted($value) : Build
     {
-        $this->_validateDate('Finished', $value);
+        $this->validateDate('Started', $value);
 
-        if ($this->data['finished'] === $value) {
-            return;
+        if ($this->data['started'] !== $value) {
+            $this->data['started'] = $value;
+            $this->setModified('started');
         }
 
-        $this->data['finished'] = $value;
-
-        $this->_setModified('finished');
+        return $this;
     }
-
+    
     /**
-    * Set the value of CommitterEmail / committer_email.
-    *
-    * @param $value string
-    */
-    public function setCommitterEmail($value)
+     * Set the value of Finished / finished
+     * @param $value DateTime|null
+     * @return Build
+     */
+    public function setFinished($value) : Build
     {
-        $this->_validateString('CommitterEmail', $value);
+        $this->validateDate('Finished', $value);
 
-        if ($this->data['committer_email'] === $value) {
-            return;
+        if ($this->data['finished'] !== $value) {
+            $this->data['finished'] = $value;
+            $this->setModified('finished');
         }
 
-        $this->data['committer_email'] = $value;
-
-        $this->_setModified('committer_email');
+        return $this;
     }
-
+    
     /**
-    * Set the value of CommitMessage / commit_message.
-    *
-    * @param $value string
-    */
-    public function setCommitMessage($value)
+     * Set the value of CommitterEmail / committer_email
+     * @param $value string|null
+     * @return Build
+     */
+    public function setCommitterEmail($value) : Build
     {
-        $this->_validateString('CommitMessage', $value);
 
-        if ($this->data['commit_message'] === $value) {
-            return;
+        if ($this->data['committer_email'] !== $value) {
+            $this->data['committer_email'] = $value;
+            $this->setModified('committer_email');
         }
 
-        $this->data['commit_message'] = $value;
-
-        $this->_setModified('commit_message');
+        return $this;
     }
-
+    
     /**
-    * Set the value of Extra / extra.
-    *
-    * @param $value string
-    */
-    public function setExtra($value)
+     * Set the value of CommitMessage / commit_message
+     * @param $value string|null
+     * @return Build
+     */
+    public function setCommitMessage($value) : Build
     {
-        $this->_validateString('Extra', $value);
 
-        if ($this->data['extra'] === $value) {
-            return;
+        if ($this->data['commit_message'] !== $value) {
+            $this->data['commit_message'] = $value;
+            $this->setModified('commit_message');
         }
 
-        $this->data['extra'] = $value;
-
-        $this->_setModified('extra');
+        return $this;
     }
-
+    
     /**
-     * Get the Project model for this Build by Id.
+     * Set the value of Extra / extra
+     * @param $value string|null
+     * @return Build
+     */
+    public function setExtra($value) : Build
+    {
+
+        if ($this->data['extra'] !== $value) {
+            $this->data['extra'] = $value;
+            $this->setModified('extra');
+        }
+
+        return $this;
+    }
+    
+    
+    /**
+     * Get the Project model for this  by Id.
      *
      * @uses \PHPCI\Store\ProjectStore::getById()
      * @uses \PHPCI\Model\Project
@@ -576,29 +448,26 @@ class BuildBase extends Model
         $key = $this->getProjectId();
 
         if (empty($key)) {
-            return null;
+           return null;
         }
 
-        $cacheKey   = 'Cache.Project.' . $key;
-        $rtn        = $this->cache->get($cacheKey, null);
-
-        if (empty($rtn)) {
-            $rtn    = Factory::getStore('Project', 'PHPCI')->getById($key);
-            $this->cache->set($cacheKey, $rtn);
-        }
-
-        return $rtn;
+        return Store::get('Project')->getById($key);
     }
 
     /**
-    * Set Project - Accepts an ID, an array representing a Project or a Project model.
-    *
-    * @param $value mixed
-    */
+     * Set Project - Accepts an ID, an array representing a Project or a Project model.
+     * @throws \Exception
+     * @param $value mixed
+     */
     public function setProject($value)
     {
+        // Is this a scalar value representing the ID of this foreign key?
+        if (is_scalar($value)) {
+            return $this->setProjectId($value);
+        }
+
         // Is this an instance of Project?
-        if ($value instanceof \PHPCI\Model\Project) {
+        if (is_object($value) && $value instanceof \PHPCI\Model\Project) {
             return $this->setProjectObject($value);
         }
 
@@ -607,41 +476,28 @@ class BuildBase extends Model
             return $this->setProjectId($value['id']);
         }
 
-        // Is this a scalar value representing the ID of this foreign key?
-        return $this->setProjectId($value);
+        // None of the above? That's a problem!
+        throw new \Exception('Invalid value for Project.');
     }
 
     /**
-    * Set Project - Accepts a Project model.
-    * 
-    * @param $value \PHPCI\Model\Project
-    */
+     * Set Project - Accepts a Project model.
+     *
+     * @param $value \PHPCI\Model\Project
+     */
     public function setProjectObject(\PHPCI\Model\Project $value)
     {
         return $this->setProjectId($value->getId());
     }
 
-    /**
-     * Get BuildError models by BuildId for this Build.
-     *
-     * @uses \PHPCI\Store\BuildErrorStore::getByBuildId()
-     * @uses \PHPCI\Model\BuildError
-     * @return \PHPCI\Model\BuildError[]
-     */
-    public function getBuildBuildErrors()
+
+    public function BuildErrors() : Query
     {
-        return Factory::getStore('BuildError', 'PHPCI')->getByBuildId($this->getId());
+        return Store::get('BuildError')->where('build_id', $this->data['id']);
     }
 
-    /**
-     * Get BuildMeta models by BuildId for this Build.
-     *
-     * @uses \PHPCI\Store\BuildMetaStore::getByBuildId()
-     * @uses \PHPCI\Model\BuildMeta
-     * @return \PHPCI\Model\BuildMeta[]
-     */
-    public function getBuildBuildMetas()
+    public function BuildMetas() : Query
     {
-        return Factory::getStore('BuildMeta', 'PHPCI')->getByBuildId($this->getId());
+        return Store::get('BuildMeta')->where('build_id', $this->data['id']);
     }
 }

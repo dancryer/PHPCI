@@ -15,7 +15,7 @@ use PHPCI\Helper\MailerFactory;
 use PHPCI\Logging\BuildLogger;
 use PHPCI\Model\Build;
 use PHPCI\Config;
-use PHPCI\Framework\Store\Factory;
+use PHPCI\Store\BuildStore;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -105,7 +105,7 @@ class Builder implements LoggerAwareInterface
     public function __construct(Build $build, LoggerInterface $logger = null)
     {
         $this->build = $build;
-        $this->store = Factory::getStore('Build');
+        $this->store = BuildStore::load();
 
         $this->buildLogger = new BuildLogger($logger, $build);
 

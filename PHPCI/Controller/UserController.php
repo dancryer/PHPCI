@@ -15,6 +15,7 @@ use PHPCI\Framework\Form;
 use PHPCI\Controller;
 use PHPCI\Helper\Lang;
 use PHPCI\Service\UserService;
+use PHPCI\Store\UserStore;
 
 /**
 * User Controller - Allows an administrator to view, add, edit and delete users.
@@ -39,7 +40,7 @@ class UserController extends Controller
      */
     public function init()
     {
-        $this->userStore = Framework\Store\Factory::getStore('User');
+        $this->userStore = UserStore::load();
         $this->userService = new UserService($this->userStore);
     }
 
@@ -48,7 +49,7 @@ class UserController extends Controller
     */
     public function index()
     {
-        $users          = $this->userStore->getWhere(array(), 1000, 0, array(), array('email' => 'ASC'));
+        $users = $this->userStore->find()->order('email', 'ASC')->get();
         $this->view->users    = $users;
 
         $this->layout->title = Lang::get('manage_users');
@@ -62,7 +63,7 @@ class UserController extends Controller
      */
     public function profile()
     {
-        $user = $_SESSION['phpci_user'];
+        $user = $this->user;
 
         if ($this->request->getMethod() == 'POST') {
             $name = $this->getParam('name', null);
@@ -77,8 +78,8 @@ class UserController extends Controller
                 Lang::setLanguage($chosenLang);
             }
 
-            $_SESSION['phpci_user'] = $this->userService->updateUser($user, $name, $email, $password);
-            $user = $_SESSION['phpci_user'];
+            $this->user = $this->userService->updateUser($user, $name, $email, $password);
+            $user = $this->user;
 
             $this->view->updated = 1;
         }
@@ -86,7 +87,7 @@ class UserController extends Controller
         $this->layout->title = $user->getName();
         $this->layout->subtitle = Lang::get('edit_profile');
 
-        $values = $user->getDataArray();
+        $values = $user->toArray();
 
         if (array_key_exists('phpcilang', $_COOKIE)) {
             $values['language'] = $_COOKIE['phpcilang'];
@@ -196,7 +197,7 @@ class UserController extends Controller
         $this->layout->title = $user->getName();
         $this->layout->subtitle = Lang::get('edit_user');
 
-        $values = array_merge($user->getDataArray(), $this->getParams());
+        $values = array_merge($user->toArray(), $this->getParams());
         $form = $this->userForm($values, 'edit/' . $userId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {

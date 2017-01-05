@@ -2,116 +2,107 @@
 
 /**
  * Project base store for table: project
+
  */
 
 namespace PHPCI\Store\Base;
 
-use PHPCI\Framework\Database;
-use PHPCI\Framework\Exception\HttpException;
+use Block8\Database\Connection;
 use PHPCI\Store;
+use PHPCI\Store\ProjectStore;
 use PHPCI\Model\Project;
+use PHPCI\Model\ProjectCollection;
 
 /**
  * Project Base Store
  */
 class ProjectStoreBase extends Store
 {
-    protected $tableName   = 'project';
-    protected $modelName   = '\PHPCI\Model\Project';
-    protected $primaryKey  = 'id';
+    /**
+     * @var ProjectStore $instance
+     */
+    protected static $instance = null;
+
+    protected $table = 'project';
+    protected $model = 'PHPCI\Model\Project';
+    protected $key = 'id';
 
     /**
-     * Get a Project by primary key (Id)
+     * Return the database store for this model.
+     * @return ProjectStore
      */
-    public function getByPrimaryKey($value, $useConnection = 'read')
+    public static function load() : ProjectStore
     {
-        return $this->getById($value, $useConnection);
+        if (is_null(self::$instance)) {
+            self::$instance = new ProjectStore(Connection::get());
+        }
+
+        return self::$instance;
     }
 
     /**
-     * Get a single Project by Id.
-     * @return null|Project
-     */
-    public function getById($value, $useConnection = 'read')
+    * @param $value
+    * @return Project|null
+    */
+    public function getByPrimaryKey($value)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        return $this->getById($value);
+    }
+
+
+    /**
+     * Get a Project object by Id.
+     * @param $value
+     * @return Project|null
+     */
+    public function getById(int $value)
+    {
+        // This is the primary key, so try and get from cache:
+        $cacheResult = $this->cacheGet($value);
+
+        if (!empty($cacheResult)) {
+            return $cacheResult;
         }
 
-        $query = 'SELECT * FROM `project` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':id', $value);
+        $rtn = $this->where('id', $value)->first();
+        $this->cacheSet($value, $rtn);
 
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new Project($data);
-            }
-        }
-
-        return null;
+        return $rtn;
     }
 
     /**
-     * Get multiple Project by Title.
-     * @return array
+     * Get all Project objects by Title.
+     * @return \PHPCI\Model\ProjectCollection
      */
-    public function getByTitle($value, $limit = 1000, $useConnection = 'read')
+    public function getByTitle($value, $limit = null)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-
-        $query = 'SELECT * FROM `project` WHERE `title` = :title LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':title', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Project($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+        return $this->where('title', $value)->get($limit);
     }
 
     /**
-     * Get multiple Project by GroupId.
-     * @return array
+     * Gets the total number of Project by Title value.
+     * @return int
      */
-    public function getByGroupId($value, $limit = 1000, $useConnection = 'read')
+    public function getTotalByTitle($value) : int
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
+        return $this->where('title', $value)->count();
+    }
 
+    /**
+     * Get all Project objects by GroupId.
+     * @return \PHPCI\Model\ProjectCollection
+     */
+    public function getByGroupId($value, $limit = null)
+    {
+        return $this->where('group_id', $value)->get($limit);
+    }
 
-        $query = 'SELECT * FROM `project` WHERE `group_id` = :group_id LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':group_id', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Project($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+    /**
+     * Gets the total number of Project by GroupId value.
+     * @return int
+     */
+    public function getTotalByGroupId($value) : int
+    {
+        return $this->where('group_id', $value)->count();
     }
 }

@@ -6,8 +6,10 @@
 
 namespace PHPCI\Store;
 
-use PHPCI\Framework\Database;
+use Block8\Database\Query;
+use PHPCI\Model\BuildCollection;
 use PHPCI\Model\BuildError;
+use PHPCI\Model\BuildErrorCollection;
 use PHPCI\Store\Base\BuildErrorStoreBase;
 
 /**
@@ -18,63 +20,28 @@ class BuildErrorStore extends BuildErrorStoreBase
 {
     /**
      * Get a list of errors for a given build, since a given time.
-     * @param $buildId
-     * @param string $since date string
-     * @return array
+     * @param int $buildId
+     * @param string|null $since date string
+     * @return BuildErrorCollection
      */
-    public function getErrorsForBuild($buildId, $since = null)
+    public function getErrorsForBuild(int $buildId, $since = null) : BuildErrorCollection
     {
-        $query = 'SELECT * FROM build_error
-                    WHERE build_id = :build';
+        $query = $this->where('build_id', $buildId);
 
         if (!is_null($since)) {
-            $query .= ' AND created_date > :since';
+            $query->and('created_date', $since, Query::GREATER_THAN);
         }
 
-        $query .= ' LIMIT 15000';
-
-        $stmt = Database::getConnection('read')->prepare($query);
-
-        $stmt->bindValue(':build', $buildId, \PDO::PARAM_INT);
-
-        if (!is_null($since)) {
-            $stmt->bindValue(':since', $since);
-        }
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new BuildError($item);
-            };
-            $rtn = array_map($map, $res);
-
-            return $rtn;
-        } else {
-            return array();
-        }
+        return $query->get(15000);
     }
 
     /**
      * Gets the total number of errors for a given build.
-     * @param $buildId
-     * @param string $since date string
-     * @return array
+     * @param int $buildId
+     * @return int
      */
-    public function getErrorTotalForBuild($buildId)
+    public function getErrorTotalForBuild(int $buildId) : int
     {
-        $query = 'SELECT COUNT(*) AS total FROM build_error
-                    WHERE build_id = :build';
-
-        $stmt = Database::getConnection('read')->prepare($query);
-
-        $stmt->bindValue(':build', $buildId, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetch(\PDO::FETCH_ASSOC);
-            return $res['total'];
-        } else {
-            return array();
-        }
+        return $this->where('build_id', $buildId)->count();
     }
 }

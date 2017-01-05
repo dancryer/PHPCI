@@ -9,9 +9,11 @@
 
 namespace PHPCI\Controller;
 
+use PHPCI\Application;
 use PHPCI\Framework;
 use PHPCI\Helper\Email;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\UserStore;
 
 /**
 * Session Controller - Handles user login / logout.
@@ -32,7 +34,7 @@ class SessionController extends \PHPCI\Controller
     public function init()
     {
         $this->response->disableLayout();
-        $this->userStore       = Framework\Store\Factory::getStore('User');
+        $this->userStore = UserStore::load();
     }
 
     /**
@@ -103,7 +105,6 @@ class SessionController extends \PHPCI\Controller
     */
     public function logout()
     {
-        unset($_SESSION['phpci_user']);
         unset($_SESSION['phpci_user_id']);
 
         session_destroy();
@@ -165,7 +166,7 @@ class SessionController extends \PHPCI\Controller
             $hash = password_hash($this->getParam('password'), PASSWORD_DEFAULT);
             $user->setHash($hash);
 
-            $_SESSION['phpci_user'] = $this->userStore->save($user);
+            $this->user = $this->userStore->save($user);
             $_SESSION['phpci_user_id'] = $user->getId();
 
             $response = new Framework\Http\Response\RedirectResponse();

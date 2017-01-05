@@ -14,6 +14,8 @@ use PHPCI\Framework\Form;
 use PHPCI\Framework\Store;
 use PHPCI\Controller;
 use PHPCI\Model\ProjectGroup;
+use PHPCI\Store\ProjectGroupStore;
+use PHPCI\Store\ProjectStore;
 
 /**
  * Project Controller - Allows users to create, edit and view projects.
@@ -33,7 +35,7 @@ class GroupController extends Controller
      */
     public function init()
     {
-        $this->groupStore = Framework\Store\Factory::getStore('ProjectGroup');
+        $this->groupStore = ProjectGroupStore::load();
     }
 
     /**
@@ -43,16 +45,16 @@ class GroupController extends Controller
     {
         $this->requireAdmin();
 
-        $groups = array();
-        $groupList = $this->groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groups = [];
+        $groupList = $this->groupStore->find()->order('title', 'ASC')->get(100);
 
-        foreach ($groupList['items'] as $group) {
-            $thisGroup = array(
+        foreach ($groupList as $group) {
+            $thisGroup = [
                 'title' => $group->getTitle(),
                 'id' => $group->getId(),
-            );
-            $projects = Framework\Store\Factory::getStore('Project')->getByGroupId($group->getId());
-            $thisGroup['projects'] = $projects['items'];
+            ];
+            $projects = ProjectStore::load()->getByGroupId($group->getId());
+            $thisGroup['projects'] = $projects;
             $groups[] = $thisGroup;
         }
 

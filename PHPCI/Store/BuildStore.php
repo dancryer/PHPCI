@@ -9,7 +9,7 @@
 
 namespace PHPCI\Store;
 
-use b8\Database;
+use PHPCI\Database;
 use PHPCI\Model\Build;
 use PHPCI\Store\Base\BuildStoreBase;
 

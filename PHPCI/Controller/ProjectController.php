@@ -205,7 +205,7 @@ class ProjectController extends PHPCI\Controller
 
         $form = $this->projectForm($values);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
+        if ($method != 'POST' || ($method == 'POST' && $form->validate())) {
             $view           = new b8\View('ProjectForm');
             $view->type     = 'add';
             $view->project  = null;
@@ -268,7 +268,7 @@ class ProjectController extends PHPCI\Controller
 
         $form = $this->projectForm($values, 'edit/' . $projectId);
 
-        if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
+        if ($method != 'POST' || ($method == 'POST' && $form->validate())) {
             $view           = new b8\View('ProjectForm');
             $view->type     = 'edit';
             $view->project  = $project;

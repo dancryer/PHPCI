@@ -187,7 +187,7 @@ class SettingsController extends Controller
     /**
      * Save basic settings.
      */
-    public function latest_builds()
+    public function latestBuilds()
     {
         $this->requireAdmin();
 
@@ -462,7 +462,7 @@ class SettingsController extends Controller
     {
         $form = new Form();
         $form->setMethod('POST');
-        $form->setAction(PHPCI_URL . 'settings/latest_builds');
+        $form->setAction(PHPCI_URL . 'settings/latestBuilds');
 
         $field = new Form\Element\Checkbox('show_branch');
         $field->setRequired(false);

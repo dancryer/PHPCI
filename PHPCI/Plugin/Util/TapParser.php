@@ -149,14 +149,21 @@ class TapParser
         return false;
     }
 
-    protected function testDepends($line) {
+    /**
+     *
+     * @param string $line
+     * 
+     * @return boolean
+     */
+    protected function testDepends($line)
+    {
         if (preg_match(self::TEST_DEPENDS_PATTERN, $line)) {
             $this->skippedTests++;
 
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**

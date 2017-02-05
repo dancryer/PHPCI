@@ -152,7 +152,7 @@ class TapParser
     /**
      *
      * @param string $line
-     * 
+     *
      * @return boolean
      */
     protected function testDepends($line)

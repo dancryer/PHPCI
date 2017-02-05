@@ -59,6 +59,8 @@ class HomeController extends \PHPCI\Controller
             $build = BuildFactory::getBuild($build);
         }
 
+        $this->view->display_branch = $this->config->get('phpci.latest_builds.show_branch', false);
+
         $this->view->builds   = $builds;
         $this->view->groups = $this->getGroupInfo();
 

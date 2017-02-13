@@ -13,9 +13,7 @@ We have a chat room for discussing PHPCI, you can access it here: [![Gitter](htt
 
 **Support the development of PHPCI**
 
-We [now accept donations](https://www.phptesting.org/support) to directly support the ongoing development of PHPCI. There is of course no obligation to donate, nor any commitment if you do. 
-
-[Donate](https://www.phptesting.org/support)
+Want to help support the ongoing development of PHPCI? [Consider becoming a Patron on Patreon and pledging your support](https://www.patreon.com/phpci).
 
 ## What it does:
 * Clones your project from Github, Bitbucket or a local path

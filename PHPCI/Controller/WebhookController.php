@@ -19,7 +19,7 @@ use PHPCI\Store\BuildStore;
 use PHPCI\Store\ProjectStore;
 
 /**
- * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, etc.
+ * Webhook Controller - Processes webhook pings from BitBucket, Github, Gitlab, Gogs, etc.
  *
  * @author       Dan Cryer <dan@block8.co.uk>
  * @author       Sami Tikka <stikka@iki.fi>
@@ -87,7 +87,7 @@ class WebhookController extends \b8\Controller
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
-    
+
         // Support both old services and new webhooks
         if ($payload = $this->getParam('payload')) {
             return $this->bitbucketService(json_decode($payload, true), $project);
@@ -401,6 +401,69 @@ class WebhookController extends \b8\Controller
         $committer = $this->getParam('committer');
 
         return $this->createBuild($project, $commit, $branch, $committer, $commitMessage);
+    }
+
+    /**
+     * Called by Gogs Webhooks:
+     */
+    public function gogs($projectId)
+    {
+        $project = $this->fetchProject($projectId, 'gogs');
+
+        switch ($_SERVER['CONTENT_TYPE']) {
+            case 'application/json':
+                $payload = json_decode(file_get_contents('php://input'), true);
+                break;
+            case 'application/x-www-form-urlencoded':
+                $payload = json_decode($this->getParam('payload'), true);
+                break;
+            default:
+                return array('status' => 'failed', 'error' => 'Content type not supported.', 'responseCode' => 401);
+        }
+
+        // Handle Push web hooks:
+        if (array_key_exists('commits', $payload)) {
+            return $this->gogsCommitRequest($project, $payload);
+        }
+
+        return array('status' => 'ignored', 'message' => 'Unusable payload.');
+    }
+
+    /**
+     * Handle the payload when Gogs sends a commit webhook.
+     *
+     * @param Project $project
+     * @param array $payload
+     * @param b8\Http\Response\JsonResponse $response
+     *
+     * @return b8\Http\Response\JsonResponse
+     */
+    protected function gogsCommitRequest(Project $project, array $payload)
+    {
+        if (isset($payload['commits']) && is_array($payload['commits'])) {
+            // If we have a list of commits, then add them all as builds to be tested:
+            $results = array();
+            $status = 'failed';
+            foreach ($payload['commits'] as $commit) {
+                try {
+                    $branch = str_replace('refs/heads/', '', $payload['ref']);
+                    $committer = $commit['author']['email'];
+                    $results[$commit['id']] = $this->createBuild(
+                        $project,
+                        $commit['id'],
+                        $branch,
+                        $committer,
+                        $commit['message']
+                    );
+                    $status = 'ok';
+                } catch (Exception $ex) {
+                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
+                }
+            }
+            return array('status' => $status, 'commits' => $results);
+        }
+
+        return array('status' => 'ignored', 'message' => 'Unusable payload.');
     }
 
     /**

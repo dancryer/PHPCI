@@ -293,7 +293,15 @@ class WebhookController extends \b8\Controller
         $url    = $payload['pull_request']['commits_url'];
         $http   = new \b8\HttpClient();
         $http->setHeaders($headers);
-        $response = $http->get($url);
+
+        //for large pull requests, allow grabbing more then the default number of commits
+        $custom_per_page = \b8\Config::getInstance()->get('phpci.github.per_page');
+        $params = [];
+        if ($custom_per_page) {
+            $params["per_page"] = $custom_per_page;
+        }
+
+        $response = $http->get($url, $params);
 
         // Check we got a success response:
         if (!$response['success']) {

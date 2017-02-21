@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Env implements \PHPCI\Plugin
+class Env extends AbstractPlugin
 {
     protected $phpci;
     protected $build;

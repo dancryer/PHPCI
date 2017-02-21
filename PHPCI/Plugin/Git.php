@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Git implements \PHPCI\Plugin
+class Git extends AbstractPlugin
 {
     protected $phpci;
     protected $build;

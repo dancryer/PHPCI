@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpParallelLint implements \PHPCI\Plugin
+class PhpParallelLint extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */

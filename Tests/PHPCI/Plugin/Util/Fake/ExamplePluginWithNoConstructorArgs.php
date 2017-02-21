@@ -12,7 +12,7 @@ namespace Tests\PHPCI\Plugin\Util\Fake;
 
 use PHPCI\Plugin;
 
-class ExamplePluginWithNoConstructorArgs implements Plugin
+class ExamplePluginWithNoConstructorArgs extends Plugin\AbstractPlugin
 {
     public function execute()
     {

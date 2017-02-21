@@ -19,8 +19,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class PhpTalLint implements PHPCI\Plugin
+class PhpTalLint extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     protected $directories;
     protected $recursive = true;
     protected $suffixes;

@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PhpCsFixer implements \PHPCI\Plugin
+class PhpCsFixer extends AbstractPlugin
 {
     /**
      * @var \PHPCI\Builder

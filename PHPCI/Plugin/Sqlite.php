@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Sqlite implements \PHPCI\Plugin
+class Sqlite extends AbstractPlugin
 {
     /**
      * @var \PHPCI\Builder

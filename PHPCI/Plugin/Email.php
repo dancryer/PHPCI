@@ -23,8 +23,13 @@ use Psr\Log\LogLevel;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Email implements \PHPCI\Plugin
+class Email extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     /**
      * @var \PHPCI\Builder
      */

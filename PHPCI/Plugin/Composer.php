@@ -13,6 +13,7 @@ use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 use PHPCI\Helper\Lang;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * Composer Plugin - Provides access to Composer functionality.
@@ -20,7 +21,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class Composer extends AbstractPlugin implements ZeroConfigPlugin
 {
     protected $directory;
     protected $action;
@@ -36,7 +37,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @param Build $build
      * @return bool
      */
-    public static function canExecute($stage, Builder $builder, Build $build)
+    public static function canRunZeroConfig($stage, Builder $builder, Build $build)
     {
         $path = $builder->buildPath . DIRECTORY_SEPARATOR . 'composer.json';
 

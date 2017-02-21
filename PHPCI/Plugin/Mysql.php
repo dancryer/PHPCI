@@ -21,7 +21,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class Mysql implements \PHPCI\Plugin
+class Mysql extends AbstractPlugin
 {
     /**
      * @var \PHPCI\Builder

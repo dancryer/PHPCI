@@ -49,7 +49,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                           ->shouldBeCalledTimes(1)
                           ->willReturn($this->prophesize('PHPCI\Plugin')->reveal());
 
-        $this->testedExecutor->executePlugin($pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginName, $options, 'test');
     }
 
     public function testExecutePlugin_KeepsCalledNameSpace()
@@ -61,7 +61,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
           ->shouldBeCalledTimes(1)
           ->willReturn($this->prophesize('PHPCI\Plugin')->reveal());
 
-        $this->testedExecutor->executePlugin($pluginClass, $options);
+        $this->testedExecutor->executePlugin($pluginClass, $options, 'test');
     }
 
     public function testExecutePlugin_CallsExecuteOnFactoryBuildPlugin()
@@ -76,7 +76,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
         $this->mockFactory->getResourceFor('PHPCI\Model\Build')->willReturn($build);
 
-        $this->testedExecutor->executePlugin($pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginName, $options, 'test');
     }
 
     public function testExecutePlugin_ReturnsPluginSuccess()
@@ -91,7 +91,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $this->mockFactory->buildPlugin(Argument::any(), Argument::any())->willReturn($mockPlugin->reveal());
 
-        $returnValue = $this->testedExecutor->executePlugin($pluginName, $options);
+        $returnValue = $this->testedExecutor->executePlugin($pluginName, $options, 'test');
 
         $this->assertEquals($expectedReturnValue, $returnValue);
     }
@@ -103,7 +103,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $this->mockBuildLogger->logFailure('Plugin does not exist: ' . $pluginName)->shouldBeCalledTimes(1);
 
-        $this->testedExecutor->executePlugin($pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginName, $options, 'test');
     }
 
     public function testExecutePlugin_LogsFailureWhenExceptionsAreThrownByPlugin()
@@ -121,7 +121,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->mockBuildLogger->logFailure('Exception: ' . $expectedException->getMessage(), $expectedException)
                               ->shouldBeCalledTimes(1);
 
-        $this->testedExecutor->executePlugin($pluginName, $options);
+        $this->testedExecutor->executePlugin($pluginName, $options, 'test');
     }
 
     public function testExecutePlugins_CallsEachPluginForStage()

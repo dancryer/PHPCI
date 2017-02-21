@@ -20,7 +20,7 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Phing implements \PHPCI\Plugin
+class Phing extends AbstractPlugin
 {
 
     private $directory;

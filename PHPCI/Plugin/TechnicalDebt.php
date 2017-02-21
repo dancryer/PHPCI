@@ -12,6 +12,7 @@ namespace PHPCI\Plugin;
 use PHPCI;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
+use PHPCI\ZeroConfigPlugin;
 
 /**
 * Technical Debt Plugin - Checks for existence of "TODO", "FIXME", etc.
@@ -20,8 +21,13 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
+class TechnicalDebt extends AbstractPlugin implements ZeroConfigPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('test');
+
     /**
      * @var \PHPCI\Builder
      */
@@ -67,7 +73,7 @@ class TechnicalDebt implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      * @param Build $build
      * @return bool
      */
-    public static function canExecute($stage, Builder $builder, Build $build)
+    public static function canRunZeroConfig($stage, Builder $builder, Build $build)
     {
         if ($stage == 'test') {
             return true;

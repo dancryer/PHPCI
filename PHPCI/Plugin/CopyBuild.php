@@ -19,7 +19,7 @@ use PHPCI\Helper\Lang;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CopyBuild implements \PHPCI\Plugin
+class CopyBuild extends AbstractPlugin
 {
     protected $directory;
     protected $ignore;

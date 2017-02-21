@@ -17,8 +17,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class SlackNotify implements \PHPCI\Plugin
+class SlackNotify extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     private $webHook;
     private $room;
     private $username;

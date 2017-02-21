@@ -20,8 +20,13 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Campfire implements \PHPCI\Plugin
+class Campfire extends AbstractPlugin
 {
+    /**
+     * @inheritdoc
+     */
+    protected $allowedStages = array('complete', 'success', 'failure', 'fixed', 'broken');
+
     private $url;
     private $authToken;
     private $userAgent;

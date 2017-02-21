@@ -18,7 +18,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class PackageBuild implements \PHPCI\Plugin
+class PackageBuild extends AbstractPlugin
 {
     protected $directory;
     protected $filename;

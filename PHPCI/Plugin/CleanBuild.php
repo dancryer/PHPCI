@@ -19,7 +19,7 @@ use PHPCI\Model\Build;
 * @package      PHPCI
 * @subpackage   Plugins
 */
-class CleanBuild implements \PHPCI\Plugin
+class CleanBuild extends AbstractPlugin
 {
     protected $remove;
     protected $phpci;

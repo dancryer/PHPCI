@@ -170,9 +170,71 @@ var Build = Class.extend({
             content.prepend('<div class="box-header"><h3 class="box-title">'+plugin.title+'</h3></div>');
         }
 
+        this.toggleWidget(content);
+
         container.append(content);
 
         $('#plugins').append(container);
+    },
+
+    toggleWidget: function($box) {
+        var self = this;
+        var id = $box.attr('id');
+        var $header = $box.find('.box-header');
+        var $content = $header.next();
+
+        // Add widget toggler
+        var $toggle = $('<i class="box-tools fa pull-right fa-angle-down"></i>');
+        if (self.isWidgetHidden(id)) {
+            $content.addClass('hidden');
+            $toggle.toggleClass('fa-angle-down fa-angle-left');
+        }
+        $toggle.appendTo($header).click(function() {
+            $content.toggleClass('hidden')
+            if ($content.hasClass('hidden')) {
+                self.hideWidget(id);
+            } else {
+                self.showWidget(id);
+            }
+            $(this).toggleClass('fa-angle-down fa-angle-left');
+        });
+    },
+
+    isWidgetHidden: function(id) {
+        var settings = this._getSettings('hidden_widgets');
+        return (settings.indexOf(id) != -1);
+    },
+
+    hideWidget: function(id) {
+        var settings = this._getSettings('hidden_widgets');
+        var index = settings.indexOf(id);
+        if (index == -1) {
+            settings.push(id);
+            this._storeSettings('hidden_widgets', settings);
+        }
+    },
+
+    showWidget: function(id) {
+        var settings = this._getSettings('hidden_widgets');
+        var index = settings.indexOf(id);
+        if (index != -1) {
+            settings.splice(index, 1);
+            this._storeSettings('hidden_widgets', settings);
+        }
+    },
+
+    _getSettings: function(setting) {
+        var settingsArray = [];
+        var settingsString = $.cookie(setting);
+        if (settingsString) {
+            settingsArray = settingsString.split(',');
+        }
+
+        return settingsArray;
+    },
+
+    _storeSettings: function(setting, value) {
+        $.cookie(setting, value.toString());
     },
 
     UiPlugin: Class.extend({

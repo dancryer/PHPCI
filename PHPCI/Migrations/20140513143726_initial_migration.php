@@ -136,7 +136,7 @@ class InitialMigration extends AbstractMigration
         }
 
         if (!$table->hasColumn('meta_value')) {
-            $table->addColumn('meta_value', 'text');
+            $table->addColumn('meta_value', 'longtext');
         }
 
         if (!$table->hasIndex(array('build_id', 'meta_key'))) {

@@ -41,6 +41,7 @@ class InstallCommand extends Command
             ->setName('phpci:install')
             ->addOption('url', null, InputOption::VALUE_OPTIONAL, Lang::get('installation_url'))
             ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, Lang::get('db_host'))
+            ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, Lang::get('db_port'))
             ->addOption('db-name', null, InputOption::VALUE_OPTIONAL, Lang::get('db_name'))
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, Lang::get('db_user'))
             ->addOption('db-pass', null, InputOption::VALUE_OPTIONAL, Lang::get('db_pass'))
@@ -292,6 +293,10 @@ class InstallCommand extends Command
         if (!$dbHost = $input->getOption('db-host')) {
             $dbHost = $dialog->ask($output, Lang::get('enter_db_host'), 'localhost');
         }
+		
+		if (!$dbPort = $input->getOption('db-port')) {
+            $dbPort = $dialog->ask($output, Lang::get('enter_db_port'), '3306');
+        }
 
         if (!$dbName = $input->getOption('db-name')) {
             $dbName = $dialog->ask($output, Lang::get('enter_db_name'), 'phpci');
@@ -307,6 +312,7 @@ class InstallCommand extends Command
 
         $db['servers']['read'] = $dbHost;
         $db['servers']['write'] = $dbHost;
+        $db['port'] = $dbPort;
         $db['name'] = $dbName;
         $db['username'] = $dbUser;
         $db['password'] = $dbPass;
@@ -324,7 +330,7 @@ class InstallCommand extends Command
     {
         try {
             $pdo = new PDO(
-                'mysql:host='.$db['servers']['write'].';dbname='.$db['name'],
+                'mysql:host='.$db['servers']['write'].';port='.$db['port'].'dbname='.$db['name'],
                 $db['username'],
                 $db['password'],
                 array(

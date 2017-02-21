@@ -116,8 +116,11 @@ class WebhookController extends \b8\Controller
         foreach ($payload['push']['changes'] as $commit) {
             try {
                 $email = $commit['new']['target']['author']['raw'];
-                $email = substr($email, 0, strpos($email, '>'));
-                $email = substr($email, strpos($email, '<') + 1);
+                if (strpos($email, '>') !== false) {
+                    // In order not to loose email if it is RAW, w/o "<>" symbols
+                    $email = substr($email, 0, strpos($email, '>'));
+                    $email = substr($email, strpos($email, '<') + 1);
+                }
 
                 $results[$commit['new']['target']['hash']] = $this->createBuild(
                     $project,

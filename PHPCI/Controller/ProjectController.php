@@ -258,7 +258,7 @@ class ProjectController extends PHPCI\Controller
 
         if ($values['type'] == "gitlab") {
             $accessInfo = $project->getAccessInformation();
-            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $project->getReference().".git";
+            $reference = $accessInfo["user"].'@'.$accessInfo["domain"].':' . $accessInfo["port"] . '/' . ltrim($project->getReference(), '/') . ".git";
             $values['reference'] = $reference;
         }
 

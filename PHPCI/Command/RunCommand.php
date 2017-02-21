@@ -75,14 +75,7 @@ class RunCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
-
-        // For verbose mode we want to output all informational and above
-        // messages to the symphony output interface.
-        if ($input->hasOption('verbose') && $input->getOption('verbose')) {
-            $this->logger->pushHandler(
-                new OutputLogHandler($this->output, Logger::INFO)
-            );
-        }
+        $this->logger->pushHandler(new OutputLogHandler($output));
 
         // Allow PHPCI to run in "debug mode"
         if ($input->hasOption('debug') && $input->getOption('debug')) {

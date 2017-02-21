@@ -49,6 +49,17 @@ class LocalBuild extends Build
             $cmd = 'cp -Rf "%s" "%s/"';
             if (IS_WIN) {
                 $cmd = 'xcopy /E /Y "%s" "%s/*"';
+            } else {
+                // Check for symlinks in $reference directory, and alter copy command to dereference the symlinks
+                $symlinks = array();
+                exec(
+                    sprintf('ls -lR %s | grep ^l', $reference),
+                    $symlinks
+                );
+
+                if (!empty($symlinks)) {
+                    $cmd = 'cp -LRf "%s" "%s/"';
+                }
             }
             $builder->executeCommand($cmd, $reference, $buildPath);
         }

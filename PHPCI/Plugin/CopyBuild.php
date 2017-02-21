@@ -75,7 +75,7 @@ class CopyBuild implements \PHPCI\Plugin
     protected function wipeExistingDirectory()
     {
         if ($this->wipe === true && $this->directory != '/' && is_dir($this->directory)) {
-            $cmd = 'rm -Rf "%s*"';
+            $cmd = 'rm -Rf "%s"*';
             $success = $this->phpci->executeCommand($cmd, $this->directory);
 
             if (!$success) {

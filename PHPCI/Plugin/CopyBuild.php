@@ -26,6 +26,7 @@ class CopyBuild implements \PHPCI\Plugin
     protected $wipe;
     protected $phpci;
     protected $build;
+    protected $includeDir;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -35,12 +36,13 @@ class CopyBuild implements \PHPCI\Plugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path            = $phpci->buildPath;
-        $this->phpci     = $phpci;
-        $this->build     = $build;
-        $this->directory = isset($options['directory']) ? $options['directory'] : $path;
-        $this->wipe      = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
-        $this->ignore    = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
+        $path               = $phpci->buildPath;
+        $this->phpci        = $phpci;
+        $this->build        = $build;
+        $this->directory    = isset($options['directory']) ? $options['directory'] : $path;
+        $this->includeDir   = isset($options['include_build_dir']) ?  $options['include_build_dir'] : true;
+        $this->wipe         = isset($options['wipe']) ?  (bool)$options['wipe'] : false;
+        $this->ignore       = isset($options['respect_ignore']) ?  (bool)$options['respect_ignore'] : false;
     }
 
     /**
@@ -48,6 +50,7 @@ class CopyBuild implements \PHPCI\Plugin
     */
     public function execute()
     {
+
         $build = $this->phpci->buildPath;
 
         if ($this->directory == $build) {
@@ -56,9 +59,20 @@ class CopyBuild implements \PHPCI\Plugin
 
         $this->wipeExistingDirectory();
 
-        $cmd = 'mkdir -p "%s" && cp -R "%s" "%s"';
+        $suffix = '';
+
+        if ($this->includeDir == false) {
+
+            if (substr($build, -1) != DIRECTORY_SEPARATOR) {
+                $build .= DIRECTORY_SEPARATOR;
+            }
+
+            $suffix = "*";
+        }
+
+        $cmd = 'mkdir -p "%s" && cp -R "%s"' . $suffix . ' "%s"';
         if (IS_WIN) {
-            $cmd = 'mkdir -p "%s" && xcopy /E "%s" "%s"';
+            $cmd = 'mkdir -p "%s" && xcopy /E "%s' . $suffix . '" "%s"';
         }
 
         $success = $this->phpci->executeCommand($cmd, $this->directory, $build, $this->directory);

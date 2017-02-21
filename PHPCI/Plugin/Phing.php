@@ -23,9 +23,9 @@ use PHPCI\Model\Build;
 class Phing implements \PHPCI\Plugin
 {
 
-    private $directory;
+    protected $directory;
     private $buildFile = 'build.xml';
-    private $targets = array('build');
+    protected $targets = array('build');
     private $properties = array();
     private $propertyFile;
 
@@ -144,7 +144,7 @@ class Phing implements \PHPCI\Plugin
      * Converts an array of targets into a string.
      * @return string
      */
-    private function targetsToString()
+    protected function targetsToString()
     {
         return implode(' ', $this->targets);
     }

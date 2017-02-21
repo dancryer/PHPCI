@@ -74,6 +74,8 @@
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
         "behat/behat": "Behat BDD Testing",
-        "phptal/phptal": "PHPTAL templating engine"
+        "hipchat/hipchat-php": "Hipchat integration",
+        "gorkalaucirica/hipchat-v2-api-client": "Hipchat (APIv2) Integration",
+        "phptal/phptal": "PHPTAL templating engine",
     }
 }

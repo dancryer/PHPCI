@@ -24,6 +24,7 @@ class HipchatNotify implements \PHPCI\Plugin
     protected $authToken;
     protected $color;
     protected $notify;
+    protected $v2Api;
 
     /**
      * Set up the plugin, configure options, etc.
@@ -61,6 +62,12 @@ class HipchatNotify implements \PHPCI\Plugin
             } else {
                 $this->notify = false;
             }
+
+            if (isset($options['v2Api'])) {
+                $this->v2Api = true;
+            } else {
+                $this->v2Api = false;
+            }
         } else {
             throw new \Exception(Lang::get('hipchat_settings'));
         }
@@ -73,22 +80,54 @@ class HipchatNotify implements \PHPCI\Plugin
      */
     public function execute()
     {
-        $hipChat = new \HipChat\HipChat($this->authToken);
         $message = $this->phpci->interpolate($this->message);
 
         $result = true;
         if (is_array($this->room)) {
             foreach ($this->room as $room) {
-                if (!$hipChat->message_room($room, 'PHPCI', $message, $this->notify, $this->color)) {
+                if (!$this->sendHipchatMessage($room, $message)) {
                     $result = false;
                 }
             }
         } else {
-            if (!$hipChat->message_room($this->room, 'PHPCI', $message, $this->notify, $this->color)) {
+            if (!$this->sendHipChatMessage($this->room, $message)) {
                 $result = false;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Send the message to Hipchat
+     *
+     * @param string $room_id
+     * @param string $msg
+     * @return bool
+     */
+    private function sendHipchatMessage($room_id, $msg)
+    {
+        if (! $this->v2Api) {
+            $hipChat = new \HipChat\HipChat($this->authToken);
+            return $hipChat->message_room($room, 'PHPCI', $message, $this->notify, $this->color);
+        } else {
+            $result = true;
+            try {
+                $auth = new \GorkaLaucirica\HipchatAPIv2Client\Auth\OAuth2($this->authToken);
+                $client = new \GorkaLaucirica\HipchatAPIv2Client\Client($auth);
+                $room = new \GorkaLaucirica\HipchatAPIv2Client\API\RoomAPI($client);
+                $message = new \GorkaLaucirica\HipchatAPIv2Client\Model\Message();
+
+                $message->setColor($this->color);
+                $message->setMessage($msg);
+                $message->setNotify($this->notify);
+
+                $room->sendRoomNotification($room_id, $message);
+            } catch (Exception $e) {
+                $result = false;
+            }
+
+            return $result;
+        }
     }
 }

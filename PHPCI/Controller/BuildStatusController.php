@@ -50,21 +50,21 @@ class BuildStatusController extends \PHPCI\Controller
         $branch = $this->getParam('branch', 'master');
         try {
             $project = $this->projectStore->getById($projectId);
-            $status = 'passing';
+            $status  = Build::STATUS_NEW;
 
             if (!$project->getAllowPublicStatus()) {
                 return null;
             }
 
             if (isset($project) && $project instanceof Project) {
-                $build = $project->getLatestBuild($branch, array(2,3));
+                $build = $project->getLatestBuild($branch);
 
-                if (isset($build) && $build instanceof Build && $build->getStatus() != 2) {
-                    $status = 'failed';
+                if (isset($build) && $build instanceof Build) {
+                    return $build->getStatus();
                 }
             }
         } catch (\Exception $e) {
-            $status = 'error';
+            $status = Build::STATUS_FAILED;
         }
 
         return $status;
@@ -149,11 +149,12 @@ class BuildStatusController extends \PHPCI\Controller
             return $response;
         }
 
-        $color = ($status == 'passing') ? 'green' : 'red';
+        list($text, $color) = $this->getImageTextAndColorFromStatus($status);
+
         $image = file_get_contents(sprintf(
             'http://img.shields.io/badge/%s-%s-%s.svg?style=%s',
             $label,
-            $status,
+            $text,
             $color,
             $style
         ));
@@ -215,5 +216,26 @@ class BuildStatusController extends \PHPCI\Controller
         }
 
         return $builds['items'];
+    }
+
+    /**
+     * Return the image text and color based on the build
+     * status.
+     *
+     * @param $status
+     * @return array
+     */
+    protected function getImageTextAndColorFromStatus($status)
+    {
+        switch ($status) {
+            case Build::STATUS_NEW:
+                return array('pending', 'blue');
+            case Build::STATUS_RUNNING:
+                return array('running', 'yellow');
+            case Build::STATUS_SUCCESS:
+                return array('success', 'green');
+            case Build::STATUS_FAILED:
+                return array('failed', 'red');
+        }
     }
 }

@@ -51,7 +51,8 @@
         "pda/pheanstalk": "~3.1",
         "maknz/slack": "~1.7",
         "hipchat/hipchat-php": "~1.4",
-        "mremi/flowdock": "~1.0"
+        "mremi/flowdock": "~1.0",
+        "gentle/bitbucket-api": "0.7.1"
     },
 
     "require-dev": {

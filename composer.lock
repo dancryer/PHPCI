@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7620213af8197665d87a5b909dc19c1",
+    "content-hash": "1457796bd1e3a47a11351940cddc1950",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1315,16 +1315,16 @@
         },
         {
             "name": "sensiolabs/security-checker",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/security-checker.git",
-                "reference": "116027b57b568ed61b7b1c80eeb4f6ee9e8c599c"
+                "reference": "f2ce0035fc512287978510ca1740cd111d60f89f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/116027b57b568ed61b7b1c80eeb4f6ee9e8c599c",
-                "reference": "116027b57b568ed61b7b1c80eeb4f6ee9e8c599c",
+                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/f2ce0035fc512287978510ca1740cd111d60f89f",
+                "reference": "f2ce0035fc512287978510ca1740cd111d60f89f",
                 "shasum": ""
             },
             "require": {
@@ -1355,7 +1355,7 @@
                 }
             ],
             "description": "A security checker for your composer.lock",
-            "time": "2016-09-23T18:09:57+00:00"
+            "time": "2017-02-18T17:53:25+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1873,12 +1873,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "8f65fc7ec1418593d433e39abb71d3959eb10a0b"
+                "reference": "e58be70aca039a76706f6ed1e5e820cb113f4ed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/8f65fc7ec1418593d433e39abb71d3959eb10a0b",
-                "reference": "8f65fc7ec1418593d433e39abb71d3959eb10a0b",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e58be70aca039a76706f6ed1e5e820cb113f4ed0",
+                "reference": "e58be70aca039a76706f6ed1e5e820cb113f4ed0",
                 "shasum": ""
             },
             "require": {
@@ -1897,7 +1897,8 @@
             },
             "conflict": {
                 "phpdocumentor/reflection-docblock": "<3.0",
-                "phpdocumentor/type-resolver": "<0.2.0"
+                "phpdocumentor/type-resolver": "<0.2.0",
+                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
             },
             "provide": {
                 "psr/cache-implementation": "1.0",
@@ -2014,7 +2015,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-02-16 21:52:43"
+            "time": "2017-02-24 13:59:04"
         },
         {
             "name": "twig/twig",
@@ -2133,7 +2134,7 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",

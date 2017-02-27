@@ -127,8 +127,7 @@ class BuildErrorBase extends Model
             'default' => null,
         ),
         'message' => array(
-            'type' => 'varchar',
-            'length' => 250,
+            'type' => 'text',
             'default' => null,
         ),
         'created_date' => array(

@@ -440,5 +440,5 @@ PHPCI',
     'php_docblock_checker' => 'PHP Docblock Checker',
     'behat' => 'Behat',
     'technical_debt' => 'Technical Debt',
-
+    'web_puc' => 'Web-Puc',
 );

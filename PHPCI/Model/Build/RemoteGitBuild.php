@@ -121,19 +121,27 @@ class RemoteGitBuild extends Build
      */
     protected function postCloneSetup(Builder $builder, $cloneTo)
     {
+        $buildType = $this->getExtra('build_type');
+
         $success = true;
-        $commit = $this->getCommitId();
 
-        $chdir = IS_WIN ? 'cd /d "%s"' : 'cd "%s"';
+        try {
+            if (!empty($buildType) && $buildType == 'pull_request') {
+                $remoteUrl = $this->getExtra('remote_url');
+                $remoteBranch = $this->getExtra('remote_branch');
 
-        if (!empty($commit) && $commit != 'Manual') {
-            $cmd = $chdir . ' && git checkout %s --quiet';
-            $success = $builder->executeCommand($cmd, $cloneTo, $commit);
-        }
+                $cmd = 'cd "%s" && git checkout -b phpci/' . $this->getId() . ' %s && git pull -q --no-edit %s %s';
 
-        // Always update the commit hash with the actual HEAD hash
-        if ($builder->executeCommand($chdir . ' && git rev-parse HEAD', $cloneTo)) {
-            $this->setCommitId(trim($builder->getLastOutput()));
+                if (!IS_WIN) {
+                    $keyFile = $this->writeSshKey($cloneTo);
+                    $gitSshWrapper = $this->writeSshWrapper($cloneTo, $keyFile);
+                    $cmd = 'export GIT_SSH="'.$gitSshWrapper.'" && ' . $cmd;
+                }
+
+                $success = $builder->executeCommand($cmd, $cloneTo, $this->getBranch(), $remoteUrl, $remoteBranch);
+            }
+        } catch (\Exception $ex) {
+            $success = false;
         }
 
         return $success;

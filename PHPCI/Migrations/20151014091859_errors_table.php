@@ -14,7 +14,7 @@ class ErrorsTable extends AbstractMigration
         $table->addColumn('line_start', 'integer', array('signed' => false, 'null' => true));
         $table->addColumn('line_end', 'integer', array('signed' => false, 'null' => true));
         $table->addColumn('severity', 'integer', array('signed' => false, 'limit' => MysqlAdapter::INT_TINY));
-        $table->addColumn('message', 'string', array('limit' => 250));
+        $table->addColumn('message', 'text');
         $table->addColumn('created_date', 'datetime');
         $table->addIndex(array('build_id', 'created_date'), array('unique' => false));
         $table->addForeignKey('build_id', 'build', 'id', array('delete'=> 'CASCADE', 'update' => 'CASCADE'));

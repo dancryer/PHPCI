@@ -67,19 +67,21 @@ class PhpCpd implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        $namesExclude = ' --names-exclude ';
-        foreach ($this->ignore as $item) {
-            // remove the trailing slash
-            $item = rtrim($item, DIRECTORY_SEPARATOR);
+        if (count($this->ignore)) {
+            $namesExclude = ' --names-exclude ';
+            foreach ($this->ignore as $item) {
+                // remove the trailing slash
+                $item = rtrim($item, DIRECTORY_SEPARATOR);
 
-            if (is_file(rtrim($this->path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item)) {
-                $ignoredFile = explode('/', $item);
-                $filesToIgnore[] = array_pop($ignoredFile);
-            } else {
-                $ignore .= ' --exclude ' . $item;
+                if (is_file(rtrim($this->path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item)) {
+                    $ignoredFile = explode('/', $item);
+                    $filesToIgnore[] = array_pop($ignoredFile);
+                } else {
+                    $ignore .= ' --exclude ' . $item;
+                }
             }
         }
-
+        
         if (isset($filesToIgnore)) {
             $filesToIgnore = $namesExclude . implode(',', $filesToIgnore);
             $ignore = $ignore . $filesToIgnore;

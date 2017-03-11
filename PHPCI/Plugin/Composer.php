@@ -25,6 +25,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
     protected $directory;
     protected $action;
     protected $preferDist;
+    protected $preferSource;
     protected $phpci;
     protected $build;
     protected $nodev;
@@ -55,14 +56,14 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
      */
     public function __construct(Builder $phpci, Build $build, array $options = array())
     {
-        $path             = $phpci->buildPath;
-        $this->phpci      = $phpci;
-        $this->build      = $build;
-        $this->directory  = $path;
-        $this->action     = 'install';
-        $this->preferDist = false;
+        $path               = $phpci->buildPath;
+        $this->phpci        = $phpci;
+        $this->build        = $build;
+        $this->directory    = $path;
+        $this->action       = 'install';
+        $this->preferDist   = false;
         $this->preferSource = false;
-        $this->nodev      = false;
+        $this->nodev        = false;
 
         if (array_key_exists('directory', $options)) {
             $this->directory = $path . DIRECTORY_SEPARATOR . $options['directory'];
@@ -77,7 +78,7 @@ class Composer implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
         }
 
         if (array_key_exists('prefer_source', $options)) {
-            $this->preferDist = false;
+            $this->preferDist   = false;
             $this->preferSource = (bool)$options['prefer_source'];
         }
 

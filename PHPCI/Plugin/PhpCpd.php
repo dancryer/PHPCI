@@ -67,23 +67,7 @@ class PhpCpd implements \PHPCI\Plugin
     public function execute()
     {
         $ignore = '';
-        if (count($this->ignore)) {
-            $map = function ($item) {
-                // remove the trailing slash
-                $item = rtrim($item, DIRECTORY_SEPARATOR);
-
-                if (is_file(rtrim($this->path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item)) {
-                    return ' --names-exclude ' . $item;
-                } else {
-                    return ' --exclude ' . $item;
-                }
-
-            };
-            $ignore = array_map($map, $this->ignore);
-
-            $ignore = implode('', $ignore);
-        }
-
+     
         $phpcpd = $this->phpci->findBinary('phpcpd');
 
         $tmpfilename = tempnam('/tmp', 'phpcpd');

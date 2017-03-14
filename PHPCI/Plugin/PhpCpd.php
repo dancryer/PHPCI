@@ -80,11 +80,11 @@ class PhpCpd implements \PHPCI\Plugin
                     $ignore .= ' --exclude ' . $item;
                 }
             }
-        }
-        
-        if (isset($filesToIgnore)) {
-            $filesToIgnore = $namesExclude . implode(',', $filesToIgnore);
-            $ignore = $ignore . $filesToIgnore;
+
+            if (isset($filesToIgnore)) {
+                $filesToIgnore = $namesExclude . implode(',', $filesToIgnore);
+                $ignore = $ignore . $filesToIgnore;
+            }
         }
 
         $phpcpd = $this->phpci->findBinary('phpcpd');

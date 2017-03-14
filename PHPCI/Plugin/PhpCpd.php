@@ -86,7 +86,7 @@ class PhpCpd implements \PHPCI\Plugin
             };
             $ignore = array_map($map, $this->ignore);
 
-            $ignore = implode('', $ignore);
+            $ignore = implode(',', $ignore);
         }
 
         $phpcpd = $this->phpci->findBinary('phpcpd');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "64b5a56a7a23ad3473d959ff436ddd21",
+    "content-hash": "b034f8e43c685ebd1ee2899d7ae14af2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1413,16 +1413,16 @@
         },
         {
             "name": "symfony/monolog-bundle",
-            "version": "v3.0.3",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/monolog-bundle.git",
-                "reference": "ebce76a39a65495a66c34eb1574cc4b9e35a4e64"
+                "reference": "6f96c7dbb6b2ef70b307a1a6f897153cbca3da47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/ebce76a39a65495a66c34eb1574cc4b9e35a4e64",
-                "reference": "ebce76a39a65495a66c34eb1574cc4b9e35a4e64",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/6f96c7dbb6b2ef70b307a1a6f897153cbca3da47",
+                "reference": "6f96c7dbb6b2ef70b307a1a6f897153cbca3da47",
                 "shasum": ""
             },
             "require": {
@@ -1469,7 +1469,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2017-01-10T20:01:51+00:00"
+            "time": "2017-03-26T11:55:59+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",
@@ -1873,12 +1873,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "28a00dac0c396f2880b84bc33d7abae698d4d94a"
+                "reference": "2ad59231c67b4ba45415039e273858a6b1d889fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/28a00dac0c396f2880b84bc33d7abae698d4d94a",
-                "reference": "28a00dac0c396f2880b84bc33d7abae698d4d94a",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2ad59231c67b4ba45415039e273858a6b1d889fc",
+                "reference": "2ad59231c67b4ba45415039e273858a6b1d889fc",
                 "shasum": ""
             },
             "require": {
@@ -1930,6 +1930,7 @@
                 "symfony/inflector": "self.version",
                 "symfony/intl": "self.version",
                 "symfony/ldap": "self.version",
+                "symfony/lock": "self.version",
                 "symfony/monolog-bridge": "self.version",
                 "symfony/options-resolver": "self.version",
                 "symfony/process": "self.version",
@@ -1957,7 +1958,7 @@
                 "symfony/yaml": "self.version"
             },
             "require-dev": {
-                "cache/integration-tests": "^0.15.0",
+                "cache/integration-tests": "dev-master",
                 "doctrine/cache": "~1.6",
                 "doctrine/data-fixtures": "1.0.*",
                 "doctrine/dbal": "~2.4",
@@ -2015,7 +2016,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-03-01 06:52:11"
+            "time": "2017-03-23 18:14:29"
         },
         {
             "name": "twig/twig",

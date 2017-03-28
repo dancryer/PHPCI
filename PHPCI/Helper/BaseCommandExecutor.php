@@ -94,6 +94,7 @@ abstract class BaseCommandExecutor implements CommandExecutor
 
         if (is_resource($process)) {
             fclose($pipes[0]);
+
             stream_set_blocking($pipes[1], 0);
             stream_set_blocking($pipes[2], 0);
 

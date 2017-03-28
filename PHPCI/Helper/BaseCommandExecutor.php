@@ -102,11 +102,11 @@ abstract class BaseCommandExecutor implements CommandExecutor
             do {
                 usleep(200); //Give It Time To Start
 
-                while(($newData = fread($pipes[1], 1024)) && !feof($pipes[1])) {
+                while (($newData = fread($pipes[1], 1024)) && !feof($pipes[1])) {
                     $lastOutput .= $newData;
                 }
 
-                while(($newData = fread($pipes[2], 1024)) && !feof($pipes[2])) {
+                while (($newData = fread($pipes[2], 1024)) && !feof($pipes[2])) {
                     $lastError .= $newData;
                 }
 

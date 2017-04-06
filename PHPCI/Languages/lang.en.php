@@ -181,6 +181,8 @@ PHPCI',
     'phpcs_errors' => 'PHPCS Errors',
     'phplint_errors' => 'Lint Errors',
     'phpunit_errors' => 'PHPUnit Errors',
+    'phptal_errors' => 'PHPTAL Errors',
+    'phptal_warnings' => 'PHPTAL Warnings',
     'phpdoccheck_warnings' => 'Missing Docblocks',
     'issues' => 'Issues',
 

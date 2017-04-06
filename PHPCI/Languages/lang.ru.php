@@ -303,6 +303,14 @@ PHPCI',
     'stage_broken'  => 'Поломка',
     'stage_fixed' => 'Исправление',
 
+    'build_details'  => 'Информация о сборке',
+    'commit_details' => 'Информация о коммита',
+    'committer'      => 'Автор коммита',
+    'timing'         => 'Тайминг',
+    'created'        => 'Создана',
+    'started'        => 'Началась',
+    'finished'       => 'Закончилась',
+
     // Installer
     'installation_url' => 'URL-адрес PHPCI для установки',
     'db_host' => 'Хост базы данных',

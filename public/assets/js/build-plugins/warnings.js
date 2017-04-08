@@ -7,7 +7,12 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         'phplint-errors': Lang.get('phplint_errors'),
         'phpunit-errors': Lang.get('phpunit_errors'),
         'phptallint-errors': Lang.get('phptal_errors'),
-        'phptallint-warnings': Lang.get('phptal_warnings')
+        'phptallint-warnings': Lang.get('phptal_warnings'),
+        'phpmd-warnings': Lang.get('phpmd_warnings'),
+        'phpdoccheck-warnings': Lang.get('phpdoccheck_warnings'),
+        'phpcpd-warnings': Lang.get('phpcpd_warnings'),
+        'phpcs-warnings': Lang.get('phpcs_warnings'),
+        'phpcs-errors': Lang.get('phpcs_errors')
     },
     data: {},
     displayOnUpdate: false,
@@ -22,7 +27,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
           queries.push(ActiveBuild.registerQuery(key, -1, {num_builds: 10, key: key}));
         }
 
-        $(window).on('codeception-errors phptallint-warnings phptallint-errors phplint-errors phpunit-errors', function(data) {
+        $(window).on('codeception-errors phptallint-warnings phptallint-errors phplint-errors phpunit-errors phpmd-warnings phpdoccheck-warnings phpcpd-warnings phpcs-warnings phpcs-errors', function(data) {
             self.onUpdate(data);
         });
 
@@ -78,7 +83,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         var self = this;
         self.rendered = true;
 
-        var colors = ['#4D4D4D', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F', '#B276B2', '#DECF3F', '#F15854'];
+        var colors = ['#4D4D4D', '#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F', '#B276B2', '#DECF3F', '#F15854', '#4D4D4D'];
 
         self.chartData = {
             labels: [],

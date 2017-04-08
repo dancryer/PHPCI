@@ -19,13 +19,14 @@ use PHPCI\Model\Build;
  * @package      PHPCI
  * @subpackage   Plugins
  */
-class Lint implements PHPCI\Plugin
+class Lint implements PHPCI\Plugin, PHPCI\ZeroConfigPlugin
 {
     protected $directories;
     protected $recursive = true;
     protected $ignore;
     protected $phpci;
     protected $build;
+    protected $errors = 0;
 
     /**
      * Standard Constructor
@@ -60,6 +61,22 @@ class Lint implements PHPCI\Plugin
     }
 
     /**
+     * Check if this plugin can be executed.
+     * @param $stage
+     * @param Builder $builder
+     * @param Build $build
+     * @return bool
+     */
+    public static function canExecute($stage, Builder $builder, Build $build)
+    {
+        if ($stage == 'test') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Executes parallel lint
      */
     public function execute()
@@ -69,13 +86,19 @@ class Lint implements PHPCI\Plugin
 
         $php = $this->phpci->findBinary('php');
 
+        $this->phpci->logExecOutput(false);
+
         foreach ($this->directories as $dir) {
             if (!$this->lintDirectory($php, $dir)) {
                 $success = false;
             }
         }
 
+        $this->phpci->logExecOutput(true);
+
         $this->phpci->quiet = false;
+
+        $this->build->storeMeta('phplint-warnings', $this->errors);
 
         return $success;
     }
@@ -138,10 +161,24 @@ class Lint implements PHPCI\Plugin
      */
     protected function lintFile($php, $path)
     {
-        $success = true;
+        if (!$this->phpci->executeCommand($php . ' -d error_reporting=E_ALL -d display_errors=0 -n -l "%s" 2>&1', $this->phpci->buildPath . $path)) {
+            $output = $this->phpci->getLastOutput();
 
-        if (!$this->phpci->executeCommand($php . ' -l "%s"', $this->phpci->buildPath . $path)) {
-            $this->phpci->logFailure($path);
+            preg_match('/Parse error:\s*syntax error,(.+?)\s+in\s+.+?\s*line\s+(\d+)/', $output, $matches);
+
+            $line = trim($matches[2]);
+
+            $this->build->reportError(
+                $this->phpci,
+                'php_lint',
+                trim((string) $matches[1]),
+                PHPCI\Model\BuildError::SEVERITY_HIGH,
+                $path,
+                (int) $line
+            );
+
+            $this->errors++;
+
             $success = false;
         }
 

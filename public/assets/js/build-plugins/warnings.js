@@ -27,7 +27,7 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
         });
 
         $(window).on('build-updated', function(data) {
-            if (!self.rendered && data.queryData.status > 1) {
+            if (!self.rendered && data.queryData && data.queryData.status > 1) {
                 self.displayOnUpdate = true;
                 for (var query in queries) {
                   queries[query]();
@@ -101,8 +101,8 @@ var warningsPlugin = ActiveBuild.UiPlugin.extend({
 
             var i = 0;
             for (var key in self.keys) {
-
-                self.chartData.datasets[i].data.push(parseInt(self.data[build][key]));
+                var value = parseInt(self.data[build][key]) || 0;
+                self.chartData.datasets[i].data.push(value);
                 i++;
             }
         }

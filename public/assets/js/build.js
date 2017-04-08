@@ -23,45 +23,47 @@ var Build = Class.extend({
             self.buildData = data.queryData;
 
             // If the build has finished, stop updating every 10 seconds:
-            if (self.buildData.status > 1) {
+            if (self.buildData && self.buildData.status > 1) {
                 self.cancelQuery('build-updated');
                 $(window).trigger({type: 'build-complete'});
             }
 
-            $('.build-duration').data('duration', self.buildData.duration ? self.buildData.duration : '');
-            $('.build-started').data('date', self.buildData.started ? self.buildData.started : '');
-            $('.build-finished').data('date', self.buildData.finished ? self.buildData.finished : '');
-            $('#log pre').html(self.buildData.log);
-            $('.errors-table tbody').append(self.buildData.error_html);
+            if (self.buildData) {
+                $('.build-duration').data('duration', self.buildData.duration ? self.buildData.duration : '');
+                $('.build-started').data('date', self.buildData.started ? self.buildData.started : '');
+                $('.build-finished').data('date', self.buildData.finished ? self.buildData.finished : '');
+                $('#log pre').html(self.buildData.log);
+                $('.errors-table tbody').html(self.buildData.error_html);
 
-            if (self.buildData.errors == 0) {
-                $('.errors-label').hide();
-            } else {
-                $('.errors-label').text(self.buildData.errors);
-                $('.errors-label').show();
-            }
+                if (self.buildData.errors == 0) {
+                    $('.errors-label').hide();
+                } else {
+                    $('.errors-label').text(self.buildData.errors);
+                    $('.errors-label').show();
+                }
 
-            switch (self.buildData.status) {
-                case 0:
-                    $('body').removeClass('skin-red skin-green skin-yellow');
-                    $('body').addClass('skin-blue');
-                    break;
+                switch (self.buildData.status) {
+                    case 0:
+                        $('body').removeClass('skin-red skin-green skin-yellow');
+                        $('body').addClass('skin-blue');
+                        break;
 
-                case 1:
-                    $('body').removeClass('skin-red skin-green skin-blue');
-                    $('body').addClass('skin-yellow');
-                    break;
+                    case 1:
+                        $('body').removeClass('skin-red skin-green skin-blue');
+                        $('body').addClass('skin-yellow');
+                        break;
 
-                case 2:
-                    $('body').removeClass('skin-red skin-blue skin-yellow');
-                    $('body').addClass('skin-green');
-                    break;
+                    case 2:
+                        $('body').removeClass('skin-red skin-blue skin-yellow');
+                        $('body').addClass('skin-green');
+                        break;
 
-                case 3:
-                    $('body').removeClass('skin-blue skin-green skin-yellow');
-                    $('body').addClass('skin-red');
-                    break;
+                    case 3:
+                        $('body').removeClass('skin-blue skin-green skin-yellow');
+                        $('body').addClass('skin-red');
+                        break;
 
+                }
             }
 
             PHPCI.uiUpdated();
@@ -77,7 +79,7 @@ var Build = Class.extend({
             var fullUri = window.PHPCI_URL + uri;
 
             if (name == 'build-updated') {
-                fullUri = window.PHPCI_URL + 'build/data/' + self.buildId + '?since=' + self.buildData.since;
+                fullUri = window.PHPCI_URL + 'build/data/' + self.buildId;
             }
 
             $.ajax({

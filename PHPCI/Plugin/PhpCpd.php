@@ -136,7 +136,7 @@ CPD;
                     $message,
                     BuildError::SEVERITY_NORMAL,
                     $fileName,
-                    $file['line'],
+                    (int) $file['line'],
                     (int) $file['line'] + (int) $duplication['lines']
                 );
             }

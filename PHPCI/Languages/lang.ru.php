@@ -57,6 +57,7 @@ PHPCI',
     'dashboard' => 'Панель управления',
     'admin_options' => 'Меню администратора',
     'add_project' => 'Добавить проект',
+    'project_groups' => 'Группы проектов',
     'settings' => 'Настройки',
     'manage_users' => 'Пользователи',
     'plugins' => 'Плагины',
@@ -147,6 +148,15 @@ PHPCI',
     'webhooks_help_bitbucket' => 'Чтобы Автоматически собирать этот проект при публикации новых коммитов, добавьте URL ниже как "POST" сервис в разделе <a href="https://bitbucket.org/%s/admin/services">
                                   Services</a> вашего Bitbucket репозитория.',
 
+    // Project Groups
+    'group_projects' => 'Проекты',
+    'group_edit'     => 'Редактировать',
+    'group_delete'   => 'Удалить',
+    'group_add'      => 'Добавить группу',
+    'group_add_edit' => 'Добавить / изменить группу',
+    'group_title'    => 'Название группы',
+    'group_save'     => 'Сохранить группу',
+
     // View Build
     'errors' => 'Ошибки',
     'information' => 'Информация',
@@ -154,7 +164,6 @@ PHPCI',
     'build_x_not_found' => 'Сборки с ID %d не существует.',
     'build_n' => 'Сборка %d',
     'rebuild_now' => 'Пересобрать сейчас',
-
 
     'committed_by_x' => 'Отправил %s',
     'commit_id_x' => 'Коммит: %s',

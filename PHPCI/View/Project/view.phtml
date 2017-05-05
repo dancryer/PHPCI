@@ -14,7 +14,7 @@
     </a>
 
     <div class="pull-right btn-group">
-        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?><?php echo !empty($branch) ? '/' . urlencode($branch) : '' ?>">
+        <a class="btn btn-success" href="<?php print PHPCI_URL . 'project/build/' . $project->getId(); ?><?php echo !empty($branch) ? '?branch=' . urlencode($branch) : '' ?>">
             <?php Lang::out('build_now'); ?>
         </a>
 

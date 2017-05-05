@@ -105,6 +105,10 @@ class ProjectController extends PHPCI\Controller
         /* @var \PHPCI\Model\Project $project */
         $project = $this->projectStore->getById($projectId);
 
+		if ($branch === '' && filter_input(INPUT_GET, 'branch') !== null) {
+			$branch = filter_input(INPUT_GET, 'branch');
+		}
+
         if (empty($branch)) {
             $branch = $project->getBranch();
         }

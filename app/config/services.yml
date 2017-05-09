@@ -8,18 +8,28 @@ services:
     _defaults:
         # automatically injects dependencies in your services
         autowire: true
-        # automatically registers your services as commands, form types, etc.
+        # automatically registers your services as commands, event subscribers, etc.
         autoconfigure: true
         # this means you cannot fetch services directly from the container via $container->get()
         # if you need to do this, you can override this setting on individual services
         public: false
 
-    # loads services from whatever directories you want (you can add directories!)
+    # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     AppBundle\:
-        resource: '../../src/AppBundle/{Command,Form,EventSubscriber,Twig,Security}'
+        resource: '../../src/AppBundle/*'
+        # you can exclude directories or files
+        # but if a service is unused, it's removed anyway
+        exclude: '../../src/AppBundle/{Entity,Repository}'
 
+    # controllers are imported separately to make sure they're public
+    # and have a tag that allows actions to type-hint services
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
         public: true
         tags: ['controller.service_arguments']
+
+    # add more services, or override services that need manual wiring
+    # AppBundle\Service\ExampleService:
+    #     arguments:
+    #         $someArgument: 'some_value'

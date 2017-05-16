@@ -87,7 +87,7 @@ class WebhookController extends \b8\Controller
     public function bitbucket($projectId)
     {
         $project = $this->fetchProject($projectId, 'bitbucket');
-    
+
         // Support both old services and new webhooks
         if ($payload = $this->getParam('payload')) {
             return $this->bitbucketService(json_decode($payload, true), $project);
@@ -353,7 +353,9 @@ class WebhookController extends \b8\Controller
                 $commit = $attributes['last_commit'];
                 $committer = $commit['author']['email'];
 
-                return $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                if ($branch === $project->getBranch()) {
+                    return $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                }
             }
         }
 
@@ -363,10 +365,14 @@ class WebhookController extends \b8\Controller
 
             $results = array();
             $status = 'failed';
-            foreach ($payload['commits'] as $commit) {
-                try {
-                    $branch = str_replace('refs/heads/', '', $payload['ref']);
-                    $committer = $commit['author']['email'];
+
+            // get last commit
+            $commit = end($payload['commits']);
+            try {
+                $branch = str_replace('refs/heads/', '', $payload['ref']);
+                $committer = $commit['author']['email'];
+
+                if ($branch === $project->getBranch()) {
                     $results[$commit['id']] = $this->createBuild(
                         $project,
                         $commit['id'],
@@ -375,9 +381,9 @@ class WebhookController extends \b8\Controller
                         $commit['message']
                     );
                     $status = 'ok';
-                } catch (Exception $ex) {
-                    $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
                 }
+            } catch (Exception $ex) {
+                $results[$commit['id']] = array('status' => 'failed', 'error' => $ex->getMessage());
             }
             return array('status' => $status, 'commits' => $results);
         }

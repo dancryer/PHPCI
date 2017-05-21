@@ -27,7 +27,7 @@ monolog:
         server_log:
             type:   server_log
             process_psr_3_messages: false
-            host: 0:9911
+            host: localhost:9911
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:

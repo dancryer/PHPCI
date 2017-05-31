@@ -348,14 +348,17 @@ class WebhookController extends \b8\Controller
         // build on merge request events
         if (isset($payload['object_kind']) && $payload['object_kind'] == 'merge_request') {
             $attributes = $payload['object_attributes'];
+
             if ($attributes['state'] == 'opened' || $attributes['state'] == 'reopened') {
                 $branch = $attributes['source_branch'];
-                $commit = $attributes['last_commit'];
-                $committer = $commit['author']['email'];
+                $commit = isset($attributes['last_commit']) ? $attributes['last_commit'] : null;
+                $committer = isset($commit['author']['email']) ? $commit['author']['email'] : null;
+                $message = isset($commit['message']) ? $commit['message'] : null;
 
-                return $this->createBuild($project, $commit['id'], $branch, $committer, $commit['message']);
+                return $this->createBuild($project, $commit['id'], $branch, $committer, $message);
             }
         }
+
 
         // build on push events
         if (isset($payload['commits']) && is_array($payload['commits'])) {

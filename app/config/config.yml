@@ -25,7 +25,7 @@ framework:
     trusted_hosts: ~
     trusted_proxies: ~
     session:
-        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id: session.handler.native_file
         save_path: "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments: ~

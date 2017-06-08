@@ -150,7 +150,7 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
             Loglevel::DEBUG
         );
 
-        $output = realpath($this->phpci->buildPath . $this->path . $this->output );
+        $output = realpath($this->phpci->buildPath . $this->path . $this->output);
         $xml = file_get_contents($output . DIRECTORY_SEPARATOR . 'report.xml', false);
         $parser = new Parser($this->phpci, $xml);
         $output = $parser->parse();

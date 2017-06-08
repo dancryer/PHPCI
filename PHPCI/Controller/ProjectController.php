@@ -358,6 +358,11 @@ class ProjectController extends PHPCI\Controller
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 
+        $field = Form\Element\TextArea::create('observed_branches', Lang::get('observed_branches'), false);
+        $field->setClass('form-control')->setContainerClass('form-group');
+        $field->setRows(6);
+        $form->addField($field);
+
         $field = Form\Element\Select::create('group_id', 'Project Group', true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue(1);
 

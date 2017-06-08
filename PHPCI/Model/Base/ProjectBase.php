@@ -37,6 +37,7 @@ class ProjectBase extends Model
         'title' => null,
         'reference' => null,
         'branch' => null,
+        'observed_branches' => null,
         'ssh_private_key' => null,
         'type' => null,
         'access_information' => null,
@@ -57,6 +58,7 @@ class ProjectBase extends Model
         'title' => 'getTitle',
         'reference' => 'getReference',
         'branch' => 'getBranch',
+        'observed_branches' => 'getObservedBranches',
         'ssh_private_key' => 'getSshPrivateKey',
         'type' => 'getType',
         'access_information' => 'getAccessInformation',
@@ -80,6 +82,7 @@ class ProjectBase extends Model
         'title' => 'setTitle',
         'reference' => 'setReference',
         'branch' => 'setBranch',
+        'observed_branches' => 'setObservedBranches',
         'ssh_private_key' => 'setSshPrivateKey',
         'type' => 'setType',
         'access_information' => 'setAccessInformation',
@@ -119,6 +122,11 @@ class ProjectBase extends Model
             'type' => 'varchar',
             'length' => 250,
             'default' => 'master',
+        ),
+        'observed_branches' => array(
+            'type' => 'text',
+            'nullable' => true,
+            'default' => null,
         ),
         'ssh_private_key' => array(
             'type' => 'text',
@@ -234,6 +242,18 @@ class ProjectBase extends Model
     public function getBranch()
     {
         $rtn    = $this->data['branch'];
+
+        return $rtn;
+    }
+
+    /**
+     * Get the value of observed branches
+     *
+     * @return string
+     */
+    public function getObservedBranches()
+    {
+        $rtn    = $this->data['observed_branches'];
 
         return $rtn;
     }
@@ -424,6 +444,26 @@ class ProjectBase extends Model
         $this->data['branch'] = $value;
 
         $this->_setModified('branch');
+    }
+
+    /**
+     * Set the value of Branch / branch.
+     *
+     * Must not be null.
+     * @param $value string
+     */
+    public function setObservedBranches($value)
+    {
+        $this->_validateNotNull('Observed branches', $value);
+        $this->_validateString('Observed branches', $value);
+
+        if ($this->data['observed_branches'] === $value) {
+            return;
+        }
+
+        $this->data['observed_branches'] = $value;
+
+        $this->_setModified('observed_branches');
     }
 
     /**

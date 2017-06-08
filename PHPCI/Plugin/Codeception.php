@@ -45,6 +45,11 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
     protected $path;
 
     /**
+     * @var string $output The directory where codeception stores the report.xml
+     */
+    protected $output;
+
+    /**
      * @param $stage
      * @param Builder $builder
      * @param Build $build
@@ -96,6 +101,8 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         if (isset($options['path'])) {
             $this->path = $options['path'];
         }
+
+        $this->output = isset($options['output']) ? $options['output'] : '_output';
     }
 
     /**
@@ -143,7 +150,8 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
             Loglevel::DEBUG
         );
 
-        $xml = file_get_contents($this->phpci->buildPath . $this->path . 'report.xml', false);
+        $output = realpath($this->phpci->buildPath . $this->path . $this->output );
+        $xml = file_get_contents($output . DIRECTORY_SEPARATOR . 'report.xml', false);
         $parser = new Parser($this->phpci, $xml);
         $output = $parser->parse();
 

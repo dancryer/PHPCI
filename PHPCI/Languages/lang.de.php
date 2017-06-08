@@ -114,6 +114,7 @@ generiert. Um es zu verwenden, fügen Sie einfach den folgenden Public Key im Ab
     'build_config' => 'PHPCI Buildkonfiguration für dieses Projekt
                                 (falls Sie Ihrem Projektrepository kein phpci.yml hinzufügen können)',
     'default_branch' => 'Name des Standardbranches',
+    'observed_branches' => 'Löse Build über Webhook nur für folgende Branches aus',
     'allow_public_status' => 'Öffentliche Statusseite und -bild für dieses Projekt einschalten?',
     'archived' => 'Archiviert',
     'archived_menu' => 'Archiviert',

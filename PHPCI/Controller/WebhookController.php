@@ -463,7 +463,7 @@ class WebhookController extends \b8\Controller
 
         $observedBranches = explode(PHP_EOL, $observedBranchesStr);
         foreach($observedBranches as $observedBranch){
-            if($this->stringContains($branch, $observedBranches)){
+            if($this->stringContains($branch, $observedBranch)){
                 return true;
             }
         }

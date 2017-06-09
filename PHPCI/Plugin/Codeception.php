@@ -145,12 +145,12 @@ class Codeception implements \PHPCI\Plugin, \PHPCI\ZeroConfigPlugin
         $configPath = $this->phpci->buildPath . $configPath;
         $success = $this->phpci->executeCommand($cmd, $this->phpci->buildPath, $configPath);
 
+        $output = realpath($this->phpci->buildPath . $this->path . $this->output);
         $this->phpci->log(
-            'Codeception XML path: '. $this->phpci->buildPath . $this->path . 'report.xml',
+            'Codeception XML path: '. $output . DIRECTORY_SEPARATOR . 'report.xml',
             Loglevel::DEBUG
         );
 
-        $output = realpath($this->phpci->buildPath . $this->path . $this->output);
         $xml = file_get_contents($output . DIRECTORY_SEPARATOR . 'report.xml', false);
         $parser = new Parser($this->phpci, $xml);
         $output = $parser->parse();

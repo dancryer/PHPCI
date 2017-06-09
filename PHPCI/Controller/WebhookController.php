@@ -425,6 +425,13 @@ class WebhookController extends \b8\Controller
         $commitMessage,
         array $extra = null
     ) {
+        if(!$this->isBranchObserved($branch, $project)){
+            return array(
+                'status' => 'ignored',
+                'message' => "Branch \"{$branch}\" is not observed"
+            );
+        }
+
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
@@ -439,6 +446,49 @@ class WebhookController extends \b8\Controller
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
 
         return array('status' => 'ok', 'buildID' => $build->getID());
+    }
+
+    /**
+     * Tells if branch is observed
+     *
+     * @param string $branch
+     * @param Project $project
+     * @return bool
+     */
+    protected function isBranchObserved($branch, Project $project)
+    {
+        if(($observedBranchesStr = trim($project->getObservedBranches())) === ''){
+            return true;
+        }
+
+        $observedBranches = explode(PHP_EOL, $observedBranchesStr);
+        foreach($observedBranches as $observedBranch){
+            if($this->stringContains($branch, $observedBranch)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Tells if $str1 contains $str2
+     *
+     * @param string $str1
+     * @param string $str2
+     * @return bool
+     */
+    protected function stringContains($str1, $str2)
+    {
+        if($str1 === $str2){
+            return true;
+        }
+
+        if(($pos = strrpos($str2, '*')) !== false){
+            return substr($str1, 0, $pos) === substr($str2, 0, $pos);
+        }
+
+        return false;
     }
 
     /**

@@ -89,6 +89,10 @@ class ProjectService
             $project->setBranch($options['branch']);
         }
 
+        if (array_key_exists('observed_branches', $options)) {
+            $project->setObservedBranches($options['observed_branches']);
+        }
+
         if (array_key_exists('group', $options)) {
             $project->setGroup($options['group']);
         }

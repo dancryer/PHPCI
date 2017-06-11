@@ -200,7 +200,7 @@ class GithubBuild extends RemoteGitBuild
         $lineStart = null,
         $lineEnd = null
     ) {
-        $diffLineNumber = $this->getDiffLineNumber($builder, $file, $lineStart);
+        $diffLineNumber = $file === null ? null : $this->getDiffLineNumber($builder, $file, $lineStart);
 
         if (!is_null($diffLineNumber)) {
             $helper = new Github();

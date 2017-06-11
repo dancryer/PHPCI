@@ -13,6 +13,7 @@ use PHPCI\Builder;
 use PHPCI\Helper\Diff;
 use PHPCI\Helper\Github;
 use PHPCI\Model\Build\RemoteGitBuild;
+use PHPCI\Model\BuildError;
 
 /**
 * Github Build Model

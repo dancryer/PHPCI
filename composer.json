@@ -1,27 +1,24 @@
 {
-    "name"             : "block8/phpci",
-    "description"      : "Simple continuous integration for PHP projects.",
+    "name": "block8/phpci",
+    "description": "Simple continuous integration for PHP projects.",
     "minimum-stability": "stable",
-    "type"             : "library",
-    "keywords"         : ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
-    "homepage"         : "http://www.phptesting.org/",
-    "license"          : "BSD-2-Clause",
-
+    "type": "library",
+    "keywords": ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
+    "homepage": "http://www.phptesting.org/",
+    "license": "BSD-2-Clause",
     "authors": [
         {
-            "name"    : "Dan Cryer",
-            "email"   : "dan.cryer@block8.co.uk",
+            "name": "Dan Cryer",
+            "email": "dan.cryer@block8.co.uk",
             "homepage": "http://www.block8.co.uk",
-            "role"    : "Developer"
+            "role": "Developer"
         }
     ],
-
     "support": {
-        "email" : "hello+phpci@block8.co.uk",
+        "email": "hello+phpci@block8.co.uk",
         "issues": "https://github.com/Block8/PHPCI/issues",
         "source": "https://github.com/Block8/PHPCI"
     },
-
     "autoload": {
         "psr-4": {
             "Kiboko\\Component\\ContinuousIntegrationBundle\\": "src/ContinuousIntegrationBundle",
@@ -36,7 +33,6 @@
             "Tests\\Kiboko\\Component\\ContinuousIntegration\\": "test/unit/"
         }
     },
-
     "require": {
         "php": ">=7.1",
         "ext-pdo": "*",
@@ -59,7 +55,6 @@
         "ramsey/uuid-doctrine": "^1.3",
         "ramsey/uuid": "^3.6"
     },
-
     "require-dev": {
         "phpunit/phpunit": "~4.5",
         "phpmd/phpmd": "~2.0",
@@ -68,7 +63,6 @@
         "phploc/phploc": "~2.0",
         "jakub-onderka/php-parallel-lint": "0.8.*"
     },
-
     "suggest": {
         "block8/php-docblock-checker": "PHP Docblock Checker",
         "phpmd/phpmd": "PHP Mess Detector",

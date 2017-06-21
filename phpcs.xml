@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
-<ruleset name="PHPCI">
+<ruleset name="Kiboko-CI">
 
-    <description>Codestyle ruleset for PHPCI</description>
+    <description>Codestyle ruleset for Kiboko CI</description>
 
     <rule ref="PSR2"/>
+    <rule ref="Symfony"/>
+    <rule ref="PHP56Migration"/>
+    <rule ref="PHP70Migration"/>
+    <rule ref="PHP71Migration"/>
 
-    <file>PHPCI</file>
+    <file>src</file>
 
     <arg name="encoding" value="UTF-8"/>
     <arg name="extensions" value="php"/>
 
-    <exclude-pattern>PHPCI/Migrations/*</exclude-pattern>
-    <exclude-pattern>PHPCI/Model/Base/*</exclude-pattern>
-    <exclude-pattern>PHPCI/Languages/*</exclude-pattern>
+    <exclude-pattern>src/Migrations/*</exclude-pattern>
+    <exclude-pattern>src/Model/Base/*</exclude-pattern>
+    <exclude-pattern>app/translations/*</exclude-pattern>
     <exclude-pattern>Tests/*</exclude-pattern>
     <exclude-pattern>vendor/*</exclude-pattern>
 

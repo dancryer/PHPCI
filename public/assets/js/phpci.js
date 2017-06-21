@@ -4,7 +4,7 @@ var PHPCI = {
 
     init: function () {
         // Setup the date locale
-        moment.locale(PHPCI_LANGUAGE);
+        moment.locale(KIBOKO_CI_APP_LANGUAGE);
 
         $(document).ready(function () {
             // Format datetimes
@@ -19,7 +19,7 @@ var PHPCI = {
             PHPCI.intervals.getBuilds = setInterval(PHPCI.getBuilds, 5000);
 
             // Update latest project builds every 10 seconds:
-            if (typeof PHPCI_PROJECT_ID != 'undefined') {
+            if (typeof KIBOKO_CI_APP_PROJECT_ID != 'undefined') {
                 PHPCI.intervals.getProjectBuilds = setInterval(PHPCI.getProjectBuilds, 10000);
             }
 
@@ -39,7 +39,7 @@ var PHPCI = {
 
     getBuilds: function () {
         $.ajax({
-            url: PHPCI_URL + 'build/latest',
+            url: KIBOKO_CI_APP_URL + 'build/latest',
 
             success: function (data) {
                 $(window).trigger('builds-updated', [data]);
@@ -51,7 +51,7 @@ var PHPCI = {
 
     getProjectBuilds: function () {
         $.ajax({
-            url: PHPCI_URL + 'project/builds/' + PHPCI_PROJECT_ID + '?branch=' + PHPCI_PROJECT_BRANCH,
+            url: KIBOKO_CI_APP_URL + 'project/builds/' + KIBOKO_CI_APP_PROJECT_ID + '?branch=' + KIBOKO_CI_APP_PROJECT_BRANCH,
 
             success: function (data) {
                 $('#latest-builds').html(data);
@@ -92,7 +92,7 @@ var PHPCI = {
     get: function (uri, success) {
 
         $.ajax({
-            url: window.PHPCI_URL + uri,
+            url: window.KIBOKO_CI_APP_URL + uri,
 
             success: function (data) {
                 success();
@@ -105,7 +105,7 @@ var PHPCI = {
 
     handleFailedAjax: function (xhr) {
         if (xhr.status == 401) {
-            window.location.href = window.PHPCI_URL + 'session/login';
+            window.location.href = window.KIBOKO_CI_APP_URL + 'session/login';
         }
     },
 
@@ -415,7 +415,7 @@ function setupProjectForm()
 
             $.ajax({
                 dataType: "json",
-                url: window.PHPCI_URL + 'project/github-repositories',
+                url: window.KIBOKO_CI_APP_URL + 'project/github-repositories',
                 success: function (data) {
                     $('#loading').hide();
 
@@ -469,8 +469,8 @@ var Lang = {
         var args = Array.prototype.slice.call(arguments);;
         var string = args.shift();
 
-        if (PHPCI_STRINGS[string]) {
-            args.unshift(PHPCI_STRINGS[string]);
+        if (KIBOKO_CI_APP_STRINGS[string]) {
+            args.unshift(KIBOKO_CI_APP_STRINGS[string]);
             return sprintf.apply(sprintf[0], args);
         }
 
@@ -478,4 +478,4 @@ var Lang = {
     }
 };
 
-moment.locale(PHPCI_LANGUAGE);
+moment.locale(KIBOKO_CI_APP_LANGUAGE);

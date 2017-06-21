@@ -1,0 +1,161 @@
+<?php
+use Kiboko\Component\ContinuousIntegration\Helper\Lang;
+
+foreach($projects as $project):
+    $statuses = array();
+    $failures = 0;
+    $subcls = 'yellow';
+    $cls = '';
+
+    $success = null;
+    $failure = null;
+
+    if (count($builds[$project->getId()])) {
+        // Get the most recent build status to determine the main block colour.
+        $last_build = $builds[$project->getId()][0];
+        $status = $last_build->getStatus();
+        switch($status) {
+            case 0:
+                $subcls = 'blue';
+                break;
+            case 1:
+                $subcls = 'yellow';
+                break;
+            case 2:
+                $subcls = 'green';
+                break;
+            case 3:
+                $subcls = 'red';
+                break;
+        }
+        // Use the last 5 builds to determine project health:
+        $failures = 0;
+
+        foreach ($builds[$project->getId()] as $build) {
+            switch ($build->getStatus()) {
+                case 0:
+                    $statuses[] = 'pending';
+                    break;
+                case 1:
+                    $statuses[] = 'running';
+                    break;
+                case 2:
+                    $statuses[] = 'ok';
+                    $success = is_null($success) && !is_null($build->getFinished()) ? Lang::formatDateTime($build->getFinished()) : $success;
+                    break;
+                case 3:
+                    $failures++;
+                    $statuses[] = 'failed';
+                    $failure = is_null($failure) && !is_null($build->getFinished()) ? Lang::formatDateTime($build->getFinished()) : $failure;
+                    break;
+            }
+        }
+    }
+
+    $buildCount = count($builds[$project->getId()]);
+    $lastSuccess = $successful[$project->getId()];
+    $lastFailure = $failed[$project->getId()];
+    $message = Lang::get('no_builds_yet');
+    $shortMessage = Lang::get('no_builds_yet');
+
+    if ($buildCount > 0) {
+        if ($failures > 0) {
+            $shortMessage = Lang::get('x_of_x_failed_short', $failures, $buildCount);
+            $message = Lang::get('x_of_x_failed', $failures, $buildCount);
+
+            if (!is_null($lastSuccess) && !is_null($lastSuccess->getFinished())) {
+                $message .= Lang::get('last_successful_build', Lang::formatDateTime($lastSuccess->getFinished()));
+            } else {
+                $message .= Lang::get('never_built_successfully');
+            }
+        } else {
+            $message = Lang::get('all_builds_passed', $buildCount);
+            $shortMessage = Lang::get('all_builds_passed_short', $buildCount, $buildCount);
+
+            if (!is_null($lastFailure) && !is_null($lastFailure->getFinished())) {
+                $message .= Lang::get('last_failed_build', Lang::formatDateTime($lastFailure->getFinished()));
+            } else {
+                $message .= Lang::get('never_failed_build');
+            }
+        }
+    }
+
+?>
+
+<?php
+    if (count($projects) > 5) {
+        $containerClass = 'small-box-minimal';
+    } else {
+        $containerClass = 'small-box-full';
+    }
+?>
+
+    <div class="small-box <?php print $containerClass; ?> bg-<?php print $subcls; ?>">
+
+    <?php if (count($projects) > 5): ?>
+
+        <div class="inner">
+            <h4>
+                <strong>
+                    <a href="<?php print KIBOKO_CI_APP_URL; ?>project/view/<?php print $project->getId(); ?>">
+                        <?php print $project->getTitle(); ?>
+                    </a>
+                </strong> -
+                <?php print $shortMessage; ?>
+            </h4>
+        </div>
+
+    <?php else: ?>
+
+        <div class="inner">
+            <h3>
+                <a href="<?php print KIBOKO_CI_APP_URL; ?>project/view/<?php print $project->getId(); ?>">
+                    <?php print $project->getTitle(); ?>
+                </a>
+            </h3>
+
+            <p>
+                <?php print $message; ?>
+            </p>
+
+        </div>
+        <div class="icon">
+            <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
+        </div>
+        <a href="<?php print KIBOKO_CI_APP_URL; ?>project/view/<?php print $project->getId(); ?>" class="small-box-footer small-box-footer-project">
+            <?php Lang::out('view_project'); ?> (<?php print $counts[$project->getId()]; ?>) <i class="fa fa-arrow-circle-right"></i>
+        </a>
+
+    <?php endif; ?>
+
+            <?php for ($idx=0; $idx < 5; $idx++) {
+            if (empty($builds[$project->getId()][$idx])) {
+                echo '<span class="small-box-footer-build small-box-footer bg-blue"><i class="fa fa-minus"></i></span>';
+            } else {
+                $build = $builds[$project->getId()][$idx];
+                $link = KIBOKO_CI_APP_URL . 'build/view/' . $build->id;
+                switch ($build->getStatus()) {
+                    case 0:
+                        $class = 'bg-blue';
+                        $icon = 'fa-minus';
+                        break;
+                    case 1:
+                        $class = 'bg-yellow';
+                        $icon = 'fa-clock-o';
+                        break;
+                    case 2:
+                        $class = 'bg-green';
+                        $icon = 'fa-check';
+                        break;
+                    case 3:
+                        $class = 'bg-red';
+                        $icon = 'fa-times';
+                        break;
+                }
+                echo '<a href="' . $link .'" class="small-box-footer-build small-box-footer ' . $class . '"><i class="fa ' . $icon . '"></i></a>';
+            }
+        } ?>
+        <div style="clear: both;"></div>
+    </div>
+
+<?php endforeach; ?>

@@ -8,26 +8,26 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="./Tests/bootstrap.php"
+         bootstrap="./test/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="PHPCI Command Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Command</directory>
+        <testsuite name="Kiboko CI Command Test Suite">
+            <directory suffix="Test.php">./test/unit/Command</directory>
         </testsuite>
-        <testsuite name="PHPCI Helper Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Helper</directory>
+        <testsuite name="Kiboko CI Helper Test Suite">
+            <directory suffix="Test.php">./test/unit/Helper</directory>
         </testsuite>
-        <testsuite name="PHPCI Logging Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Logging</directory>
+        <testsuite name="Kiboko CI Logging Test Suite">
+            <directory suffix="Test.php">./test/unit/Logging</directory>
         </testsuite>
-        <testsuite name="PHPCI Plugin Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Plugin</directory>
+        <testsuite name="Kiboko CI Plugin Test Suite">
+            <directory suffix="Test.php">./test/unit/Plugin</directory>
         </testsuite>
-        <testsuite name="PHPCI Model Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Model</directory>
+        <testsuite name="Kiboko CI Model Test Suite">
+            <directory suffix="Test.php">./test/unit/Model</directory>
         </testsuite>
-        <testsuite name="PHPCI Service Test Suite">
-            <directory suffix="Test.php">./Tests/PHPCI/Service</directory>
+        <testsuite name="Kiboko CI Service Test Suite">
+            <directory suffix="Test.php">./test/unit/Service</directory>
         </testsuite>
     </testsuites>
 </phpunit>

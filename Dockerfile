@@ -11,7 +11,7 @@ RUN apt-get install -qy git-core php5-common php5-cli php5-curl php5-imap php5-m
 
 # Give Git some fake user details to prevent it asking when trying to test merges:
 RUN git config --global user.name "PHPCI"
-RUN git config --global user.email "hello@php.ci"
+RUN git config --global user.email "hello@kiboko.fr"
 
 ADD ./ /phpci
 

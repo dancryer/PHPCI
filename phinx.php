@@ -1,10 +1,10 @@
 <?php
 
 /**
- * PHPCI - Continuous Integration for PHP
+ * Kiboko CI - Continuous Integration for PHP
  *
  * @copyright    Copyright 2014, Block 8 Limited.
- * @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+ * @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
  * @link         https://www.phptesting.org/
  */
 
@@ -18,7 +18,7 @@ if (!is_array($writeServers)) {
 
 $conf = array(
     'paths' => array(
-        'migrations' => 'PHPCI/Migrations',
+        'migrations' => 'src/Migrations',
     ),
 
     'environments' => array(

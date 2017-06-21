@@ -1,0 +1,103 @@
+<?php use Kiboko\Component\ContinuousIntegration\Helper\Lang; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><?php Lang::out('log_in_to_phpci'); ?></title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <style type="text/css">
+
+        html {
+            min-height: 100%;
+        }
+
+        body
+        {
+            background: #224466; /* Old browsers */
+            background: -moz-radial-gradient(center, ellipse cover, #224466 0%, #112233 100%); /* FF3.6+ */
+            background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#224466), color-stop(100%,#112233)); /* Chrome,Safari4+ */
+            background: -webkit-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* Opera 12+ */
+            background: -ms-radial-gradient(center, ellipse cover, #224466 0%,#112233 100%); /* IE10+ */
+            background: radial-gradient(ellipse at center, #224466 0%,#112233 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#224466', endColorstr='#112233',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+            min-height: 100%;
+
+            font-family: Roboto, Arial, Sans-Serif;
+            font-style: normal;
+            font-weight: 300;
+            padding-top: 0px;
+        }
+
+        #login-box
+        {
+            background: #fcfcfc; /* Old browsers */
+            background: -moz-linear-gradient(top, #fcfcfc 50%, #e0e0e0 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#fcfcfc), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top, #fcfcfc 50%,#e0e0e0 100%); /* IE10+ */
+            background: linear-gradient(to bottom, #fcfcfc 50%,#e0e0e0 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0, 0.3);
+            margin: 0 auto;
+            padding: 15px 30px;
+            text-align: left;
+            width: 350px;
+        }
+
+        #logo {
+            background: transparent url('https://block8.digital/assets/images/b8-phpci-logo-muted.png') no-repeat top left;
+            background-size: 130px 46px;
+            display: inline-block;
+            height: 46px;
+            width: 130px;
+            text-indent: -5000px;
+
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+        }
+        
+        @media(max-width:767px) { 
+            #logo {
+                position: inherit;
+                margin: 0 auto;
+                margin-top: 50px;
+            }
+        }
+
+        #logo:hover {
+            background-image: url('https://block8.digital/assets/images/b8-phpci-logo.png');
+        }
+
+        #phpci-logo img {
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="margin-top: 10%; text-align: center">
+        <a id="phpci-logo" href="https://www.phptesting.org">
+            <img src="<?php print KIBOKO_CI_APP_URL; ?>/assets/img/logo-large.png">
+        </a>
+        <div class="" id="login-box">
+            <?php print $content; ?>
+        </div>
+
+        <a target="_blank" id="logo" href="https://block8.digital">Block 8 - Digital Development Experts</a>
+    </div>
+</div>
+</body>
+</html>

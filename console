@@ -1,29 +1,29 @@
 #!/usr/bin/env php
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
-*
-* @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
-* @link         http://www.phptesting.org/
-*/
+ * Kiboko CI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
 
-define('PHPCI_IS_CONSOLE', true);
+define('KIBOKO_CI_APP_IS_CONSOLE', true);
 
 require('bootstrap.php');
 
-use PHPCI\Command\RunCommand;
-use PHPCI\Command\RebuildCommand;
-use PHPCI\Command\GenerateCommand;
-use PHPCI\Command\UpdateCommand;
-use PHPCI\Command\InstallCommand;
-use PHPCI\Command\DaemonCommand;
-use PHPCI\Command\PollCommand;
-use PHPCI\Command\CreateAdminCommand;
-use PHPCI\Command\CreateBuildCommand;
-use PHPCI\Command\WorkerCommand;
-use PHPCI\Command\RebuildQueueCommand;
-use PHPCI\Service\BuildService;
+use Kiboko\Component\ContinuousIntegration\Command\RunCommand;
+use Kiboko\Component\ContinuousIntegration\Command\RebuildCommand;
+use Kiboko\Component\ContinuousIntegration\Command\GenerateCommand;
+use Kiboko\Component\ContinuousIntegration\Command\UpdateCommand;
+use Kiboko\Component\ContinuousIntegration\Command\InstallCommand;
+use Kiboko\Component\ContinuousIntegration\Command\DaemonCommand;
+use Kiboko\Component\ContinuousIntegration\Command\PollCommand;
+use Kiboko\Component\ContinuousIntegration\Command\CreateAdminCommand;
+use Kiboko\Component\ContinuousIntegration\Command\CreateBuildCommand;
+use Kiboko\Component\ContinuousIntegration\Command\WorkerCommand;
+use Kiboko\Component\ContinuousIntegration\Command\RebuildQueueCommand;
+use Kiboko\Component\ContinuousIntegration\Service\BuildService;
 use Symfony\Component\Console\Application;
 use b8\Store\Factory;
 

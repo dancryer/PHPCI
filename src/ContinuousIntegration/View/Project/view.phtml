@@ -1,0 +1,164 @@
+<?php use Kiboko\Component\ContinuousIntegration\Helper\Lang; ?>
+<script>
+    var KIBOKO_CI_APP_PROJECT_ID = <?php print $project->getId(); ?>;
+    var KIBOKO_CI_APP_PROJECT_BRANCH = '<?php print $branch; ?>';
+</script>
+
+<div class="clearfix"  style="margin-bottom: 20px;">
+    <a class="btn btn-default" href="<?php print KIBOKO_CI_APP_URL . 'project/edit/' . $project->getId(); ?>">
+        <?php Lang::out('edit_project'); ?>
+    </a>
+
+    <a  class="btn btn-danger" href="javascript:confirmDelete('<?php print KIBOKO_CI_APP_URL . 'project/delete/' . $project->getId(); ?>', '<?php print Lang::out('project'); ?>', true)">
+        <?php Lang::out('delete_project'); ?>
+    </a>
+
+    <div class="pull-right btn-group">
+        <a class="btn btn-success" href="<?php print KIBOKO_CI_APP_URL . 'project/build/' . $project->getId(); ?><?php echo !empty($branch) ? '/' . urlencode($branch) : '' ?>">
+            <?php Lang::out('build_now'); ?>
+        </a>
+
+        <div class="btn-group branch-btn pull-right">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <?php print !empty($branch) ? Lang::get('branch_x', $branch) : Lang::get('branch'); ?>&nbsp;&nbsp;<span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu" role="menu">
+                <?php foreach ($branches as $curbranch) : ?>
+                    <li <?php echo ($curbranch == $branch) ? 'class="active"' : ''?>>
+                        <a href="<?php echo KIBOKO_CI_APP_URL ?>project/view/<?php print $project->getId(); ?>?branch=<?php echo urlencode($curbranch) ?>">
+                            <?php echo $curbranch ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+
+                <li class="divider"></li>
+                <li><a href="<?php echo KIBOKO_CI_APP_URL ?>project/view/<?php print $project->getId(); ?>"><?php Lang::out('all_branches'); ?></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+	<div class="col-lg-9 col-md-8 col-sm-8">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title"><?php Lang::out('builds'); ?> (<?php print $total; ?>)</h3>
+            </div>
+		<table class="table">
+			<thead>
+			<tr>
+				<th><?php Lang::out('id'); ?></th>
+                <th><?php Lang::out('date'); ?></th>
+				<th><?php Lang::out('project'); ?></th>
+				<th class="hidden-md hidden-sm hidden-xs"><?php Lang::out('commit'); ?></th>
+				<th><?php Lang::out('branch'); ?></th>
+				<th><?php Lang::out('status'); ?></th>
+				<th style="width: 100px"></th>
+			</tr>
+			</thead>
+			<tbody id="latest-builds">
+				<?php print $builds; ?>
+			</tbody>
+		</table>
+        </div>
+	</div>
+
+    <div class="col-lg-3 col-md-4 col-sm-4">
+
+        <?php if (in_array($project->getType(), array('github', 'gitlab', 'bitbucket'))): ?>
+            <div class="box box-info">
+                <div class="box-header">
+                    <h4 class="box-title"><?php Lang::out('webhooks'); ?></h4>
+                </div>
+
+                <div class="box-body">
+                    <?php
+                    switch($project->getType())
+                    {
+                        case 'github':
+                            $url	= KIBOKO_CI_APP_URL . 'webhook/github/' . $project->getId();
+                            Lang::out('webhooks_help_github', $project->getReference());
+                            break;
+
+                        case 'gitlab':
+                            $url	= KIBOKO_CI_APP_URL. 'webhook/gitlab/' . $project->getId();
+                            Lang::out('webhooks_help_gitlab');
+                            break;
+
+                        case 'bitbucket':
+                            $url	= KIBOKO_CI_APP_URL . 'webhook/bitbucket/' . $project->getId();
+                            Lang::out('webhooks_help_bitbucket', $project->getReference());
+                            break;
+                    }
+                    ?>
+                    <br><br><strong style="word-wrap: break-word;"><?php print $url; ?></strong>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($project->getSshPublicKey()): ?>
+            <div class="box box-info">
+                <div class="box-header"><h3 class="box-title"><a data-toggle="collapse" data-parent="#accordion" href="#publicCollapse"><?php Lang::out('public_key'); ?></a></h3></div>
+                <div class="box-body" style="word-break: break-all;"><?php print $project->getSshPublicKey(); ?></div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+
+print '<div><ul class="pagination">';
+
+$project_url = KIBOKO_CI_APP_URL . 'project/view/' . $project->getId() . ((!empty($branch)) ? '/' . urlencode($branch) : '');
+
+if ($page > 1) {
+    print '<li><a href="' . $project_url . '?p='.($page == 1 ? '1' : $page - 1).'">'.Lang::get('prev_link').'</a></li>';
+}
+
+if ($pages > 1) {
+
+    $start = $page - 3;
+
+    if ($start <= 0) {
+        $start = 1;
+    }
+
+    $end = $page + 3;
+
+    if ($end > $pages) {
+        $end = $pages;
+    }
+
+    if ($start > 1) {
+        print '<li><a href="' . $project_url . '">1...</a></li>';
+    }
+
+    for($i = $start; $i <= $end; $i++)
+    {
+        if ($pages > $end && $i == $pages) continue;
+
+        if ($i == $page) {
+            print '<li class="bg-blue"><span>' . $i . '</span></li>';
+        } else {
+            print '<li><a href="' . $project_url . '?p=' . $i . '">' . $i . '</a></li>';
+        }
+    }
+
+    if ($pages > $end) {
+        print '<li><a href="' . $project_url . '?p='.$pages.'">...'.$pages.'</a></li>';
+    }
+}
+
+
+
+if ($page < $pages - 1) {
+    print '<li><a href="' . $project_url . '?p='.($page == $pages ? $pages : $page + 1).'">'.Lang::get('next_link').'</a></li>';
+}
+
+
+
+print '</ul></div>';
+
+?>

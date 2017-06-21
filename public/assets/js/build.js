@@ -74,10 +74,10 @@ var Build = Class.extend({
         var query = query || {};
 
         var cb = function() {
-            var fullUri = window.PHPCI_URL + uri;
+            var fullUri = window.KIBOKO_CI_APP_URL + uri;
 
             if (name == 'build-updated') {
-                fullUri = window.PHPCI_URL + 'build/data/' + self.buildId + '?since=' + self.buildData.since;
+                fullUri = window.KIBOKO_CI_APP_URL + 'build/data/' + self.buildId + '?since=' + self.buildData.since;
             }
 
             $.ajax({

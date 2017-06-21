@@ -1,10 +1,15 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "kiboko/ci",
     "license": "MIT",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "Simple continuous integration for PHP projects.",
     "autoload": {
-        "psr-4": { "": "src/" },
+        "psr-4": {
+            "Kiboko\\Component\\ContinuousIntegrationBundle\\": "src/ContinuousIntegrationBundle",
+            "Kiboko\\Component\\ContinuousIntegration\\": "src/ContinuousIntegration",
+            "Kiboko\\Component\\Docker\\": "src/Docker",
+            "Kiboko\\Component\\Virtualization\\": "src/Virtualization"
+        },
         "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
     "autoload-dev": {
@@ -12,7 +17,7 @@
         "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "incenteev/composer-parameter-handler": "^2.0",
@@ -22,11 +27,36 @@
         "symfony/polyfill-apcu": "^1.0",
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.3.*",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+
+        "block8/b8framework": "~1.0",
+        "ircmaxell/password-compat": "~1.0",
+        "swiftmailer/swiftmailer": "~5.0",
+        "symfony/yaml": "~2.1",
+        "symfony/console": "~2.1",
+        "psr/log": "~1.0",
+        "monolog/monolog": "~1.6",
+        "pimple/pimple": "~1.1",
+        "robmorgan/phinx": "~0.4",
+        "sensiolabs/ansi-to-html": "~1.1",
+        "pda/pheanstalk": "~3.1",
+        "maknz/slack": "~1.7",
+        "hipchat/hipchat-php": "~1.4",
+        "mremi/flowdock": "~1.0",
+        "doctrine/orm": "^2.5",
+        "ramsey/uuid-doctrine": "^1.3",
+        "ramsey/uuid": "^3.6"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0"
+        "symfony/phpunit-bridge": "^3.0",
+
+        "phpunit/phpunit": "~4.5",
+        "phpmd/phpmd": "~2.0",
+        "squizlabs/php_codesniffer": "~2.3",
+        "block8/php-docblock-checker": "~1.0",
+        "phploc/phploc": "~2.0",
+        "jakub-onderka/php-parallel-lint": "0.8.*"
     },
     "scripts": {
         "symfony-scripts": [
@@ -63,5 +93,18 @@
         "branch-alias": {
             "dev-master": "3.3-dev"
         }
+    },
+    "suggest": {
+        "block8/php-docblock-checker": "PHP Docblock Checker",
+        "phpmd/phpmd": "PHP Mess Detector",
+        "sebastian/phpcpd": "PHP Copy/Paste Detector",
+        "squizlabs/php_codesniffer": "PHP Code Sniffer",
+        "phpspec/phpspec": "PHP Spec",
+        "fabpot/php-cs-fixer": "PHP Coding Standards Fixer",
+        "phploc/phploc": "PHP Lines of Code",
+        "atoum/atoum": "Atoum",
+        "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",
+        "behat/behat": "Behat BDD Testing",
+        "phptal/phptal": "PHPTAL templating engine"
     }
 }

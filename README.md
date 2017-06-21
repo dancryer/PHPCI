@@ -1,69 +1,39 @@
-Symfony Standard Edition
-========================
+Kiboko CI
+=====
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Kiboko CI is a free and open source (BSD License) continuous integration tool specifically designed for PHP. We've  built it with simplicity in mind, so whilst it doesn't do *everything* Jenkins can do, it is a breeze to set up and use.
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+**Current Build Status**
 
-What's inside?
---------------
+[![Build Status](http://phpci.block8.net/build-status/image/2?branch=master)](http://phpci.block8.net/build-status/view/2?branch=master)
 
-The Symfony Standard Edition is configured with the following defaults:
+**Chat Room**
 
-  * An AppBundle you can use to start coding;
+We have a chat room for discussing Kiboko CI, you can access it here: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Block8/PHPCI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
 
-  * Twig as the only configured template engine;
+**Support the development of PHPCI**
 
-  * Doctrine ORM/DBAL;
+Want to help support the ongoing development of PHPCI? [Consider becoming a Patron on Patreon and pledging your support](https://www.patreon.com/phpci).
 
-  * Swiftmailer;
+## What it does:
+* Clones your project from Github, Bitbucket or a local path
+* Allows you to set up and tear down test databases.
+* Installs your project's Composer dependencies.
+* Runs through any combination of the [supported plugins](https://www.phptesting.org/wiki#plugins).
+* You can mark directories for the plugins to ignore.
+* You can mark certain plugins as being allowed to fail (but still run.)
 
-  * Annotations enabled for everything.
+### What it doesn't do (yet):
+* Virtualised testing.
+* Multiple PHP-version tests.
+* Install PEAR or PECL extensions.
+* Deployments - We strongly recommend using [Deployer](http://phpdeployment.org)
 
-It comes pre-configured with the following bundles:
+## Getting Started:
+We've got documentation on our website on [installing PHPCI](https://www.phptesting.org/install-phpci) and [adding support for PHPCI to your projects](https://www.phptesting.org/wiki/Adding-PHPCI-Support-to-Your-Projects).
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+## Contributing
+Contributions from others would be very much appreciated! Please read our [guide to contributing](https://github.com/Block8/PHPCI/blob/master/.github/CONTRIBUTING.md) for more information on how to get involved.
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  https://symfony.com/doc/3.2/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.2/doctrine.html
-[8]:  https://symfony.com/doc/3.2/templating.html
-[9]:  https://symfony.com/doc/3.2/security.html
-[10]: https://symfony.com/doc/3.2/email.html
-[11]: https://symfony.com/doc/3.2/logging.html
-[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
+## Questions?
+Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci). If you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

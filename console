@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Kiboko CI - Continuous Integration for PHP
+ *
+ * @copyright    Copyright 2013, Block 8 Limited.
+ * @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
+ * @link         http://www.phptesting.org/
+ */
+
+define('KIBOKO_CI_APP_IS_CONSOLE', true);
+
+require('bootstrap.php');
+
+use Kiboko\Component\ContinuousIntegration\Command\RunCommand;
+use Kiboko\Component\ContinuousIntegration\Command\RebuildCommand;
+use Kiboko\Component\ContinuousIntegration\Command\GenerateCommand;
+use Kiboko\Component\ContinuousIntegration\Command\UpdateCommand;
+use Kiboko\Component\ContinuousIntegration\Command\InstallCommand;
+use Kiboko\Component\ContinuousIntegration\Command\DaemonCommand;
+use Kiboko\Component\ContinuousIntegration\Command\PollCommand;
+use Kiboko\Component\ContinuousIntegration\Command\CreateAdminCommand;
+use Kiboko\Component\ContinuousIntegration\Command\CreateBuildCommand;
+use Kiboko\Component\ContinuousIntegration\Command\WorkerCommand;
+use Kiboko\Component\ContinuousIntegration\Command\RebuildQueueCommand;
+use Kiboko\Component\ContinuousIntegration\Service\BuildService;
+use Symfony\Component\Console\Application;
+use b8\Store\Factory;
+
+$application = new Application();
+
+$application->add(new RunCommand($loggerConfig->getFor('RunCommand')));
+$application->add(new RebuildCommand($loggerConfig->getFor('RunCommand')));
+$application->add(new InstallCommand);
+$application->add(new UpdateCommand($loggerConfig->getFor('UpdateCommand')));
+$application->add(new GenerateCommand);
+$application->add(new DaemonCommand($loggerConfig->getFor('DaemonCommand')));
+$application->add(new PollCommand($loggerConfig->getFor('PollCommand')));
+$application->add(new CreateAdminCommand(Factory::getStore('User')));
+$application->add(new CreateBuildCommand(Factory::getStore('Project'), new BuildService(Factory::getStore('Build'))));
+$application->add(new WorkerCommand($loggerConfig->getFor('WorkerCommand')));
+$application->add(new RebuildQueueCommand($loggerConfig->getFor('RebuildQueueCommand')));
+
+$application->run();

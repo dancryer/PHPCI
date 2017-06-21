@@ -1,0 +1,14 @@
+<?php use Kiboko\Component\ContinuousIntegration\Helper\Lang; ?>
+<?php if (isset($updated)): ?>
+<p class="alert alert-success"><?php Lang::out('your_details_updated'); ?></p>
+<?php endif; ?>
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title"><?php Lang::out('update_your_details'); ?></h3>
+    </div>
+    <div class="box-body">
+        <?php print $form; ?>
+    </div>
+</div>
+

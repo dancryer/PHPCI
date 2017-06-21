@@ -1,0 +1,79 @@
+<?php
+/**
+* Kiboko CI - Continuous Integration for PHP
+*
+* @copyright    Copyright 2013, Block 8 Limited.
+* @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
+* @link         http://www.phptesting.org/
+*/
+
+// Let PHP take a guess as to the default timezone, if the user hasn't set one:
+use Kiboko\Component\ContinuousIntegration\Logging\LoggerConfig;
+
+$timezone = ini_get('date.timezone');
+if (empty($timezone)) {
+    date_default_timezone_set('UTC');
+}
+
+$configFile = dirname(__FILE__) . '/app/config.yml';
+$configEnv = getenv('phpci_config_file');
+$usingCustomConfigFile = false;
+
+if (!empty($configEnv) && file_exists($configEnv)) {
+    $configFile = $configEnv;
+    $usingCustomConfigFile = true;
+}
+
+// If we don't have a config file at all, fail at this point and tell the user to install:
+if (!file_exists($configFile) && (!defined('KIBOKO_CI_APP_IS_CONSOLE') || !KIBOKO_CI_APP_IS_CONSOLE)) {
+    $message = 'Kiboko CI has not yet been installed - Please use the command "./console phpci:install" ';
+    $message .= '(or "php ./console phpci:install" for Windows) to install it.';
+
+    die($message);
+}
+
+// If composer has not been run, fail at this point and tell the user to install:
+if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('KIBOKO_CI_APP_IS_CONSOLE') && KIBOKO_CI_APP_IS_CONSOLE) {
+    $message = 'Please install Kiboko CI with "composer install" (or "php composer.phar install"';
+    $message .= ' for Windows) before using console';
+    
+    file_put_contents('php://stderr', $message);
+    exit(1);
+}
+
+// Load Composer autoloader:
+require_once(dirname(__FILE__) . '/vendor/autoload.php');
+
+\Kiboko\Component\ContinuousIntegration\ErrorHandler::register();
+
+if (defined('KIBOKO_CI_APP_IS_CONSOLE') && KIBOKO_CI_APP_IS_CONSOLE) {
+    $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
+}
+
+// Load configuration if present:
+$conf = array();
+$conf['b8']['app']['namespace'] = 'Kiboko\\Component\\ContinuousIntegration';
+$conf['b8']['app']['default_controller'] = 'Home';
+$conf['b8']['view']['path'] = dirname(__FILE__) . '/src/ContinuousIntegration/View/';
+$conf['using_custom_file'] = $usingCustomConfigFile;
+
+$config = new b8\Config($conf);
+
+if (file_exists($configFile)) {
+    $config->loadYaml($configFile);
+}
+
+/**
+ * Allow to modify Kiboko CI configuration without modify versioned code.
+ * Daemons should be killed to apply changes in the file.
+ *
+ * @ticket 781
+ */
+$localVarsFile = dirname(__FILE__) . '/local_vars.php';
+if (is_readable($localVarsFile)) {
+    require_once $localVarsFile;
+}
+
+require_once(dirname(__FILE__) . '/vars.php');
+
+Kiboko\Component\ContinuousIntegration\Helper\Lang::init($config);

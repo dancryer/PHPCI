@@ -10,7 +10,8 @@ parameters:
 
 framework:
     #esi: ~
-    #translator: { fallbacks: ['%locale%'] }
+    translator:
+        fallbacks: ['%locale%']
     secret: '%secret%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
@@ -37,10 +38,75 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - BraincraftedBootstrapBundle:Form:bootstrap.html.twig
+
+assetic:
+    filters:
+        less:
+            node: /usr/local/bin/node
+            node_paths: [/usr/local/lib/node_modules]
+            apply_to: "\\.less$"
+
+        sass:
+            bin: /usr/local/bin/sass
+            apply_to: "\\.scss$"
+
+        cssrewrite: ~
+
+    assets:
+        bootstrap_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/bower-asset/tether/dist/css/tether.css
+                - %kernel.root_dir%/../vendor/bower-asset/tether/dist/css/tether-theme-basic.css
+                - %kernel.root_dir%/../vendor/bower-asset/bootstrap/dist/css/bootstrap.css
+                - %kernel.root_dir%/../vendor/bower-asset/components-font-awesome/css/font-awesome.css
+                - %kernel.root_dir%/../vendor/braincrafted/bootstrap-bundle/Braincrafted/Bundle/BootstrapBundle/Resources/less/form.less
+            filters:
+                - less
+                - cssrewrite
+            output: css/bootstrap.css
+
+        bootstrap_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/bower-asset/tether/dist/js/tether.js
+                - %kernel.root_dir%/../vendor/bower-asset/bootstrap/dist/js/bootstrap.js
+            output: js/bootstrap.js
+        jquery:
+            inputs:
+                - %kernel.root_dir%/../vendor/bower-asset/jquery/dist/jquery.js
+            output: js/jquery.js
+
+        theme_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/bower-asset/jquery/dist/jquery.js
+            output: js/jquery.js
+
+        font-awesome-otf:
+            inputs: '%kernel.root_dir%/../vendor/bower-asset/components-font-awesome/fonts/FontAwesome.otf'
+            output: 'fonts/FontAwesome.otf'
+        font-awesome-eot:
+            inputs: '%kernel.root_dir%/../vendor/bower-asset/components-font-awesome/fonts/fontawesome-webfont.eot'
+            output: 'fonts/fontawesome-webfont.eot'
+        font-awesome-svg:
+            inputs: '%kernel.root_dir%/../vendor/bower-asset/components-font-awesome/fonts/fontawesome-webfont.svg'
+            output: 'fonts/fontawesome-webfont.svg'
+        font-awesome-ttf:
+            inputs: '%kernel.root_dir%/../vendor/bower-asset/components-font-awesome/fonts/fontawesome-webfont.ttf'
+            output: 'fonts/fontawesome-webfont.ttf'
+        font-awesome-woff:
+            inputs: '%kernel.root_dir%/../vendor/bower-asset/components-font-awesome/fonts/fontawesome-webfont.woff'
+            output: 'fonts/fontawesome-webfont.woff'
+braincrafted_bootstrap:
+    css_preprocessor: sass
+    auto_configure:
+        assetic: false
 
 # Doctrine Configuration
 doctrine:
     dbal:
+        types:
+            uuid:  Ramsey\Uuid\Doctrine\UuidType
         driver: pdo_mysql
         host: '%database_host%'
         port: '%database_port%'
@@ -67,3 +133,11 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: Kiboko\Bundle\ContinuousIntegrationBundle\Entity\User
+    from_email:
+        address: "%registration_email%"
+        sender_name: "%registration_name%"

@@ -1,13 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>{% block title %}Kiboko CI{% endblock %}</title>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" media="screen">
+
+        {% stylesheets filter="less" output="css/app.css"
+            "@KibokoContinuousIntegrationBundle/Resources/public/scss/*.less"
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-inverse bg-inverse">
+            <a class="navbar-brand" href="#">
+                <img src="{{ asset('bundles/kibokocontinuousintegration/image/logo.png') }}" width="35" class="d-inline-block align-top" alt="">
+                Kiboko CI
+            </a>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="navbar navbar-toggleable-md navbar-vertical-left navbar-light bg-aqua col-md-2">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#"><i class="fa fa-group"></i> Groups <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-print"></i> Projects</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#"><i class="fa fa-ambulance"></i> Disabled</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="col-md-10">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <script src="{{ asset('js/jquery.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
+

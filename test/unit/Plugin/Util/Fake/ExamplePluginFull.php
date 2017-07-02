@@ -11,7 +11,7 @@
 namespace Tests\Kiboko\Component\ContinuousIntegration\Plugin\Util\Fake;
 
 use Kiboko\Component\ContinuousIntegration\Builder;
-use Kiboko\Component\ContinuousIntegration\Model\Build;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build;
 use Kiboko\Component\ContinuousIntegration\Plugin;
 
 class ExamplePluginFull implements Plugin {

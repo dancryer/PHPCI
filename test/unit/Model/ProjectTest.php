@@ -9,10 +9,10 @@
  */
 
 
-namespace Tests\Kiboko\Component\ContinuousIntegration\Model;
+namespace Tests\Kiboko\Bundle\ContinuousIntegrationBundle\Entity;
 
-use Kiboko\Component\ContinuousIntegration\Model\Project;
-use Kiboko\Component\ContinuousIntegration\Model;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Project;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity;
 
 /**
  * Unit tests for the Project model class.

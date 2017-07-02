@@ -68,7 +68,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     {
         $options = array();
         $pluginName = 'PhpUnit';
-        $build = new \Kiboko\Component\ContinuousIntegration\Model\Build();
+        $build = new \Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build();
 
         $mockPlugin = $this->prophesize('Kiboko\\Component\\ContinuousIntegration\Plugin');
         $mockPlugin->execute()->shouldBeCalledTimes(1);
@@ -128,7 +128,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     {
         $phpUnitPluginOptions = array();
         $behatPluginOptions = array();
-        $build = new \Kiboko\Component\ContinuousIntegration\Model\Build();
+        $build = new \Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build();
 
         $config = array(
            'stageOne' => array(

@@ -10,13 +10,26 @@ class Command implements CommandInterface
     private $commandOperands;
 
     /**
-     * CommandCombination constructor.
+     * Command constructor.
      *
      * @param string[] $parameters
      */
     public function __construct(...$parameters)
     {
         $this->commandOperands = $parameters;
+    }
+
+    /**
+     * Command constructor.
+     *
+     * @param string[] $parameters
+     */
+    public function push(...$parameters)
+    {
+        $this->commandOperands = array_merge(
+            $this->commandOperands,
+            $parameters
+        );
     }
 
     public function __toString()

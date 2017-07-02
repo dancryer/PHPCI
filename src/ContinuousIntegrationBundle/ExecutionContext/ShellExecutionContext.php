@@ -2,11 +2,17 @@
 
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext;
 
-use Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command\Command;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\BuildInterface;
 use Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command\CommandInterface;
+use Symfony\Component\Process\Process;
 
 class ShellExecutionContext implements ExecutionContextInterface
 {
+    /**
+     * @var BuildInterface
+     */
+    private $buildInstance;
+
     /**
      * @var string
      */
@@ -15,11 +21,20 @@ class ShellExecutionContext implements ExecutionContextInterface
     /**
      * ShellExecutionContext constructor.
      *
+     * @param BuildInterface $buildInstance
      * @param string $workingDirectory
      */
-    public function __construct(?string $workingDirectory = null)
-    {
+    public function __construct(
+        BuildInterface $buildInstance,
+        ?string $workingDirectory = null
+    ) {
+        $this->buildInstance = $buildInstance;
         $this->workingDirectory = $workingDirectory ?: getcwd();
+    }
+
+    public function getBuildInstance(): BuildInterface
+    {
+        return $this->buildInstance;
     }
 
     /**
@@ -33,42 +48,13 @@ class ShellExecutionContext implements ExecutionContextInterface
     /**
      * @param CommandInterface $command
      *
-     * @return ExecutionResultInterface
+     * @return Process
      */
-    public function run(CommandInterface $command): ExecutionResultInterface
+    public function build(CommandInterface $command): Process
     {
-        $process = proc_open(
-            $command,
-            [
-                0 => ['pipe', 'r'],
-                1 => ['pipe', 'r'],
-                2 => ['pipe', 'r'],
-            ],
-            $pipes,
-            $this->workingDirectory
-        );
+        $processBuilder = new ProcessBuilder($command);
+        $processBuilder->setWorkingDirectory($this->workingDirectory());
 
-        if ($process === false) {
-            throw new \RuntimeException(
-                sprintf('Could not open process [%s].', $command)
-            );
-        }
-
-        list($input, $output, $error) = $pipes;
-        stream_set_blocking($input, false);
-        stream_set_blocking($output, false);
-        stream_set_blocking($error, false);
-
-        $status = new ExecutionResult($process, $input, $output, $error);
-
-        if (!$status->isRunning()) {
-            if (($exitCode = $status->getExitCode()) !== 0) {
-                throw new \RuntimeException(sprintf(
-                    'Process exited with code %d', $exitCode
-                ));
-            }
-        }
-
-        return $status;
+        return $processBuilder->getProcess();
     }
 }

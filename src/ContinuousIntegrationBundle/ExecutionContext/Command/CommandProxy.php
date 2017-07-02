@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command;
 
 class CommandProxy extends Command

@@ -50,41 +50,57 @@ class Build implements BuildInterface
     private $commit;
 
     /**
+     * @ORM\Column(type="integer")
+     *
      * @var int
      */
     private $status;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @var string
      */
     private $log;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @var string
      */
     private $branch;
 
     /**
+     * @ORM\Column(type="datetime")
+     *
      * @var \DateTimeInterface
      */
     private $createdAt;
 
     /**
+     * @ORM\Column(type="datetime")
+     *
      * @var \DateTimeInterface
      */
     private $startedAt;
 
     /**
+     * @ORM\Column(type="datetime")
+     *
      * @var \DateTimeInterface
      */
     private $finishedAt;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @var string
      */
     private $committerEmail;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @var string
      */
     private $commitMessage;

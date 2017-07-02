@@ -2,7 +2,7 @@
 
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command;
 
-class SubCommandInterface implements CommandInterface
+class SubCommand implements CommandInterface
 {
     /**
      * @var CommandInterface
@@ -10,7 +10,7 @@ class SubCommandInterface implements CommandInterface
     private $command;
 
     /**
-     * CommandCombination constructor.
+     * SubCommand constructor.
      *
      * @param CommandInterface $command
      */

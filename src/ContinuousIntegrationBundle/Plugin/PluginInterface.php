@@ -2,6 +2,8 @@
 
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\Plugin;
 
+use Kiboko\Bundle\ContinuousIntegrationBundle\Pipeline\StepInterface;
+
 interface PluginInterface
 {
     /**
@@ -13,4 +15,11 @@ interface PluginInterface
      * @return string
      */
     public function getCode(): string;
+
+    /**
+     * @param array $stepConfig
+     *
+     * @return StepInterface
+     */
+    public function buildStep(array $stepConfig): StepInterface;
 }

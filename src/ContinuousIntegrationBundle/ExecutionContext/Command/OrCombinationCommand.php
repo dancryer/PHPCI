@@ -2,7 +2,7 @@
 
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command;
 
-class CommandAndCombination implements CommandInterface
+class OrCombinationCommand implements CommandInterface
 {
     /**
      * @var CommandInterface[]
@@ -10,7 +10,7 @@ class CommandAndCombination implements CommandInterface
     private $commands;
 
     /**
-     * CommandAndCombination constructor.
+     * OrCombinationCommand constructor.
      *
      * @param CommandInterface[] $commands
      */
@@ -36,6 +36,6 @@ class CommandAndCombination implements CommandInterface
 
     public function __toString()
     {
-        return implode(' && ', $this->commands);
+        return implode(' || ', $this->commands);
     }
 }

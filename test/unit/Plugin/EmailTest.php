@@ -11,7 +11,7 @@
 namespace Tests\Kiboko\Component\ContinuousIntegration\Plugin;
 
 use Kiboko\Component\ContinuousIntegration\Plugin\Email as EmailPlugin;
-use Kiboko\Component\ContinuousIntegration\Model\Build;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build;
 
 /**
  * Unit test for the PHPUnit plugin.

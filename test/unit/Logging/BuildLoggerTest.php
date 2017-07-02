@@ -28,8 +28,8 @@ class BuildLoggerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockLogger = $this->prophesize('\Psr\Log\LoggerInterface');
-        $this->mockBuild = $this->prophesize('\Kiboko\Component\ContinuousIntegration\Model\Build');
+        $this->mockLogger = $this->prophesize('Psr\Log\LoggerInterface');
+        $this->mockBuild = $this->prophesize('Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build');
 
         $this->testedBuildLogger = new BuildLogger(
             $this->mockLogger->reveal(),

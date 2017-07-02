@@ -10,8 +10,8 @@
 
 namespace Tests\Kiboko\Component\ContinuousIntegration\Service;
 
-use Kiboko\Component\ContinuousIntegration\Model\Build;
-use Kiboko\Component\ContinuousIntegration\Model\Project;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Project;
 use Kiboko\Component\ContinuousIntegration\Service\BuildService;
 
 /**

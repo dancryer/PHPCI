@@ -102,11 +102,12 @@ braincrafted_bootstrap:
     auto_configure:
         assetic: false
 
-# Doctrine Configuration
+# Doctrine ConfigurationN
 doctrine:
     dbal:
         types:
-            uuid:  Ramsey\Uuid\Doctrine\UuidType
+            uuid:        Ramsey\Uuid\Doctrine\UuidType
+            uuid_binary: Ramsey\Uuid\Doctrine\UuidBinaryType
         driver: pdo_mysql
         host: '%database_host%'
         port: '%database_port%'

@@ -2,8 +2,10 @@
 
 namespace Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext;
 
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\BuildInterface;
 use Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command\CommandInterface;
 use Kiboko\Bundle\ContinuousIntegrationBundle\ExecutionContext\Command\CommandProxy;
+use Symfony\Component\Process\Process;
 
 class DockerExecutionContext implements ExecutionContextInterface
 {
@@ -15,7 +17,7 @@ class DockerExecutionContext implements ExecutionContextInterface
     /**
      * @var string
      */
-    private $containerName;
+    private $containerNameOrHash;
 
     /**
      * @var string
@@ -26,14 +28,22 @@ class DockerExecutionContext implements ExecutionContextInterface
      * DockerExecutionContext constructor.
      *
      * @param ExecutionContextInterface $parent
-     * @param string $containerName
+     * @param string $containerNameOrHash
      */
     public function __construct(
         ExecutionContextInterface $parent,
-        string $containerName
+        string $containerNameOrHash
     ) {
         $this->parent = $parent;
-        $this->containerName = $containerName;
+        $this->containerNameOrHash = $containerNameOrHash;
+    }
+
+    /**
+     * @return BuildInterface
+     */
+    public function getBuildInstance(): BuildInterface
+    {
+        return $this->parent->getBuildInstance();
     }
 
     /**
@@ -47,10 +57,10 @@ class DockerExecutionContext implements ExecutionContextInterface
     /**
      * @param CommandInterface $command
      *
-     * @return ExecutionResultInterface
+     * @return Process
      */
-    public function run(CommandInterface $command): ExecutionResultInterface
+    public function build(CommandInterface $command): Process
     {
-        return $this->parent->run(new CommandProxy($command, 'docker', 'run', $this->containerName));
+        return $this->parent->build(new CommandProxy($command, 'docker', 'run', $this->containerNameOrHash));
     }
 }

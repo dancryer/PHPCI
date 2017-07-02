@@ -9,10 +9,10 @@
  */
 
 
-namespace Tests\Kiboko\Component\ContinuousIntegration\Model;
+namespace Tests\Kiboko\Bundle\ContinuousIntegrationBundle\Entity;
 
-use Kiboko\Component\ContinuousIntegration\Model\Build;
-use Kiboko\Component\ContinuousIntegration\Model;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity\Build;
+use Kiboko\Bundle\ContinuousIntegrationBundle\Entity;
 
 /**
  * Unit tests for the Build model class.

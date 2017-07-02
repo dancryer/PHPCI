@@ -1,4 +1,4 @@
-# PHPCI Changelog
+# Kiboko CI Changelog
 
 ## v.Next
 

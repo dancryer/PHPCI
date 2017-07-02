@@ -7,7 +7,7 @@
  * @time 3:44 AM
  * @license LICENSE.md
  *
- * @package PHPCI
+ * @package Kiboko\Component\ContinuousIntegration
  */
 
 $(function () {

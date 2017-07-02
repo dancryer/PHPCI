@@ -1,0 +1,322 @@
+<?php use Kiboko\Component\ContinuousIntegration\Helper\Lang; ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><?php print $title; ?><?php print !empty($subtitle) ? ' - ' . $subtitle : ''; ?></title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/css/ansi-colors.css" rel="stylesheet" type="text/css" />
+
+    <!-- Theme style -->
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/css/AdminLTE-skins.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php print KIBOKO_CI_APP_URL; ?>assets/css/AdminLTE-custom.css" rel="stylesheet" type="text/css" />
+
+    <script>
+        var KIBOKO_CI_APP_URL = '<?php print KIBOKO_CI_APP_URL; ?>';
+        var KIBOKO_CI_APP_LANGUAGE = <?php print json_encode(Lang::getLanguage()); ?>;
+
+        <?php if (defined('JSON_UNESCAPED_UNICODE')): ?>
+        var KIBOKO_CI_APP_STRINGS = <?php print json_encode(Lang::getStrings(), JSON_UNESCAPED_UNICODE); ?>;
+        <?php else: ?>
+        var KIBOKO_CI_APP_STRINGS = <?php print json_encode(Lang::getStrings()); ?>;
+        <?php endif; ?>
+    </script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="<?php print KIBOKO_CI_APP_URL; ?>assets/js/class.js"></script>
+    <script src="<?php print KIBOKO_CI_APP_URL; ?>assets/js/sprintf.js"></script>
+    <script src="<?php print KIBOKO_CI_APP_URL; ?>assets/js/moment.min.js"></script>
+    <script src="<?php print KIBOKO_CI_APP_URL; ?>assets/js/phpci.js" type="text/javascript"></script>
+
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="phpci <?php print !empty($skin) ? 'skin-' . $skin : 'skin-blue'; ?>">
+<div class="wrapper row-offcanvas row-offcanvas-left">
+
+<!-- header logo: style can be found in header.less -->
+<header class="main-header">
+<a href="<?php print KIBOKO_CI_APP_URL; ?>" class="logo">Kiboko CI</a>
+<!-- Header Navbar: style can be found in header.less -->
+<nav class="navbar navbar-static-top" role="navigation">
+<!-- Sidebar toggle button-->
+<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+    <span class="sr-only"><?php Lang::out('toggle_navigation'); ?></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</a>
+<div class="navbar-custom-menu">
+<ul class="nav navbar-nav">
+
+<li class="dropdown messages-menu phpci-pending">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-clock-o"></i>
+        <span class="label label-info phpci-pending-count"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li class="header"><?php Lang::out('n_builds_pending', 0); ?></li>
+        <li>
+            <ul class="menu phpci-pending-list">
+            </ul>
+        </li>
+    </ul>
+</li>
+
+<li class="dropdown messages-menu phpci-running">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-cogs"></i>
+        <span class="label label-warning phpci-running-count"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li class="header"><?php Lang::out('n_builds_running', 0); ?></li>
+        <li>
+            <ul class="menu phpci-running-list">
+            </ul>
+        </li>
+    </ul>
+</li>
+
+<?php if (!$this->LoginIsDisabled()->check()): ?>
+<!-- User Account: style can be found in dropdown.less -->
+<li class="dropdown user user-menu">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-user"></i>
+        <span><?php print $this->User()->getName(); ?> <i class="caret"></i></span>
+    </a>
+    <ul class="dropdown-menu">
+        <!-- User image -->
+        <li class="user-header bg-light-blue">
+            <img src="https://www.gravatar.com/avatar/<?php print md5($this->User()->getEmail()); ?>?d=mm" class="img-circle" alt="<?php print $this->User()->getName(); ?>" />
+            <p>
+                <?php print $this->User()->getName(); ?>
+            </p>
+        </li>
+
+        <!-- Menu Footer-->
+        <li class="user-footer">
+            <div class="pull-left">
+                <a href="<?php print KIBOKO_CI_APP_URL ?>user/profile" class="btn btn-default btn-flat"><?php Lang::out('edit_profile'); ?></a>
+            </div>
+            <div class="pull-right">
+                <a href="<?php print KIBOKO_CI_APP_URL ?>session/logout" class="btn btn-default btn-flat"><?php Lang::out('sign_out'); ?></a>
+            </div>
+        </li>
+    </ul>
+</li>
+<?php endif; ?>
+</ul>
+</div>
+</nav>
+</header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar sidebar-offcanvas">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+
+            <?php if (!$this->LoginIsDisabled()->check()): ?>
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="https://www.gravatar.com/avatar/<?php print md5($this->User()->getEmail()); ?>?d=mm" class="img-circle" alt="<?php print $this->User()->getName(); ?>" />
+                </div>
+                <div class="pull-left info">
+                    <p><?php Lang::out('hello_name', $this->User()->getName()); ?></p>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="<?php print KIBOKO_CI_APP_URL; ?>">
+                        <i class="fa fa-dashboard"></i> <span><?php Lang::out('dashboard'); ?></span>
+                    </a>
+                </li>
+
+                <?php if ($this->User()->getIsAdmin()): ?>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-edit"></i>
+                            <span><?php Lang::out('admin_options'); ?></span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="<?php print KIBOKO_CI_APP_URL; ?>project/add">
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('add_project'); ?>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="<?php print KIBOKO_CI_APP_URL; ?>group">
+                                    <i class="fa fa-angle-double-right"></i> Project Groups
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="<?php print KIBOKO_CI_APP_URL; ?>settings">
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('settings'); ?>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="<?php print KIBOKO_CI_APP_URL; ?>user">
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('manage_users'); ?>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="<?php print KIBOKO_CI_APP_URL; ?>plugin">
+                                    <i class="fa fa-angle-double-right"></i> <?php Lang::out('plugins'); ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+
+                <?php foreach ($groups as $group): ?>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-folder"></i>
+                        <span><?php print $group['title']; ?></span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+
+                    <?php if (count($group['projects'])): ?>
+                    <ul class="treeview-menu">
+                        <?php foreach($group['projects'] as $project): ?>
+                        <li>
+                            <a href="<?php print KIBOKO_CI_APP_URL; ?>project/view/<?php print $project->getId(); ?>">
+                                <i class="fa fa-<?php print $project->getIcon(); ?>"></i>
+                                <span><?php print $project->getTitle(); ?></span>
+                            </a>
+
+                            <?php /* <ul class="treeview-menu">
+
+                                <li>
+                                    <a href="<?php print KIBOKO_CI_APP_URL; ?>project/view/<?php print $project->getId(); ?>">
+                                        <i class="fa fa-angle-double-right"></i> <?php Lang::out('view'); ?>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="<?php print KIBOKO_CI_APP_URL; ?>project/build/<?php print $project->getId(); ?>">
+                                        <i class="fa fa-angle-double-right"></i> <?php Lang::out('build_now'); ?>
+                                    </a>
+                                </li>
+
+                                <?php if ($this->User()->getIsAdmin()): ?>
+                                    <li>
+                                        <a href="<?php print KIBOKO_CI_APP_URL; ?>project/edit/<?php print $project->getId(); ?>">
+                                            <i class="fa fa-angle-double-right"></i> <?php Lang::out('edit_project'); ?>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="<?php print KIBOKO_CI_APP_URL; ?>project/delete/<?php print $project->getId(); ?>">
+                                            <i class="fa fa-angle-double-right"></i> <?php Lang::out('delete_project'); ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                            */ ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+
+                </li>
+                <?php endforeach; ?>
+
+                <?php if (isset($nav)): ?>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-<?php print $nav['icon']; ?>"></i>
+                            <span><?php print $nav['title']; ?></span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+
+                        <ul class="treeview-menu">
+                            <?php foreach ($nav['links'] as $link => $linkTitle): ?>
+                                <li>
+                                    <a href="<?php print KIBOKO_CI_APP_URL . $link; ?>">
+                                        <i class="fa fa-angle-double-right"></i> <?php print $linkTitle; ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+
+                <li class="archive">
+                    <a href="<?php print KIBOKO_CI_APP_URL . (array_key_exists('archived', $_GET) ? '' : '?archived'); ?>">
+                        <i class="fa fa-archive"></i> <span><?php Lang::out('archived_menu'); ?></span>
+                    </a>
+                </li>
+
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- Right side column. Contains the navbar and content of the page -->
+    <aside class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="pull-right">
+                <?php print (!empty($actions) ? $actions : ''); ?>
+            </div>
+
+            <h1>
+                <?php print !empty($title) ? $title : 'Kiboko CI'; ?>
+
+                <?php if (!empty($subtitle)): ?>
+                <small><?php print $subtitle; ?></small>
+                <?php endif; ?>
+            </h1>
+
+
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <?php
+            if (!empty($_SESSION['global_error'])) {
+                $message = $_SESSION['global_error'];
+                unset($_SESSION['global_error']);
+                print '<div class="alert alert-danger">' . $message . '</div>';
+            }
+            ?>
+
+            <?php print $content; ?>
+        </section><!-- /.content -->
+    </aside><!-- /.content-wrapper -->
+</div><!-- ./wrapper -->
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+
+<script src="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/chartjs/Chart.min.js" type="text/javascript"></script>
+<script src="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<script src="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+<?php if (file_exists(KIBOKO_CI_APP_DIR . 'assets/plugins/datepicker/locales/bootstrap-datepicker.' . Lang::getLanguage() . '.js')) :?>
+<script src="<?php print KIBOKO_CI_APP_URL; ?>assets/plugins/datepicker/locales/bootstrap-datepicker.<?php print Lang::getLanguage(); ?>.js" type="text/javascript"></script>
+<?php endif; ?>
+<script src="<?php print KIBOKO_CI_APP_URL; ?>assets/js/AdminLTE/app.min.js" type="text/javascript"></script>
+
+</body>
+</html>

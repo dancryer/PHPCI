@@ -5,7 +5,7 @@ Before you start, please make sure that you are aware of, and agree to, the foll
 
 * By making a contribution to PHPCI, you accept that you are granting copyright ownership for that contribution to Block 8 Limited - the company responsible for PHPCI. In countries where copyright reassignment is not permitted, you grant Block 8 Limited a perpetual, non-exclusive licence to use your contribution in any way and for any purpose.
 
-* By making a contribution to PHPCI, you accept that your code will be released under the open-source [BSD 2-Clause Licence](https://github.com/Block8/PHPCI/blob/master/LICENSE.md).
+* By making a contribution to PHPCI, you accept that your code will be released under the open-source [BSD 2-Clause Licence](https://github.com/kiboko-labs/ci/blob/master/LICENSE.md).
 
 Block 8 are committed to PHPCI being a truly free and open source project, providing easy to use continuous integration and testing to as many developers as possible. We may, at our sole discretion, provide paid services based upon PHPCI - but PHPCI will always remain free (as in cost, and freedom) and open source.
 

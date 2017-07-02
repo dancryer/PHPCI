@@ -3,32 +3,32 @@
 // Define our APPLICATION_PATH, if not already defined:
 if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', dirname(__FILE__) . '/');
-    define('PHPCI_DIR', APPLICATION_PATH);
+    define('KIBOKO_CI_APP_DIR', APPLICATION_PATH);
 }
 
-// Define our PHPCI_URL, if not already defined:
-if (!defined('PHPCI_URL') && isset($config)) {
-    define('PHPCI_URL', $config->get('phpci.url', '') . '/');
+// Define our KIBOKO_CI_APP_URL, if not already defined:
+if (!defined('KIBOKO_CI_APP_URL') && isset($config)) {
+    define('KIBOKO_CI_APP_URL', $config->get('phpci.url', '') . '/');
 }
 
-// Define PHPCI_BIN_DIR
-if (!defined('PHPCI_BIN_DIR')) {
-    define('PHPCI_BIN_DIR', PHPCI_DIR . 'vendor/bin/');
+// Define KIBOKO_CI_APP_BIN_DIR
+if (!defined('KIBOKO_CI_APP_BIN_DIR')) {
+    define('KIBOKO_CI_APP_BIN_DIR', KIBOKO_CI_APP_DIR . 'vendor/bin/');
 }
 
-// Define PHPCI_BUILD_ROOT_DIR
-if (!defined('PHPCI_BUILD_ROOT_DIR')) {
-    define('PHPCI_BUILD_ROOT_DIR', PHPCI_DIR . 'PHPCI/build/');
+// Define KIBOKO_CI_APP_BUILD_ROOT_DIR
+if (!defined('KIBOKO_CI_APP_BUILD_ROOT_DIR')) {
+    define('KIBOKO_CI_APP_BUILD_ROOT_DIR', KIBOKO_CI_APP_DIR . 'src/build/');
 }
 
-// Should PHPCI run the Shell plugin?
+// Should Kiboko CI run the Shell plugin?
 if (!defined('ENABLE_SHELL_PLUGIN')) {
     define('ENABLE_SHELL_PLUGIN', false);
 }
 
 // If this is not already defined, we're not running in the console:
-if (!defined('PHPCI_IS_CONSOLE')) {
-    define('PHPCI_IS_CONSOLE', false);
+if (!defined('KIBOKO_CI_APP_IS_CONSOLE')) {
+    define('KIBOKO_CI_APP_IS_CONSOLE', false);
 }
 
 if (!defined('IS_WIN')) {
@@ -36,7 +36,7 @@ if (!defined('IS_WIN')) {
 }
 
 // If an environment variable is set defining our config location, use that
-// otherwise fall back to PHPCI/config.yml.
-if (!defined('PHPCI_CONFIG_FILE')) {
-    define('PHPCI_CONFIG_FILE', $configFile);
+// otherwise fall back to src/config.yml.
+if (!defined('KIBOKO_CI_APP_CONFIG_FILE')) {
+    define('KIBOKO_CI_APP_CONFIG_FILE', $configFile);
 }

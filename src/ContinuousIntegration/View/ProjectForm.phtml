@@ -1,0 +1,46 @@
+<?php use Kiboko\Component\ContinuousIntegration\Helper\Lang; ?>
+<div class="row">
+
+	<div class="col-sm-8">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title"><?php Lang::out('project_details'); ?></h3>
+            </div>
+
+            <div class="box-body">
+                <?php print $form; ?>
+            </div>
+        </div>
+	</div>
+
+    <?php if(!is_null($key)): ?>
+    <div class="col-sm-4">
+        <div class="box box-info">
+            <div class="box-body">
+                    <p><?php Lang::out('public_key_help'); ?></p>
+
+                    <textarea style="width: 90%; height: 150px;"><?php print $key ?></textarea>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+</div>
+
+<script>
+window.return_url = <?php print json_encode((empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>;
+
+<?php
+$gh = \b8\Config::getInstance()->get('phpci.github', null);
+
+if($gh) {
+	print 'window.github_app_id = ' . json_encode($gh['id']) . ';' . PHP_EOL;
+}
+
+if(!empty($token)) {
+	print 'window.github_token = ' . json_encode($token) . ';' . PHP_EOL;
+}
+?>
+
+$(document).ready(setupProjectForm);
+</script>

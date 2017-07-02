@@ -1,68 +1,97 @@
 {
-    "name"             : "block8/phpci",
-    "description"      : "Simple continuous integration for PHP projects.",
-    "minimum-stability": "stable",
-    "type"             : "library",
-    "keywords"         : ["php", "phpci", "ci", "continuous", "integration", "testing", "phpunit", "continuous integration", "jenkins", "travis"],
-    "homepage"         : "http://www.phptesting.org/",
-    "license"          : "BSD-2-Clause",
-
-    "authors": [
-        {
-            "name"    : "Dan Cryer",
-            "email"   : "dan.cryer@block8.co.uk",
-            "homepage": "http://www.block8.co.uk",
-            "role"    : "Developer"
-        }
-    ],
-
-    "support": {
-        "email" : "hello+phpci@block8.co.uk",
-        "issues": "https://github.com/Block8/PHPCI/issues",
-        "source": "https://github.com/Block8/PHPCI"
-    },
-
+    "name": "kiboko/ci",
+    "license": "MIT",
+    "type": "project",
+    "description": "Simple continuous integration for PHP projects.",
     "autoload": {
         "psr-4": {
-            "PHPCI\\": "PHPCI"
-        }
+            "AppBundle\\": "src/AppBundle",
+            "Kiboko\\Bundle\\ContinuousIntegrationBundle\\": "src/ContinuousIntegrationBundle",
+            "Kiboko\\Component\\ContinuousIntegration\\": "src/ContinuousIntegration",
+            "Kiboko\\Component\\Docker\\": "src/Docker",
+            "Kiboko\\Component\\Virtualization\\": "src/Virtualization"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
-
     "autoload-dev": {
-        "psr-4": {
-            "Tests\\PHPCI\\": "Tests/PHPCI/"
+        "psr-4": { "Tests\\": "tests/" },
+        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
+    },
+    "require": {
+        "php": ">=7.1",
+        "bower-asset/bootstrap": "^4.0@alpha",
+        "bower-asset/components-font-awesome": "@alpha",
+        "braincrafted/bootstrap-bundle": "^2.2",
+        "components/font-awesome": "@alpha",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/orm": "^2.5",
+        "friendsofsymfony/user-bundle": "^2.0",
+        "hipchat/hipchat-php": "~1.4",
+        "incenteev/composer-parameter-handler": "^2.0",
+        "ircmaxell/password-compat": "~1.0",
+        "league/pipeline": "^0.3.0",
+        "maknz/slack": "~1.7",
+        "pda/pheanstalk": "~3.1",
+        "pimple/pimple": "~1.1",
+        "ramsey/uuid": "^3.6",
+        "ramsey/uuid-doctrine": "^1.3",
+        "robmorgan/phinx": "~0.4",
+        "sensio/distribution-bundle": "^5.0.19",
+        "sensio/framework-extra-bundle": "^3.0.2",
+        "sensiolabs/ansi-to-html": "~1.1",
+        "symfony/assetic-bundle": "^2.8",
+        "symfony/monolog-bundle": "^3.1.0",
+        "symfony/polyfill-apcu": "^1.0",
+        "symfony/process": "^3.3",
+        "symfony/swiftmailer-bundle": "^2.3.10",
+        "symfony/symfony": "3.3.*",
+        "twig/twig": "^1.0||^2.0"
+    },
+    "require-dev": {
+        "jakub-onderka/php-parallel-lint": "0.8.*",
+        "phploc/phploc": "~2.0",
+        "phpmd/phpmd": "~2.0",
+        "phpspec/phpspec": "^3.4",
+        "sensio/generator-bundle": "^3.0",
+        "squizlabs/php_codesniffer": "~2.3",
+        "symfony/phpunit-bridge": "^3.0"
+    },
+    "scripts": {
+        "symfony-scripts": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "post-install-cmd": [
+            "@symfony-scripts"
+        ],
+        "post-update-cmd": [
+            "@symfony-scripts"
+        ]
+    },
+    "config": {
+        "platform": {
+
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
+        "symfony-web-dir": "web",
+        "symfony-tests-dir": "tests",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "3.3-dev"
         }
     },
-
-    "require": {
-        "php": ">=5.3.8",
-        "ext-pdo": "*",
-        "ext-pdo_mysql": "*",
-        "block8/b8framework": "~1.0",
-        "ircmaxell/password-compat": "~1.0",
-        "swiftmailer/swiftmailer": "~5.0",
-        "symfony/yaml": "~2.1",
-        "symfony/console": "~2.1",
-        "psr/log": "~1.0",
-        "monolog/monolog": "~1.6",
-        "pimple/pimple": "~1.1",
-        "robmorgan/phinx": "~0.4",
-        "sensiolabs/ansi-to-html": "~1.1",
-        "pda/pheanstalk": "~3.1",
-        "maknz/slack": "~1.7",
-        "hipchat/hipchat-php": "~1.4",
-        "mremi/flowdock": "~1.0"
-    },
-
-    "require-dev": {
-        "phpunit/phpunit": "~4.5",
-        "phpmd/phpmd": "~2.0",
-        "squizlabs/php_codesniffer": "~2.3",
-        "block8/php-docblock-checker": "~1.0",
-        "phploc/phploc": "~2.0",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
-    },
-
     "suggest": {
         "block8/php-docblock-checker": "PHP Docblock Checker",
         "phpmd/phpmd": "PHP Mess Detector",

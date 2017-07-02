@@ -1,0 +1,6 @@
+app:
+    resource: '@KibokoContinuousIntegrationBundle/Controller/'
+    type: annotation
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"

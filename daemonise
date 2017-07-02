@@ -1,18 +1,18 @@
 #!/usr/bin/env php
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
+* Kiboko CI - Continuous Integration for PHP
 *
 * @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
 * @link         http://www.phptesting.org/
 */
 
-define('PHPCI_IS_CONSOLE', true);
+define('KIBOKO_CI_APP_IS_CONSOLE', true);
 
 require('bootstrap.php');
 
-use PHPCI\Command\DaemoniseCommand;
+use Kiboko\Component\ContinuousIntegration\Command\DaemoniseCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();

@@ -1,21 +1,21 @@
 <?php
 /**
-* PHPCI - Continuous Integration for PHP
+* Kiboko CI - Continuous Integration for PHP
 *
 * @copyright    Copyright 2013, Block 8 Limited.
-* @license      https://github.com/Block8/PHPCI/blob/master/LICENSE.md
+* @license      https://github.com/kiboko-labs/ci/blob/master/LICENSE.md
 * @link         http://www.phptesting.org/
 */
 
 // Let PHP take a guess as to the default timezone, if the user hasn't set one:
-use PHPCI\Logging\LoggerConfig;
+use Kiboko\Component\ContinuousIntegration\Logging\LoggerConfig;
 
 $timezone = ini_get('date.timezone');
 if (empty($timezone)) {
     date_default_timezone_set('UTC');
 }
 
-$configFile = dirname(__FILE__) . '/PHPCI/config.yml';
+$configFile = dirname(__FILE__) . '/app/config.yml';
 $configEnv = getenv('phpci_config_file');
 $usingCustomConfigFile = false;
 
@@ -25,16 +25,16 @@ if (!empty($configEnv) && file_exists($configEnv)) {
 }
 
 // If we don't have a config file at all, fail at this point and tell the user to install:
-if (!file_exists($configFile) && (!defined('PHPCI_IS_CONSOLE') || !PHPCI_IS_CONSOLE)) {
-    $message = 'PHPCI has not yet been installed - Please use the command "./console phpci:install" ';
+if (!file_exists($configFile) && (!defined('KIBOKO_CI_APP_IS_CONSOLE') || !KIBOKO_CI_APP_IS_CONSOLE)) {
+    $message = 'Kiboko CI has not yet been installed - Please use the command "./console phpci:install" ';
     $message .= '(or "php ./console phpci:install" for Windows) to install it.';
 
     die($message);
 }
 
 // If composer has not been run, fail at this point and tell the user to install:
-if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
-    $message = 'Please install PHPCI with "composer install" (or "php composer.phar install"';
+if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('KIBOKO_CI_APP_IS_CONSOLE') && KIBOKO_CI_APP_IS_CONSOLE) {
+    $message = 'Please install Kiboko CI with "composer install" (or "php composer.phar install"';
     $message .= ' for Windows) before using console';
     
     file_put_contents('php://stderr', $message);
@@ -44,17 +44,17 @@ if (!file_exists(dirname(__FILE__) . '/vendor/autoload.php') && defined('PHPCI_I
 // Load Composer autoloader:
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
-\PHPCI\ErrorHandler::register();
+\Kiboko\Component\ContinuousIntegration\ErrorHandler::register();
 
-if (defined('PHPCI_IS_CONSOLE') && PHPCI_IS_CONSOLE) {
+if (defined('KIBOKO_CI_APP_IS_CONSOLE') && KIBOKO_CI_APP_IS_CONSOLE) {
     $loggerConfig = LoggerConfig::newFromFile(__DIR__ . "/loggerconfig.php");
 }
 
 // Load configuration if present:
 $conf = array();
-$conf['b8']['app']['namespace'] = 'PHPCI';
+$conf['b8']['app']['namespace'] = 'Kiboko\\Component\\ContinuousIntegration';
 $conf['b8']['app']['default_controller'] = 'Home';
-$conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
+$conf['b8']['view']['path'] = dirname(__FILE__) . '/src/ContinuousIntegration/View/';
 $conf['using_custom_file'] = $usingCustomConfigFile;
 
 $config = new b8\Config($conf);
@@ -64,7 +64,7 @@ if (file_exists($configFile)) {
 }
 
 /**
- * Allow to modify PHPCI configuration without modify versioned code.
+ * Allow to modify Kiboko CI configuration without modify versioned code.
  * Daemons should be killed to apply changes in the file.
  *
  * @ticket 781
@@ -76,4 +76,4 @@ if (is_readable($localVarsFile)) {
 
 require_once(dirname(__FILE__) . '/vars.php');
 
-\PHPCI\Helper\Lang::init($config);
+Kiboko\Component\ContinuousIntegration\Helper\Lang::init($config);

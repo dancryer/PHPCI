@@ -47,11 +47,17 @@ class PhpParallelLint implements \PHPCI\Plugin
     protected $extensions;
 
     /**
+     * @var bool - enable short tags
+     */
+    protected $shortTag;
+
+    /**
      * Standard Constructor
      *
      * $options['directory']  Output Directory. Default: %BUILDPATH%
      * $options['filename']   Phar Filename. Default: build.phar
      * $options['extensions'] Filename extensions. Default: php
+     * $options['shorttags']  Enable short tags. Default: false
      * $options['stub']       Stub Content. No Default Value
      *
      * @param Builder $phpci
@@ -65,6 +71,7 @@ class PhpParallelLint implements \PHPCI\Plugin
         $this->directory = $phpci->buildPath;
         $this->ignore = $this->phpci->ignore;
         $this->extensions = 'php';
+        $this->shortTag = false;
 
         if (isset($options['directory'])) {
             $this->directory = $phpci->buildPath.$options['directory'];
@@ -72,6 +79,10 @@ class PhpParallelLint implements \PHPCI\Plugin
 
         if (isset($options['ignore'])) {
             $this->ignore = $options['ignore'];
+        }
+
+        if (isset($options['shorttags'])) {
+            $this->shortTag = (strtolower($options['shorttags']) == 'true');
         }
 
         if (isset($options['extensions'])) {
@@ -93,10 +104,11 @@ class PhpParallelLint implements \PHPCI\Plugin
 
         $phplint = $this->phpci->findBinary('parallel-lint');
 
-        $cmd = $phplint . ' -e %s' . ' %s "%s"';
+        $cmd = $phplint . ' -e %s' . '%s %s "%s"';
         $success = $this->phpci->executeCommand(
             $cmd,
             $this->extensions,
+            ($this->shortTag ? ' -s' : ''),
             $ignore,
             $this->directory
         );

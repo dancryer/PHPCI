@@ -108,6 +108,10 @@ class ProjectController extends PHPCI\Controller
         if (empty($project)) {
             throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
         }
+      
+        if ($branch === '' && filter_input(INPUT_GET, 'branch') !== null) {
+            $branch = filter_input(INPUT_GET, 'branch');
+        }
 
         if (empty($branch)) {
             $branch = $project->getBranch();

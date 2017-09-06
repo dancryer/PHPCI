@@ -66,6 +66,11 @@ class SettingsController extends Controller
             $buildSettings = $this->settings['phpci']['build'];
         }
 
+        $latestBuildsSettings = array();
+        if (isset($this->settings['phpci']['latest_builds'])) {
+            $latestBuildsSettings = $this->settings['phpci']['latest_builds'];
+        }
+
         $emailSettings = array();
         if (isset($this->settings['phpci']['email_settings'])) {
             $emailSettings = $this->settings['phpci']['email_settings'];
@@ -78,6 +83,7 @@ class SettingsController extends Controller
 
         $this->view->configFile = PHPCI_CONFIG_FILE;
         $this->view->basicSettings = $this->getBasicForm($basicSettings);
+        $this->view->latestBuildsSettings = $this->getLatestBuildsForm($latestBuildsSettings);
         $this->view->buildSettings = $this->getBuildForm($buildSettings);
         $this->view->github = $this->getGithubForm();
         $this->view->emailSettings = $this->getEmailForm($emailSettings);
@@ -166,6 +172,26 @@ class SettingsController extends Controller
         $this->requireAdmin();
 
         $this->settings['phpci']['basic'] = $this->getParams();
+        $error = $this->storeSettings();
+
+        $response = new b8\Http\Response\RedirectResponse();
+
+        if ($error) {
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=2');
+        } else {
+            $response->setHeader('Location', PHPCI_URL . 'settings?saved=1');
+        }
+
+        return $response;
+    }
+    /**
+     * Save basic settings.
+     */
+    public function latestBuilds()
+    {
+        $this->requireAdmin();
+
+        $this->settings['phpci']['latest_builds'] = $this->getParams();
         $error = $this->storeSettings();
 
         $response = new b8\Http\Response\RedirectResponse();
@@ -428,6 +454,40 @@ class SettingsController extends Controller
     }
 
     /**
+     * Get the Build settings form.
+     * @param array $values
+     * @return Form
+     */
+    protected function getLatestBuildsForm($values = array())
+    {
+        $form = new Form();
+        $form->setMethod('POST');
+        $form->setAction(PHPCI_URL . 'settings/latestBuilds');
+
+        $field = new Form\Element\Checkbox('show_branch');
+        $field->setRequired(false);
+        $field->setLabel(Lang::get('show_branch'));
+        $field->setContainerClass('form-group');
+        $field->setClass('ml20px');
+        $field->setCheckedValue(1);
+
+        if (isset($values['show_branch'])) {
+            $field->setValue((int)$values['show_branch']);
+        }
+
+        $form->addField($field);
+
+        $field = new Form\Element\Submit();
+        $field->setValue(Lang::get('save'));
+        $field->setClass('btn btn-success pull-right');
+        $form->addField($field);
+
+        $form->setValues($values);
+
+        return $form;
+    }
+
+    /**
      * Get the Basic settings form.
      * @param array $values
      * @return Form
@@ -474,6 +534,7 @@ class SettingsController extends Controller
         $field = new Form\Element\Checkbox('disable_authentication');
         $field->setCheckedValue(1);
         $field->setRequired(false);
+        $field->setClass('ml20px');
         $field->setLabel('Disable Authentication?');
         $field->setContainerClass('form-group');
         $field->setValue(0);

@@ -282,6 +282,9 @@ PHPCI',
     '1_hour' => '1 Hour',
     '3_hours' => '3 Hours',
 
+    // Latest Builds
+    'show_branch' => 'Display branches',
+
     // Plugins
     'cannot_update_composer' => 'PHPCI cannot update composer.json for you as it is not writable.',
     'x_has_been_removed' => '%s has been removed.',
@@ -373,7 +376,7 @@ PHPCI',
     'commit_id_option' => 'Commit ID to build',
     'branch_name_option' => 'Branch to build',
     'add_to_queue_failed' => 'Build created successfully, but failed to add to build queue. This usually happens
-                                when PHPCI is set to use a beanstalkd server that does not exist, 
+                                when PHPCI is set to use a beanstalkd server that does not exist,
                                 or your beanstalkd server has stopped.',
 
     // Run Command

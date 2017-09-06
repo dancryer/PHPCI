@@ -82,3 +82,7 @@
 #phpunit-data .error td { background: none; color: #f56954; }
 #phpunit-data .skipped td { background: none; color: #e08e0b; }
 #phpunit-data .todo td { background: none; color: #00c0ef; }
+
+.ml20px {
+    margin-left: 20px
+}

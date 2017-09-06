@@ -282,6 +282,8 @@ PHPCI',
     '1_hour' => '1 Heure',
     '3_hours' => '3 Heures',
 
+    'show_branch' => 'Afficher les branches',
+
     // Plugins
     'cannot_update_composer' => 'PHPCI ne peut pas mettre à jour le fichier composer.json pour vous, il n\'est pas modifiable.',
     'x_has_been_removed' => '%s a été supprimé.',

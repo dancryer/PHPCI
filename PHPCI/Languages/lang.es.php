@@ -265,6 +265,8 @@ PHPCI',
     '1_hour' => '1 Hora',
     '3_hours' => '3 Horas',
 
+    'show_branch' => 'Mostrar las ramas',
+
     // Plugins
     'cannot_update_composer' => 'PHPCI no puede actualizar composer.json porque no tiene permisos de escritura.',
     'x_has_been_removed' => '%s ha sido elimiando.',

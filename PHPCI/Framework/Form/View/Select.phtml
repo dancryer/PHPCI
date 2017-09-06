@@ -1,0 +1,17 @@
+<div class="control-group <?php print $ccss; ?>">
+	<?php if($label): ?>
+		<label class="control-label" for="<?php print $id ?>"><?php print $label; ?></label>
+	<?php endif; ?>
+
+	<div class="controls">
+	<select id="<?php print $id; ?>" class="<?php print $css; ?>" name="<?php print $name; ?>">
+		<?php foreach($options as $val => $lbl): ?>
+		<option value="<?php print $val; ?>" <?php print ($value == $val) ? ' selected="selected"' : ''; ?>><?php print $lbl; ?></option>
+		<?php endforeach; ?>
+	</select>
+
+		<?php if(isset($error)): ?>
+			<span class="help-block"><?php print $error; ?></span>
+		<?php endif; ?>
+	</div>
+</div>

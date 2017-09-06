@@ -9,14 +9,15 @@
 
 namespace PHPCI\Model;
 
-use b8\Store\Factory;
 use PHPCI\Model\Base\BuildBase;
 use PHPCI\Builder;
+use PHPCI\Store\BuildErrorStore;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
 * Build Model
-* @uses         PHPCI\Model\Base\BuildBase
+* @uses         \PHPCI\Model\Base\BuildBase
 * @author       Dan Cryer <dan@block8.co.uk>
 * @package      PHPCI
 * @subpackage   Core
@@ -74,11 +75,14 @@ class Build extends BuildBase
 
     /**
      * Store build metadata
+     *
+     * @param $key
+     * @param $value
      */
     public function storeMeta($key, $value)
     {
         $value = json_encode($value);
-        Factory::getStore('Build')->setMeta($this->getProjectId(), $this->getId(), $key, $value);
+        BuildStore::load()->setMeta($this->getProjectId(), $this->getId(), $key, $value);
     }
 
     /**
@@ -242,7 +246,7 @@ class Build extends BuildBase
         $error->setLineStart($lineStart);
         $error->setLineEnd($lineEnd);
 
-        return Factory::getStore('BuildError')->save($error);
+        return BuildErrorStore::load()->save($error);
     }
 
     /**

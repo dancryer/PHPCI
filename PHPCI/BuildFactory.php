@@ -9,7 +9,6 @@
 
 namespace PHPCI;
 
-use b8\Store\Factory;
 use PHPCI\Model\Build;
 
 /**
@@ -25,7 +24,7 @@ class BuildFactory
      */
     public static function getBuildById($buildId)
     {
-        $build = Factory::getStore('Build')->getById($buildId);
+        $build = Build::Store()->getById($buildId);
 
         if (empty($build)) {
             throw new \Exception('Build ID ' . $buildId . ' does not exist.');
@@ -71,7 +70,7 @@ class BuildFactory
             }
 
             $class = '\\PHPCI\\Model\\Build\\' . $type;
-            $build = new $class($build->getDataArray());
+            $build = new $class($build->toArray());
         }
 
         return $build;

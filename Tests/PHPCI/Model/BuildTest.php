@@ -27,7 +27,6 @@ class BuildTest extends \PHPUnit_Framework_TestCase
     public function testExecute_TestIsAValidModel()
     {
         $build = new Build();
-        $this->assertTrue($build instanceof \b8\Model);
         $this->assertTrue($build instanceof Model);
         $this->assertTrue($build instanceof Model\Base\BuildBase);
     }

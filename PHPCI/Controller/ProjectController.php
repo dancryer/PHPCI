@@ -9,10 +9,10 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Form;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Form;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Store;
 use PHPCI;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Github;
@@ -54,8 +54,8 @@ class ProjectController extends PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = PHPCI\Store\BuildStore::load();
+        $this->projectStore = PHPCI\Store\ProjectStore::load();
         $this->projectService = new ProjectService($this->projectStore);
         $this->buildService = new BuildService($this->buildStore);
     }
@@ -78,7 +78,7 @@ class ProjectController extends PHPCI\Controller
         $pages    = $builds[1] == 0 ? 1 : ceil($builds[1] / $per_page);
 
         if ($page > $pages) {
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', PHPCI_URL.'project/view/'.$projectId);
             return $response;
         }
@@ -117,14 +117,14 @@ class ProjectController extends PHPCI\Controller
             $branch = $project->getBranch();
         }
 
-        $email = $_SESSION['phpci_user']->getEmail();
+        $email = $this->user->getEmail();
         $build = $this->buildService->createBuild($project, null, urldecode($branch), $email);
 
         if ($this->buildService->queueError) {
             $_SESSION['global_error'] = Lang::get('add_to_queue_failed');
         }
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
         return $response;
     }
@@ -139,7 +139,7 @@ class ProjectController extends PHPCI\Controller
         $project = $this->projectStore->getById($projectId);
         $this->projectService->deleteProject($project);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL);
         return $response;
     }
@@ -167,22 +167,24 @@ class ProjectController extends PHPCI\Controller
      */
     protected function getLatestBuildsHtml($projectId, $branch = '', $start = 0)
     {
-        $criteria = array('project_id' => $projectId);
+        $buildQuery = $this->buildStore->where('project_id', $projectId);
+
         if (!empty($branch)) {
-            $criteria['branch'] = $branch;
+            $buildQuery->and('branch', $branch);
         }
 
-        $order = array('id' => 'DESC');
-        $builds = $this->buildStore->getWhere($criteria, 10, $start, array(), $order);
-        $view = new b8\View('BuildsTable');
+        $buildResults = $buildQuery->order('id', 'DESC')->offset($start)->limit(10)->get();
 
-        foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+        $view = new Framework\View('BuildsTable');
+
+        $builds = [];
+        foreach ($buildResults as $build) {
+            $builds[] = BuildFactory::getBuild($build);
         }
 
-        $view->builds   = $builds['items'];
+        $view->builds   = $builds;
 
-        return array($view->render(), $builds['count']);
+        return [$view->render(), $buildQuery->count()];
     }
 
     /**
@@ -210,7 +212,7 @@ class ProjectController extends PHPCI\Controller
         $form = $this->projectForm($values);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view           = new b8\View('ProjectForm');
+            $view           = new Framework\View('ProjectForm');
             $view->type     = 'add';
             $view->project  = null;
             $view->form     = $form;
@@ -233,7 +235,7 @@ class ProjectController extends PHPCI\Controller
 
             $project = $this->projectService->createProject($title, $type, $reference, $options);
 
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
             return $response;
         }
@@ -256,7 +258,7 @@ class ProjectController extends PHPCI\Controller
         $this->layout->title = $project->getTitle();
         $this->layout->subtitle = Lang::get('edit_project');
 
-        $values = $project->getDataArray();
+        $values = $project->toArray();
         $values['key'] = $values['ssh_private_key'];
         $values['pubkey'] = $values['ssh_public_key'];
 
@@ -273,7 +275,7 @@ class ProjectController extends PHPCI\Controller
         $form = $this->projectForm($values, 'edit/' . $projectId);
 
         if ($method != 'POST' || ($method == 'POST' && !$form->validate())) {
-            $view           = new b8\View('ProjectForm');
+            $view           = new Framework\View('ProjectForm');
             $view->type     = 'edit';
             $view->project  = $project;
             $view->form     = $form;
@@ -298,7 +300,7 @@ class ProjectController extends PHPCI\Controller
 
         $project = $this->projectService->updateProject($project, $title, $type, $reference, $options);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'project/view/' . $project->getId());
         return $response;
     }
@@ -365,11 +367,11 @@ class ProjectController extends PHPCI\Controller
         $field = Form\Element\Select::create('group_id', 'Project Group', true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue(1);
 
-        $groups = array();
-        $groupStore = b8\Store\Factory::getStore('ProjectGroup');
-        $groupList = $groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groups = [];
+        $groupStore = PHPCI\Store\ProjectGroupStore::load();
+        $groupList = $groupStore->find()->order('title', 'ASC')->get(100);
 
-        foreach ($groupList['items'] as $group) {
+        foreach ($groupList as $group) {
             $groups[$group->getId()] = $group->getTitle();
         }
 
@@ -405,7 +407,7 @@ class ProjectController extends PHPCI\Controller
     {
         $github = new Github();
 
-        $response = new b8\Http\Response\JsonResponse();
+        $response = new Framework\Http\Response\JsonResponse();
         $response->setContent($github->getRepositories());
         return $response;
     }

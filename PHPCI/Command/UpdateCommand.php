@@ -9,7 +9,7 @@
 
 namespace PHPCI\Command;
 
-use b8\Config;
+use PHPCI\Config;
 use Monolog\Logger;
 use PHPCI\Helper\Lang;
 use Symfony\Component\Console\Command\Command;

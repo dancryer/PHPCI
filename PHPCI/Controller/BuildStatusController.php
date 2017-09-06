@@ -9,13 +9,15 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Store;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
 use PHPCI\Model\Build;
 use PHPCI\Service\BuildStatusService;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Build Status Controller - Allows external access to build status information / images.
@@ -36,8 +38,8 @@ class BuildStatusController extends \PHPCI\Controller
     public function init()
     {
         $this->response->disableLayout();
-        $this->buildStore      = Store\Factory::getStore('Build');
-        $this->projectStore    = Store\Factory::getStore('Project');
+        $this->buildStore      = BuildStore::load();
+        $this->projectStore    = ProjectStore::load();
     }
 
     /**
@@ -76,7 +78,7 @@ class BuildStatusController extends \PHPCI\Controller
      * @param $projectId
      * @return bool
      * @throws \Exception
-     * @throws b8\Exception\HttpException
+     * @throws \PHPCI\Framework\Exception\HttpException
      */
     public function ccxml($projectId)
     {
@@ -144,7 +146,7 @@ class BuildStatusController extends \PHPCI\Controller
         $status = $this->getStatus($projectId);
 
         if (is_null($status)) {
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', '/');
             return $response;
         }
@@ -175,7 +177,7 @@ class BuildStatusController extends \PHPCI\Controller
      * View the public status page of a given project, if enabled.
      * @param $projectId
      * @return string
-     * @throws \b8\Exception\HttpException\NotFoundException
+     * @throws \PHPCI\Framework\Exception\HttpException\NotFoundException
      */
     public function view($projectId)
     {
@@ -206,14 +208,13 @@ class BuildStatusController extends \PHPCI\Controller
      */
     protected function getLatestBuilds($projectId)
     {
-        $criteria       = array('project_id' => $projectId);
-        $order          = array('id' => 'DESC');
-        $builds         = $this->buildStore->getWhere($criteria, 10, 0, array(), $order);
+        $builds = $this->buildStore->where('project_id', $projectId)->order('id', 'DESC')->get(10);
 
-        foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+        $rtn = [];
+        foreach ($builds as $build) {
+            $rtn[] = BuildFactory::getBuild($build);
         }
 
-        return $builds['items'];
+        return $rtn;
     }
 }

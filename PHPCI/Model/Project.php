@@ -11,7 +11,8 @@ namespace PHPCI\Model;
 
 use PHPCI\Model\Base\ProjectBase;
 use PHPCI\Model\Build;
-use b8\Store;
+use PHPCI\Framework\Store;
+use PHPCI\Store\BuildStore;
 
 /**
 * Project Model
@@ -30,24 +31,15 @@ class Project extends ProjectBase
      */
     public function getLatestBuild($branch = 'master', $status = null)
     {
-        $criteria       = array('branch' => $branch, 'project_id' => $this->getId());
+        $buildQuery = self::Store()
+            ->where('project_id', $this->getId())
+            ->and('branch', $branch);
 
         if (isset($status)) {
-            $criteria['status'] = $status;
+            $buildQuery->and('status', $status);
         }
 
-        $order          = array('id' => 'DESC');
-        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, 0, array(), $order);
-
-        if (is_array($builds['items']) && count($builds['items'])) {
-            $latest = array_shift($builds['items']);
-
-            if (isset($latest) && $latest instanceof Build) {
-                return $latest;
-            }
-        }
-
-        return null;
+        return $buildQuery->order('id', 'DESC')->first();
     }
 
     /**
@@ -55,35 +47,30 @@ class Project extends ProjectBase
      * @param string $branch
      * @return mixed|null
      */
-    public function getPreviousBuild($branch = 'master')
+    public function getPreviousBuild($branch = 'master', $status = null)
     {
-        $criteria       = array('branch' => $branch, 'project_id' => $this->getId());
+        $buildQuery = self::Store()
+            ->where('project_id', $this->getId())
+            ->and('branch', $branch);
 
-        $order          = array('id' => 'DESC');
-        $builds         = Store\Factory::getStore('Build')->getWhere($criteria, 1, 1, array(), $order);
-
-        if (is_array($builds['items']) && count($builds['items'])) {
-            $previous = array_shift($builds['items']);
-
-            if (isset($previous) && $previous instanceof Build) {
-                return $previous;
-            }
+        if (isset($status)) {
+            $buildQuery->and('status', $status);
         }
 
-        return null;
+        return $buildQuery->order('id', 'DESC')->offset(1)->first();
     }
 
     /**
      * Store this project's access_information data
      * @param string|array $value
      */
-    public function setAccessInformation($value)
+    public function setAccessInformation($value) : Project
     {
         if (is_array($value)) {
             $value = json_encode($value);
         }
 
-        parent::setAccessInformation($value);
+        return parent::setAccessInformation($value);
     }
 
     /**
@@ -118,13 +105,13 @@ class Project extends ProjectBase
      *
      * @return string
      */
-    public function getBranch()
+    public function getBranch() : string
     {
-        if (empty($this->data['branch'])) {
-            return $this->getType() === 'hg' ? 'default' : 'master';
-        } else {
-            return $this->data['branch'];
+        if ($this->data['branch'] === 'master' && $this->getType() === 'hg') {
+            return 'default';
         }
+
+        return $this->data['branch'];
     }
 
     /**

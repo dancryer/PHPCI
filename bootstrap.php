@@ -57,10 +57,25 @@ $conf['b8']['app']['default_controller'] = 'Home';
 $conf['b8']['view']['path'] = dirname(__FILE__) . '/PHPCI/View/';
 $conf['using_custom_file'] = $usingCustomConfigFile;
 
-$config = new b8\Config($conf);
+$config = new PHPCI\Config($conf);
 
 if (file_exists($configFile)) {
     $config->loadYaml($configFile);
+}
+
+
+// Set up database access:
+\PHPCI\Store::setNamespaces(['PHPCI']);
+
+$dbConfig = $config->get('database', $config->get('b8.database', []));
+
+if (!empty($dbConfig)) {
+    $host = !empty($dbConfig['host']) ? [$dbConfig['host']] : $dbConfig['servers'];
+    $user = $dbConfig['username'];
+    $pass = $dbConfig['password'];
+    $name = $dbConfig['name'];
+
+    \Block8\Database\Connection::setConfig($host, $user, $pass, $name);
 }
 
 /**

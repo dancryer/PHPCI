@@ -9,9 +9,11 @@
 
 namespace PHPCI\Controller;
 
-use b8;
+use PHPCI\Application;
+use PHPCI\Framework;
 use PHPCI\Helper\Email;
 use PHPCI\Helper\Lang;
+use PHPCI\Store\UserStore;
 
 /**
 * Session Controller - Handles user login / logout.
@@ -32,7 +34,7 @@ class SessionController extends \PHPCI\Controller
     public function init()
     {
         $this->response->disableLayout();
-        $this->userStore       = b8\Store\Factory::getStore('User');
+        $this->userStore = UserStore::load();
     }
 
     /**
@@ -54,7 +56,7 @@ class SessionController extends \PHPCI\Controller
                 if ($user && password_verify($this->getParam('password', ''), $user->getHash())) {
                     session_regenerate_id(true);
                     $_SESSION['phpci_user_id']    = $user->getId();
-                    $response = new b8\Http\Response\RedirectResponse();
+                    $response = new Framework\Http\Response\RedirectResponse();
                     $response->setHeader('Location', $this->getLoginRedirect());
                     return $response;
                 } else {
@@ -63,32 +65,32 @@ class SessionController extends \PHPCI\Controller
             }
         }
 
-        $form = new b8\Form();
+        $form = new Framework\Form();
         $form->setMethod('POST');
         $form->setAction(PHPCI_URL.'session/login');
 
-        $email = new b8\Form\Element\Email('email');
+        $email = new Framework\Form\Element\Email('email');
         $email->setLabel(Lang::get('email_address'));
         $email->setRequired(true);
         $email->setContainerClass('form-group');
         $email->setClass('form-control');
         $form->addField($email);
 
-        $pwd = new b8\Form\Element\Password('password');
+        $pwd = new Framework\Form\Element\Password('password');
         $pwd->setLabel(Lang::get('password'));
         $pwd->setRequired(true);
         $pwd->setContainerClass('form-group');
         $pwd->setClass('form-control');
         $form->addField($pwd);
 
-        $pwd = new b8\Form\Element\Submit();
+        $pwd = new Framework\Form\Element\Submit();
         $pwd->setValue(Lang::get('log_in'));
         $pwd->setClass('btn-success');
         $form->addField($pwd);
 
         $tokenValue = $this->generateToken();
         $_SESSION['login_token'] = $tokenValue;
-        $token = new b8\Form\Element\Hidden('token');
+        $token = new Framework\Form\Element\Hidden('token');
         $token->setValue($tokenValue);
         $form->addField($token);
 
@@ -103,12 +105,11 @@ class SessionController extends \PHPCI\Controller
     */
     public function logout()
     {
-        unset($_SESSION['phpci_user']);
         unset($_SESSION['phpci_user_id']);
 
         session_destroy();
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL);
         return $response;
     }
@@ -165,10 +166,10 @@ class SessionController extends \PHPCI\Controller
             $hash = password_hash($this->getParam('password'), PASSWORD_DEFAULT);
             $user->setHash($hash);
 
-            $_SESSION['phpci_user'] = $this->userStore->save($user);
+            $this->user = $this->userStore->save($user);
             $_SESSION['phpci_user_id'] = $user->getId();
 
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', PHPCI_URL);
             return $response;
         }

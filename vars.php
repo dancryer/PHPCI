@@ -6,6 +6,11 @@ if (!defined('APPLICATION_PATH')) {
     define('PHPCI_DIR', APPLICATION_PATH);
 }
 
+// Legacy: Define our B8_PATH (used by Form renderer)
+if (!defined('B8_PATH')) {
+    define('B8_PATH', APPLICATION_PATH . 'PHPCI/Framework/');
+}
+
 // Define our PHPCI_URL, if not already defined:
 if (!defined('PHPCI_URL') && isset($config)) {
     define('PHPCI_URL', $config->get('phpci.url', '') . '/');

@@ -9,10 +9,14 @@
 
 namespace PHPCI\Controller;
 
-use b8;
+use PHPCI\Framework;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildCollection;
+use PHPCI\Store\BuildStore;
+use PHPCI\Store\ProjectGroupStore;
+use PHPCI\Store\ProjectStore;
 
 /**
 * Home Controller - Displays the PHPCI Dashboard.
@@ -42,9 +46,9 @@ class HomeController extends \PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore      = b8\Store\Factory::getStore('Build');
-        $this->projectStore    = b8\Store\Factory::getStore('Project');
-        $this->groupStore    = b8\Store\Factory::getStore('ProjectGroup');
+        $this->buildStore   = BuildStore::load();
+        $this->projectStore = ProjectStore::load();
+        $this->groupStore   = ProjectGroupStore::load();
     }
 
     /**
@@ -53,10 +57,11 @@ class HomeController extends \PHPCI\Controller
     public function index()
     {
         $this->layout->title = Lang::get('dashboard');
-        $builds = $this->buildStore->getLatestBuilds(null, 10);
+        $buildResults = $this->buildStore->getLatestBuilds(null, 10);
+        $builds = [];
 
-        foreach ($builds as &$build) {
-            $build = BuildFactory::getBuild($build);
+        foreach ($buildResults as $build) {
+            $builds[] = BuildFactory::getBuild($build);
         }
 
         $this->view->builds   = $builds;
@@ -81,7 +86,7 @@ class HomeController extends \PHPCI\Controller
     public function summary()
     {
         $this->response->disableLayout();
-        $projects = $this->projectStore->getWhere(array(), 50, 0, array(), array('title' => 'ASC'));
+        $projects = $this->projectStore->find()->order('title', 'ASC')->get(50);
         $this->response->setContent($this->getSummaryHtml($projects));
         return $this->response;
     }
@@ -93,22 +98,15 @@ class HomeController extends \PHPCI\Controller
      */
     protected function getSummaryHtml($projects)
     {
-        $summaryBuilds = array();
-        $successes     = array();
-        $failures      = array();
-        $counts        = array();
+        $summaryBuilds = [];
+        $successes     = [];
+        $failures      = [];
+        $counts        = [];
 
         foreach ($projects as $project) {
             $summaryBuilds[$project->getId()] = $this->buildStore->getLatestBuilds($project->getId());
 
-            $count = $this->buildStore->getWhere(
-                array('project_id' => $project->getId()),
-                1,
-                0,
-                array(),
-                array('id' => 'DESC')
-            );
-            $counts[$project->getId()] = $count['count'];
+            $counts[$project->getId()] = $this->buildStore->where('project_id', $project->getId())->count();
 
             $success = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_SUCCESS);
             $failure = $this->buildStore->getLastBuildByStatus($project->getId(), Build::STATUS_FAILED);
@@ -117,7 +115,7 @@ class HomeController extends \PHPCI\Controller
             $failures[$project->getId()] = $failure;
         }
 
-        $summaryView = new b8\View('SummaryTable');
+        $summaryView = new Framework\View('SummaryTable');
         $summaryView->projects   = $projects;
         $summaryView->builds     = $summaryBuilds;
         $summaryView->successful = $successes;
@@ -132,14 +130,16 @@ class HomeController extends \PHPCI\Controller
     */
     protected function getLatestBuildsHtml()
     {
-        $builds         = $this->buildStore->getWhere(array(), 5, 0, array(), array('id' => 'DESC'));
-        $view           = new b8\View('BuildsTable');
+        $buildResult = $this->buildStore->find()->limit(5)->order('id', 'DESC')->get();
+        $view        = new Framework\View('BuildsTable');
 
-        foreach ($builds['items'] as &$build) {
-            $build = BuildFactory::getBuild($build);
+        $builds = new BuildCollection();
+
+        foreach ($buildResult as $key => $build) {
+            $builds->addBuild($key, BuildFactory::getBuild($build));
         }
 
-        $view->builds   = $builds['items'];
+        $view->builds   = $builds;
 
         return $view->render();
     }
@@ -150,13 +150,13 @@ class HomeController extends \PHPCI\Controller
      */
     protected function getGroupInfo()
     {
-        $rtn = array();
-        $groups = $this->groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $rtn = [];
+        $groups = $this->groupStore->find()->limit(100)->order('title', 'ASC')->get();
 
-        foreach ($groups['items'] as $group) {
-            $thisGroup = array('title' => $group->getTitle());
+        foreach ($groups as $group) {
+            $thisGroup = ['title' => $group->getTitle()];
             $projects = $this->projectStore->getByGroupId($group->getId());
-            $thisGroup['projects'] = $projects['items'];
+            $thisGroup['projects'] = $projects;
             $thisGroup['summary'] = $this->getSummaryHtml($thisGroup['projects']);
             $rtn[] = $thisGroup;
         }

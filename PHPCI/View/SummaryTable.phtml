@@ -10,9 +10,9 @@ foreach($projects as $project):
     $success = null;
     $failure = null;
 
-    if (count($builds[$project->getId()])) {
+    if ($builds[$project->getId()]->count) {
         // Get the most recent build status to determine the main block colour.
-        $last_build = $builds[$project->getId()][0];
+        $last_build = $builds[$project->getId()]->first();
         $status = $last_build->getStatus();
         switch($status) {
             case 0:
@@ -52,7 +52,7 @@ foreach($projects as $project):
         }
     }
 
-    $buildCount = count($builds[$project->getId()]);
+    $buildCount = $builds[$project->getId()]->count;
     $lastSuccess = $successful[$project->getId()];
     $lastFailure = $failed[$project->getId()];
     $message = Lang::get('no_builds_yet');

@@ -9,11 +9,12 @@
 
 namespace PHPCI\Command;
 
+use Block8\Database\Connection;
+use Block8\Database\Mapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use b8\Database;
-use b8\Database\CodeGenerator;
+use PHPCI\Database\CodeGenerator;
 
 /**
 * Generate console command - Reads the database and generates models and stores.
@@ -35,13 +36,10 @@ class GenerateCommand extends Command
     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $gen = new CodeGenerator(
-            Database::getConnection(),
-            array('default' => 'PHPCI'),
-            array('default' => PHPCI_DIR),
-            false
-        );
+        $connection = Connection::get();
+        $mapper = new Mapper($connection);
 
+        $gen = new CodeGenerator($mapper, ['default' => 'PHPCI'], ['default' => PHPCI_DIR . 'PHPCI/']);
         $gen->generateModels();
         $gen->generateStores();
     }

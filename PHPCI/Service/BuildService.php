@@ -9,7 +9,7 @@
 
 namespace PHPCI\Service;
 
-use b8\Config;
+use PHPCI\Config;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use PHPCI\BuildFactory;
@@ -109,7 +109,7 @@ class BuildService
      */
     public function createDuplicateBuild(Build $copyFrom)
     {
-        $data = $copyFrom->getDataArray();
+        $data = $copyFrom->toArray();
 
         // Clean up unwanted properties from the original build:
         unset($data['id']);

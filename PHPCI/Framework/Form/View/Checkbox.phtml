@@ -1,0 +1,15 @@
+<?php if(!($parent instanceof \PHPCI\Framework\Form\Element\CheckboxGroup)): ?>
+<div class="control-group <?php print $ccss ?> <?php print (isset($error) ? 'error' : ''); ?>">
+	<div class="controls">
+<?php endif; ?>
+		<label class="checkbox <?php print $css; ?>" for="<?php print $id ?>">
+			<input type="checkbox" id="<?php print $id; ?>" name="<?php print $name; ?>" value="<?php print $checkedValue; ?>" <?php print ($checked ? 'checked' : ''); ?> <?php print $required ? 'required' : '' ?>>
+			<?php print $label; ?>
+		</label>
+		<?php if(isset($error)): ?>
+			<span class="help-block"><?php print $error; ?></span>
+		<?php endif; ?>
+<?php if(!($parent instanceof \PHPCI\Framework\Form\Element\CheckboxGroup)): ?>
+	</div>
+</div>
+<?php endif; ?>

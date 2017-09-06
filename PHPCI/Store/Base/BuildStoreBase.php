@@ -2,116 +2,107 @@
 
 /**
  * Build base store for table: build
+
  */
 
 namespace PHPCI\Store\Base;
 
-use b8\Database;
-use b8\Exception\HttpException;
+use Block8\Database\Connection;
 use PHPCI\Store;
+use PHPCI\Store\BuildStore;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildCollection;
 
 /**
  * Build Base Store
  */
 class BuildStoreBase extends Store
 {
-    protected $tableName   = 'build';
-    protected $modelName   = '\PHPCI\Model\Build';
-    protected $primaryKey  = 'id';
+    /**
+     * @var BuildStore $instance
+     */
+    protected static $instance = null;
+
+    protected $table = 'build';
+    protected $model = 'PHPCI\Model\Build';
+    protected $key = 'id';
 
     /**
-     * Get a Build by primary key (Id)
+     * Return the database store for this model.
+     * @return BuildStore
      */
-    public function getByPrimaryKey($value, $useConnection = 'read')
+    public static function load() : BuildStore
     {
-        return $this->getById($value, $useConnection);
+        if (is_null(self::$instance)) {
+            self::$instance = new BuildStore(Connection::get());
+        }
+
+        return self::$instance;
     }
 
     /**
-     * Get a single Build by Id.
-     * @return null|Build
-     */
-    public function getById($value, $useConnection = 'read')
+    * @param $value
+    * @return Build|null
+    */
+    public function getByPrimaryKey($value)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        return $this->getById($value);
+    }
+
+
+    /**
+     * Get a Build object by Id.
+     * @param $value
+     * @return Build|null
+     */
+    public function getById(int $value)
+    {
+        // This is the primary key, so try and get from cache:
+        $cacheResult = $this->cacheGet($value);
+
+        if (!empty($cacheResult)) {
+            return $cacheResult;
         }
 
-        $query = 'SELECT * FROM `build` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':id', $value);
+        $rtn = $this->where('id', $value)->first();
+        $this->cacheSet($value, $rtn);
 
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new Build($data);
-            }
-        }
-
-        return null;
+        return $rtn;
     }
 
     /**
-     * Get multiple Build by ProjectId.
-     * @return array
+     * Get all Build objects by ProjectId.
+     * @return \PHPCI\Model\BuildCollection
      */
-    public function getByProjectId($value, $limit = 1000, $useConnection = 'read')
+    public function getByProjectId($value, $limit = null)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-
-        $query = 'SELECT * FROM `build` WHERE `project_id` = :project_id LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':project_id', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Build($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+        return $this->where('project_id', $value)->get($limit);
     }
 
     /**
-     * Get multiple Build by Status.
-     * @return array
+     * Gets the total number of Build by ProjectId value.
+     * @return int
      */
-    public function getByStatus($value, $limit = 1000, $useConnection = 'read')
+    public function getTotalByProjectId($value) : int
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
+        return $this->where('project_id', $value)->count();
+    }
 
+    /**
+     * Get all Build objects by Status.
+     * @return \PHPCI\Model\BuildCollection
+     */
+    public function getByStatus($value, $limit = null)
+    {
+        return $this->where('status', $value)->get($limit);
+    }
 
-        $query = 'SELECT * FROM `build` WHERE `status` = :status LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':status', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Build($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+    /**
+     * Gets the total number of Build by Status value.
+     * @return int
+     */
+    public function getTotalByStatus($value) : int
+    {
+        return $this->where('status', $value)->count();
     }
 }

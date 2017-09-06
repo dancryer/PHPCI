@@ -9,11 +9,13 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Form;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Form;
+use PHPCI\Framework\Store;
 use PHPCI\Controller;
 use PHPCI\Model\ProjectGroup;
+use PHPCI\Store\ProjectGroupStore;
+use PHPCI\Store\ProjectStore;
 
 /**
  * Project Controller - Allows users to create, edit and view projects.
@@ -33,7 +35,7 @@ class GroupController extends Controller
      */
     public function init()
     {
-        $this->groupStore = b8\Store\Factory::getStore('ProjectGroup');
+        $this->groupStore = ProjectGroupStore::load();
     }
 
     /**
@@ -43,16 +45,16 @@ class GroupController extends Controller
     {
         $this->requireAdmin();
 
-        $groups = array();
-        $groupList = $this->groupStore->getWhere(array(), 100, 0, array(), array('title' => 'ASC'));
+        $groups = [];
+        $groupList = $this->groupStore->find()->order('title', 'ASC')->get(100);
 
-        foreach ($groupList['items'] as $group) {
-            $thisGroup = array(
+        foreach ($groupList as $group) {
+            $thisGroup = [
                 'title' => $group->getTitle(),
                 'id' => $group->getId(),
-            );
-            $projects = b8\Store\Factory::getStore('Project')->getByGroupId($group->getId());
-            $thisGroup['projects'] = $projects['items'];
+            ];
+            $projects = ProjectStore::load()->getByGroupId($group->getId());
+            $thisGroup['projects'] = $projects;
             $groups[] = $thisGroup;
         }
 
@@ -62,7 +64,7 @@ class GroupController extends Controller
     /**
      * Add or edit a project group.
      * @param null $groupId
-     * @return void|b8\Http\Response\RedirectResponse
+     * @return void|\PHPCI\Framework\Http\Response\RedirectResponse
      */
     public function edit($groupId = null)
     {
@@ -78,7 +80,7 @@ class GroupController extends Controller
             $group->setTitle($this->getParam('title'));
             $this->groupStore->save($group);
 
-            $response = new b8\Http\Response\RedirectResponse();
+            $response = new Framework\Http\Response\RedirectResponse();
             $response->setHeader('Location', PHPCI_URL.'group');
             return $response;
         }
@@ -105,7 +107,7 @@ class GroupController extends Controller
     /**
      * Delete a project group.
      * @param $groupId
-     * @return b8\Http\Response\RedirectResponse
+     * @return \PHPCI\Framework\Http\Response\RedirectResponse
      */
     public function delete($groupId)
     {
@@ -113,7 +115,7 @@ class GroupController extends Controller
         $group = $this->groupStore->getById($groupId);
 
         $this->groupStore->delete($group);
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'group');
         return $response;
     }

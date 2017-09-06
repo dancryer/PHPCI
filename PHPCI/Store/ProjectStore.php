@@ -9,8 +9,9 @@
 
 namespace PHPCI\Store;
 
-use b8\Database;
+use Block8\Database\Connection;
 use PHPCI\Model\Project;
+use PHPCI\Model\ProjectCollection;
 use PHPCI\Store\Base\ProjectStoreBase;
 
 /**
@@ -29,7 +30,7 @@ class ProjectStore extends ProjectStoreBase
     public function getKnownBranches($projectId)
     {
         $query = 'SELECT DISTINCT branch from build WHERE project_id = :pid';
-        $stmt = Database::getConnection('read')->prepare($query);
+        $stmt = Connection::get()->prepare($query);
         $stmt->bindValue(':pid', $projectId);
 
         if ($stmt->execute()) {
@@ -42,34 +43,17 @@ class ProjectStore extends ProjectStoreBase
 
             return $rtn;
         } else {
-            return array();
+            return [];
         }
     }
 
     /**
      * Get a list of all projects, ordered by their title.
-     * @return array
+     * @return ProjectCollection
      */
-    public function getAll()
+    public function getAll() : ProjectCollection
     {
-        $query = 'SELECT * FROM `project` ORDER BY `title` ASC';
-        $stmt = Database::getConnection('read')->prepare($query);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Project($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+        return $this->find()->order('title', 'ASC')->get(1000);
     }
 
     /**
@@ -77,33 +61,15 @@ class ProjectStore extends ProjectStoreBase
      * @param int $value
      * @param int $limit
      * @param string $useConnection
-     * @return array
+     * @return ProjectCollection
      * @throws \Exception
      */
-    public function getByGroupId($value, $limit = 1000, $useConnection = 'read')
+    public function getByGroupId($value, $limit = 1000, $useConnection = 'read') : ProjectCollection
     {
         if (is_null($value)) {
             throw new \Exception('Value passed to ' . __FUNCTION__ . ' cannot be null.');
         }
 
-        $query = 'SELECT * FROM `project` WHERE `group_id` = :group_id ORDER BY title LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':group_id', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new Project($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+        return $this->where('group_id', $value)->order('title', 'ASC')->get($limit);
     }
 }

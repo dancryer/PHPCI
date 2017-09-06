@@ -9,8 +9,8 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Store;
+use PHPCI\Framework;
+use PHPCI\Framework\Store;
 use Exception;
 use PHPCI\BuildFactory;
 use PHPCI\Model\Project;
@@ -30,7 +30,7 @@ use PHPCI\Store\ProjectStore;
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class WebhookController extends \b8\Controller
+class WebhookController extends Framework\Controller
 {
     /**
      * @var BuildStore
@@ -52,8 +52,8 @@ class WebhookController extends \b8\Controller
      */
     public function init()
     {
-        $this->buildStore = Store\Factory::getStore('Build');
-        $this->projectStore = Store\Factory::getStore('Project');
+        $this->buildStore = BuildStore::load();
+        $this->projectStore = ProjectStore::load();
         $this->buildService = new BuildService($this->buildStore);
     }
 
@@ -62,11 +62,11 @@ class WebhookController extends \b8\Controller
      * @param string $action
      * @param mixed $actionParams
      *
-     * @return \b8\Http\Response
+     * @return \PHPCI\Framework\Http\Response
      */
     public function handleAction($action, $actionParams)
     {
-        $response = new b8\Http\Response\JsonResponse();
+        $response = new Framework\Http\Response\JsonResponse();
         try {
             $data = parent::handleAction($action, $actionParams);
             if (isset($data['responseCode'])) {
@@ -218,9 +218,9 @@ class WebhookController extends \b8\Controller
      *
      * @param Project $project
      * @param array $payload
-     * @param b8\Http\Response\JsonResponse $response
+     * @param \PHPCI\Framework\Http\Response\JsonResponse $response
      *
-     * @return b8\Http\Response\JsonResponse
+     * @return \PHPCI\Framework\Http\Response\JsonResponse
      */
     protected function githubCommitRequest(Project $project, array $payload)
     {
@@ -284,14 +284,14 @@ class WebhookController extends \b8\Controller
         }
 
         $headers = array();
-        $token = \b8\Config::getInstance()->get('phpci.github.token');
+        $token = \PHPCI\Config::getInstance()->get('phpci.github.token');
 
         if (!empty($token)) {
             $headers[] = 'Authorization: token ' . $token;
         }
 
         $url    = $payload['pull_request']['commits_url'];
-        $http   = new \b8\HttpClient();
+        $http   = new Framework\HttpClient();
         $http->setHeaders($headers);
         $response = $http->get($url);
 
@@ -428,17 +428,17 @@ class WebhookController extends \b8\Controller
         // Check if a build already exists for this commit ID:
         $builds = $this->buildStore->getByProjectAndCommit($project->getId(), $commitId);
 
-        if ($builds['count']) {
-            return array(
+        if ($builds->count) {
+            return [
                 'status' => 'ignored',
-                'message' => sprintf('Duplicate of build #%d', $builds['items'][0]->getId())
-            );
+                'message' => sprintf('Duplicate of build #%d', $builds->first()->getId()),
+            ];
         }
 
         // If not, create a new build job for it:
         $build = $this->buildService->createBuild($project, $commitId, $branch, $committer, $commitMessage, $extra);
 
-        return array('status' => 'ok', 'buildID' => $build->getID());
+        return ['status' => 'ok', 'buildID' => $build->getID()];
     }
 
     /**

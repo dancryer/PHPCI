@@ -9,7 +9,7 @@
 
 namespace PHPCI\Helper;
 
-use b8\Config;
+use PHPCI\Config;
 
 /**
 * Login Is Disabled Helper - Checks if login is disabled in the view

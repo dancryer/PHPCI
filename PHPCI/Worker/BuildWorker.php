@@ -2,9 +2,8 @@
 
 namespace PHPCI\Worker;
 
-use b8\Config;
-use b8\Database;
-use b8\Store\Factory;
+use Block8\Database\Connection;
+use PHPCI\Config;
 use Monolog\Logger;
 use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;
@@ -12,6 +11,7 @@ use PHPCI\Builder;
 use PHPCI\BuildFactory;
 use PHPCI\Logging\BuildDBLogHandler;
 use PHPCI\Model\Build;
+use PHPCI\Store\BuildStore;
 
 /**
  * Class BuildWorker
@@ -94,7 +94,7 @@ class BuildWorker
     {
         $this->pheanstalk->watch($this->queue);
         $this->pheanstalk->ignore('default');
-        $buildStore = Factory::getStore('Build');
+        $buildStore = BuildStore::load();
 
         while ($this->run) {
             // Get a job from the queue:
@@ -117,7 +117,17 @@ class BuildWorker
                 $this->logger->addDebug('Using job-specific config.');
                 $currentConfig = Config::getInstance()->getArray();
                 $config = new Config($jobData['config']);
-                Database::reset($config);
+
+                $dbConfig = $config->get('database', $config->get('b8.database', []));
+
+                if (!empty($dbConfig)) {
+                    $host = !empty($dbConfig['host']) ? [$dbConfig['host']] : $dbConfig['servers'];
+                    $user = $dbConfig['username'];
+                    $pass = $dbConfig['password'];
+                    $name = $dbConfig['name'];
+
+                    Connection::setConfig($host, $user, $pass, $name);
+                }
             }
 
             try {

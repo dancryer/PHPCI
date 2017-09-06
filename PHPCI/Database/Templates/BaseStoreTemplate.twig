@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * {{ table.php_name }} base store for table: {{ name }}
+
+ */
+
+namespace {{ itemNamespace }}\Store\Base;
+
+use Block8\Database\Connection;
+use PHPCI\Store;
+use PHPCI\Store\{{ table.php_name }}Store;
+use PHPCI\Model\{{ table.php_name }};
+use PHPCI\Model\{{ table.php_name }}Collection;
+
+/**
+ * {{ table.php_name }} Base Store
+ */
+class {{ table.php_name }}StoreBase extends Store
+{
+    /**
+     * @var {{ table.php_name }}Store $instance
+     */
+    protected static $instance = null;
+
+    protected $table = '{{ name }}';
+    protected $model = '{{ itemNamespace }}\Model\{{ table.php_name }}';
+    protected $key = '{{ table.primary_key.name }}';
+
+    /**
+     * Return the database store for this model.
+     * @return {{ table.php_name }}Store
+     */
+    public static function load() : {{ table.php_name }}Store
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new {{ table.php_name }}Store(Connection::get());
+        }
+
+        return self::$instance;
+    }
+
+{% if table.primary_key %}
+    /**
+    * @param $value
+    * @return {{ table.php_name }}|null
+    */
+    public function getByPrimaryKey($value)
+    {
+        return $this->getBy{{ table.primary_key.php_name }}($value);
+    }
+
+{% endif %}{% for column in table.columns %}
+{% if column.unique_indexed %}
+
+    /**
+     * Get a {{ table.php_name }} object by {{ column.php_name }}.
+     * @param $value
+     * @return {{ table.php_name }}|null
+     */
+    public function getBy{{ column.php_name }}({{ column.php_type }} $value)
+    {
+{% if table.primary_key.php_name == column.php_name %}
+        // This is the primary key, so try and get from cache:
+        $cacheResult = $this->cacheGet($value);
+
+        if (!empty($cacheResult)) {
+            return $cacheResult;
+        }
+
+        $rtn = $this->where('{{ column.name }}', $value)->first();
+        $this->cacheSet($value, $rtn);
+
+        return $rtn;
+{% else %}
+        return $this->where('{{ column.name }}', $value)->first();
+{% endif %}
+    }
+{% elseif column.many_indexed %}
+
+    /**
+     * Get all {{ table.php_name }} objects by {{ column.php_name }}.
+     * @return \{{ itemNamespace }}\Model\{{ table.php_name }}Collection
+     */
+    public function getBy{{ column.php_name }}($value, $limit = null)
+    {
+        return $this->where('{{ column.name }}', $value)->get($limit);
+    }
+
+    /**
+     * Gets the total number of {{ table.php_name }} by {{ column.php_name }} value.
+     * @return int
+     */
+    public function getTotalBy{{ column.php_name }}($value) : int
+    {
+        return $this->where('{{ column.name }}', $value)->count();
+    }
+{% endif %}
+{% endfor %}
+}

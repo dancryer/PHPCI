@@ -9,7 +9,7 @@
 
 namespace PHPCI\Helper;
 
-use b8\Config;
+use PHPCI\Config;
 use PHPCI\Helper\MailerFactory;
 
 /**

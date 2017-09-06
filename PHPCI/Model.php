@@ -9,11 +9,12 @@
 
 namespace PHPCI;
 
+use Block8\Database;
+
 /**
  * PHPCI Base Model.
  * @package PHPCI
  */
-abstract class Model extends \b8\Model
+abstract class Model extends Database\Model
 {
-
 }

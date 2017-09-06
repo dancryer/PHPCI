@@ -9,54 +9,163 @@
 
 namespace PHPCI;
 
-use b8\Config;
-use b8\Exception\HttpException\ForbiddenException;
-use b8\Http\Request;
-use b8\Http\Response;
-use b8\View;
+use PHPCI\Framework\Exception\HttpException\ForbiddenException;
+use PHPCI\Framework\Http\Request;
+use PHPCI\Framework\Http\Response;
+use PHPCI\Framework\View;
+use PHPCI\Model\User;
 
 /**
  * PHPCI Base Controller
  * @package PHPCI
  */
-class Controller extends \b8\Controller
+abstract class Controller
 {
     /**
-    * @var \b8\View
-    */
+     * @var \PHPCI\Framework\Http\Request
+     */
+    protected $request;
+
+    /**
+     * @var \PHPCI\Framework\Http\Response
+     */
+    protected $response;
+
+    /**
+     * @var \PHPCI\Config
+     */
+    protected $config;
+
+    /**
+     * @var \PHPCI\Framework\View
+     */
     protected $controllerView;
 
     /**
-     * @var \b8\View
+     * @var \PHPCI\Framework\View
      */
     protected $view;
 
     /**
-     * @var \b8\View
+     * @var \PHPCI\Framework\View
      */
     public $layout;
+
+    /**
+     * @var string
+     */
+    protected $className;
+
+    /**
+     * @var User
+     */
+    protected $user;
+
+    /**
+     * Controller constructor.
+     * @param Config $config
+     * @param Request $request
+     * @param Response $response
+     * @param User $user
+     */
+    public function __construct(Config $config, Request $request, Response $response, User &$user)
+    {
+        $this->config = $config;
+        $this->request = $request;
+        $this->response = $response;
+        $this->user =& $user;
+
+        $class = explode('\\', get_class($this));
+        $this->className = substr(array_pop($class), 0, -10);
+        $this->setControllerView();
+    }
+
+    public function hasAction($name)
+    {
+        if (method_exists($this, $name)) {
+            return true;
+        }
+
+        if (method_exists($this, '__call')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Handles an action on this controller and returns a Response object.
+     * @return \PHPCI\Framework\Http\Response
+     */
+    public function handleAction($action, $actionParams)
+    {
+        $this->setView($action);
+        $response = call_user_func_array([$this, $action], $actionParams);
+
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        if (is_string($response)) {
+            $this->controllerView->content = $response;
+        } elseif (isset($this->view)) {
+            $this->controllerView->content = $this->view->render();
+        }
+
+        $this->response->setContent($this->controllerView->render());
+
+        return $this->response;
+    }
 
     /**
      * Initialise the controller.
      */
     public function init()
     {
-        // Extended by actual controllers.
     }
 
     /**
-     * @param Config $config
-     * @param Request $request
-     * @param Response $response
+     * Get a hash of incoming request parameters ($_GET, $_POST)
+     *
+     * @return array
      */
-    public function __construct(Config $config, Request $request, Response $response)
+    public function getParams()
     {
-        parent::__construct($config, $request, $response);
-
-        $class = explode('\\', get_class($this));
-        $this->className = substr(array_pop($class), 0, -10);
-        $this->setControllerView();
+        return $this->request->getParams();
     }
+
+    /**
+     * Get a specific incoming request parameter.
+     *
+     * @param      $key
+     * @param mixed $default    Default return value (if key does not exist)
+     *
+     * @return mixed
+     */
+    public function getParam($key, $default = null)
+    {
+        return $this->request->getParam($key, $default);
+    }
+
+    /**
+     * Change the value of an incoming request parameter.
+     * @param $key
+     * @param $value
+     */
+    public function setParam($key, $value)
+    {
+        $this->request->setParam($key, $value);
+    }
+
+    /**
+     * Remove an incoming request parameter.
+     * @param $key
+     */
+    public function unsetParam($key)
+    {
+        $this->request->unsetParam($key);
+    }
+
 
     /**
      * Set the view that this controller should use.
@@ -82,32 +191,6 @@ class Controller extends \b8\Controller
     }
 
     /**
-     * Handle the incoming request.
-     * @param $action
-     * @param $actionParams
-     * @return \b8\b8\Http\Response|Response
-     */
-    public function handleAction($action, $actionParams)
-    {
-        $this->setView($action);
-        $response = parent::handleAction($action, $actionParams);
-
-        if ($response instanceof Response) {
-            return $response;
-        }
-
-        if (is_string($response)) {
-            $this->controllerView->content = $response;
-        } elseif (isset($this->view)) {
-            $this->controllerView->content = $this->view->render();
-        }
-
-        $this->response->setContent($this->controllerView->render());
-
-        return $this->response;
-    }
-
-    /**
      * Require that the currently logged in user is an administrator.
      * @throws ForbiddenException
      */
@@ -124,6 +207,6 @@ class Controller extends \b8\Controller
      */
     protected function currentUserIsAdmin()
     {
-        return $_SESSION['phpci_user']->getIsAdmin();
+        return $this->user->getIsAdmin();
     }
 }

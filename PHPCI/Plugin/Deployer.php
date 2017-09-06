@@ -9,7 +9,7 @@
 
 namespace PHPCI\Plugin;
 
-use b8\HttpClient;
+use PHPCI\Framework\HttpClient;
 use PHPCI\Builder;
 use PHPCI\Model\Build;
 

@@ -17,14 +17,14 @@ class WebhookControllerTest extends \PHPUnit_Framework_TestCase
     public function test_wrong_action_name_return_json_with_error()
     {
         $webController = new WebhookController(
-            $this->prophesize('b8\Config')->reveal(),
-            $this->prophesize('b8\Http\Request')->reveal(),
-            $this->prophesize('b8\Http\Response')->reveal()
+            $this->prophesize('PHPCI\Config')->reveal(),
+            $this->prophesize('PHPCI\Framework\Http\Request')->reveal(),
+            $this->prophesize('PHPCI\Framework\Http\Response')->reveal()
         );
 
         $error = $webController->handleAction('test', []);
 
-        $this->assertInstanceOf('b8\Http\Response\JsonResponse', $error);
+        $this->assertInstanceOf('PHPCI\Framework\Http\Response\JsonResponse', $error);
 
         $responseData = $error->getData();
         $this->assertEquals(500, $responseData['code']);

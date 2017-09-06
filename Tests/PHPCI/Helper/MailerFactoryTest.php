@@ -48,7 +48,7 @@ class MailerFactoryTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'smtp_address' => 'mail.example.com',
             'smtp_port' => 225,
-            'smtp_encryption' => true,
+            'smtp_encryption' => 'tls',
             'smtp_username' => 'example.user',
             'smtp_password' => 'examplepassword',
             'default_mailto_address' => 'phpci@example.com',

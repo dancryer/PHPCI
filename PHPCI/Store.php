@@ -9,11 +9,12 @@
 
 namespace PHPCI;
 
+use Block8\Database;
+
 /**
  * PHPCI Base Store
  * @package PHPCI
  */
-abstract class Store extends \b8\Store
+abstract class Store extends Database\Store
 {
-
 }

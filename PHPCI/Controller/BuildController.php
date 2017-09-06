@@ -9,15 +9,18 @@
 
 namespace PHPCI\Controller;
 
-use b8;
-use b8\Exception\HttpException\NotFoundException;
-use b8\Http\Response\JsonResponse;
+use PHPCI\Framework;
+use PHPCI\Framework\Exception\HttpException\NotFoundException;
+use PHPCI\Framework\Http\Response\JsonResponse;
 use PHPCI\BuildFactory;
 use PHPCI\Helper\AnsiConverter;
 use PHPCI\Helper\Lang;
 use PHPCI\Model\Build;
+use PHPCI\Model\BuildCollection;
 use PHPCI\Model\Project;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildErrorStore;
+use PHPCI\Store\BuildStore;
 
 /**
 * Build Controller - Allows users to run and view builds.
@@ -42,7 +45,7 @@ class BuildController extends \PHPCI\Controller
      */
     public function init()
     {
-        $this->buildStore = b8\Store\Factory::getStore('Build');
+        $this->buildStore = BuildStore::load();
         $this->buildService = new BuildService($this->buildStore);
     }
 
@@ -164,7 +167,7 @@ class BuildController extends \PHPCI\Controller
     */
     protected function getBuildData(Build $build)
     {
-        $data               = array();
+        $data               = [];
         $data['status']     = (int)$build->getStatus();
         $data['log']        = $this->cleanLog($build->getLog());
         $data['created']    = !is_null($build->getCreated()) ? $build->getCreated()->format('Y-m-d H:i:s') : null;
@@ -173,10 +176,10 @@ class BuildController extends \PHPCI\Controller
         $data['duration']   = $build->getDuration();
 
         /** @var \PHPCI\Store\BuildErrorStore $errorStore */
-        $errorStore = b8\Store\Factory::getStore('BuildError');
+        $errorStore = BuildErrorStore::load();
         $errors = $errorStore->getErrorsForBuild($build->getId(), $this->getParam('since', null));
 
-        $errorView = new b8\View('Build/errors');
+        $errorView = new Framework\View('Build/errors');
         $errorView->build = $build;
         $errorView->errors = $errors;
 
@@ -204,7 +207,7 @@ class BuildController extends \PHPCI\Controller
             $_SESSION['global_error'] = Lang::get('add_to_queue_failed');
         }
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'build/view/' . $build->getId());
         return $response;
     }
@@ -224,7 +227,7 @@ class BuildController extends \PHPCI\Controller
 
         $this->buildService->deleteBuild($build);
 
-        $response = new b8\Http\Response\RedirectResponse();
+        $response = new Framework\Http\Response\RedirectResponse();
         $response->setHeader('Location', PHPCI_URL.'project/view/' . $build->getProjectId());
         return $response;
     }
@@ -242,10 +245,10 @@ class BuildController extends \PHPCI\Controller
      */
     public function latest()
     {
-        $rtn = array(
+        $rtn = [
             'pending' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_NEW)),
             'running' => $this->formatBuilds($this->buildStore->getByStatus(Build::STATUS_RUNNING)),
-        );
+        ];
 
         $response = new JsonResponse();
         $response->setContent($rtn);
@@ -257,20 +260,23 @@ class BuildController extends \PHPCI\Controller
      * @param $builds
      * @return array
      */
-    protected function formatBuilds($builds)
+    protected function formatBuilds(BuildCollection $builds)
     {
-        Project::$sleepable = array('id', 'title', 'reference', 'type');
+        $rtn = ['count' => $builds->count, 'items' => []];
 
-        $rtn = array('count' => $builds['count'], 'items' => array());
+        foreach ($builds as $build) {
+            $item = [
+                'id' => $build->getId(),
+                'title' => $build->getTitle(),
+                'reference' => $build->getReference(),
+                'type' => $build->getType(),
+            ];
 
-        foreach ($builds['items'] as $build) {
-            $item = $build->toArray(1);
-
-            $header = new b8\View('Build/header-row');
+            $header = new Framework\View('Build/header-row');
             $header->build = $build;
 
             $item['header_row'] = $header->render();
-            $rtn['items'][$item['id']] = $item;
+            $rtn['items'][$build->getId()] = $item;
         }
 
         ksort($rtn['items']);

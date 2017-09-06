@@ -25,7 +25,7 @@ use PHPCI\Command\WorkerCommand;
 use PHPCI\Command\RebuildQueueCommand;
 use PHPCI\Service\BuildService;
 use Symfony\Component\Console\Application;
-use b8\Store\Factory;
+use PHPCI\Framework\Store\Factory;
 
 $application = new Application();
 

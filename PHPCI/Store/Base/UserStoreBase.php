@@ -2,107 +2,99 @@
 
 /**
  * User base store for table: user
+
  */
 
 namespace PHPCI\Store\Base;
 
-use b8\Database;
-use b8\Exception\HttpException;
+use Block8\Database\Connection;
 use PHPCI\Store;
+use PHPCI\Store\UserStore;
 use PHPCI\Model\User;
+use PHPCI\Model\UserCollection;
 
 /**
  * User Base Store
  */
 class UserStoreBase extends Store
 {
-    protected $tableName   = 'user';
-    protected $modelName   = '\PHPCI\Model\User';
-    protected $primaryKey  = 'id';
+    /**
+     * @var UserStore $instance
+     */
+    protected static $instance = null;
+
+    protected $table = 'user';
+    protected $model = 'PHPCI\Model\User';
+    protected $key = 'id';
 
     /**
-     * Get a User by primary key (Id)
+     * Return the database store for this model.
+     * @return UserStore
      */
-    public function getByPrimaryKey($value, $useConnection = 'read')
+    public static function load() : UserStore
     {
-        return $this->getById($value, $useConnection);
+        if (is_null(self::$instance)) {
+            self::$instance = new UserStore(Connection::get());
+        }
+
+        return self::$instance;
     }
 
     /**
-     * Get a single User by Id.
-     * @return null|User
-     */
-    public function getById($value, $useConnection = 'read')
+    * @param $value
+    * @return User|null
+    */
+    public function getByPrimaryKey($value)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
+        return $this->getById($value);
+    }
+
+
+    /**
+     * Get a User object by Id.
+     * @param $value
+     * @return User|null
+     */
+    public function getById(int $value)
+    {
+        // This is the primary key, so try and get from cache:
+        $cacheResult = $this->cacheGet($value);
+
+        if (!empty($cacheResult)) {
+            return $cacheResult;
         }
 
-        $query = 'SELECT * FROM `user` WHERE `id` = :id LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':id', $value);
+        $rtn = $this->where('id', $value)->first();
+        $this->cacheSet($value, $rtn);
 
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new User($data);
-            }
-        }
-
-        return null;
+        return $rtn;
     }
 
     /**
-     * Get a single User by Email.
-     * @return null|User
+     * Get a User object by Email.
+     * @param $value
+     * @return User|null
      */
-    public function getByEmail($value, $useConnection = 'read')
+    public function getByEmail(string $value)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-        $query = 'SELECT * FROM `user` WHERE `email` = :email LIMIT 1';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':email', $value);
-
-        if ($stmt->execute()) {
-            if ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                return new User($data);
-            }
-        }
-
-        return null;
+        return $this->where('email', $value)->first();
     }
 
     /**
-     * Get multiple User by Name.
-     * @return array
+     * Get all User objects by Name.
+     * @return \PHPCI\Model\UserCollection
      */
-    public function getByName($value, $limit = 1000, $useConnection = 'read')
+    public function getByName($value, $limit = null)
     {
-        if (is_null($value)) {
-            throw new HttpException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
+        return $this->where('name', $value)->get($limit);
+    }
 
-
-        $query = 'SELECT * FROM `user` WHERE `name` = :name LIMIT :limit';
-        $stmt = Database::getConnection($useConnection)->prepare($query);
-        $stmt->bindValue(':name', $value);
-        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            $map = function ($item) {
-                return new User($item);
-            };
-            $rtn = array_map($map, $res);
-
-            $count = count($rtn);
-
-            return array('items' => $rtn, 'count' => $count);
-        } else {
-            return array('items' => array(), 'count' => 0);
-        }
+    /**
+     * Gets the total number of User by Name value.
+     * @return int
+     */
+    public function getTotalByName($value) : int
+    {
+        return $this->where('name', $value)->count();
     }
 }

@@ -9,7 +9,7 @@
 
 namespace PHPCI\Helper;
 
-use b8\Config;
+use PHPCI\Config;
 
 /**
  * Languages Helper Class - Handles loading strings files and the strings within them.

@@ -9,9 +9,9 @@
 
 namespace PHPCI\Command;
 
-use b8\Store\Factory;
 use Monolog\Logger;
 use PHPCI\Service\BuildService;
+use PHPCI\Store\BuildStore;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,7 +72,7 @@ class RebuildCommand extends Command
         $runner->setDaemon(false);
 
         /** @var \PHPCI\Store\BuildStore $store */
-        $store = Factory::getStore('Build');
+        $store = BuildStore::load();
         $service = new BuildService($store);
 
         $builds = $store->getLatestBuilds(null, 1);

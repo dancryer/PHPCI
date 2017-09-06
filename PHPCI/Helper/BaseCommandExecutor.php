@@ -95,13 +95,33 @@ abstract class BaseCommandExecutor implements CommandExecutor
         if (is_resource($process)) {
             fclose($pipes[0]);
 
-            $this->lastOutput = stream_get_contents($pipes[1]);
-            $this->lastError = stream_get_contents($pipes[2]);
+            stream_set_blocking($pipes[1], 0);
+            stream_set_blocking($pipes[2], 0);
+
+            $lastOutput = '';
+            $lastError  = '';
+            do {
+                usleep(200); //Give It Time To Start
+
+                while (($newData = fread($pipes[1], 1024)) && !feof($pipes[1])) {
+                    $lastOutput .= $newData;
+                }
+
+                while (($newData = fread($pipes[2], 1024)) && !feof($pipes[2])) {
+                    $lastError .= $newData;
+                }
+
+                $processStatus = proc_get_status($process);
+            } while ($processStatus['running']);
+
+            $this->lastOutput = $lastOutput;
+            $this->lastError  = $lastError;
 
             fclose($pipes[1]);
             fclose($pipes[2]);
 
-            $status = proc_close($process);
+            proc_close($process);
+            $status = $processStatus['exitcode'];
         }
 
         $this->lastOutput = array_filter(explode(PHP_EOL, $this->lastOutput));

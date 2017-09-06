@@ -60,7 +60,7 @@ class RemoteGitBuild extends Build
             $cmd .= ' --depth ' . intval($depth) . ' ';
         }
 
-        $cmd .= ' -b %s %s "%s"';
+        $cmd .= ' -b "%s" "%s" "%s"';
         $success = $builder->executeCommand($cmd, $this->getBranch(), $this->getCloneUrl(), $cloneTo);
 
         if ($success) {
@@ -82,7 +82,7 @@ class RemoteGitBuild extends Build
             $cmd .= ' --depth ' . intval($depth) . ' ';
         }
 
-        $cmd .= ' -b %s %s "%s"';
+        $cmd .= ' -b "%s" "%s" "%s"';
 
         $success = $this->runBySsh($builder, $cloneTo, $cmd, [$this->getBranch(), $this->getCloneUrl(), $cloneTo]);
 

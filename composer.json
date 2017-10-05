@@ -65,11 +65,11 @@
 
     "suggest": {
         "block8/php-docblock-checker": "PHP Docblock Checker",
+        "friendsofphp/php-cs-fixer": "PHP Coding Standards Fixer",
         "phpmd/phpmd": "PHP Mess Detector",
         "sebastian/phpcpd": "PHP Copy/Paste Detector",
         "squizlabs/php_codesniffer": "PHP Code Sniffer",
         "phpspec/phpspec": "PHP Spec",
-        "fabpot/php-cs-fixer": "PHP Coding Standards Fixer",
         "phploc/phploc": "PHP Lines of Code",
         "atoum/atoum": "Atoum",
         "jakub-onderka/php-parallel-lint": "Parallel Linting Tool",

@@ -105,12 +105,16 @@ class ProjectController extends PHPCI\Controller
         /* @var \PHPCI\Model\Project $project */
         $project = $this->projectStore->getById($projectId);
 
-        if (empty($branch)) {
-            $branch = $project->getBranch();
-        }
-
         if (empty($project)) {
             throw new NotFoundException(Lang::get('project_x_not_found', $projectId));
+        }
+      
+        if ($branch === '' && filter_input(INPUT_GET, 'branch') !== null) {
+            $branch = filter_input(INPUT_GET, 'branch');
+        }
+
+        if (empty($branch)) {
+            $branch = $project->getBranch();
         }
 
         $email = $_SESSION['phpci_user']->getEmail();

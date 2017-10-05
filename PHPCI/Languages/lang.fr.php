@@ -39,7 +39,7 @@ PHPCI',
     'reset_email_title' => 'Réinitialisation du mot de passe PHPCI pour %s',
     'reset_invalid' => 'Requête de réinitialisation de mot de passe invalide.',
     'email_address' => 'Adresse email',
-    'login' => 'Login / Email Address',
+    'login' => 'Login / Addresse email',
     'password' => 'Mot de passe',
     'log_in' => 'Connexion',
 
@@ -102,6 +102,7 @@ PHPCI',
     'remote' => 'URL distante',
     'local' => 'Chemin local',
     'hg'    => 'Mercurial',
+    'svn'   => 'Subversion',
 
     'where_hosted' => 'Où est hébergé votre projet&nbsp;?',
     'choose_github' => 'Choisissez un dépôt GitHub&nbsp;:',
@@ -114,8 +115,8 @@ PHPCI',
                                 (si vous ne pouvez pas ajouter de fichier phpci.yml à la racine du dépôt)',
     'default_branch' => 'Nom de la branche par défaut',
     'allow_public_status' => 'Activer la page de statut publique et l\'image pour ce projet&nbsp;?',
-    'archived' => 'Archived',
-    'archived_menu' => 'Archived',
+    'archived' => 'Archivé',
+    'archived_menu' => 'Archivé',
     'save_project' => 'Enregistrer le projet',
 
     'error_mercurial' => 'Les URLs de dépôt Mercurial doivent commencer par http:// ou https://',
@@ -161,7 +162,7 @@ PHPCI',
     'rebuild_now' => 'Relancer maintenant',
 
 
-    'committed_by_x' => 'Committé par %s',
+    'committed_by_x' => 'Commit par %s',
     'commit_id_x' => 'Commit&nbsp;: %s',
 
     'chart_display' => 'Ce graphique s\'affichera une fois que le build sera terminé.',
@@ -190,7 +191,14 @@ PHPCI',
     'phpmd' => 'PHP Mess Detector',
     'phpspec' => 'PHP Spec',
     'phpunit' => 'PHP Unit',
+    'technical_debt' => 'Dette technique',
     'behat' => 'Behat',
+
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Time',
+    'codeception_synopsis' => '<strong>%1$d</strong> tests effectués en <strong>%2$f</strong> secondes.
+                               <strong>%3$d</strong> échecs.',
 
     'file' => 'Fichier',
     'line' => 'Ligne',
@@ -200,7 +208,7 @@ PHPCI',
     'start' => 'Démarrage',
     'end' => 'Fin',
     'from' => 'À partir de',
-    'to' => 'jusque',
+    'to' => 'Jusqu\'a',
     'result' => 'Resultat',
     'ok' => 'OK',
     'took_n_seconds' => 'Exécuté en %d secondes',
@@ -274,6 +282,8 @@ PHPCI',
     '1_hour' => '1 Heure',
     '3_hours' => '3 Heures',
 
+    'show_branch' => 'Afficher les branches',
+
     // Plugins
     'cannot_update_composer' => 'PHPCI ne peut pas mettre à jour le fichier composer.json pour vous, il n\'est pas modifiable.',
     'x_has_been_removed' => '%s a été supprimé.',
@@ -299,10 +309,12 @@ PHPCI',
     'stage_setup' => 'Préparation',
     'stage_test' => 'Test',
     'stage_complete' => 'Terminé',
-    'stage_success' => 'Succes',
+    'stage_success' => 'Succès',
     'stage_failure' => 'Échec',
+    'stage_broken' => 'Interrompu',
+    'stage_fixed' => 'Corrigé',
 
-    // Installer
+    // InstallerÉchec
     'installation_url' => 'URL d\'installation de PHPCI',
     'db_host' => 'Hôte de la BDD',
     'db_name' => 'Nom de la BDD',
@@ -317,8 +329,8 @@ PHPCI',
     'please_answer' => 'Merci de répondre aux questions suivantes :',
     'phpci_php_req' => 'PHPCI requiert au moins PHP 5.3.8 pour fonctionner.',
     'extension_required' => 'Extensions requises : %s',
-    'function_required' => 'PHPCI doit être capable d\'appeler la fonction %s(). Est-ce qu\'elle est désactivée dans votre php.ini?',
-    'requirements_not_met' => 'PHPCI ne peut pas être installé parce que toutes les conditions requises ne sont pas respectées.
+    'function_required' => 'PHPCI doit être capable d\'appeler la fonction %s(). Est-elle activée dans votre php.ini?',
+    'requirements_not_met' => 'PHPCI ne peut pas être installé car toutes les conditions requises ne sont pas respectées.
                                 Merci de corriger les erreurs ci-dessus avant de continuer.',
     'must_be_valid_email' => 'Doit être une adresse email valide.',
     'must_be_valid_url' => 'Doit être une URL valide.',
@@ -335,14 +347,14 @@ PHPCI',
     'setting_up_db' => 'Paramétrage de la base de données... ',
     'user_created' => 'Le compte utilisateur a été créé !',
     'failed_to_create' => 'PHPCI n\'a pas réussi à créer votre compte admin.',
-    'config_exists' => 'Le fichier de configuration PHPCI existe et n\'est pas vide.',
-    'update_instead' => 'Si vous essayez de mettre à jour PHPCI, merci d\'utiliser la commande phpci:update.',
+    'config_exists' => 'Le fichier de configuration PHPCI existe mais celui-ci n\'est pas vide.',
+    'update_instead' => 'Si vous voulez mettre à jour PHPCI, merci d\'utiliser la commande phpci:update.',
 
     // Update
     'update_phpci' => 'Mise à jour de la base de données pour refléter les modifications apportées aux modèles.',
     'updating_phpci' => 'Mise à jour de la base de données PHPCI : ',
     'not_installed' => 'PHPCI n\'a pas l\'air d\'être installé.',
-    'install_instead' => 'Merci d\'installer PHPCI grâce à la commande phpci:install.',
+    'install_instead' => 'Merci d\'installer PHPCI à l\'aide de la commande phpci:install.',
 
     // Poll Command
     'poll_github' => 'Demander à GitHub de vérifier si nous devons démarrer un build.',
@@ -351,7 +363,7 @@ PHPCI',
     'found_n_projects' => '%d projets trouvés',
     'last_commit_is' => 'Le dernier commit sur GitHub pour %s est %s',
     'adding_new_build' => 'Le dernier commit est différent de celui présent en base de données, ajout d\'un nouveau build.',
-    'finished_processing_builds' => 'Traitement des builds terminé.',
+    'finished_processing_builds' => 'Traitement des builds terminés.',
 
     // Create Admin
     'create_admin_user' => 'Créer un utilisateur admin',
@@ -362,10 +374,13 @@ PHPCI',
     'project_id_argument' => 'ID du projet',
     'commit_id_option' => 'ID du commit',
     'branch_name_option' => 'Branche',
+    'add_to_queue_failed' => 'Build créé avec succès, cependant celui-ci n\'a pas pu être ajouté à la file d\'attente. 
+                            Cela se produit généralement lorsque PHP est configuré pour utiliser un serveur beanstalkd 
+                            qui n\'existe pas ou qui est arrêté.',
 
     // Run Command
-    'run_all_pending' => 'Démarrage de tout les builds PHPCI en attente.',
-    'finding_builds' => 'Découverte des builds à traiter',
+    'run_all_pending' => 'Lancement des builds PHPCI en attente.',
+    'finding_builds' => 'Recherche des builds à traiter',
     'found_n_builds' => '%d builds trouvés',
     'skipping_build' => 'Saut du build %d - Un build sur le projet est déjà en cours.',
     'marked_as_failed' => 'Le build %d a été marqué échoué à cause d\'un timeout.',
@@ -384,8 +399,8 @@ PHPCI',
     'plugin_success' => 'PLUGIN: RÉUSSI',
     'plugin_failed' => 'PLUGIN: ÉCHOUÉ',
     'plugin_missing' => 'Le plugins n\'existe pas: %s',
-    'tap_version' => 'TapParser supporte seulement les TAP version 13',
-    'tap_error' => 'Chaîne de TAP invalide, le nombre de tests ne correspond pas à celui spécifié.',
+    'tap_version' => 'TapParser supporte seulement TAP en version 13',
+    'tap_error' => 'Chaîne TAP invalide, le nombre de tests ne correspond pas à celui spécifié.',
 
     // Build Plugins:
     'no_tests_performed' => 'Aucun test n\'a été exécuté.',
@@ -417,4 +432,12 @@ PHPCI',
     'high' => 'Haut',
     'normal' => 'Normal',
     'low' => 'Base',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+
 );

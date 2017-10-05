@@ -74,9 +74,17 @@
                                 <span class="time"><i class="fa fa-clock-o"></i> <?php print Lang::formatDateTime($updated, 'LT'); ?></span>
                                 <h3 class="timeline-header">
                                     <a href="<?php print PHPCI_URL; ?>project/view/<?php print $build->getProjectId(); ?>">
-                                        <?php print $build->getProject()->getTitle(); ?>
+                                        <?php echo $build->getProject()->getTitle()?>
                                     </a>
-                                    -
+                                    <?php
+                                    if ($display_branch) {
+                                    ?>
+                                    (
+                                    <a href="<?php echo $build->getBranchLink();?>"><?php echo $build->getBranch(); ?></a>
+                                    )
+                                    <?php
+                                    }
+                                    ?>
                                     <a href="<?php print PHPCI_URL; ?>build/view/<?php print $build->getId(); ?>">
                                         Build #<?php print $build->getId(); ?>
                                     </a>

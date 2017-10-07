@@ -42,6 +42,7 @@ class ProjectBase extends Model
         'access_information' => null,
         'last_commit' => null,
         'build_config' => null,
+        'build_config_file' => null,
         'ssh_public_key' => null,
         'allow_public_status' => null,
         'archived' => null,
@@ -62,6 +63,7 @@ class ProjectBase extends Model
         'access_information' => 'getAccessInformation',
         'last_commit' => 'getLastCommit',
         'build_config' => 'getBuildConfig',
+        'build_config_file' => 'getBuildConfigFile',
         'ssh_public_key' => 'getSshPublicKey',
         'allow_public_status' => 'getAllowPublicStatus',
         'archived' => 'getArchived',
@@ -85,6 +87,7 @@ class ProjectBase extends Model
         'access_information' => 'setAccessInformation',
         'last_commit' => 'setLastCommit',
         'build_config' => 'setBuildConfig',
+        'build_config_file' => 'setBuildConfigFile',
         'ssh_public_key' => 'setSshPublicKey',
         'allow_public_status' => 'setAllowPublicStatus',
         'archived' => 'setArchived',
@@ -137,6 +140,12 @@ class ProjectBase extends Model
             'default' => null,
         ),
         'last_commit' => array(
+            'type' => 'varchar',
+            'length' => 250,
+            'nullable' => true,
+            'default' => null,
+        ),
+        'build_config_file' => array(
             'type' => 'varchar',
             'length' => 250,
             'nullable' => true,
@@ -294,6 +303,18 @@ class ProjectBase extends Model
     public function getBuildConfig()
     {
         $rtn    = $this->data['build_config'];
+
+        return $rtn;
+    }
+
+    /**
+     * Get the value of BuildConfig / build_config_file.
+     *
+     * @return string
+     */
+    public function getBuildConfigFile()
+    {
+        $rtn    = $this->data['build_config_file'];
 
         return $rtn;
     }
@@ -507,7 +528,7 @@ class ProjectBase extends Model
     */
     public function setBuildConfig($value)
     {
-        $this->_validateString('BuildConfig', $value);
+        $this->_validateString('BuildConfigFile', $value);
 
         if ($this->data['build_config'] === $value) {
             return;
@@ -516,6 +537,24 @@ class ProjectBase extends Model
         $this->data['build_config'] = $value;
 
         $this->_setModified('build_config');
+    }
+
+    /**
+     * Set the value of BuildConfigFile / build_config_file.
+     *
+     * @param $value string
+     */
+    public function setBuildConfigFile($value)
+    {
+        $this->_validateString('BuildConfigFile', $value);
+
+        if ($this->data['build_config_file'] === $value) {
+            return;
+        }
+
+        $this->data['build_config_file'] = $value;
+
+        $this->_setModified('build_config_file');
     }
 
     /**

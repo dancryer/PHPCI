@@ -356,7 +356,7 @@ class ProjectController extends PHPCI\Controller
         $form->addField($field);
 
         $field = Form\Element\Text::create('build_config_file', Lang::get('build_config_file'), true);
-        $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
+        $field->setClass('form-control')->setContainerClass('form-group')->setValue('phpci.yml');
         $form->addField($field);
 
         $field = Form\Element\TextArea::create('build_config', Lang::get('build_config'), false);

@@ -113,6 +113,7 @@ PHPCI',
                                 (leave blank for local and/or anonymous remotes)',
     'build_config' => 'PHPCI build config for this project
                                 (if you cannot add a phpci.yml file in the project repository)',
+    'build_config_file' => 'PHPCI build config file for this project',
     'default_branch' => 'Default branch name',
     'allow_public_status' => 'Enable public status page and image for this project?',
     'archived' => 'Archived',

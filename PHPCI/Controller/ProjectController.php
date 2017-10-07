@@ -355,13 +355,13 @@ class ProjectController extends PHPCI\Controller
         $field->setRows(6);
         $form->addField($field);
 
+        $field = Form\Element\Text::create('build_config_file', Lang::get('build_config_file'), true);
+        $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
+        $form->addField($field);
+
         $field = Form\Element\TextArea::create('build_config', Lang::get('build_config'), false);
         $field->setClass('form-control')->setContainerClass('form-group');
         $field->setRows(6);
-        $form->addField($field);
-
-        $field = Form\Element\Text::create('build_config_file', Lang::get('build_config_file'), true);
-        $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
         $form->addField($field);
 
         $field = Form\Element\Text::create('branch', Lang::get('default_branch'), true);

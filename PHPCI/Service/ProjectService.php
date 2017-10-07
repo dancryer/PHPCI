@@ -77,6 +77,10 @@ class ProjectService
             $project->setBuildConfig($options['build_config']);
         }
 
+        if (array_key_exists('build_config_file', $options)) {
+            $project->setBuildConfigFile($options['build_config_file']);
+        }
+
         if (array_key_exists('allow_public_status', $options)) {
             $project->setAllowPublicStatus((int)$options['allow_public_status']);
         }

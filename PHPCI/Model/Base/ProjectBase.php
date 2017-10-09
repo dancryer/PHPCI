@@ -528,7 +528,7 @@ class ProjectBase extends Model
     */
     public function setBuildConfig($value)
     {
-        $this->_validateString('BuildConfigFile', $value);
+        $this->_validateString('BuildConfig', $value);
 
         if ($this->data['build_config'] === $value) {
             return;

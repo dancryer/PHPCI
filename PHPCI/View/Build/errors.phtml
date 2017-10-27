@@ -13,6 +13,11 @@ foreach ($errors as $error):
 
    <tr class="bg-<?php print $error->getSeverityClass(); ?>">
        <td>
+           <?php if ($error->getIsNew()): ?>
+            <span class="label label-danger">New</span>
+            <?php endif; ?>
+       </td>
+       <td>
            <span class="label label-<?php print $error->getSeverityClass(); ?>">
                <?php print Lang::get($error->getSeverityString()); ?>
            </span>

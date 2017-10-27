@@ -42,6 +42,8 @@ class BuildErrorBase extends Model
         'severity' => null,
         'message' => null,
         'created_date' => null,
+        'hash' => null,
+        'is_new' => null,
     );
 
     /**
@@ -58,6 +60,8 @@ class BuildErrorBase extends Model
         'severity' => 'getSeverity',
         'message' => 'getMessage',
         'created_date' => 'getCreatedDate',
+        'hash' => 'getHash',
+        'is_new' => 'getIsNew',
 
         // Foreign key getters:
         'Build' => 'getBuild',
@@ -77,6 +81,8 @@ class BuildErrorBase extends Model
         'severity' => 'setSeverity',
         'message' => 'setMessage',
         'created_date' => 'setCreatedDate',
+        'hash' => 'setHash',
+        'is_new' => 'setIsNew',
 
         // Foreign key setters:
         'Build' => 'setBuild',
@@ -134,6 +140,16 @@ class BuildErrorBase extends Model
         'created_date' => array(
             'type' => 'datetime',
             'default' => null,
+        ),
+        'hash' => array(
+            'type' => 'varchar',
+            'length' => 32,
+            'default' => null,
+        ),
+        'is_new' => array(
+            'type' => 'tiynint',
+            'length' => 1,
+            'default' => 0,
         ),
     );
 
@@ -267,6 +283,30 @@ class BuildErrorBase extends Model
             $rtn    = new \DateTime($rtn);
         }
         
+        return $rtn;
+    }
+
+    /**
+     * Get the value of Hash / hash.
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        $rtn    = $this->data['hash'];
+
+        return $rtn;
+    }
+
+    /**
+     * Get the value of IsNew / is_new.
+     *
+     * @return string
+     */
+    public function getIsNew()
+    {
+        $rtn    = $this->data['is_new'] ? true : false;
+
         return $rtn;
     }
 
@@ -442,6 +482,45 @@ class BuildErrorBase extends Model
         $this->data['created_date'] = $value;
 
         $this->_setModified('created_date');
+    }
+
+    /**
+     * Set the value of Hash / hash.
+     *
+     * Must not be null.
+     * @param $value string
+     */
+    public function setHash($value)
+    {
+        $this->_validateNotNull('Hash', $value);
+        $this->_validateString('Hash', $value);
+
+        if ($this->data['hash'] === $value) {
+            return;
+        }
+
+        $this->data['hash'] = $value;
+
+        $this->_setModified('hash');
+    }
+
+    /**
+     * Set the value of IsNew / is_new.
+     *
+     * Must not be null.
+     * @param $value bool
+     */
+    public function setIsNew($value)
+    {
+        $value = ($value == true) ? 1 : 0;
+
+        if ($this->data['is_new'] === $value) {
+            return;
+        }
+
+        $this->data['is_new'] = $value;
+
+        $this->_setModified('is_new');
     }
 
     /**

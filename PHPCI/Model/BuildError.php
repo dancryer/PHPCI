@@ -6,7 +6,9 @@
 
 namespace PHPCI\Model;
 
+use b8\Store\Factory;
 use PHPCI\Model\Base\BuildErrorBase;
+use PHPCI\Store;
 
 /**
  * BuildError Model
@@ -59,5 +61,18 @@ class BuildError extends BuildErrorBase
             case self::SEVERITY_LOW:
                 return 'default';
         }
+    }
+
+    public function hash()
+    {
+        $hash = $this->getPlugin() . '|' . $this->getFile() . '|' . $this->getLineStart();
+        $hash .= '|' . $this->getLineEnd() . '|' . $this->getSeverity() . '|' . $this->getMessage();
+
+        $this->setHash(md5($hash));
+
+        /** @var Store\BuildErrorStore $errorStore */
+        $errorStore = Factory::getStore('BuildError');
+
+        $this->setIsNew($errorStore->getIsNewError($this->getHash()));
     }
 }

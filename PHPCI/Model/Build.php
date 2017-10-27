@@ -241,6 +241,7 @@ class Build extends BuildBase
         $error->setFile($file);
         $error->setLineStart($lineStart);
         $error->setLineEnd($lineEnd);
+        $error->hash();
 
         return Factory::getStore('BuildError')->save($error);
     }

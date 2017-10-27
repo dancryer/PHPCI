@@ -77,4 +77,24 @@ class BuildErrorStore extends BuildErrorStoreBase
             return array();
         }
     }
+
+    /**
+     * Check if a build error is new.
+     */
+    public function getIsNewError($hash)
+    {
+        $query = 'SELECT COUNT(*) AS total FROM build_error
+                    WHERE `hash` = :errorhash';
+
+        $stmt = Database::getConnection('read')->prepare($query);
+
+        $stmt->bindValue(':errorhash', $hash, \PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $res['total'] == 0;
+        } else {
+            return true;
+        }
+    }
 }

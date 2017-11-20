@@ -11,9 +11,7 @@ PHPCI is a free and open source (BSD License) continuous integration tool specif
 
 We have a chat room for discussing PHPCI, you can access it here: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Block8/PHPCI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
 
-**Support the development of PHPCI**
-
-Want to help support the ongoing development of PHPCI? [Consider becoming a Patron on Patreon and pledging your support](https://www.patreon.com/phpci).
+[![Code Sponsor](https://app.codesponsor.io/embed/UPpL4qmAaxmGNqXc6adZzXzY/Block8/PHPCI.svg)](https://app.codesponsor.io/link/UPpL4qmAaxmGNqXc6adZzXzY/Block8/PHPCI)
 
 ## What it does:
 * Clones your project from Github, Bitbucket or a local path

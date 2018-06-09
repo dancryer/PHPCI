@@ -461,8 +461,10 @@ class WebhookController extends \b8\Controller
             return true;
         }
 
+        $replaces = array("\r" => '', "\n" => '');
         $observedBranches = explode(PHP_EOL, $observedBranchesStr);
         foreach( $observedBranches as $observedBranch ){
+            $observedBranch = str_replace(array_keys($replaces), $replaces, $observedBranch);
             if( $this->stringContains($branch, $observedBranch) ) {
                 return true;
             }

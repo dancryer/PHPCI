@@ -13,6 +13,7 @@ use PHPCI\Builder;
 use PHPCI\Helper\Diff;
 use PHPCI\Helper\Github;
 use PHPCI\Model\Build\RemoteGitBuild;
+use PHPCI\Model\BuildError;
 
 /**
 * Github Build Model
@@ -203,7 +204,7 @@ class GithubBuild extends RemoteGitBuild
         $lineStart = null,
         $lineEnd = null
     ) {
-        $diffLineNumber = $this->getDiffLineNumber($builder, $file, $lineStart);
+        $diffLineNumber = $file === null ? null : $this->getDiffLineNumber($builder, $file, $lineStart);
 
         if (!is_null($diffLineNumber)) {
             $helper = new Github();

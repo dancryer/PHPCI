@@ -228,6 +228,7 @@ class ProjectController extends PHPCI\Controller
                 'build_config' => $this->getParam('build_config', null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
                 'branch' => $this->getParam('branch', null),
+                'observed_branches' => $this->getParam('observed_branches', null),
                 'group' => $this->getParam('group_id', null),
             );
 
@@ -293,6 +294,7 @@ class ProjectController extends PHPCI\Controller
             'allow_public_status' => $this->getParam('allow_public_status', 0),
             'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
+            'observed_branches' => $this->getParam('observed_branches', null),
             'group' => $this->getParam('group_id', null),
         );
 
@@ -360,6 +362,11 @@ class ProjectController extends PHPCI\Controller
 
         $field = Form\Element\Text::create('branch', Lang::get('default_branch'), true);
         $field->setClass('form-control')->setContainerClass('form-group')->setValue('master');
+        $form->addField($field);
+
+        $field = Form\Element\TextArea::create('observed_branches', Lang::get('observed_branches'), false);
+        $field->setClass('form-control')->setContainerClass('form-group');
+        $field->setRows(6);
         $form->addField($field);
 
         $field = Form\Element\Select::create('group_id', 'Project Group', true);

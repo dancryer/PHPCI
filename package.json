@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "dependencies": {
+    "admin-lte": "^2.4.8",
+    "moment": "^2.22.2",
+    "sprintf-js": "^1.1.1",
+    "jquery-ui": "^1.12.1"
+  }
+}

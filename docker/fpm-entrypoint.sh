@@ -12,17 +12,19 @@ composer install -o --no-dev
 # Install npm dependencies:
 npm install --production
 
-mkdir -p ./public/assets/js/AdminLTE
-mkdir -p ./public/assets/plugins
+mkdir -p /phpci/public/assets/js/AdminLTE
+mkdir -p /phpci/public/assets/css
+mkdir -p /phpci/public/assets/plugins
 
-cp -f ./node_modules/admin-lte/dist/adminlte.min.js ./public/assets/js/AdminLTE/app.min.js
-cp -f ./node_modules/admin-lte/dist/pages/dashboard.min.js ./public/assets/js/AdminLTE/dashboard.js
-cp -f ./node_modules/admin-lte/dist/demo.js ./public/assets/js/AdminLTE/demo.js
-cp -Rf ./node_modules/admin-lte/dist/css ./public/assets/css
-cp -Rf ./node_modules/admin-lte/dist/img ./public/assets/img
-cp -Rf ./node_modules/admin-lte/plugins ./public/assets/plugins
-cp -f ./node_modules/bootstrap/dist/bootstrap.min.js ./public/assets/js/bootstrap.min.js
-cp -f ./node_modules/moment/min/moment.min.js ./public/assets/js/moment.min.js
-cp -f ./node_modules/sprintf-js/dist/sprintf.min.js ./public/assets/js/sprintf.min.js
+cp -f /phpci/node_modules/admin-lte/dist/js/adminlte.min.js /phpci/public/assets/js/AdminLTE/app.min.js
+cp -f /phpci/node_modules/admin-lte/dist/js/pages/dashboard.js /phpci/public/assets/js/AdminLTE/dashboard.js
+cp -f /phpci/node_modules/admin-lte/dist/js/demo.js /phpci/public/assets/js/AdminLTE/demo.js
+cp -Rf /phpci/node_modules/admin-lte/dist/css/AdminLTE.min.css /phpci/public/assets/css/AdminLTE.min.css
+cp -Rf /phpci/node_modules/admin-lte/dist/css/skins/_all-skins.min.css /phpci/public/assets/css/AdminLTE-skins.min.css
+cp -Rf /phpci/node_modules/admin-lte/dist/img /phpci/public/assets/
+cp -Rf /phpci/node_modules/admin-lte/plugins /phpci/public/assets/
+cp -f /phpci/node_modules/bootstrap/dist/js/bootstrap.min.js /phpci/public/assets/js/bootstrap.min.js
+cp -f /phpci/node_modules/moment/min/moment.min.js /phpci/public/assets/js/moment.min.js
+cp -f /phpci/node_modules/sprintf-js/dist/sprintf.min.js /phpci/public/assets/js/sprintf.js
 
 php-fpm

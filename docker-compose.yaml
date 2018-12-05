@@ -1,0 +1,38 @@
+version: '2'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./public/assets:/phpci/public/assets
+      - ./public/favicon.ico:/phpci/public/favicon.ico
+      - ./public/robots.txt:/phpci/public/robots.txt
+      - ./docker/nginx.conf:/etc/nginx/conf.d/phpci.conf
+    links:
+      - fpm
+
+  worker:
+    image: phpci-worker
+    build:
+      context: .
+      dockerfile: docker/worker.dockerfile
+    links:
+      - beanstalkd
+    volumes:
+      - .:/phpci
+
+  fpm:
+    image: phpci-fpm
+    build:
+      context: .
+      dockerfile: docker/fpm.dockerfile
+    links:
+      - beanstalkd
+    volumes:
+      - .:/phpci
+
+  beanstalkd:
+    image: schickling/beanstalkd:latest
+    ports:
+      - "11300:11300"

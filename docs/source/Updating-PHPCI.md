@@ -1,3 +1,5 @@
+# Updating PHPCI 
+
 Updating PHPCI to the latest release, or even dev-master updates is something that will need to be done from time to time. Most of this may be self-explanatory, but for clarity and completeness, it should be added to the documentation.
 
 1. Go to your PHPCI root folder in a Terminal.

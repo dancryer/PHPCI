@@ -1,20 +1,16 @@
 Maintainers help to keep the PHPCI project moving, they do this by helping to manage issues, merging pull requests, improving documentation and by contributing code to the project. 
 
-Want to be a maintainer? Email Dan at dan@block8.co.uk for more information.
+Want to be a maintainer? Email Dan at dan@dancryer.com for more information.
 
 The current team of maintainers are as follows:
 
 **Core Maintainers**
 
 * Dan (@dancryer)
-* Steve (@meadsteve)
 
 **Maintainers**
 
-* Mike (@mikebronner)
-* James (@jfi)
-* Tobias (@tvbeek)
-* Marco (@mavimo)
+* This project is actively seeking maintainers. Please contact @dancryer if you are interested in helping to keep it going.
 
 ## Guidelines for Maintainers
 
@@ -26,7 +22,7 @@ Maintainers, by definition, have commit access to the project and can commit cha
 
 It is the responsibility of the maintainers to merge pull requests, but only where they meet the contribution guidelines and pass our merging checklist.
 
-Once the checklist has been completed, the pull request can be merged following the guidelines in the following blog post: http://blog.spreedly.com/2014/06/24/merge-pull-request-considered-harmful/
+Once the checklist has been completed, the pull request should be merged using the "Squash and Merge" option.
 
 **The Checklist**
 

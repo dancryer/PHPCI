@@ -1,8 +1,10 @@
+# Adding a Virtual Host for PHPCI
+
 In order to access the PHPCI web interface, you need to set up a virtual host in your web server. 
 
 Below are a few examples of how to do this for various different web servers.
 
-## Nginx Example:
+## Nginx Example
 
 ```
 server {
@@ -24,7 +26,7 @@ server {
 }
 ```
 
-## Apache Example:
+## Apache Example
 
 For Apache, you can use a standard virtual host, as long as your server supports PHP. All you need to do is add the following to a `.htaccess` file in your PHPCI `/public` directory.
 

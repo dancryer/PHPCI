@@ -1,3 +1,5 @@
+# Variable Interpolation
+
 Most strings used in the build configuration can have variables related to the build inserted into them with the following syntax:
 
 "My important message is about %SOMETHING%"

@@ -1,3 +1,5 @@
+# Git Post Commit Hook
+
 ## Requirements
 - A git repository on a server (bare or plain does not matter)
 - [curl](http://curl.haxx.se) to send the web hook

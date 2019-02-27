@@ -1,4 +1,6 @@
-**Important: Please reference [Installing PHPCI](https://github.com/Block8/PHPCI/wiki/Installing-PHPCI) for additional information!**
+# Guide to Installing on MacOS
+
+**Important: Please reference [Installing PHPCI](Installing-PHPCI) for additional information!**
 
 ### OS X Server
 Install OS X Server from the App Store.

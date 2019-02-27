@@ -45,4 +45,4 @@ setup:
 ```
 
 
-[See variables which you can use in shell commands](https://github.com/Block8/PHPCI/wiki/Interpolation)
+[See variables which you can use in shell commands](Interpolation)

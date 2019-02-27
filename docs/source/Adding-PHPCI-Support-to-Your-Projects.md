@@ -1,3 +1,5 @@
+# Add PHPCI Support to Your Projects
+
 Similar to Travis CI, to support PHPCI in your project, you simply need to add a `phpci.yml` file to the root of your repository. The file should look something like this:
 
 ```yml

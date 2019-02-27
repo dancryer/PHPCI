@@ -1,4 +1,4 @@
-Similar to the [standard PHP Lint plugin](https://github.com/Block8/PHPCI/wiki/Lint-plugin), except that it uses the [PHP Parallel Lint](https://github.com/JakubOnderka/PHP-Parallel-Lint) project to run.
+Similar to the [standard PHP Lint plugin](Lint-plugin), except that it uses the [PHP Parallel Lint](https://github.com/JakubOnderka/PHP-Parallel-Lint) project to run.
 
 ## Configuration
 ### Options

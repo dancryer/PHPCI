@@ -125,4 +125,26 @@ class ProjectServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $service->deleteProject($project));
     }
+
+
+    public function testExecute_CreateGitlabProjectWithNumberInVendor()
+    {
+        $reference = 'git@gitlab.block8.net:8block/phpci.git';
+        $returnValue = $this->testedService->createProject('Gitlab', 'gitlab', $reference);
+
+        $this->assertEquals('git', $returnValue->getAccessInformation('user'));
+        $this->assertEquals('gitlab.block8.net', $returnValue->getAccessInformation('domain'));
+        $this->assertEquals('8block/phpci', $returnValue->getReference());
+    }
+
+    public function testExecute_CreateGitlabProjectWithPortAndNumberInVendor()
+    {
+        $reference = 'git@gitlab.block8.net:22/8block/phpci.git';
+        $returnValue = $this->testedService->createProject('Gitlab', 'gitlab', $reference);
+
+        $this->assertEquals('git', $returnValue->getAccessInformation('user'));
+        $this->assertEquals('gitlab.block8.net', $returnValue->getAccessInformation('domain'));
+        $this->assertEquals(22, $returnValue->getAccessInformation('port'));
+        $this->assertEquals('8block/phpci', $returnValue->getReference());
+    }
 }

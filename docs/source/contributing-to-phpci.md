@@ -1,1 +1,0 @@
-Please find the updated contributing guidelines here: https://github.com/Block8/PHPCI/blob/master/.github/CONTRIBUTING.md

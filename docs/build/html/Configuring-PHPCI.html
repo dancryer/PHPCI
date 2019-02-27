@@ -1,0 +1,110 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; PHPCI 1.8.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>The PHPCI configuration on the server is automatically generated into the <code class="docutils literal notranslate"><span class="pre">phpci/PHPCI/config.yml</span></code> file during installation. One might need to also edit the file manually.</p>
+<p>For example, to <a class="reference external" href="https://www.phptesting.org/news/phpci-1-5-released">disable authentication</a>, one could log into phpci and go into the settings to disable it. But if you have already set up a username/password pair and have forgotten the password, and if the server is on a local network, and it’s not sending the <code class="docutils literal notranslate"><span class="pre">forgot</span> <span class="pre">password</span></code> email, then editing the config file manually would be handy. To do so, just edit the <code class="docutils literal notranslate"><span class="pre">phpci</span></code> section in the config file (which is in <a class="reference external" href="https://en.wikipedia.org/wiki/YAML">yaml format</a>), and add</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">phpci</span><span class="p">:</span>
+    <span class="n">authentication_settings</span><span class="p">:</span>
+      <span class="n">state</span><span class="p">:</span> <span class="mi">1</span>
+      <span class="n">user_id</span><span class="p">:</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>where you can get the user_id by logging into the mysql database and selecting your user ID from the <code class="docutils literal notranslate"><span class="pre">users</span></code> table in the <code class="docutils literal notranslate"><span class="pre">phpci</span></code> database.</p>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PHPCI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dan Cryer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Configuring-PHPCI.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,142 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Configuration Options: &#8212; PHPCI 1.8.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>A simple plugin that allows you to run <a class="reference external" href="http://codeception.com/">Codeception</a> tests.</p>
+<div class="section" id="configuration-options">
+<h1>Configuration Options:<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><strong>config</strong> - Required - Can be either a single string pointing to a Codeception configuration file, or an array of configuration file paths. By default this is called <code class="docutils literal notranslate"><span class="pre">codeception.yml</span></code> and will be in the root of your project.</li>
+<li><strong>args</strong> - Optional - The string of arguments to be passed to the run command. <strong>Important</strong>, due to the assumption made on line <a class="reference external" href="https://github.com/Block8/PHPCI/blob/master/PHPCI/Plugin/Codeception.php#L132">132</a> regarding the value of <code class="docutils literal notranslate"><span class="pre">--xml</span></code> being the next argument which will not be correct if the user provides arguments using this config param, you must specify <code class="docutils literal notranslate"><span class="pre">report.xml</span></code> before any user input arguments to satisfy the report processing on line <a class="reference external" href="https://github.com/Block8/PHPCI/blob/master/PHPCI/Plugin/Codeception.php#L146">146</a></li>
+<li><strong>path</strong> - Optional - The path from the root of your project to the root of the codeception _output directory</li>
+</ul>
+<div class="section" id="default-values">
+<h2>Default values<a class="headerlink" href="#default-values" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>config</li>
+<li><code class="docutils literal notranslate"><span class="pre">codeception.yml</span></code> if it exists in the root of the project</li>
+<li><code class="docutils literal notranslate"><span class="pre">codeception.dist.yml</span></code> if it exists in the root of the project</li>
+<li>null if no option provided and the above two fail, this will cause an Exception to be thrown on execution</li>
+<li>args</li>
+<li>Empty string</li>
+<li>path</li>
+<li><code class="docutils literal notranslate"><span class="pre">tests/_output/</span></code></li>
+</ul>
+</div>
+<div class="section" id="example-on-running-codeception-with-default-settings-when-tests-are-in-tests-directory">
+<h2>Example on running codeception with default settings (when tests are in tests/ directory):<a class="headerlink" href="#example-on-running-codeception-with-default-settings-when-tests-are-in-tests-directory" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">codeception</span><span class="p">:</span>
+    <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;codeception.yml&quot;</span>
+    <span class="n">path</span><span class="p">:</span> <span class="s2">&quot;tests/&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-usage-against-the-yii2-framework">
+<h2>Example usage against the Yii2 framework<a class="headerlink" href="#example-usage-against-the-yii2-framework" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">codeception</span><span class="p">:</span>
+        <span class="n">allow_failures</span><span class="p">:</span> <span class="n">false</span>
+        <span class="n">config</span><span class="p">:</span> <span class="s2">&quot;tests/codeception.yml&quot;</span>
+        <span class="n">path</span><span class="p">:</span> <span class="s2">&quot;tests/codeception/_output/&quot;</span>
+        <span class="n">args</span><span class="p">:</span> <span class="s2">&quot;report.xml --no-ansi --coverage-html&quot;</span>
+</pre></div>
+</div>
+<p>The path value will need to be changed if you have your tests directory somewhere other than in the root of the project.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PHPCI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dan Cryer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Codeception-plugin.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

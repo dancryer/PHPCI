@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Example config &#8212; PHPCI 1.8.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>PHPCI allows you configure plugins depending on the branch you configure in the project settings in the UI. You can replace a complete stage for a branch, or add extra plugins to a stage that run before or after the default plugins.</p>
+<div class="section" id="example-config">
+<h1>Example config<a class="headerlink" href="#example-config" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test</span><span class="p">:</span> <span class="c1"># Test stage config for all branches</span>
+    <span class="n">php_unit</span><span class="p">:</span>
+        <span class="n">allow_failures</span><span class="p">:</span> <span class="mi">10</span>
+<span class="n">success</span><span class="p">:</span> <span class="c1"># Success stage config for all branches</span>
+    <span class="n">shell</span><span class="p">:</span> <span class="o">./</span><span class="n">notify</span>
+<span class="n">branch</span><span class="o">-</span><span class="n">release</span><span class="p">:</span> <span class="c1"># Test config for release branch</span>
+    <span class="n">run</span><span class="o">-</span><span class="n">option</span><span class="p">:</span> <span class="n">replace</span> <span class="c1"># This can be set to either before, after or replace</span>
+    <span class="n">test</span><span class="p">:</span>
+        <span class="n">php_unit</span><span class="p">:</span>
+            <span class="n">allow_failures</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">branch</span><span class="o">-</span><span class="n">master</span><span class="p">:</span> <span class="c1"># Test config for release branch</span>
+    <span class="n">run</span><span class="o">-</span><span class="n">option</span><span class="p">:</span> <span class="n">after</span> <span class="c1"># This can be set to either before, after or replace</span>
+    <span class="n">success</span><span class="p">:</span>
+        <span class="n">shell</span><span class="p">:</span>
+            <span class="o">-</span> <span class="s2">&quot;rsync ...&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-it-works">
+<h1>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
+<p>When you have configured a branch eg “stable” in the project settings in the UI. Add a new config named “branch-BRANCH NAME”, in this case “branch-stable” to the phpci.yml. In this config, specify all stages and plugins you wish to run.</p>
+<p>Also add a new config value “run-option”, that can heve 3 values:</p>
+<ul class="simple">
+<li>before: will cause the branch specific plugins to run before the default ones</li>
+<li>after: will cause the branch specific plugins to run after the default ones</li>
+<li>replace: will cause the branch specific plugins to run and the default ones not</li>
+</ul>
+</div>
+<div class="section" id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>https://github.com/Block8/PHPCI/issues/1045</li>
+<li>https://github.com/Block8/PHPCI/issues/1209</li>
+<li>https://github.com/Block8/PHPCI/blob/master/PHPCI/Plugin/Util/Executor.php</li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PHPCI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dan Cryer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Branch-specific-stages.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,144 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>What you’ll need: &#8212; PHPCI 1.8.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="what-you-ll-need">
+<h1>What you’ll need:<a class="headerlink" href="#what-you-ll-need" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>PHP 5.3.6 or above</li>
+<li>A web server (we recommend <a class="reference external" href="http://nginx.org">nginx</a>)</li>
+<li><a class="reference external" href="https://getcomposer.org/download/">Composer</a></li>
+<li><a class="reference external" href="http://git-scm.com/downloads">Git</a></li>
+<li>A MySQL server to connect to. This doesn’t have to be on the same server as PHPCI.</li>
+<li>The following functions need to be enabled: <code class="docutils literal notranslate"><span class="pre">exec()</span></code>, <code class="docutils literal notranslate"><span class="pre">shell_exec()</span></code> and <code class="docutils literal notranslate"><span class="pre">proc_open()</span></code></li>
+<li>PHP must have OpenSSL support enabled.</li>
+</ul>
+</div>
+<div class="section" id="installing-phpci-from-composer">
+<h1>Installing PHPCI from Composer:<a class="headerlink" href="#installing-phpci-from-composer" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Go to the directory in which you want to install PHPCI, for example: <code class="docutils literal notranslate"><span class="pre">/var/www</span></code></li>
+<li>Download Composer if you haven’t already: <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-sS</span> <span class="pre">https://getcomposer.org/installer</span> <span class="pre">|</span> <span class="pre">php</span></code></li>
+<li>Download PHPCI: <code class="docutils literal notranslate"><span class="pre">./composer.phar</span> <span class="pre">create-project</span> <span class="pre">block8/phpci</span> <span class="pre">phpci</span> <span class="pre">--keep-vcs</span> <span class="pre">--no-dev</span></code></li>
+<li>Go to the newly created PHPCI directory, and install Composer dependencies: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">phpci</span> <span class="pre">&amp;&amp;</span> <span class="pre">../composer.phar</span> <span class="pre">install</span></code></li>
+<li>Run the PHPCI installer: <code class="docutils literal notranslate"><span class="pre">php</span> <span class="pre">./console</span> <span class="pre">phpci:install</span></code></li>
+<li><a class="reference external" href="/Block8/PHPCI/wiki/Add-a-Virtual-Host">Add a virtual host to your web server</a>, pointing to the <code class="docutils literal notranslate"><span class="pre">public</span></code> directory within your new PHPCI directory. You’ll need to set up rewrite rules to point all non-existent requests to PHPCI.</li>
+<li><a class="reference external" href="https://github.com/Block8/PHPCI/wiki/Run-Builds-Using-a-Worker">Set up the PHPCI Worker</a>, or you can run builds using the <a class="reference external" href="/Block8/PHPCI/wiki/Run-Builds-Using-a-Daemon">PHPCI daemon</a> or <a class="reference external" href="/Block8/PHPCI/wiki/Run-Builds-Using-Cron">a cron-job</a> to run PHPCI builds.</li>
+</ul>
+</div>
+<div class="section" id="installing-phpci-manually">
+<h1>Installing PHPCI Manually:<a class="headerlink" href="#installing-phpci-manually" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Go to the directory in which you want to install PHPCI, for example: <code class="docutils literal notranslate"><span class="pre">/var/www</span></code></li>
+<li><a class="reference external" href="https://github.com/Block8/PHPCI/releases/latest">Download PHPCI</a> and unzip it.</li>
+<li>Go to the PHPCI directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/var/www/phpci</span></code></li>
+<li>Install dependencies using Composer: <code class="docutils literal notranslate"><span class="pre">composer</span> <span class="pre">install</span></code></li>
+<li>Install PHPCI itself: <code class="docutils literal notranslate"><span class="pre">php</span> <span class="pre">./console</span> <span class="pre">phpci:install</span></code></li>
+<li><a class="reference external" href="/Block8/PHPCI/wiki/Add-a-Virtual-Host">Add a virtual host to your web server</a>, pointing to the <code class="docutils literal notranslate"><span class="pre">public</span></code> directory within your new PHPCI directory. You’ll need to set up rewrite rules to point all non-existent requests to PHPCI.</li>
+<li><a class="reference external" href="https://github.com/Block8/PHPCI/wiki/Run-Builds-Using-a-Worker">Set up the PHPCI Worker</a>, or you can run builds using the <a class="reference external" href="/Block8/PHPCI/wiki/Run-Builds-Using-a-Daemon">PHPCI daemon</a> or <a class="reference external" href="/Block8/PHPCI/wiki/Run-Builds-Using-Cron">a cron-job</a> to run PHPCI builds.</li>
+</ul>
+<div class="section" id="extended-guides">
+<h2>Extended Guides<a class="headerlink" href="#extended-guides" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/Block8/PHPCI/wiki/Vanilla-Mac-Mavericks-Server-Installation-Guide">Installing PHPCI on Mac OSX Mavericks</a></li>
+<li><a class="reference external" href="https://github.com/Block8/PHPCI/wiki/Vanilla-Installation-on-OS-X-10.10-Yosemite-with-OS-X-Server-4">Installing PHPCI on Mac OSX Yosemite</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PHPCI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dan Cryer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Installing-PHPCI.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -3,15 +3,6 @@ PHPCI
 
 PHPCI is a free and open source (BSD License) continuous integration tool specifically designed for PHP. We've  built it with simplicity in mind, so whilst it doesn't do *everything* Jenkins can do, it is a breeze to set up and use.
 
-**Current Build Status**
-
-[![Build Status](http://phpci.block8.net/build-status/image/2?branch=master)](http://phpci.block8.net/build-status/view/2?branch=master)
-
-**Chat Room**
-
-We have a chat room for discussing PHPCI, you can access it here: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Block8/PHPCI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
-
-[![Code Sponsor](https://app.codesponsor.io/embed/UPpL4qmAaxmGNqXc6adZzXzY/Block8/PHPCI.svg)](https://app.codesponsor.io/link/UPpL4qmAaxmGNqXc6adZzXzY/Block8/PHPCI)
 
 ## What it does:
 * Clones your project from Github, Bitbucket or a local path
@@ -28,10 +19,10 @@ We have a chat room for discussing PHPCI, you can access it here: [![Gitter](htt
 * Deployments - We strongly recommend using [Deployer](http://phpdeployment.org)
 
 ## Getting Started:
-We've got documentation on our website on [installing PHPCI](https://www.phptesting.org/install-phpci) and [adding support for PHPCI to your projects](https://www.phptesting.org/wiki/Adding-PHPCI-Support-to-Your-Projects).
+We've got documentation on our website on [installing PHPCI](https://docs.phptesting.org/en/latest/installing-phpci/) and [adding support for PHPCI to your projects](https://docs.phptesting.org/en/latest/adding-phpci-support-to-your-projects/).
 
 ## Contributing
-Contributions from others would be very much appreciated! Please read our [guide to contributing](https://github.com/Block8/PHPCI/blob/master/.github/CONTRIBUTING.md) for more information on how to get involved.
+Contributions from others would be very much appreciated! Please read our [guide to contributing](https://github.com/dancryer/PHPCI/blob/master/.github/CONTRIBUTING.md) for more information on how to get involved.
 
 ## Questions?
 Your best place to go is the [mailing list](https://groups.google.com/forum/#!forum/php-ci). If you're already a member of the mailing list, you can simply email php-ci@googlegroups.com.

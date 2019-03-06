@@ -8,7 +8,7 @@ PHPCI is a free and open source (BSD License) continuous integration tool specif
 * Clones your project from Github, Bitbucket or a local path
 * Allows you to set up and tear down test databases.
 * Installs your project's Composer dependencies.
-* Runs through any combination of the [supported plugins](https://www.phptesting.org/wiki#plugins).
+* Runs through any combination of the [supported plugins](https://docs.phptesting.org/en/latest/#plugins).
 * You can mark directories for the plugins to ignore.
 * You can mark certain plugins as being allowed to fail (but still run.)
 

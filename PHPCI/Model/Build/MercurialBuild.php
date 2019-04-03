@@ -42,7 +42,7 @@ class MercurialBuild extends Build
         }
 
         if (!$success) {
-            $builder->logFailure('Failed to clone remote git repository.');
+            $builder->logFailure('Failed to clone remote mercurial repository.');
             return false;
         }
 
@@ -62,7 +62,7 @@ class MercurialBuild extends Build
      */
     protected function cloneBySsh(Builder $builder, $cloneTo)
     {
-        $keyFile = $this->writeSshKey();
+        $keyFile = $this->writeSshKey($cloneTo);
 
         // Do the git clone:
         $cmd = 'hg clone --ssh "ssh -i '.$keyFile.'" %s "%s"';
@@ -75,6 +75,22 @@ class MercurialBuild extends Build
         // Remove the key file:
         unlink($keyFile);
         return $success;
+    }
+
+    /**
+     * Create an SSH key file on disk for this build.
+     * @param $cloneTo
+     * @return string
+     */
+    protected function writeSshKey($cloneTo)
+    {
+        $keyPath = dirname($cloneTo . '/temp');
+        $keyFile = $keyPath . '.key';
+        // Write the contents of this project's git key to the file:
+        file_put_contents($keyFile, $this->getProject()->getSshPrivateKey());
+        chmod($keyFile, 0600);
+        // Return the filename:
+        return $keyFile;
     }
 
     /**

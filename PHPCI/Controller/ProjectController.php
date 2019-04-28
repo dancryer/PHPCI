@@ -226,6 +226,7 @@ class ProjectController extends PHPCI\Controller
                 'ssh_private_key' => $this->getParam('key', null),
                 'ssh_public_key' => $this->getParam('pubkey', null),
                 'build_config' => $this->getParam('build_config', null),
+                'build_config_file' => $this->getParam('build_config_file',  null),
                 'allow_public_status' => $this->getParam('allow_public_status', 0),
                 'branch' => $this->getParam('branch', null),
                 'group' => $this->getParam('group_id', null),
@@ -290,6 +291,7 @@ class ProjectController extends PHPCI\Controller
             'ssh_private_key' => $this->getParam('key', null),
             'ssh_public_key' => $this->getParam('pubkey', null),
             'build_config' => $this->getParam('build_config', null),
+            'build_config_file' => $this->getParam('build_config_file', null),
             'allow_public_status' => $this->getParam('allow_public_status', 0),
             'archived' => $this->getParam('archived', 0),
             'branch' => $this->getParam('branch', null),
@@ -351,6 +353,10 @@ class ProjectController extends PHPCI\Controller
         $field = Form\Element\TextArea::create('key', Lang::get('project_private_key'), false);
         $field->setClass('form-control')->setContainerClass('form-group');
         $field->setRows(6);
+        $form->addField($field);
+
+        $field = Form\Element\Text::create('build_config_file', Lang::get('build_config_file'), true);
+        $field->setClass('form-control')->setContainerClass('form-group')->setValue('phpci.yml');
         $form->addField($field);
 
         $field = Form\Element\TextArea::create('build_config', Lang::get('build_config'), false);

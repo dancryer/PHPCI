@@ -39,6 +39,7 @@ PHPCI',
     'reset_email_title' => 'Reiniciar contraseña de PHPCI para %s',
     'reset_invalid' => 'Pedido inválido.',
     'email_address' => 'Dirección de email',
+    'login' => 'Login / Email Address',
     'password' => 'Contraseña',
     'log_in' => 'Ingresar',
 
@@ -129,6 +130,7 @@ PHPCI',
     'all_branches' => 'Todas las ramas',
     'builds' => 'Builds',
     'id' => 'ID',
+    'date' => 'Fecha',
     'project' => 'Proyecto',
     'commit' => 'Commit',
     'branch' => 'Rama',
@@ -152,6 +154,9 @@ PHPCI',
                                 Services</a> de tu repositorio en Bitbucket.',
 
     // View Build
+    'errors' => 'Errores',
+    'information' => 'Información',
+
     'build_x_not_found' => 'El build con ID %d no existe.',
     'build_n' => 'Build %d',
     'rebuild_now' => 'Rebuild Ahora',
@@ -189,6 +194,12 @@ PHPCI',
     'technical_debt' => 'Deuda Técnica',
     'behat' => 'Behat',
 
+    'codeception_feature' => 'Feature',
+    'codeception_suite' => 'Suite',
+    'codeception_time' => 'Time',
+    'codeception_synopsis' => '<strong>%1$d</strong> tests carried out in <strong>%2$f</strong> seconds.
+                               <strong>%3$d</strong> failures.',
+
     'file' => 'Archivo',
     'line' => 'Línea',
     'class' => 'Clase',
@@ -198,14 +209,24 @@ PHPCI',
     'end' => 'Fin',
     'from' => 'De',
     'to' => 'Para',
-    'suite' => 'Suite',
-    'test' => 'Test',
     'result' => 'Resultado',
     'ok' => 'OK',
     'took_n_seconds' => 'Tomó %d segundos',
     'build_created' => 'Build Creado',
     'build_started' => 'Build Comenzado',
     'build_finished' => 'Build Terminado',
+    'test_message' => 'Mensaje',
+    'test_no_message' => 'Sin mensaje',
+    'test_success' => 'Correcto: %d',
+    'test_fail' => 'Fallido: %d',
+    'test_skipped' => 'Skipped: %d',
+    'test_error' => 'Error: %d',
+    'test_todo' => 'Por hacer: %d',
+    'test_total' => '%d test(s)',
+
+    // Not in EN
+    'suite' => 'Suite',
+    'test' => 'Test',
 
     // Users
     'name' => 'Nombre',
@@ -265,6 +286,7 @@ PHPCI',
     '1_hour' => '1 Hora',
     '3_hours' => '3 Horas',
 
+    // Latest Builds
     'show_branch' => 'Mostrar las ramas',
 
     // Plugins
@@ -282,6 +304,19 @@ PHPCI',
     'remove' => 'Eliminar &raquo;',
     'search_packagist_for_more' => 'Buscar más paquetes en Packagist',
     'search' => 'Buscar &raquo;',
+
+    // Summary plugin
+    'build-summary' => 'Resumen',
+    'stage' => 'Stage',
+    'duration' => 'Duración',
+    'plugin' => 'Plugin',
+    'stage_setup' => 'Setup',
+    'stage_test' => 'Test',
+    'stage_complete' => 'Complete',
+    'stage_success' => 'Success',
+    'stage_failure' => 'Failure',
+    'stage_broken'  => 'Broken',
+    'stage_fixed' => 'Fixed',
 
     // Installer
     'installation_url' => 'URL de la instalación PHPCI',
@@ -320,7 +355,7 @@ PHPCI',
     'update_instead' => 'Si está intentando actualizar PHPCI, por favor, utiliza phpci:update.',
 
     // Update
-    'update_phpci' => 'Actuliza la base de datos para reflejar los modelos actualizados.',
+    'update_phpci' => 'Actualiza la base de datos para reflejar los modelos actualizados.',
     'updating_phpci' => 'Actualizando base de datos PHPCI: ',
     'not_installed' => 'PHPCI no está instalado.',
     'install_instead' => 'Por favor, instala PHPCI via phpci:install.',
@@ -337,6 +372,15 @@ PHPCI',
     // Create Admin
     'create_admin_user' => 'Crear un usuario Admin',
     'incorrect_format' => 'Formato incorrecto',
+
+    // Create Build Command
+    'create_build_project' => 'Create a build for a project',
+    'project_id_argument' => 'A project ID',
+    'commit_id_option' => 'Commit ID to build',
+    'branch_name_option' => 'Branch to build',
+    'add_to_queue_failed' => 'Build created successfully, but failed to add to build queue. This usually happens
+                                when PHPCI is set to use a beanstalkd server that does not exist,
+                                or your beanstalkd server has stopped.',
 
     // Run Command
     'run_all_pending' => 'Ejecutar todos los builds PHPCI pendientes.',
@@ -385,5 +429,20 @@ PHPCI',
     'build_file_missing' => 'El archivo de build especificado no existe.',
     'property_file_missing' => 'El archivo de propiedades especificado no existe.',
     'could_not_process_report' => 'Imposible procesar el reporte generado por la herramienta.',
-    'shell_not_enabled' => 'El plugin shell no está habilitado. Por favor, habilitalo desde config.yml.'
+    'shell_not_enabled' => 'El plugin shell no está habilitado. Por favor, habilitalo desde config.yml.',
+
+    // Error Levels:
+    'critical' => 'Crítico',
+    'high' => 'Alta',
+    'normal' => 'Normal',
+    'low' => 'Baja',
+
+    // Plugins that generate errors:
+    'php_mess_detector' => 'PHP Mess Detector',
+    'php_code_sniffer' => 'PHP Code Sniffer',
+    'php_unit' => 'PHP Unit',
+    'php_cpd' => 'PHP Copy/Paste Detector',
+    'php_docblock_checker' => 'PHP Docblock Checker',
+    'behat' => 'Behat',
+    'technical_debt' => 'Technical Debt',
 );
